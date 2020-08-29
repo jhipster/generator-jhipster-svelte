@@ -1,0 +1,15 @@
+{
+	"env": {
+		"node": true,
+		"es6": true
+	},
+	"extends": ["airbnb-base", "plugin:prettier/recommended"],
+	"rules": {
+		"prettier/prettier": "error",
+		"no-use-before-define": [2, "nofunc"],
+		"no-unused-vars": [2, { "vars": "local", "args": "none" }],
+		"no-underscore-dangle": "off",
+		"prefer-destructuring": "off",
+		"no-multi-assign": "off"
+	}
+}

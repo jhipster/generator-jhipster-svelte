@@ -1,0 +1,56 @@
+{
+	"name": "generator-jhipster-svelte",
+	"version": "0.0.0",
+	"description": "A svelte.js blueprint to generate cybernetically enhanced web applications.",
+	"keywords": [
+		"yeoman-generator",
+		"jhipster-blueprint",
+		"jhipster-6",
+		"svelte"
+	],
+	"homepage": "https://github.com/jhipster/generator-jhipster-svelte",
+	"author": {
+		"name": "Vishal Mahajan",
+		"email": "vishal423@gmail.com",
+		"url": "https://twitter.com/vishal423"
+	},
+	"files": [
+		"generators"
+	],
+	"main": "generators/app/index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jhipster/generator-jhipster-svelte.git"
+	},
+	"dependencies": {
+		"chalk": "4.1.0",
+		"generator-jhipster": "6.10.1"
+	},
+	"devDependencies": {
+		"ejs-lint": "1.1.0",
+		"eslint": "7.7.0",
+		"eslint-config-airbnb-base": "14.2.0",
+		"eslint-config-prettier": "6.11.0",
+		"eslint-plugin-import": "^2.22.0",
+		"eslint-plugin-prettier": "3.1.4",
+		"fs-extra": "9.0.1",
+		"husky": "^4.2.5",
+		"prettier": "2.1.1",
+		"pretty-quick": "^3.0.0",
+		"yeoman-assert": "3.1.1",
+		"yeoman-test": "3.0.0"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "pretty-quick --staged"
+		}
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"format": "pretty-quick"
+	},
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/jhipster/generator-jhipster-svelte/issues"
+	}
+}

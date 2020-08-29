@@ -1,0 +1,10 @@
+{
+	"generator-jhipster-blueprint": {
+		"promptValues": {
+			"githubName": "vishal423",
+			"authorName": "Vishal Mahajan",
+			"authorEmail": "vishal423@gmail.com",
+			"authorUrl": "https://twitter.com/vishal423"
+		}
+	}
+}
