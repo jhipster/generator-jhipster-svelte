@@ -24,7 +24,9 @@
 	},
 	"dependencies": {
 		"chalk": "4.1.0",
-		"generator-jhipster": "6.10.1"
+		"generator-jhipster": "6.10.1",
+		"mkdirp": "^1.0.4",
+		"pluralize": "^8.0.0"
 	},
 	"devDependencies": {
 		"ejs-lint": "1.1.0",

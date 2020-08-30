@@ -43,7 +43,7 @@ npm update -g generator-jhipster-svelte
 To use the blueprint, run the below command:
 
 ```bash
-jhipster --blueprint generator-jhipster-svelte
+jhipster --blueprints generator-jhipster-svelte
 ```
 
 ## :hammer_and_wrench: Development
@@ -75,7 +75,7 @@ mkdir my-app && cd my-app
 npm link generator-jhipster-svelte
 npm link generator-jhipster (Optional: Needed only if you are using a non-released JHipster version)
 
-jhipster -d --blueprint generator-jhipster-svelte
+jhipster -d --blueprints generator-jhipster-svelte
 
 ```
 

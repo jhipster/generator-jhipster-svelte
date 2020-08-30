@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const ClientGenerator = require('generator-jhipster/generators/client');
+const writeFiles = require('./files').writeFiles;
 
 module.exports = class extends ClientGenerator {
 	constructor(args, opts) {
@@ -16,6 +17,7 @@ module.exports = class extends ClientGenerator {
 		}
 
 		this.configOptions = jhContext.configOptions || {};
+		this.clientFramework = this.config.get('clientFramework') || 'svelte';
 		this.clientTheme = this.config.get('clientTheme') || 'none';
 		this.clientThemeVariant = this.config.get('clientThemeVariant') || '';
 		// This sets up options for this sub generator and is being reused from JHipster
@@ -26,8 +28,15 @@ module.exports = class extends ClientGenerator {
 		return super._initializing();
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	get prompting() {
-		return super._prompting();
+		return {
+			setSharedConfigOptions() {
+				this.configOptions.clientFramework = this.clientFramework;
+				this.configOptions.clientTheme = this.clientTheme;
+				this.configOptions.clientThemeVariant = this.clientThemeVariant;
+			},
+		};
 	}
 
 	get configuring() {
@@ -38,8 +47,13 @@ module.exports = class extends ClientGenerator {
 		return super._default();
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	get writing() {
-		return super._writing();
+		return {
+			writeAdditionalFile() {
+				writeFiles.call(this);
+			},
+		};
 	}
 
 	get install() {
