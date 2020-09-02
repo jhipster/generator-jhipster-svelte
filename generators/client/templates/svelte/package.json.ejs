@@ -6,18 +6,21 @@
 	"license": "UNLICENSED",
 	"scripts": {
 		"prettier:format": "prettier --write \"{,src/**/}*.{md,json,js,svelte,css}\"",
-		"lint": "eslint src/main/webapp",
+		"lint": "eslint <%= CLIENT_MAIN_SRC_DIR %>",
 		"lint:fix": "npm run lint --fix",
 		"cleanup": "rimraf <%= DIST_DIR %>",
 		"start": "run-p \"tailwind:watch\" \"sapper:watch\"",
-		"sapper:watch": "sapper dev --src src/main/webapp/app --routes src/main/webapp/app/routes --static src/main/webapp/static --output src/main/webapp/app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output --port 9000 --open true",
-		"sapper:build": "NODE_ENV=production sapper export <%= DIST_DIR %>  --basepath / --src src/main/webapp/app --routes src/main/webapp/app/routes --static src/main/webapp/static --output src/main/webapp/app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output",
+		"sapper:watch": "sapper dev --src <%= CLIENT_MAIN_SRC_DIR %>/app --routes <%= CLIENT_MAIN_SRC_DIR %>/app/routes --static <%= CLIENT_MAIN_SRC_DIR %>/static --output <%= CLIENT_MAIN_SRC_DIR %>/app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output --port 9000 --open true",
+		"sapper:build": "NODE_ENV=production sapper export <%= DIST_DIR %>  --basepath / --src <%= CLIENT_MAIN_SRC_DIR %>/app --routes <%= CLIENT_MAIN_SRC_DIR %>/app/routes --static <%= CLIENT_MAIN_SRC_DIR %>/static --output <%= CLIENT_MAIN_SRC_DIR %>/app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output",
 		"build:prod": "run-s \"tailwind:build\" \"sapper:build\"",
-		"tailwind:build": "NODE_ENV=production postcss src/main/webapp/tailwind.css -o src/main/webapp/static/vendor.css",
-		"tailwind:watch": "postcss src/main/webapp/tailwind.css -o src/main/webapp/static/vendor.css --w",
+		"tailwind:build": "NODE_ENV=production postcss <%= CLIENT_MAIN_SRC_DIR %>/app/tailwind.css -o <%= CLIENT_MAIN_SRC_DIR %>/static/vendor.css",
+		"tailwind:watch": "postcss <%= CLIENT_MAIN_SRC_DIR %>/app/tailwind.css -o <%= CLIENT_MAIN_SRC_DIR %>/static/vendor.css --w",
 		"cy:run": "cypress run",
 		"cy:open": "cypress open",
-		"test": "run-p --race dev cy:run"
+		"test": "run-p --race dev cy:run",
+		"webpack:build": "npm run build:prod",
+		"webpack:prod": "npm run build:prod",
+		"webpack:test": "npm run lint"
 	},
 	"dependencies": {
 		"compression": "1.7.4",

@@ -1,9 +1,9 @@
 ######################
 # Project Specific
-######################
-/src/main/webapp/content/css/main.css
-/target/classes/static/**
-/src/test/javascript/coverage/
+######################<% if (!skipClient) { %>
+/<%= CLIENT_MAIN_SRC_DIR %>content/css/main.css<% } %>
+/<%= CLIENT_DIST_DIR %>**
+/<%= TEST_DIR %>javascript/coverage/
 
 ######################
 # Node
@@ -37,7 +37,7 @@ local.properties
 .settings/
 .loadpath
 .factorypath
-/src/main/resources/rebel.xml
+/<%= SERVER_MAIN_RES_DIR %>rebel.xml
 
 # External tool builders
 .externalToolBuilders/**
@@ -151,4 +151,4 @@ Desktop.ini
 /cypress/screenshots/
 src/**/__sapper__/
 client_id
-src/main/webapp/static/vendor.css
+/<%= CLIENT_MAIN_SRC_DIR %>static/vendor.css

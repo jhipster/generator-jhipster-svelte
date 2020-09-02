@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const ClientGenerator = require('generator-jhipster/generators/client');
 const writeFiles = require('./files').writeFiles;
+const blueprintPackageJson = require('../../package.json');
 
 module.exports = class extends ClientGenerator {
 	constructor(args, opts) {
@@ -17,9 +18,11 @@ module.exports = class extends ClientGenerator {
 		}
 
 		this.configOptions = jhContext.configOptions || {};
+		this.blueprintjs = blueprintPackageJson;
 		this.clientFramework = this.config.get('clientFramework') || 'svelte';
 		this.clientTheme = this.config.get('clientTheme') || 'none';
 		this.clientThemeVariant = this.config.get('clientThemeVariant') || '';
+
 		// This sets up options for this sub generator and is being reused from JHipster
 		jhContext.setupClientOptions(this, jhContext);
 	}

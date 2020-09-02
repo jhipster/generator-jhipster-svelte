@@ -3,8 +3,8 @@ const constants = require('generator-jhipster/generators/generator-constants');
 
 const FRONTEND_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
-const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes`;
-const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/components`;
+const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/`;
+const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/components/`;
 const CLIENT_TEMPLATES_DIR = 'svelte';
 
 module.exports = {
@@ -15,19 +15,13 @@ const svelteFiles = {
 	base: [
 		{
 			templates: [
-				'.editorconfig',
 				'.eslintignore',
 				'.eslintrc.json',
-				'.gitignore',
-				'.huskyrc.json',
-				'.prettierrc.json',
-				'.prettierignore',
 				'cypress.json',
 				'package.json',
 				'postcss.config.js',
 				'rollup.config.js',
 				'tailwind.config.js',
-				'README.md',
 			],
 		},
 	],
