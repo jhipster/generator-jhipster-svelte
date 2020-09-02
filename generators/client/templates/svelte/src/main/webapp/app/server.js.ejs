@@ -10,13 +10,13 @@ const dev = NODE_ENV === 'development'
 polka() // You can also use Express
 	.use(
 		compression({ threshold: 0 }),
-		sirv('src/main/webapp/static', { dev }),
+		sirv('<%= MAIN_SRC_DIR %>static', { dev }),
 		sapper.middleware()
 	)
 	.use(
 		'/api',
 		createProxyMiddleware({
-			target: 'http://localhost:8080',
+			target: 'http://localhost:<%= serverPort %>',
 			changeOrigin: true,
 		})
 	)
