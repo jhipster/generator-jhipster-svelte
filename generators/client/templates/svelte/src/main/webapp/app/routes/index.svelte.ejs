@@ -1,46 +1,100 @@
-<style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
-	}
-
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-	}
-
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
-</style>
+<script>
+	import AppAvatar from '../components/svg/AppAvatar.svelte'
+</script>
 
 <svelte:head>
-	<title>Sapper customized project template</title>
+	<title>Welcome, Svelte Hipster!</title>
 </svelte:head>
 
-<h1>Great success!!</h1>
+<section class="m-3 bg-white shadow-md rounded p-4">
+	<div
+		class="flex flex-col justify-center items-center sm:flex-row
+			sm:justify-between"
+	>
+		<div
+			class="w-1/2 sm:w-1/4 sm:h-auto sm:px-4 object-cover object-center"
+		>
+			<AppAvatar />
+		</div>
 
-<figure>
-	<img alt='Success Kid' src='successkid.jpg'>
-	<figcaption>Have fun with Sapper!</figcaption>
-</figure>
+		<div class="sm:flex-grow sm:px-4">
+			<h1 class="text-5xl">Welcome, Svelte Hipster!</h1>
 
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+			<p class="text-xl mt-2">This is your homepage</p>
+
+			<div class="mt-4">
+				<!-- <div class="alert alert-success" *ngSwitchCase="true">
+					<span id="home-logged-message" *ngIf="account">You are logged in as user "{{ account.login }}".</span>
+				</div> -->
+
+				<div class="px-5 py-3 bg-orange-200 text-orange-900 rounded">
+					<span>If you want to </span>
+					<a class="font-semibold" href="/login">sign in</a><span>,
+						you can try the default accounts:<br
+						/>- Administrator (login="admin" and password="admin") <br
+						/>- User (login="user" and password="user").</span>
+				</div>
+
+				<div
+					class="px-5 py-3 mt-4 bg-orange-200 text-orange-900 rounded"
+				>
+					<span>You don't have an account yet?</span>&nbsp; <a
+						class="font-semibold"
+						href="/register"
+					>Register a new account</a>
+				</div>
+			</div>
+
+			<p class="mt-4">If you have any question on JHipster:</p>
+
+			<ul class="mt-4 pl-10 list-disc text-orange-900 font-semibold">
+				<li>
+					<a
+						href="https://www.jhipster.tech/"
+						target="_blank"
+						rel="noopener noreferrer"
+					>JHipster homepage</a>
+				</li>
+				<li>
+					<a
+						href="https://stackoverflow.com/tags/jhipster/info"
+						target="_blank"
+						rel="noopener noreferrer"
+					>JHipster on Stack Overflow</a>
+				</li>
+				<li>
+					<a
+						href="https://github.com/jhipster/generator-jhipster-svelte/issues?state=open"
+						target="_blank"
+						rel="noopener noreferrer"
+					>JHipster Svelte bug tracker</a>
+				</li>
+				<li>
+					<a
+						href="https://gitter.im/jhipster/generator-jhipster"
+						target="_blank"
+						rel="noopener noreferrer"
+					>JHipster public chat room</a>
+				</li>
+				<li>
+					<a
+						href="https://twitter.com/jhipster"
+						target="_blank"
+						rel="noopener noreferrer"
+					>follow @jhipster on Twitter</a>
+				</li>
+			</ul>
+
+			<p class="mt-4">
+				<span>If you like JHipster Svelte, don't forget to give us a
+					star on</span>
+				<a
+					class="font-semibold text-orange-900"
+					href="https://github.com/jhipster/generator-jhipster-svelte"
+					target="_blank"
+					rel="noopener noreferrer"
+				>GitHub</a>!
+			</p>
+		</div>
+	</div>
+</section>

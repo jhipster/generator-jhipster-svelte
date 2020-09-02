@@ -1,0 +1,23 @@
+<script>
+	import Icon from 'fa-svelte'
+	import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+</script>
+
+<footer
+	class="flex flex-col justify-between items-center sm:flex-row bg-gray-200
+		p-3"
+>
+	<div class="text-sm">
+		<p>Copyright &copy; 2020 JHipster. All Rights Reserved</p>
+	</div>
+	<div class="text-base mt-1">
+		<p>
+			Made with
+			<Icon
+				class="inline-block h-4 text-red-700 fill-current"
+				icon="{faHeart}"
+			/>
+			by <a href="https://twitter.com/vishal423" target="tab" class="text-yellow-800">@vishal423</a>
+		</p>
+	</div>
+</footer>

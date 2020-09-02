@@ -3,6 +3,8 @@ const constants = require('generator-jhipster/generators/generator-constants');
 
 const FRONTEND_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
+const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes`;
+const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/components`;
 const CLIENT_TEMPLATES_DIR = 'svelte';
 
 module.exports = {
@@ -13,17 +15,19 @@ const svelteFiles = {
 	base: [
 		{
 			templates: [
-				'rollup.config.js',
-				'README.md',
-				'package.json',
-				'cypress.json',
+				'.editorconfig',
+				'.eslintignore',
+				'.eslintrc.json',
+				'.gitignore',
+				'.huskyrc.json',
 				'.prettierrc.json',
 				'.prettierignore',
-				'.huskyrc.json',
-				'.gitignore',
-				'.eslintrc.json',
-				'.eslintignore',
-				'.editorconfig',
+				'cypress.json',
+				'package.json',
+				'postcss.config.js',
+				'rollup.config.js',
+				'tailwind.config.js',
+				'README.md',
 			],
 		},
 	],
@@ -61,16 +65,23 @@ const svelteFiles = {
 	app: [
 		{
 			path: FRONTEND_APP_DIR,
+			templates: ['client.js', 'server.js', 'service-worker.js', 'tailwind.css', 'template.html'],
+		},
+	],
+	routes: [
+		{
+			path: FRONTEND_ROUTES_DIR,
+			templates: ['_error.svelte', '_layout.svelte', 'index.svelte'],
+		},
+	],
+	components: [
+		{
+			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
-				'template.html',
-				'service-worker.js',
-				'server.js',
-				'client.js',
-				'routes/_error.svelte',
-				'routes/_layout.svelte',
-				'routes/about.svelte',
-				'routes/index.svelte',
-				'components/Nav.svelte',
+				'layout/Footer.svelte',
+				'layout/Navbar.svelte',
+				'layout/NavItem.svelte',
+				'svg/AppAvatar.svelte',
 			],
 		},
 	],
