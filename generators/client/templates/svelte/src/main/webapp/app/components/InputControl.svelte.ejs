@@ -1,0 +1,43 @@
+<script>
+	export let value = ''
+	export let type = 'text'
+	export let name
+	export let label
+
+	let focused = false
+	$: focusedOrContainsValue = value !== '' || focused
+</script>
+
+<div class="mt-4 relative">
+	<label
+		class="absolute left-0 px-1 ml-2 transition-all duration-200
+			pointer-events-none"
+		class:-mt-2="{focusedOrContainsValue}"
+		class:z-20="{focusedOrContainsValue}"
+		class:bg-white="{focusedOrContainsValue}"
+		class:top-0="{focusedOrContainsValue}"
+		class:pt-3="{!focusedOrContainsValue}"
+		class:pt-0="{focusedOrContainsValue}"
+		class:text-xs="{focusedOrContainsValue}"
+		class:text-gray-600="{!focused}"
+		class:text-blue-700="{focused}"
+		for="{name}"
+	>{label}
+	</label>
+	<input
+		class="px-3 py-3 w-full shadow-none border-gray-400
+			focus:border-blue-600 rounded z-10"
+		class:border="{!focused}"
+		class:border-2="{focused}"
+		type="{type}"
+		name="{name}"
+		value="{value}"
+		on:input
+		on:focus="{() => (focused = true)}"
+		on:blur="{() => (focused = false)}"
+		{...$$restProps}
+	/>
+</div>
+<div class="flex flex-col px-3 text-xs text-red-600">
+	<slot>&nbsp;</slot>
+</div>
