@@ -9,7 +9,7 @@
 		"lint": "eslint <%= CLIENT_MAIN_SRC_DIR %>",
 		"lint:fix": "npm run lint --fix",
 		"cleanup": "rimraf <%= DIST_DIR %>",
-		"start": "run-p \"tailwind:watch\" \"sapper:watch\"",
+		"start": "run-s \"tailwind:build\" \"sapper:watch\"",
 		"sapper:watch": "sapper dev --src <%= CLIENT_MAIN_SRC_DIR %>app --routes <%= CLIENT_MAIN_SRC_DIR %>app/routes --static <%= CLIENT_MAIN_SRC_DIR %>static --output <%= CLIENT_MAIN_SRC_DIR %>app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output --port 9000 --open true",
 		"sapper:build": "sapper export <%= DIST_DIR %>  --basepath / --src <%= CLIENT_MAIN_SRC_DIR %>app --routes <%= CLIENT_MAIN_SRC_DIR %>app/routes --static <%= CLIENT_MAIN_SRC_DIR %>static --output <%= CLIENT_MAIN_SRC_DIR %>app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output",
 		"tailwind:build": "postcss <%= CLIENT_MAIN_SRC_DIR %>app/tailwind.css -o <%= CLIENT_MAIN_SRC_DIR %>static/vendor.css",
@@ -18,7 +18,7 @@
 		"cy:open": "cypress open",
 		"test": "run-p --race dev cy:run",
 		"webpack:build": "NODE_ENV=development run-s \"tailwind:build\" \"sapper:build\"",
-		"webpack:prod": "NODE_ENV=production npm run webpack:build",
+		"webpack:prod": "NODE_ENV=production run-s \"tailwind:build\" \"sapper:build\"",
 		"webpack:test": "npm run lint"
 	},
 	"dependencies": {

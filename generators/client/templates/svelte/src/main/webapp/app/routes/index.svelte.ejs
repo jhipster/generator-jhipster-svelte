@@ -1,4 +1,5 @@
 <script>
+	import auth from '../components/auth/auth-store.js'
 	import AppAvatar from '../components/svg/AppAvatar.svelte'
 </script>
 
@@ -23,26 +24,32 @@
 			<p class="text-xl mt-2">This is your homepage</p>
 
 			<div class="mt-4">
-				<!-- <div class="alert alert-success" *ngSwitchCase="true">
-					<span id="home-logged-message" *ngIf="account">You are logged in as user "{{ account.login }}".</span>
-				</div> -->
+				{#if $auth}
+					<div class="px-5 py-3 bg-green-200 text-green-900 rounded">
+						<span>You are logged in as user "{$auth.login}".</span>
+					</div>
+				{:else}
+					<div
+						class="px-5 py-3 bg-orange-200 text-orange-900 rounded"
+					>
+						<span>If you want to </span>
+						<a class="font-semibold" href="/login">sign in</a><span>,
+							you can try the default accounts:<br
+							/>- Administrator (login="admin" and
+							password="admin") <br
+							/>- User (login="user" and password="user").</span>
+					</div>
 
-				<div class="px-5 py-3 bg-orange-200 text-orange-900 rounded">
-					<span>If you want to </span>
-					<a class="font-semibold" href="/login">sign in</a><span>,
-						you can try the default accounts:<br
-						/>- Administrator (login="admin" and password="admin") <br
-						/>- User (login="user" and password="user").</span>
-				</div>
-
-				<div
-					class="px-5 py-3 mt-4 bg-orange-200 text-orange-900 rounded"
-				>
-					<span>You don't have an account yet?</span>&nbsp; <a
-						class="font-semibold"
-						href="/register"
-					>Register a new account</a>
-				</div>
+					<div
+						class="px-5 py-3 mt-4 bg-orange-200 text-orange-900
+							rounded"
+					>
+						<span>You don't have an account yet?</span>&nbsp; <a
+							class="font-semibold"
+							href="/register"
+						>Register a new account</a>
+					</div>
+				{/if}
 			</div>
 
 			<p class="mt-4">If you have any question on JHipster:</p>

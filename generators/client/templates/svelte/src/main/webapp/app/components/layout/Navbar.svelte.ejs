@@ -4,7 +4,9 @@
 	import { faHome } from '@fortawesome/free-solid-svg-icons/faHome'
 	import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
 	import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
+
 	import NavItem from './NavItem.svelte'
+	import auth from '../auth/auth-store.js'
 
 	let isToolbarOpen = false
 
@@ -48,21 +50,23 @@
 				route="/"
 			/>
 		</div>
-		<div class="sm:ml-4">
-			<NavItem
-				on:click="{toggleToolbar}"
-				label="Sign in"
-				icon="{faSignInAlt}"
-				route="/login"
-			/>
-		</div>
-		<div class="sm:ml-4 pb-3 sm:pb-0">
-			<NavItem
-				on:click="{toggleToolbar}"
-				label="Register"
-				icon="{faUserPlus}"
-				route="/register"
-			/>
-		</div>
+		{#if !$auth}
+			<div class="sm:ml-4">
+				<NavItem
+					on:click="{toggleToolbar}"
+					label="Sign in"
+					icon="{faSignInAlt}"
+					route="/login"
+				/>
+			</div>
+			<div class="sm:ml-4 pb-3 sm:pb-0">
+				<NavItem
+					on:click="{toggleToolbar}"
+					label="Sign up"
+					icon="{faUserPlus}"
+					route="/register"
+				/>
+			</div>
+		{/if}
 	</div>
 </header>
