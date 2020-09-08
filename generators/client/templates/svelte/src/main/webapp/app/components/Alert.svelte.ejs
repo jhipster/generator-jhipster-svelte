@@ -1,0 +1,25 @@
+<script>
+	export let show = false
+	export let type = 'success'
+
+	function closeAlert() {
+		show = false
+	}
+</script>
+
+<div
+	class:hidden="{!show}"
+	class:bg-red-200="{type === 'danger'}"
+	class:text-red-900="{type === 'danger'}"
+	class="px-7 py-3 mt-4 flex justify-between rounded text-sm"
+>
+	<div>
+		<slot />
+	</div>
+	<button
+		class:hover:text-red-700="{type === 'danger'}"
+		class="self-start text-xl leading-4 bg-transparent border-0
+			focus:outline-none"
+		on:click="{closeAlert}"
+	>&times</button>
+</div>

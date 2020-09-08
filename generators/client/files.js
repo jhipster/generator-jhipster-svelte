@@ -59,23 +59,34 @@ const svelteFiles = {
 	app: [
 		{
 			path: FRONTEND_APP_DIR,
-			templates: ['client.js', 'server.js', 'service-worker.js', 'tailwind.css', 'template.html'],
+			templates: [
+				'client.js',
+				'server.js',
+				'service-worker.js',
+				'tailwind.css',
+				'template.html',
+				'utils/env.js',
+				'utils/request.js',
+			],
 		},
 	],
 	routes: [
 		{
 			path: FRONTEND_ROUTES_DIR,
-			templates: ['_error.svelte', '_layout.svelte', 'index.svelte'],
+			templates: ['_error.svelte', '_layout.svelte', 'index.svelte', 'login.svelte'],
 		},
 	],
 	components: [
 		{
 			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
+				'auth/auth-service.js',
+				'auth/auth-store.js',
 				'layout/Footer.svelte',
 				'layout/Navbar.svelte',
 				'layout/NavItem.svelte',
 				'svg/AppAvatar.svelte',
+				'svg/AppLogo.svelte',
 			],
 		},
 	],

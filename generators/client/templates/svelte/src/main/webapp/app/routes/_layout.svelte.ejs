@@ -1,15 +1,38 @@
 <script>
+	import { goto, stores } from '@sapper/app'
+
+	import auth from '../components/auth/auth-store.js'
 	import Navbar from '../components/layout/Navbar.svelte'
 	import Footer from '../components/layout/Footer.svelte'
+
+	const { page } = stores()
+
+	function loadUserDetails() {
+		return process.browser && auth.loadUser()
+	}
+
+	$: isLoginRouteActivated = $page && $page.path && $page.path === '/login'
+	$: isUnprotectedRouteActivated =
+		$page && $page.path && $page.path === '/login'
 </script>
 
-<div
-	class="flex flex-col text-gray-900 bg-gray-100 antialiased min-h-screen
-		font-sans"
->
-	<Navbar />
-	<main class="flex-grow">
-		<slot />
-	</main>
-	<Footer />
-</div>
+{#await loadUserDetails() then response}
+	{#if $auth && isUnprotectedRouteActivated}
+		{goto('/')}
+	{:else}
+		<div
+			class="flex flex-col text-gray-900 bg-gray-100 antialiased
+				min-h-screen font-sans"
+		>
+			<div class:hidden="{isLoginRouteActivated}">
+				<Navbar />
+			</div>
+			<main class="flex-grow">
+				<slot />
+			</main>
+			<div class:hidden="{isLoginRouteActivated}">
+				<Footer />
+			</div>
+		</div>
+	{/if}
+{/await}
