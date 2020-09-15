@@ -6,15 +6,19 @@
 
 :construction: Under active development
 
-<div align="center" style="display:flex; align-items:center; max-height: 10rem; margin: auto 10%" >
-  <a href="https://www.jhipster.tech/">
-    <img style="max-height:100px;"  src="https://github.com/jhipster/jhipster-artwork/blob/master/logos/JHipster%20RGB-small100x25px.png?raw=true">
+<p align="center" valign="middle" height="100%">
+  <a href="https://www.jhipster.tech/" target="_blank">
+    <img alt="JHipster"  width="25%" src="https://github.com/jhipster/jhipster-artwork/blob/master/logos/JHipster%20RGB-small100x25px.png?raw=true">
   </a>
-  <p style="padding: 1rem; font-size: 3rem; color: #3E8ACC;" >+</p>
-  <a href="https://svelte.dev">
-    <img style="max-height:100px;" src="https://svelte.dev/svelte-logo-horizontal.svg">
+	:heart:
+  <a href="https://svelte.dev" target="_blank">
+    <img alt="Svelte JS" width="25%" src="https://svelte.dev/svelte-logo-horizontal.svg">
   </a>
-</div>
+  :heart:
+  <a href="https://tailwindcss.com/" target="_blank">
+    <img alt="Tailwind CSS" width="25%" src="https://refactoringui.nyc3.cdn.digitaloceanspaces.com/tailwind-logo.svg">
+  </a><br>
+</p>
 
 ## Introduction
 
