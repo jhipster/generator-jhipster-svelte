@@ -80,8 +80,11 @@ const svelteFiles = {
 		{
 			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
+				'Alert.svelte',
+				'InputControl.svelte',
 				'auth/auth-service.js',
 				'auth/auth-store.js',
+				'layout/AccountMenu.svelte',
 				'layout/Footer.svelte',
 				'layout/Navbar.svelte',
 				'layout/NavItem.svelte',
