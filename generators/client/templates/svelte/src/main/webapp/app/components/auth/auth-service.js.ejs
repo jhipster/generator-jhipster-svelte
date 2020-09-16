@@ -35,4 +35,16 @@ export default {
 				return Promise.reject(err)
 			})
 	},
+	logout: () => {
+		return fetch(`${serverUrl}api/logout`, prepareRequest('POST'))
+			.then(response => {
+				if (response.ok) {
+					return Promise.resolve()
+				}
+				return Promise.reject(response.err)
+			})
+			.catch(err => {
+				return Promise.reject(err)
+			})
+	},
 }
