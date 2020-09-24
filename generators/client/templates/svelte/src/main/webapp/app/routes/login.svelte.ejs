@@ -12,16 +12,19 @@
 	let password
 	let rememberMe = false
 	let authError = false
+	let validUsername = false
+	let validPassword = false
+
+	$: validForm = validUsername && validPassword;
 
 	function login() {
 		authError = false
 
 		authService
 			.login(username, password, rememberMe)
-			.then(response => auth.loadUser())
+			.then(() => auth.loadUser())
 			.then(() => goto('/'))
-			.catch(err => (authError = true))
-		password = ''
+			.catch(() => (password = '', authError = true))
 	}
 </script>
 
@@ -48,6 +51,11 @@
 				name="username"
 				value="{username}"
 				on:input="{event => (username = event.target.value)}"
+				required
+				validations={[
+					{type: 'required', message: 'Username is mandatory'}
+				]}
+				on:validate={(event) => validUsername = event.detail.valid}
 			/>
 
 			<InputControl
@@ -57,6 +65,10 @@
 				value="{password}"
 				on:input="{event => (password = event.target.value)}"
 				required
+				validations={[
+					{type: 'required', message: 'Password is mandatory'}
+				]}
+				on:validate={(event) => validPassword = event.detail.valid}
 			/>
 
 			<div class="mt-2">
@@ -74,6 +86,7 @@
 				type="submit"
 				on:click|preventDefault="{login}"
 				class="my-4 w-32 m-auto btn btn-primary"
+				disabled="{!validForm}"
 			>Sign in</button>
 		</form>
 

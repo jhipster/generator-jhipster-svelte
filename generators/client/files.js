@@ -67,6 +67,7 @@ const svelteFiles = {
 				'template.html',
 				'utils/env.js',
 				'utils/request.js',
+				'utils/validator.js',
 			],
 		},
 	],
