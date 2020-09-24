@@ -1,0 +1,67 @@
+export default function validate(node, validations) {
+	const validator = createValidator(validations)
+	function validateField(event) {
+		if (node && event.target) {
+			node.dispatchEvent(
+				new CustomEvent('validation', {
+					detail: { ...validator(event.target.value), dirty: true },
+				})
+			)
+		}
+	}
+
+	node.addEventListener('input', validateField)
+
+	return {
+		destroy() {
+			node.removeEventListener('input', validateField)
+		},
+	}
+}
+
+function createValidator(validations) {
+	return function validate(value) {
+		if (!validations || validations.length === 0) {
+			return { valid: true }
+		}
+
+		const valiators = validations.map(validation => {
+			const { type, ...validationArgs } = validation
+			switch (type) {
+				case 'required':
+					return required(validationArgs)
+				case 'minlength':
+					return minlength(validationArgs)
+				default:
+					throw new Error(`Invalid validation type ${type}`)
+			}
+		})
+
+		const failed = valiators.find(v => v(value) !== undefined)
+		return {
+			valid: !failed,
+			message: failed && failed(value),
+		}
+	}
+}
+
+function required(validationArgs) {
+	const { message } = validationArgs
+	return function required(value) {
+		if (value === undefined || value === null || value.trim() === '') {
+			return message || 'This field is required'
+		}
+	}
+}
+
+function minlength(validationArgs) {
+	const { message, min } = validationArgs
+	return function minlength(value) {
+		if (value.trim().length < min) {
+			return (
+				message ||
+				`The field value should be greater than ${min} characters`
+			)
+		}
+	}
+}

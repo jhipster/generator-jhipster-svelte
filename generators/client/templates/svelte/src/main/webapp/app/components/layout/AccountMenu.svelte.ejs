@@ -3,7 +3,6 @@
 	import { goto } from '@sapper/app'
 	import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
-	import { faCaretUp } from '@fortawesome/free-solid-svg-icons/faCaretUp'
 	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 
 	import auth from '../auth/auth-store.js'
@@ -39,10 +38,7 @@
 			<Icon class="fa-icon" icon="{faUser}" />
 			<span class="sm:hidden">{$auth.login}</span>
 			<span class="sm:absolute sm:ml-12">
-				<Icon
-					class="fa-icon"
-					icon="{isOpen ? faCaretUp : faCaretDown}"
-				/>
+				<Icon class="fa-icon" icon="{faCaretDown}" />
 			</span>
 		</button>
 	</div>

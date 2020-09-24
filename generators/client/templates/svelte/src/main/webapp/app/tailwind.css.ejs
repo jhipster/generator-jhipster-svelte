@@ -13,8 +13,13 @@
 	@apply bg-blue-500 text-white;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
 	@apply bg-blue-700;
 }
+
+.btn-primary:disabled {
+	@apply bg-blue-400 opacity-75 pointer-events-none;
+}
+
 
 @tailwind utilities;
