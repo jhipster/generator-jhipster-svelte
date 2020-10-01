@@ -74,7 +74,14 @@ const svelteFiles = {
 	routes: [
 		{
 			path: FRONTEND_ROUTES_DIR,
-			templates: ['_error.svelte', '_layout.svelte', 'index.svelte', 'login.svelte', 'account/register.svelte'],
+			templates: [
+				'_error.svelte',
+				'_layout.svelte',
+				'index.svelte',
+				'login.svelte',
+				'account/register.svelte',
+				'account/activate.svelte',
+			],
 		},
 	],
 	components: [
