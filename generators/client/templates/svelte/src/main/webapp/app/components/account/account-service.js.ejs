@@ -38,4 +38,19 @@ export default {
 				return Promise.reject(err)
 			})
 	},
+	resetAccountPassword: email => {
+		return fetch(
+			`${serverUrl}api/account/reset-password/init`,
+			prepareRequest('POST', email)
+		)
+			.then(response => {
+				if (response.ok) {
+					return Promise.resolve()
+				}
+				return response.json().then(Promise.reject.bind(Promise))
+			})
+			.catch(err => {
+				return Promise.reject(err)
+			})
+	},
 }
