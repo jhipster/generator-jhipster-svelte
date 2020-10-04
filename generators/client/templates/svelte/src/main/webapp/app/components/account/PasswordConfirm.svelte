@@ -1,0 +1,77 @@
+<script>
+	import { createEventDispatcher } from 'svelte'
+	import Icon from 'fa-svelte'
+	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle'
+
+	import InputControl from '../InputControl.svelte'
+
+	export let label='Password';
+	export let value = '';
+	const dispatch = createEventDispatcher()
+
+	let confirmPassword
+
+	let validPassword = false
+	let validConfirmPassword = false
+
+	$: confirmPasswordMismatch =
+		validConfirmPassword && value !== confirmPassword
+
+	function handlePassword(event) {
+		value = event.target.value
+		dispatch('input', {value})
+	}
+
+	function handlePasswordValidation(event) {
+		validPassword = event.detail.valid
+		dispatch('validate', {'valid' : isValid()})
+	}
+
+	function handleConfirmPasswordValidation(event) {
+		validConfirmPassword = event.detail.valid
+		dispatch('validate', {'valid' : isValid()})
+	}
+	function isValid() {
+		return validPassword && validConfirmPassword && value === confirmPassword;
+	}
+</script>
+
+<InputControl
+	type="password"
+	label="{label}"
+	name="password"
+	value="{value}"
+	on:input="{handlePassword}"
+	required
+	validations="{[{ type: 'required', message: 'Password is mandatory' }, { type: 'minlength', minlength: 4, message: 'Password is required to be at least 4 characters' }, { type: 'maxlength', maxlength: 50, message: 'Password cannot be longer than 50 characters' }]}"
+	on:validate="{handlePasswordValidation}"
+/>
+<InputControl
+	type="password"
+	label="Confirm Password"
+	name="confirmPassword"
+	value="{confirmPassword}"
+	on:input="{event => (confirmPassword = event.target.value)}"
+	required
+	validations="{[{ type: 'required', message: 'Password is mandatory' }, { type: 'minlength', minlength: 4, message: 'Password is required to be at least 4 characters' }, { type: 'maxlength', maxlength: 50, message: 'Password cannot be longer than 50 characters' }]}"
+	on:validate="{handleConfirmPasswordValidation}"
+	let:message
+	let:dirty
+	let:valid
+>
+	<div class="flex items-center">
+		{#if confirmPasswordMismatch}
+			<Icon
+				class="fa-icon mr-2"
+				icon="{faExclamationCircle}"
+			/>
+			Password and its confirmation do not match
+		{:else if dirty && !valid}
+			<Icon
+				class="fa-icon mr-2"
+				icon="{faExclamationCircle}"
+			/>
+			{message}
+		{:else}&nbsp;{/if}
+	</div>
+</InputControl>

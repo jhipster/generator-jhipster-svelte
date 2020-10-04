@@ -1,26 +1,21 @@
 <script>
-	import Icon from 'fa-svelte'
-	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle'
-
 	import Alert from './../../components/Alert.svelte'
 	import InputControl from '../../components/InputControl.svelte'
 	import accountService from './../../components/account/account-service'
+	import PasswordConfirm from './../../components/account/PasswordConfirm.svelte'
 	import { problemBaseUrl } from './../../utils/env'
 
 	let username
 	let email
 	let password
-	let confirmPassword
 	let validUsername = false
 	let validEmail = false
 	let validPassword = false
-	let validConfirmPassword = false
 
 	let error
 	let accountCreated = false
 
-	$: validForm = validUsername && validEmail && validPassword && validConfirmPassword && !confirmPasswordMismatch
-	$: confirmPasswordMismatch = validConfirmPassword && password !== confirmPassword
+	$: validForm = validUsername && validEmail && validPassword
 
 	function createUserAccount() {
 		error = undefined
@@ -30,7 +25,6 @@
 			.then(() => accountCreated = true)
 			.catch((err) => {
 				password = ''
-				confirmPassword = ''
 				if(err && err.type) {
 					if(err.type === (problemBaseUrl + '/email-already-used')) {
 						error = 'duplicateEmail'
@@ -100,49 +94,12 @@
 					on:validate="{event => (validEmail = event.detail.valid)}"
 				/>
 
-				<InputControl
-					type="password"
+				<PasswordConfirm
 					label="Password"
-					name="password"
 					value="{password}"
-					on:input="{event => (password = event.target.value)}"
-					required
-					validations="{[
-						{ type: 'required', message: 'Password is mandatory' },
-						{ type: 'minlength', minlength: 4, message: 'Password is required to be at least 4 characters' },
-						{ type: 'maxlength', maxlength: 50, message: 'Password cannot be longer than 50 characters' }
-						]}"
+					on:input={event => password = event.detail.value}
 					on:validate="{event => (validPassword = event.detail.valid)}"
 				/>
-				<InputControl
-					type="password"
-					label="Confirm Password"
-					name="confirmPassword"
-					value="{confirmPassword}"
-					on:input="{event => (confirmPassword = event.target.value)}"
-					required
-					validations="{[
-						{ type: 'required', message: 'Password is mandatory' },
-						{ type: 'minlength', minlength: 4, message: 'Password is required to be at least 4 characters' },
-						{ type: 'maxlength', maxlength: 50, message: 'Password cannot be longer than 50 characters' }
-						]}"
-					on:validate="{event => (validConfirmPassword = event.detail.valid)}"
-					let:message={message}
-					let:dirty={dirty}
-					let:valid={valid}
-				>
-				<div class="flex items-center">
-					{#if confirmPasswordMismatch}
-						<Icon class="fa-icon mr-2" icon="{faExclamationCircle}" />
-						Password and its confirmation do not match
-					{:else if dirty && !valid}
-						<Icon class="fa-icon mr-2" icon="{faExclamationCircle}" />
-						{message}
-					{:else}
-						&nbsp;
-					{/if}
-				</div>
-			</InputControl>
 
 				<button
 					type="submit"
