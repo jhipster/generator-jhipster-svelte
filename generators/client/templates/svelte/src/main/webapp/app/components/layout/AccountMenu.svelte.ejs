@@ -2,6 +2,7 @@
 	import Icon from 'fa-svelte'
 	import { goto } from '@sapper/app'
 	import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
+	import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
 	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 
@@ -22,7 +23,7 @@
 	}
 </script>
 
-<div class="px-2 pt-2 pb-4 sm:p-0 relative sm:flex sm:mr-2">
+<div class="px-2 pt-2 pb-4 sm:p-0 relative sm:flex sm:mr-2 sm:z-10">
 	<div
 		class="px-2 py-1 sm:py-0 flex justify-start items-center rounded
 			sm:rounded-none font-semibold hover:text-white hover:bg-gray-700
@@ -52,9 +53,17 @@
 	{/if}
 	<div
 		class:hidden="{!isOpen}"
-		class="sm:absolute sm:right-0 sm:mt-10 sm:w-40 py-2 sm:bg-white rounded
+		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white rounded
 			sm:rounded-lg sm:shadow-lg"
 	>
+		<a
+			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
+				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
+				sm:text-gray-800 sm:hover:bg-indigo-500"
+			href="/account/password"
+			on:click="{() => (isOpen = false)}"
+		><Icon class="fa-icon sm:mr-1" icon="{faLock}" />
+			Change Password</a>
 		<a
 			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
 				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
