@@ -19,7 +19,6 @@ module.exports = class extends ClientGenerator {
 
 		this.configOptions = jhContext.configOptions || {};
 		this.blueprintjs = blueprintPackageJson;
-		this.clientFramework = this.config.get('clientFramework') || 'svelte';
 		this.clientTheme = this.config.get('clientTheme') || 'none';
 		this.clientThemeVariant = this.config.get('clientThemeVariant') || '';
 
@@ -33,12 +32,13 @@ module.exports = class extends ClientGenerator {
 
 	// eslint-disable-next-line class-methods-use-this
 	get prompting() {
+		this.jhipsterConfig.clientFramework = this.configOptions.clientFramework = this.clientFramework = 'svelte';
+		this.jhipsterConfig.clientTheme = this.configOptions.clientTheme = this.clientTheme;
+		this.jhipsterConfig.clientThemeVariant = this.configOptions.clientThemeVariant = this.clientThemeVariant;
 		return {
-			setSharedConfigOptions() {
-				this.configOptions.clientFramework = this.clientFramework;
-				this.configOptions.clientTheme = this.clientTheme;
-				this.configOptions.clientThemeVariant = this.clientThemeVariant;
-			},
+			askForClient: undefined,
+			askForClientTheme: undefined,
+			askForClientThemeVariant: undefined,
 		};
 	}
 
