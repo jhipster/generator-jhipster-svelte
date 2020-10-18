@@ -102,8 +102,6 @@ const svelteFiles = {
 				'layout/Footer.svelte',
 				'layout/Navbar.svelte',
 				'layout/NavItem.svelte',
-				// 'svg/AppAvatar.svelte',
-				// 'svg/AppLogo.svelte',
 			],
 		},
 	],
