@@ -17,11 +17,11 @@ module.exports = class extends ClientGenerator {
 			);
 		}
 
+		this.hipster = this.getHipster(this.baseName);
 		this.configOptions = jhContext.configOptions || {};
 		this.blueprintjs = blueprintPackageJson;
 		this.clientTheme = this.config.get('clientTheme') || 'none';
 		this.clientThemeVariant = this.config.get('clientThemeVariant') || '';
-
 		// This sets up options for this sub generator and is being reused from JHipster
 		jhContext.setupClientOptions(this, jhContext);
 	}
