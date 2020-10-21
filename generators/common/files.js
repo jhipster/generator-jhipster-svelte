@@ -17,27 +17,53 @@
  * limitations under the License.
  */
 
+const prettierConfigFiles = {
+	global: [
+		{
+			templates: ['.prettierrc.yml', '.prettierignore'],
+		},
+	],
+};
+
 const commonFiles = {
 	global: [
 		{
+			templates: ['.editorconfig', '.gitignore', 'README.md', 'src/main/resources/banner.txt'],
+		},
+	],
+	commitHooks: [
+		{
+			condition: generator => !generator.skipCommitHook,
+			templates: ['.huskyrc'],
+		},
+	],
+};
+const sharedFiles = {
+	global: [
+		{
 			templates: [
-				'.prettierrc', // this needs to be the first file for prettier transform to work
-				'.editorconfig',
-				'.gitignore',
-				'.huskyrc',
-				'README.md',
-				'src/main/resources/banner.txt',
+				{
+					file: 'gitattributes',
+					renameTo: () => '.gitattributes',
+					method: 'copy',
+				},
+
+				'sonar-project.properties',
 			],
 		},
 	],
 };
 
 function writeFiles() {
-	this.fs.delete('.lintstagedrc.js');
 	this.writeFilesToDisk(commonFiles, this, false);
+}
+
+function writeMainGeneratorFiles() {
+	this.writeFilesToDisk(sharedFiles, this, false, this.fetchFromInstalledJHipster('common/templates'));
 }
 
 module.exports = {
 	writeFiles,
-	commonFiles,
+	writeMainGeneratorFiles,
+	prettierConfigFiles,
 };
