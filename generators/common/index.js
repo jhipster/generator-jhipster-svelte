@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 const CommonGenerator = require('generator-jhipster/generators/common');
-const writeFiles = require('./files').writeFiles;
+const { writeFiles, writeMainGeneratorFiles, prettierConfigFiles } = require('./files');
 
 module.exports = class extends CommonGenerator {
 	constructor(args, opts) {
@@ -29,18 +29,32 @@ module.exports = class extends CommonGenerator {
 		return super._initializing();
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	get default() {
-		// Here we are not overriding this phase and hence its being handled by JHipster
-		return super._default();
+		return {
+			writePrettierConfig() {
+				// Prettier configuration needs to be the first written files - all subgenerators considered - for prettier transform to work
+				this.writeFilesToDisk(prettierConfigFiles, this, false);
+			},
+		};
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	get writing() {
-		const phaseFromJHipster = super._writing();
-		const customPhaseSteps = {
+		return {
+			getSharedConfigOptions() {
+				this.jhipsterVersion = this.config.get('jhipsterVersion');
+				this.applicationType = this.config.get('applicationType') || this.configOptions.applicationType;
+				this.enableSwaggerCodegen = this.configOptions.enableSwaggerCodegen;
+				this.serverPort = this.configOptions.serverPort;
+				this.clientFramework = this.configOptions.clientFramework;
+				this.protractorTests = this.testFrameworks.includes('protractor');
+				this.gatlingTests = this.testFrameworks.includes('gatling');
+			},
 			writeAdditionalFile() {
+				writeMainGeneratorFiles.call(this);
 				writeFiles.call(this);
 			},
 		};
-		return Object.assign(phaseFromJHipster, customPhaseSteps);
 	}
 };

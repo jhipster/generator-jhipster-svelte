@@ -32,9 +32,6 @@ module.exports = class extends ClientGenerator {
 
 	// eslint-disable-next-line class-methods-use-this
 	get prompting() {
-		this.jhipsterConfig.clientFramework = this.configOptions.clientFramework = this.clientFramework = 'svelte';
-		this.jhipsterConfig.clientTheme = this.configOptions.clientTheme = this.clientTheme;
-		this.jhipsterConfig.clientThemeVariant = this.configOptions.clientThemeVariant = this.clientThemeVariant;
 		return {
 			askForClient: undefined,
 			askForClientTheme: undefined,
@@ -43,7 +40,15 @@ module.exports = class extends ClientGenerator {
 	}
 
 	get configuring() {
-		return super._configuring();
+		const jhipsterDefault = super._configuring();
+		return {
+			overrideConfigOptions() {
+				this.clientFramework = 'svelte';
+				this.clientTheme = 'none';
+				this.clientThemeVariant = '';
+			},
+			...jhipsterDefault,
+		};
 	}
 
 	get default() {

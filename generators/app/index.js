@@ -86,8 +86,6 @@ module.exports = class extends AppGenerator {
 
 	get prompting() {
 		const defaultPhaseFromJHipster = super._prompting();
-		this.configOptions.enableTranslation = this.enableTranslation = this.jhipsterConfig.enableTranslation = false;
-
 		return {
 			...defaultPhaseFromJHipster,
 			askForApplicationType: prompts.askForApplicationType,
@@ -106,6 +104,9 @@ module.exports = class extends AppGenerator {
 	get default() {
 		const jhipsterDefault = super._default();
 		return {
+			overrideAppOptions() {
+				this.enableTranslation = false;
+			},
 			...jhipsterDefault,
 			askForTestOpts: prompts.askForTestOpts,
 		};
