@@ -50,6 +50,41 @@ To use the blueprint, run the below command:
 jhipster --blueprints svelte
 ```
 
+## Using Docker
+
+Download the Dockerfile:
+
+```bash
+mkdir docker
+cd docker
+wget https://github.com/jhipster/generator-jhipster-svelte/raw/master/docker/Dockerfile
+```
+
+Build the Docker images:
+
+```bash
+docker build -t jhipster-generator-svelte:latest .
+```
+
+Make a folder where you want to generate the Service:
+
+```bash
+mkdir service
+cd service
+```
+
+Run the generator from image to generate service:
+
+```bash
+docker run -it --rm -v $PWD:/home/jhipster/app jhipster-generator-svelte
+```
+
+Run and attach interactive shell to the generator docker container to work from inside the running container:
+
+```bash
+docker run -it --rm -v $PWD:/home/khipster/app jhipster-generator-svelte /bin/bash
+```
+
 ## :hammer_and_wrench: Development
 
 To setup your development environment, follow below steps:
