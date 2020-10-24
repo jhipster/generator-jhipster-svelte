@@ -139,31 +139,49 @@ Navigate to **API** > **Authorization Servers**, click the **Authorization Serve
 After making these changes, you should be good to go! If you have any issues, please post them to [Stack Overflow](https://stackoverflow.com/questions/tagged/jhipster). Make sure to tag your question with "jhipster" and "okta".
 <%_ } _%>
 
-### Managing dependencies
+### Structure
 
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
+Sapper expects to find two directories in the root of your web project — `app` and `static`.
 
-    <%= clientPackageManager %> <%= clientPackageMngrAdd %> leaflet
+#### app
 
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
+The [app](app) directory contains the entry points for your app — `client.js`, `server.js` and (optionally) a `service-worker.js` — along with a `template.html` file and a `routes` directory.
 
-    <%= clientPackageManager %> <%= clientPackageMngrAddDev %> @types/leaflet
+##### app/routes
 
-Then you would import the JS and CSS files specified in library's installation instructions so that [Rollup][] knows about them:
-Edit [<%= CLIENT_MAIN_SRC_DIR %>app/main.ts](<%= CLIENT_MAIN_SRC_DIR %>app/main.ts) file:
-~~~
-import 'leaflet/dist/leaflet.js';
-~~~
+This is the heart of your Sapper app.
 
-Edit [<%= CLIENT_MAIN_SRC_DIR %>content/scss/vendor.scss](<%= CLIENT_MAIN_SRC_DIR %>content/scss/vendor.scss) file:
-~~~
-@import '~leaflet/dist/leaflet.scss';
-~~~
-Note: there are still few other things remaining to do for Leaflet that we won't detail here.
+**Pages** are Svelte components written in `.svelte` files. When a user first visits the application, they will be served a server-rendered version of the route in question, plus some JavaScript that 'hydrates' the page and initialises a client-side router. From that point forward, navigating to other pages is handled entirely on the client for a fast, app-like feel. (Sapper will preload and cache the code for these subsequent pages, so that navigation is instantaneous.)
+
+There are three simple rules for naming the files that define your routes:
+
+-   A file called `app/routes/about.svelte` corresponds to the `/about` route. A file called `app/routes/blog/[slug].svelte` corresponds to the `/blog/:slug` route, in which case `params.slug` is available to the route
+-   The file `app/routes/index.svelte` (or `app/routes/index.js`) corresponds to the root of your app. `app/routes/about/index.svelte` is treated the same as `app/routes/about.svelte`.
+-   Files and directories with a leading underscore do _not_ create routes. This allows you to colocate helper modules and components with the routes that depend on them — for example you could have a file called `app/routes/_helpers/datetime.js` and it would _not_ create a `/_helpers/datetime` route
+
+#### static
+
+The [static](static) directory contains any static assets that should be available. These are served using [sirv](https://github.com/lukeed/sirv).
+
+In your [service-worker.js](app/service-worker.js) file, you can import these as `files` from the generated manifest...
+
+```js
+import { files } from '@sapper/service-worker'
+```
+
+...so that you can cache them (though you can choose not to, for example if you don't want to cache very large files).
+
+### Using external components
+
+When using Svelte components installed from npm, such as [@sveltejs/svelte-virtual-list](https://github.com/sveltejs/svelte-virtual-list), Svelte needs the original component source (rather than any precompiled JavaScript that ships with the component). This allows the component to be rendered server-side, and also keeps your client-side app smaller.
+
+Because of that, it's essential that the bundler doesn't treat the package as an _external dependency_. You can either modify the `external` option under `server` in [rollup.config.js](rollup.config.js), or simply install the package to `devDependencies` rather than `dependencies`, which will cause it to get bundled (and therefore compiled) with your app:
+
+```bash
+npm install -D @sveltejs/svelte-virtual-list
+```
 <%_ } _%>
-
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
-
+For further instructions on how to develop with JHipster and Sapper, have a look at [Using JHipster in development][] and [sapper.svelte.dev](https://sapper.svelte.dev).
 
 <%_ if (enableSwaggerCodegen) { _%>
 ### Doing API-First development using openapi-generator
@@ -217,13 +235,7 @@ To launch your application's tests, run:
     <%_ } else { _%>
     ./gradlew test integrationTest
     <%_ } _%>
-<% if (!skipClient) { %>
-### Client tests
-Unit tests are run by [Jest][] and written with [Jasmine][]. They're located in [<%= CLIENT_TEST_SRC_DIR %>](<%= CLIENT_TEST_SRC_DIR %>) and can be run with:
-    <%= clientPackageManager %> test
-<% if (protractorTests) { %>UI end-to-end tests are powered by [Protractor][], which is built on top of WebDriverJS. They're located in [<%= CLIENT_TEST_SRC_DIR %>e2e](<%= CLIENT_TEST_SRC_DIR %>e2e)
-and can be run by starting Spring Boot in one terminal (`<% if (buildTool === 'maven') { %>./mvnw spring-boot:run<% } else { %>./gradlew bootRun<% } %>`) and running the tests (`<%= clientPackageManager %> run e2e`) in a second one.<% } %>
-<% } %><% if (gatlingTests) { %>### Other tests
+<% if (gatlingTests) { %>### Other tests
 Performance tests are run by [Gatling][] and written in Scala. They're located in [src/test/gatling](src/test/gatling).
 To use those tests, you must install Gatling from [https://gatling.io/](https://gatling.io/).
 <% } %>
