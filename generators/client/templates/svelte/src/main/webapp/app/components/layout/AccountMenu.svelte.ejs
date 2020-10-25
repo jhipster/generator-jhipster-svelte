@@ -3,6 +3,7 @@
 	import { goto } from '@sapper/app'
 	import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
 	import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
+	import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
 	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 
@@ -64,6 +65,14 @@
 			on:click="{() => (isOpen = false)}"
 		><Icon class="fa-icon sm:mr-1" icon="{faLock}" />
 			Change Password</a>
+		<a
+			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
+				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
+				sm:text-gray-800 sm:hover:bg-indigo-500"
+			href="/account/settings"
+			on:click="{() => (isOpen = false)}"
+		><Icon class="fa-icon sm:mr-1" icon="{faWrench}" />
+			Settings</a>
 		<a
 			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
 				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
