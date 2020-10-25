@@ -82,6 +82,7 @@ const svelteFiles = {
 				'account/activate.svelte',
 				'account/password.svelte',
 				'account/register.svelte',
+				'account/settings.svelte',
 				'account/reset/finish.svelte',
 				'account/reset/init.svelte',
 			],
