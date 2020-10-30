@@ -1,0 +1,54 @@
+FROM node:lts-alpine3.12
+
+ARG SVELTE_PATH=/opt/svelte/
+ARG APP_PATH=/app
+ARG NPM_PATH=/opt/npm-global
+
+RUN apk update \
+	&& apk --no-cache --update add git \
+  	&& sed -i -e "s/bin\/ash/bin\/sh/" /etc/passwd
+
+RUN \
+	mkdir -p $APP_PATH \
+	&& mkdir -p $SVELTE_PATH \
+	&& mkdir -p $NPM_PATH \
+	&& chown -R node:node $APP_PATH \
+	&& chown -R node:node $SVELTE_PATH \
+	&& chown -R node:node $NPM_PATH
+
+USER node
+
+RUN \
+	npm config set prefix "$NPM_PATH" \
+	&& echo PATH="$NPM_PATH/bin":$PATH >> "$HOME/.profile" \
+	&& . "$HOME/.profile" \
+	&& echo $PATH
+
+RUN npm install -g --no-audit generator-jhipster@6.10.3
+# RUN npm install -g --no-audit jhipster/generator-jhipster-svelte#master
+
+ADD package.json package-lock.json $SVELTE_PATH
+
+RUN \
+	cd $SVELTE_PATH \
+	&& npm install \
+	&& npm link
+
+ADD generators $SVELTE_PATH
+
+WORKDIR $APP_PATH
+
+ENV NPM_PATH $NPM_PATH
+
+# Install svelte
+# RUN degit github:jhipster/generator-jhipster-svelte svelte
+
+RUN \
+# Link svelte
+	cd $APP_PATH \
+	&& npm link generator-jhipster-svelte
+# 	&& NPM_CONFIG_PREFIX=/home/node/global npm link generator-jhipster-svelte \
+RUN \
+	ls -a
+
+CMD ["sh", "-c", "${NPM_PATH}/bin/jhipster --blueprints svelte"]
