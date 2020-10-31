@@ -3,9 +3,11 @@ FROM node:lts-alpine3.12
 ARG SVELTE_PATH=/opt/svelte/
 ARG APP_PATH=/app
 ARG NPM_PATH=/opt/npm-global
+ARG GIT_USER_EMAIL=jhipster-svelte-bot@jhipster.tech
+ARG GIT_USERNAME="JHipster Svelte Bot"
 
 RUN apk update \
-	&& apk --no-cache --update add git \
+	&& apk --no-cache --update add git=2.26.2-r0 openjdk11 \
   	&& sed -i -e "s/bin\/ash/bin\/sh/" /etc/passwd
 
 RUN \
@@ -20,35 +22,29 @@ USER node
 
 RUN \
 	npm config set prefix "$NPM_PATH" \
-	&& echo PATH="$NPM_PATH/bin":$PATH >> "$HOME/.profile" \
-	&& . "$HOME/.profile" \
-	&& echo $PATH
+	&& echo PATH="$NPM_PATH/bin:$PATH" >> "$HOME/.profile" \
+	&& . "$HOME/.profile"
 
 RUN npm install -g --no-audit generator-jhipster@6.10.3
-# RUN npm install -g --no-audit jhipster/generator-jhipster-svelte#master
 
-ADD package.json package-lock.json $SVELTE_PATH
+COPY package.json package-lock.json $SVELTE_PATH/
 
-RUN \
-	cd $SVELTE_PATH \
-	&& npm install \
+WORKDIR $SVELTE_PATH
+RUN	npm install \
 	&& npm link
 
-ADD generators $SVELTE_PATH
+COPY generators $SVELTE_PATH/generators
+
+COPY docker/entrypoint.sh /usr/local/bin/
 
 WORKDIR $APP_PATH
 
-ENV NPM_PATH $NPM_PATH
-
-# Install svelte
-# RUN degit github:jhipster/generator-jhipster-svelte svelte
-
 RUN \
-# Link svelte
-	cd $APP_PATH \
-	&& npm link generator-jhipster-svelte
-# 	&& NPM_CONFIG_PREFIX=/home/node/global npm link generator-jhipster-svelte \
-RUN \
-	ls -a
+	git config --global user.email "$GIT_USER_EMAIL" \
+  	&& git config --global user.name "$GIT_USERNAME"
 
-CMD ["sh", "-c", "${NPM_PATH}/bin/jhipster --blueprints svelte"]
+ENV PATH "$NPM_PATH/bin:$PATH"
+
+VOLUME ["$APP_PATH"]
+
+ENTRYPOINT ["entrypoint.sh"]
