@@ -58,7 +58,7 @@ To develop against the latest code, follow below steps:
 
 -   Clone the repository and build the docker image:
 
-```bash
+```sh
 git clone https://github.com/jhipster/generator-jhipster-svelte.git
 cd generator-jhipster-svelte
 
@@ -67,16 +67,32 @@ docker build -t jhipster/svelte-hipster:latest .
 
 -   Create a new directory for your application and run the below command to generate the application:
 
-```bash
+```sh
 mkdir svelte-app && cd svelte-app
 
 docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
 ```
 
--   You can optionally, attach a shell entrypoint to access your docker container environment:
+-   You can also run the generated application from within the container. Following examples consider `maven` as the build tool:
 
-```bash
-docker run -it --rm -v $PWD:/app --entrypoint sh jhipster/svelte-hipster
+    -   To run unit test cases, use the command:
+
+    ```sh
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/node/.m2 --entrypoint ./mvnw jhipster/svelte-hipster clean test
+    ```
+
+    -   To start the application using the default `dev` profile, use the command:
+
+    ```sh
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/node/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
+    ```
+
+    Access application with http://localhost:8080/
+
+-   If you would like to access the container file system, you can also attach a bourne shell:
+
+```sh
+docker run -it --rm -v $PWD:/app -v ~/.m2:/home/app/.m2 --entrypoint sh jhipster/svelte-hipster
 ```
 
 ## :hammer_and_wrench: Development
@@ -108,7 +124,7 @@ mkdir my-app && cd my-app
 npm link generator-jhipster-svelte
 npm link generator-jhipster (Optional: Needed only if you are using a non-released JHipster version)
 
-jhipster -d --blueprints svelte
+jhipster --blueprints svelte
 
 ```
 
