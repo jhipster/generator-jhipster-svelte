@@ -50,39 +50,49 @@ To use the blueprint, run the below command:
 jhipster --blueprints svelte
 ```
 
-## Using Docker
+## Docker development
 
-Download the Dockerfile:
+### Early adopters
 
-```bash
-mkdir docker
-cd docker
-wget https://github.com/jhipster/generator-jhipster-svelte/raw/master/docker/Dockerfile
+To develop against the latest code, follow below steps:
+
+-   Clone the repository and build the docker image:
+
+```sh
+git clone https://github.com/jhipster/generator-jhipster-svelte.git
+cd generator-jhipster-svelte
+
+docker build -t jhipster/svelte-hipster:latest .
 ```
 
-Build the Docker images:
+-   Create a new directory for your application and run the below command to generate the application:
 
-```bash
-docker build -t jhipster-generator-svelte:latest .
+```sh
+mkdir svelte-app && cd svelte-app
+
+docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
 ```
 
-Make a folder where you want to generate the Service:
+-   You can also run the generated application from within the container. Following examples consider `maven` as the build tool:
 
-```bash
-mkdir service
-cd service
-```
+    -   To run unit test cases, use the command:
 
-Run the generator from image to generate service:
+    ```sh
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/node/.m2 --entrypoint ./mvnw jhipster/svelte-hipster clean test
+    ```
 
-```bash
-docker run -it --rm -v $PWD:/home/jhipster/app jhipster-generator-svelte
-```
+    -   To start the application using the default `dev` profile, use the command:
 
-Run and attach interactive shell to the generator docker container to work from inside the running container:
+    ```sh
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/node/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
+    ```
 
-```bash
-docker run -it --rm -v $PWD:/home/khipster/app jhipster-generator-svelte /bin/bash
+    Access application with http://localhost:8080/
+
+-   If you would like to access the container file system, you can also attach a bourne shell:
+
+```sh
+docker run -it --rm -v $PWD:/app -v ~/.m2:/home/app/.m2 --entrypoint sh jhipster/svelte-hipster
 ```
 
 ## :hammer_and_wrench: Development
@@ -114,7 +124,7 @@ mkdir my-app && cd my-app
 npm link generator-jhipster-svelte
 npm link generator-jhipster (Optional: Needed only if you are using a non-released JHipster version)
 
-jhipster -d --blueprints svelte
+jhipster --blueprints svelte
 
 ```
 
