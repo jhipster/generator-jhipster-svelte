@@ -43,9 +43,9 @@ module.exports = class extends ClientGenerator {
 		const jhipsterDefault = super._configuring();
 		return {
 			overrideConfigOptions() {
-				this.clientFramework = 'svelte';
-				this.clientTheme = 'none';
-				this.clientThemeVariant = '';
+				this.configOptions.clientFramework = this.clientFramework = 'svelte';
+				this.configOptions.clientTheme = this.clientTheme = 'none';
+				this.configOptions.clientThemeVariant = this.clientThemeVariant = '';
 			},
 			...jhipsterDefault,
 		};

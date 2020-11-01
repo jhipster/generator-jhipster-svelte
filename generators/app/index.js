@@ -96,6 +96,9 @@ module.exports = class extends AppGenerator {
 		const jhipsterDefault = super._configuring();
 
 		return {
+			setConfigOptions() {
+				this.configOptions.enableTranslation = false;
+			},
 			...jhipsterDefault,
 			askFori18n: undefined,
 		};
