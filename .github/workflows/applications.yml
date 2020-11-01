@@ -12,3 +12,11 @@ jobs:
                 java-version: [11.x]
         steps:
             - uses: actions/checkout@v2
+            - name: Download latest chrome binary
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install google-chrome-stable -y
+                  sudo apt-get install xvfb
+            - name: Create Svelte Hipster docker image
+              run: |
+                  docker build -t jhipster/svelte-hipster:latest .
