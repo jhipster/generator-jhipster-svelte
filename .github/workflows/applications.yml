@@ -1,0 +1,14 @@
+name: Svelte Application Generator
+on: [push, pull_request]
+jobs:
+    generator-jhipster-svelte:
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 30
+        strategy:
+            fail-fast: false
+            matrix:
+                node_version: [12.x]
+                os: [ubuntu-latest]
+                java-version: [11.x]
+        steps:
+            - uses: actions/checkout@v2
