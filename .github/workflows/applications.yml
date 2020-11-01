@@ -21,7 +21,7 @@ jobs:
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest .
-            - run echo $USER $(id -u) $(id -u)
+            - run: echo $USER $(id -u) $(id -u)
             - name: Generate application
               run: |
                   mkdir -p "$HOME/svelte-app"
