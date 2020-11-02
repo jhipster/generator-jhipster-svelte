@@ -8,7 +8,7 @@
 
 <p align="center" valign="middle" height="100%">
   <a href="https://www.jhipster.tech/" target="_blank">
-    <img alt="JHipster"  width="25%" src="https://github.com/jhipster/jhipster-artwork/blob/master/logos/JHipster%20RGB-small100x25px.png?raw=true">
+    <img alt="JHipster"  width="25%" src="https://github.com/jhipster/jhipster-artwork/blob/main/logos/JHipster%20RGB-small100x25px.png?raw=true">
   </a>
 	:heart:
   <a href="https://svelte.dev" target="_blank">
@@ -106,7 +106,7 @@ cd generator-jhipster-svelte
 npm link
 ```
 
-2. Link a development version of JHipster to your blueprint (optional: required only if you want to use a non-released JHipster version, like the master branch or your own custom fork)
+2. Link a development version of JHipster to your blueprint (optional: required only if you want to use a non-released JHipster version, like the main branch or your own custom fork)
 
 ```bash
 cd generator-jhipster
