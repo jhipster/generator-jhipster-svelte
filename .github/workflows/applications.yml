@@ -33,4 +33,8 @@ jobs:
             - name: Run unit tests
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster clean test
+                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp  clean test
+            - name: Package application
+              run: |
+                  cd "$HOME/svelte-app"
+                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp -Pprod clean verify
