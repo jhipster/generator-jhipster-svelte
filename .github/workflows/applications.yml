@@ -38,3 +38,8 @@ jobs:
               run: |
                   cd "$HOME/svelte-app"
                   docker run --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp -Pprod clean verify
+            - name: Run application
+              run: |
+                  cd "$HOME/svelte-app"
+                  docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
