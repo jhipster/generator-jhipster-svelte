@@ -17,6 +17,7 @@
 		"cy:run": "cypress run",
 		"cy:open": "cypress open",
 		"test": "run-p --race dev cy:run",
+		"e2e": "cypress run",
 		"webpack:build": "NODE_ENV=development run-s \"tailwind:build\" \"sapper:build\"",
 		"webpack:prod": "NODE_ENV=production run-s \"tailwind:build\" \"sapper:build\"",
 		"webpack:test": "npm run lint"

@@ -25,6 +25,17 @@ const svelteFiles = {
 			],
 		},
 	],
+	tests: [
+		{
+			templates: [
+				'cypress/fixtures/example.json',
+				'cypress/integration/spec.js',
+				'cypress/plugins/index.js',
+				'cypress/support/index.js',
+				'cypress/support/commands.js',
+			],
+		},
+	],
 	static: [
 		{
 			path: FRONTEND_SRC_DIR,

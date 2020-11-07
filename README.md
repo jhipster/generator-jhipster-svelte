@@ -78,13 +78,13 @@ docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
     -   To run unit test cases, use the command:
 
     ```sh
-    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/node/.m2 --entrypoint ./mvnw jhipster/svelte-hipster clean test
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jhipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster clean test
     ```
 
     -   To start the application using the default `dev` profile, use the command:
 
     ```sh
-    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/node/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jhipster/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
     ```
 
     Access application with http://localhost:8080/
@@ -92,7 +92,7 @@ docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
 -   If you would like to access the container file system, you can also attach a bourne shell:
 
 ```sh
-docker run -it --rm -v $PWD:/app -v ~/.m2:/home/app/.m2 --entrypoint sh jhipster/svelte-hipster
+docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jhipster/.m2 --entrypoint sh jhipster/svelte-hipster
 ```
 
 ## :hammer_and_wrench: Development
