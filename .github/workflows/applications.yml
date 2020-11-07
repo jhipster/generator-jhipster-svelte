@@ -11,6 +11,7 @@ jobs:
             matrix:
                 apps: ['monolithic-session.json']
                 os: [ubuntu-latest]
+                node_version: [12.x]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
@@ -18,6 +19,9 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node_version }}
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
@@ -44,4 +48,4 @@ jobs:
                   cd "$HOME/svelte-app"
                   docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  docker run -v $PWD:/app -v $HOME/.cache:/home/jhipster/.cache --entrypoint npm jhipster/svelte-hipster run e2e
+                  npm run e2e
