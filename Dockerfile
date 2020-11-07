@@ -7,6 +7,8 @@ ARG APP_PATH=/app
 ARG NPM_PATH=/opt/npm-global
 ARG GIT_USER_EMAIL=jhipster-svelte-bot@jhipster.tech
 ARG GIT_USERNAME="JHipster Svelte Bot"
+ARG GID=1000
+ARG UID=1000
 
 RUN apk update \
 	&& apk --no-cache --update add \
@@ -25,28 +27,36 @@ RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/s
 	&& apk del wget \
   	&& sed -i -e "s/bin\/ash/bin\/sh/" /etc/passwd
 
+RUN \
+	echo ${GID} \
+	&& echo ${UID}
+
+RUN \
+	deluser --remove-home node \
+	&& addgroup -S jhipster -g ${GID} \
+  	&& adduser -S -G jhipster -u ${UID} jhipster
 
 RUN \
 	mkdir -p $APP_PATH \
 	&& mkdir -p $SVELTE_PATH \
 	&& mkdir -p $NPM_PATH \
-	&& chown -R node:node $APP_PATH \
-	&& chown -R node:node $SVELTE_PATH \
-	&& chown -R node:node $NPM_PATH
+	&& chown -R jhipster:jhipster $APP_PATH \
+	&& chown -R jhipster:jhipster $SVELTE_PATH \
+	&& chown -R jhipster:jhipster $NPM_PATH
 
-USER node
+USER jhipster
 
 RUN \
 	npm config set prefix "$NPM_PATH" \
 	&& echo PATH="$NPM_PATH/bin:$PATH" >> "$HOME/.profile" \
 	&& . "$HOME/.profile"
 
-RUN npm install -g --no-audit generator-jhipster@6.10.3
+RUN npm install -g --no-audit --quiet generator-jhipster@6.10.3
 
 COPY package.json package-lock.json $SVELTE_PATH/
 
 WORKDIR $SVELTE_PATH
-RUN	npm install \
+RUN	npm install --quiet \
 	&& npm link
 
 COPY generators $SVELTE_PATH/generators

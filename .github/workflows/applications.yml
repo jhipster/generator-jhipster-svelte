@@ -20,10 +20,10 @@ jobs:
                   sudo apt-get install xvfb
             - name: Create Svelte Hipster docker image
               run: |
-                  docker build -t jhipster/svelte-hipster:latest .
+                  docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
             - name: Generate application
               run: |
                   mkdir -p "$HOME/svelte-app"
                   cd "$HOME/svelte-app"
                   cp $TEST_SCRIPTS_PATH/${{ matrix.apps }} .yo-rc.json
-                  docker run --rm -v $PWD:/app --user $(id -u) --env UID=$(id -u) --env GID=$(id -g) jhipster/svelte-hipster --no-insight
+                  docker run --rm -v $PWD:/app jhipster/svelte-hipster --no-insight --force
