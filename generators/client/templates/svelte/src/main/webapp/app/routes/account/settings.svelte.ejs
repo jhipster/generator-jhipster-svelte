@@ -44,16 +44,25 @@
 
 <section class="m-3 relative bg-white shadow-md rounded p-4">
 	<div class="p-4 w-full sm:max-w-3xl sm:mx-auto">
-		<div class="px-4 w-full text-4xl text-center">
+		<div data-test="settingsTitle" class="px-4 w-full text-4xl text-center">
 			User settings for [{login}]
 		</div>
-		<Alert show="{settingsUpdated}" closeable="{false}">
+		<Alert
+			data-test="successMsg"
+			show="{settingsUpdated}"
+			closeable="{false}"
+		>
 			Settings changed!
 		</Alert>
-		<Alert type="danger" show="{error}" closeable="{false}">
+		<Alert
+			data-test="errorMsg"
+			type="danger"
+			show="{error}"
+			closeable="{false}"
+		>
 			An error has occurred! The user settings could not be saved.
 		</Alert>
-		<form class="mt-4 flex flex-col">
+		<form data-test="settingsForm" class="mt-4 flex flex-col">
 			<InputControl
 				label="First Name"
 				name="firstName"

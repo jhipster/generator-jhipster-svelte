@@ -77,7 +77,7 @@
 <div class="flex flex-col mt-1 px-3 text-xs text-red-600">
 	<slot message="{message}" dirty="{dirty}" valid="{valid}">
 		{#if dirty && !valid}
-			<div class="flex items-center">
+			<div data-test="{name}-error" class="flex items-center">
 				<Icon class="fa-icon mr-2" icon="{faExclamationCircle}" />
 				{message}
 			</div>

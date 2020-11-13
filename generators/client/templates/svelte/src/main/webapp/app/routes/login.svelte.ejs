@@ -39,13 +39,19 @@
 				<AppLogo />
 			</div>
 		</div>
-		<div class="mt-4 px-4 w-full text-3xl text-center">
+		<div
+			data-test="signInTitle"
+			class="mt-4 px-4 w-full text-3xl text-center"
+		>
 			Sign in to SvelteHipster
 		</div>
-		<Alert type="danger" show="{!!authError}">
+		<Alert data-test="errorMsg" type="danger" show="{!!authError}">
 			Incorrect username or password.
 		</Alert>
-		<form class="mt-4 p-4 flex flex-col bg-white shadow-md rounded">
+		<form
+			data-test="loginForm"
+			class="mt-4 p-4 flex flex-col bg-white shadow-md rounded"
+		>
 			<InputControl
 				label="Username"
 				name="username"
@@ -92,11 +98,18 @@
 
 		<div class="mt-5 px-4 flex justify-between text-blue-600">
 			<div>
-				<a href="/account/reset/init" class="font-semibold">Forgot password?</a>
+				<a
+					data-test="forgotPwdLink"
+					href="/account/reset/init"
+					class="font-semibold"
+				>Forgot password?</a>
 			</div>
 			<div>
-				<a href="/account/register" class="font-semibold">Create an
-					account</a>
+				<a
+					data-test="registerLink"
+					href="/account/register"
+					class="font-semibold"
+				>Create an account</a>
 			</div>
 		</div>
 	</div>
