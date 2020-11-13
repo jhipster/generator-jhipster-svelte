@@ -40,16 +40,16 @@
 			</div>
 		</div>
 		<div
-			data-cy="signInTitle"
+			data-test="signInTitle"
 			class="mt-4 px-4 w-full text-3xl text-center"
 		>
 			Sign in to SvelteHipster
 		</div>
-		<Alert data-cy="errorMsg" type="danger" show="{!!authError}">
+		<Alert data-test="errorMsg" type="danger" show="{!!authError}">
 			Incorrect username or password.
 		</Alert>
 		<form
-			data-cy="loginForm"
+			data-test="loginForm"
 			class="mt-4 p-4 flex flex-col bg-white shadow-md rounded"
 		>
 			<InputControl
@@ -99,14 +99,14 @@
 		<div class="mt-5 px-4 flex justify-between text-blue-600">
 			<div>
 				<a
-					data-cy="forgotPwdLink"
+					data-test="forgotPwdLink"
 					href="/account/reset/init"
 					class="font-semibold"
 				>Forgot password?</a>
 			</div>
 			<div>
 				<a
-					data-cy="registerLink"
+					data-test="registerLink"
 					href="/account/register"
 					class="font-semibold"
 				>Create an account</a>
