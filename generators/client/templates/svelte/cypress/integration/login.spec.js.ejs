@@ -1,0 +1,50 @@
+describe('login flow', () => {
+	beforeEach(() => {
+		cy.visit('/login')
+	})
+
+	it('greets with Sign in', () => {
+		cy.get('[data-cy="signInTitle"]')
+			.should('be.visible')
+			.should('contain', 'Sign in to SvelteHipster')
+	})
+
+	it('link to register', () => {
+		cy.get('[data-cy="registerLink"]')
+			.should('have.text', 'Create an account')
+			.should('have.attr', 'href', '/account/register')
+	})
+
+	it('link to forgot password', () => {
+		cy.get('[data-cy="forgotPwdLink"]')
+			.should('have.text', 'Forgot password?')
+			.should('have.attr', 'href', '/account/reset/init')
+	})
+
+	it('require username and password', () => {
+		cy.get('[data-cy="loginForm"]')
+			.contains('Sign in')
+			.should('be.disabled')
+	})
+
+	it('require valid username and password', () => {
+		cy.get('[data-cy="loginForm"]')
+			.get('[name="username"]')
+			.type('admin')
+			.get('[name="password"]')
+			.type('invalid{enter}')
+		cy.get('[data-cy="errorMsg"]').should(
+			'contain',
+			'Incorrect username or password.'
+		)
+	})
+
+	it('navigate to / on successful login', () => {
+		cy.get('[data-cy="loginForm"]')
+			.get('[name="username"]')
+			.type('admin')
+			.get('[name="password"]')
+			.type('admin{enter}')
+		cy.location('pathname').should('eq', '/')
+	})
+})

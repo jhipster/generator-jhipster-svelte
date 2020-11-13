@@ -18,7 +18,7 @@
 	class:text-orange-900="{type === 'warning'}"
 	class="px-7 py-3 mt-4 flex justify-between rounded text-sm"
 >
-	<div>
+	<div {...$$restProps}>
 		<slot />
 	</div>
 	{#if closeable}

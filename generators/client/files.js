@@ -25,11 +25,11 @@ const svelteFiles = {
 			],
 		},
 	],
-	tests: [
+	e2e: [
 		{
 			templates: [
-				'cypress/fixtures/example.json',
-				'cypress/integration/spec.js',
+				'cypress/integration/home.spec.js',
+				'cypress/integration/login.spec.js',
 				'cypress/plugins/index.js',
 				'cypress/support/index.js',
 				'cypress/support/commands.js',
