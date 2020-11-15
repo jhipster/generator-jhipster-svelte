@@ -24,17 +24,29 @@
 
 <section class="m-3 relative bg-white shadow-md rounded p-4">
 	<div class="p-4 w-full sm:max-w-3xl sm:mx-auto">
-		<div class="px-4 w-full text-4xl text-center">
+		<div
+			data-test="forgotPwdTitle"
+			class="px-4 w-full text-4xl text-center"
+		>
 			Reset your password
 		</div>
-		<Alert show="{passwordReset}" closeable="{false}">
+		<Alert
+			data-test="successMsg"
+			show="{passwordReset}"
+			closeable="{false}"
+		>
 			Check your email for details on how to reset your password.
 		</Alert>
-		<Alert type="warning" show="{!passwordReset}" closeable="{false}">
+		<Alert
+			data-test="warningMsg"
+			type="warning"
+			show="{!passwordReset}"
+			closeable="{false}"
+		>
 			Enter your user account's verified email address.
 		</Alert>
 		{#if !passwordReset}
-			<form class="mt-4 flex flex-col">
+			<form data-test="forgotPwdForm" class="mt-4 flex flex-col">
 				<InputControl
 					type="email"
 					label="Email"

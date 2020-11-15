@@ -28,9 +28,14 @@ const svelteFiles = {
 	e2e: [
 		{
 			templates: [
+				'cypress/integration/footer.spec.js',
 				'cypress/integration/home.spec.js',
 				'cypress/integration/login.spec.js',
+				'cypress/integration/navbar.spec.js',
+				'cypress/integration/account/change-password.spec.js',
+				'cypress/integration/account/register.spec.js',
 				'cypress/integration/account/settings.spec.js',
+				'cypress/integration/account/reset/init-password.spec.js',
 				'cypress/plugins/index.js',
 				'cypress/support/index.js',
 				'cypress/support/commands.js',

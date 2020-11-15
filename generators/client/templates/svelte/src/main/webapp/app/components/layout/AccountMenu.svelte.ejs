@@ -31,6 +31,7 @@
 			sm:hover:bg-transparent focus:outline-none"
 	>
 		<button
+			data-test="svlAccountLink"
 			on:click="{() => (isOpen = !isOpen)}"
 			class="sm:z-10 sm:h-8 sm:w-8 sm:flex sm:justify-center
 				sm:items-center sm:rounded-full sm:overflow-hidden border-0
@@ -58,6 +59,7 @@
 			sm:rounded-lg sm:shadow-lg"
 	>
 		<a
+			data-test="svlChgPwdLink"
 			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
 				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
 				sm:text-gray-800 sm:hover:bg-indigo-500"
@@ -66,6 +68,7 @@
 		><Icon class="fa-icon sm:mr-1" icon="{faLock}" />
 			Change Password</a>
 		<a
+			data-test="svlSettingsLink"
 			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
 				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
 				sm:text-gray-800 sm:hover:bg-indigo-500"
@@ -74,6 +77,7 @@
 		><Icon class="fa-icon sm:mr-1" icon="{faWrench}" />
 			Settings</a>
 		<a
+			data-test="svlSignoutLink"
 			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
 				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
 				sm:text-gray-800 sm:hover:bg-indigo-500"
