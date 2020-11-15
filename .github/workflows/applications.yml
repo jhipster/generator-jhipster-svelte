@@ -9,7 +9,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                apps: ['monolithic-session.json']
+                apps: ['monolithic-session.json', 'monolithic-session-gradle.json']
                 os: [ubuntu-latest]
                 node_version: [12.x]
         steps:
@@ -29,6 +29,7 @@ jobs:
               run: |
                   mkdir -p "$HOME/svelte-app"
                   mkdir -p "$HOME/.m2"
+                  mkdir -p "$HOME/.gradle"
                   mkdir -p "$HOME/.cache"
             - name: Generate application
               run: |
@@ -36,16 +37,36 @@ jobs:
                   cp $TEST_SCRIPTS_PATH/${{ matrix.apps }} .yo-rc.json
                   docker run --rm -v $PWD:/app -v $HOME/.cache:/home/jhipster/.cache  jhipster/svelte-hipster --no-insight --force
             - name: Run unit tests
+              if: !contains(matrix.apps , 'gradle')
               run: |
                   cd "$HOME/svelte-app"
                   docker run --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp  clean test
+            - name: Run unit tests
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-app"
+                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/jhipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster clean test --no-daemon
             - name: Package application
+              if: !contains(matrix.apps , 'gradle')
               run: |
                   cd "$HOME/svelte-app"
                   docker run --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp -Pprod clean verify
-            - name: Run application
+            - name: Package application
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-app"
+                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/jhipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster -Pprod clean bootJar --no-daemon
+            - name: Run e2e tests
+              if: !contains(matrix.apps , 'gradle')
               run: |
                   cd "$HOME/svelte-app"
                   docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
+                  npm run e2e
+            - name: Run e2e tests
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-app"
+                  docker run -d  --rm -v $PWD:/app -v $HOME/.gradle:/home/jhipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e
