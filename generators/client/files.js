@@ -30,6 +30,7 @@ const svelteFiles = {
 			templates: [
 				'cypress/integration/home.spec.js',
 				'cypress/integration/login.spec.js',
+				'cypress/integration/account/change-password.spec.js',
 				'cypress/integration/account/register.spec.js',
 				'cypress/integration/account/settings.spec.js',
 				'cypress/plugins/index.js',
