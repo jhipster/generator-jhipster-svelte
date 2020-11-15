@@ -33,6 +33,7 @@ const svelteFiles = {
 				'cypress/integration/account/change-password.spec.js',
 				'cypress/integration/account/register.spec.js',
 				'cypress/integration/account/settings.spec.js',
+				'cypress/integration/account/reset/init-password.spec.js',
 				'cypress/plugins/index.js',
 				'cypress/support/index.js',
 				'cypress/support/commands.js',
