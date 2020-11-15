@@ -47,13 +47,17 @@
 
 <section class="m-3 relative bg-white shadow-md rounded p-4">
 	<div class="p-4 w-full sm:max-w-3xl sm:mx-auto">
-		<div class="px-4 w-full text-4xl text-center">
+		<div data-test="registerTitle" class="px-4 w-full text-4xl text-center">
 			Create user account
 		</div>
-		<Alert show="{accountCreated}" closeable="{false}">
+		<Alert
+			data-test="successMsg"
+			show="{accountCreated}"
+			closeable="{false}"
+		>
 			User account successfully created. Please check your email for confirmation.
 		</Alert>
-		<Alert type="danger" show="{!!error}">
+		<Alert data-test="errorMsg" type="danger" show="{!!error}">
 			{#if error === 'duplicateEmail'}
 			Email is already in use. Please choose another one.
 			{:else if error === 'duplicateLogin'}
@@ -63,7 +67,7 @@
 			{/if}
 		</Alert>
 		{#if !accountCreated}
-			<form class="mt-4 flex flex-col">
+			<form data-test="registerForm" class="mt-4 flex flex-col">
 				<InputControl
 					label="Username"
 					name="username"
