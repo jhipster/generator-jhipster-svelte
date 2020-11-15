@@ -19,17 +19,23 @@
 		</div>
 
 		<div class="sm:flex-grow sm:px-4">
-			<h1 class="text-5xl">Welcome, Svelte Hipster!</h1>
+			<h1 data-test="welcomeTitle" class="text-5xl">
+				Welcome, Svelte Hipster!
+			</h1>
 
 			<p class="text-xl mt-2">This is your homepage</p>
 
 			<div class="mt-4">
 				{#if $auth}
-					<div class="px-5 py-3 bg-green-200 text-green-900 rounded">
+					<div
+						data-test="greetMsg"
+						class="px-5 py-3 bg-green-200 text-green-900 rounded"
+					>
 						<span>You are logged in as user "{$auth.login}".</span>
 					</div>
 				{:else}
 					<div
+						data-test="loginInstructions"
 						class="px-5 py-3 bg-orange-200 text-orange-900 rounded"
 					>
 						<span>If you want to </span>
@@ -44,7 +50,9 @@
 						class="px-5 py-3 mt-4 bg-orange-200 text-orange-900
 							rounded"
 					>
-						<span>You don't have an account yet?</span>&nbsp; <a
+						<span>You don't have an account yet?</span>&nbsp;
+						<a
+							data-test="svlRegisterHomeLink"
 							class="font-semibold"
 							href="/account/register"
 						>Register a new account</a>
