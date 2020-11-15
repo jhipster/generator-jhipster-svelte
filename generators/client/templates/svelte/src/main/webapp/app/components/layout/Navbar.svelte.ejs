@@ -26,11 +26,16 @@
 					src="img/logo-jhipster.png"
 					alt="Application logo"
 				/></a>
-			<div class="ml-2 font-semibold text-xl"><%= baseName %></div>
-			<div class="ml-2 text-xs text-gray-500">DEV</div>
+			<div data-test="svlAppName" class="ml-2 font-semibold text-xl">
+				<%= baseName %>
+			</div>
+			<div data-test="svlAppVersion" class="ml-2 text-xs text-gray-500">
+				DEV
+			</div>
 		</div>
 		<div class="sm:hidden">
 			<button
+				data-test="svlNavBtn"
 				on:click="{toggleToolbar}"
 				type="button"
 				class="block px-2 py-1 outline-none hover:text-white
@@ -43,11 +48,11 @@
 	</div>
 	<div class:hidden="{!isToolbarOpen}" class="sm:flex">
 		{#if $auth}
-			<div class="sm:ml-4">
+			<div data-test="svlAcctMenu" class="sm:ml-4">
 				<AccountMenu />
 			</div>
 		{:else}
-			<div class="sm:ml-4">
+			<div data-test="svlLoginLink" class="sm:ml-4">
 				<NavItem
 					on:click="{toggleToolbar}"
 					label="Sign in"
@@ -55,7 +60,7 @@
 					route="/login"
 				/>
 			</div>
-			<div class="sm:ml-4 pb-3 sm:pb-0">
+			<div data-test="svlRegisterLink" class="sm:ml-4 pb-3 sm:pb-0">
 				<NavItem
 					on:click="{toggleToolbar}"
 					label="Sign up"
