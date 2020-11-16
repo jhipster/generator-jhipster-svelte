@@ -1,7 +1,7 @@
 {
 	"name": "<%= dasherizedBaseName %>",
 	"description": "Description for <%= baseName  %>",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
@@ -11,16 +11,16 @@
 		"cleanup": "rimraf <%= DIST_DIR %>",
 		"start": "run-s \"tailwind:build\" \"sapper:watch\"",
 		"sapper:watch": "sapper dev --src <%= CLIENT_MAIN_SRC_DIR %>app --routes <%= CLIENT_MAIN_SRC_DIR %>app/routes --static <%= CLIENT_MAIN_SRC_DIR %>static --output <%= CLIENT_MAIN_SRC_DIR %>app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output --port 9000 --open true",
-		"sapper:build": "sapper export <%= DIST_DIR %>  --basepath / --src <%= CLIENT_MAIN_SRC_DIR %>app --routes <%= CLIENT_MAIN_SRC_DIR %>app/routes --static <%= CLIENT_MAIN_SRC_DIR %>static --output <%= CLIENT_MAIN_SRC_DIR %>app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output",
+		"build": "sapper export <%= DIST_DIR %> --entry '/ /404' --basepath / --src <%= CLIENT_MAIN_SRC_DIR %>app --routes <%= CLIENT_MAIN_SRC_DIR %>app/routes --static <%= CLIENT_MAIN_SRC_DIR %>static --output <%= CLIENT_MAIN_SRC_DIR %>app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output",
 		"tailwind:build": "postcss <%= CLIENT_MAIN_SRC_DIR %>app/tailwind.css -o <%= CLIENT_MAIN_SRC_DIR %>static/vendor.css",
 		"tailwind:watch": "npm run tailwind:build -- --w",
-		"cy:run": "cypress run",
 		"cy:open": "cypress open",
-		"test": "run-p --race dev cy:run",
+		"test": "npm run lint",
 		"e2e": "cypress run",
-		"webpack:build": "NODE_ENV=development run-s \"tailwind:build\" \"sapper:build\"",
-		"webpack:prod": "NODE_ENV=production run-s \"tailwind:build\" \"sapper:build\"",
-		"webpack:test": "npm run lint"
+		"postbuild": "mv <%= DIST_DIR %>404/index.html <%= DIST_DIR %>404.html",
+		"webpack:build": "NODE_ENV=development run-s \"tailwind:build\" \"build\"",
+		"webpack:prod": "NODE_ENV=production run-s \"tailwind:build\" \"build\"",
+		"webpack:test": "npm run test"
 	},
 	"dependencies": {
 		"compression": "1.7.4",
