@@ -1,6 +1,6 @@
 FROM node:lts-alpine3.12
 
-LABEL author="Vishal Mahajan"
+LABEL maintainer="Vishal Mahajan"
 
 ARG SVELTE_PATH=/opt/svelte/
 ARG APP_PATH=/app
