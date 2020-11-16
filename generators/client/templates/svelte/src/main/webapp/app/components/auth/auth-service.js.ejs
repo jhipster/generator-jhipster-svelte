@@ -2,6 +2,18 @@ import { serverUrl } from '../../utils/env'
 import { prepareRequest } from '../../utils/request'
 
 export default {
+	fetchAuthenticatedUsername: () => {
+		return fetch(`${serverUrl}api/authenticate`, prepareRequest())
+			.then(response => {
+				if (response.ok) {
+					return response.text()
+				}
+				return Promise.reject(response.err)
+			})
+			.catch(err => {
+				return Promise.reject(err)
+			})
+	},
 	fetchAuthenticatedUserDetails: () => {
 		return fetch(`${serverUrl}api/account`, prepareRequest())
 			.then(response => {

@@ -17,6 +17,24 @@ export default {
 				return Promise.resolve()
 			})
 	},
+	loadUserIfAuthenticated: () => {
+		return authService
+			.fetchAuthenticatedUsername()
+			.then(response => {
+				if (response) {
+					return authService.fetchAuthenticatedUserDetails()
+				}
+				return Promise.reject()
+			})
+			.then(response => {
+				userStore.set(response)
+				return Promise.resolve()
+			})
+			.catch(err => {
+				// ignore error
+				return Promise.resolve()
+			})
+	},
 	logout: () => {
 		userStore.set(undefined)
 	},

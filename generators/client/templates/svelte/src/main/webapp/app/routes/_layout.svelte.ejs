@@ -8,7 +8,7 @@
 	const { page } = stores()
 
 	function loadUserDetails() {
-		return process.browser && auth.loadUser()
+		return process.browser && auth.loadUserIfAuthenticated()
 	}
 
 	$: isLoginRouteActivated = $page && $page.path && $page.path === '/login'

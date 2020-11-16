@@ -13,9 +13,9 @@ Cypress.Commands.add('getByName', selector => {
 })
 
 Cypress.Commands.add('loginByApi', (username, password) => {
-	cy.request({ method: 'GET', url: `api/account`, failOnStatusCode: false })
+	cy.request({ method: 'GET', url: `api/authenticate` })
 		.then(res => {
-			expect(res.status).to.eq(401)
+			expect(res.status).to.eq(200)
 			return cy.getCookie('XSRF-TOKEN').should('have.property', 'value')
 		})
 		.then(csrfCookie => {
