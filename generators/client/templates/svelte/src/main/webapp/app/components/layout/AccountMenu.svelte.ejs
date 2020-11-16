@@ -17,7 +17,7 @@
 			.logout()
 			.then(() => {
 				auth.logout()
-				return auth.loadUser()
+				return auth.loadUserIfAuthenticated()
 			})
 			.then(() => goto('/'))
 			.catch()
