@@ -16,6 +16,7 @@
 	let message
 	let focused = false
 	const dispatch = createEventDispatcher();
+	const randomSuffix = Date.now()
 
 	$: focusedOrContainsValue = value !== '' || focused
 	$: pristine = !focused && !dirty
@@ -56,7 +57,7 @@
 		class:text-gray-600="{!focused}"
 		class:text-blue-700="{focusedAndValidOrPristine}"
 		class:text-red-600="{dirtyAndInvalid && focused}"
-		for="{name}"
+		for="{name + randomSuffix}"
 	>{label}<span class="ml-px">{isRequired ? '*' : ''}</span>
 	</label>
 	<input
@@ -68,6 +69,7 @@
 		class:border-red-600="{dirtyAndInvalid}"
 		type="{type}"
 		name="{name}"
+		id="{name + randomSuffix}"
 		value="{value}"
 		on:input
 		on:focus="{() => (focused = true)}"
