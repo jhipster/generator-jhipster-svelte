@@ -29,7 +29,8 @@
 </script>
 
 <svelte:head>
-	<title>Sign in to SvelteHipster</title>
+	<title>Sign in to <%= baseName  %></title>
+	<meta name="Description" content="Sign in to <%= baseName  %>">
 </svelte:head>
 
 <section class="flex h-screen items-start justify-center">
@@ -43,7 +44,7 @@
 			data-test="signInTitle"
 			class="mt-4 px-4 w-full text-3xl text-center"
 		>
-			Sign in to SvelteHipster
+			Sign in to <%= baseName  %>
 		</div>
 		<Alert data-test="errorMsg" type="danger" show="{!!authError}">
 			Incorrect username or password.
