@@ -22,6 +22,8 @@
 	<div class="flex items-center justify-between px-4 py-3 sm:p-0">
 		<div class="flex items-baseline justify-between text-gray-100">
 			<a href="/" on:click="{() => (isToolbarOpen = false)}"><img
+					width="48px"
+					height="20px"
 					class="w-12 m-auto"
 					src="img/logo-jhipster.png"
 					alt="Application logo"
