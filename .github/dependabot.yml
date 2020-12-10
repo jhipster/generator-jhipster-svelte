@@ -4,11 +4,11 @@ updates:
       directory: '/'
       schedule:
           interval: 'daily'
-      open-pull-requests-limit: 5
+      open-pull-requests-limit: 20
 
     - package-ecosystem: 'npm'
       directory: '/generators/client/templates/svelte/'
       schedule:
           interval: 'daily'
-      open-pull-requests-limit: 5
+      open-pull-requests-limit: 20
       versioning-strategy: increase
