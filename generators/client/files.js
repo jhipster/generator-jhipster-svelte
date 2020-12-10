@@ -18,7 +18,10 @@ const svelteFiles = {
 				'.eslintignore',
 				'.eslintrc.json',
 				'cypress.json',
-				'package.json',
+				{
+					file: generator => `package-template.json`,
+					renameTo: () => `package.json`,
+				},
 				'postcss.config.js',
 				'rollup.config.js',
 				'tailwind.config.js',
