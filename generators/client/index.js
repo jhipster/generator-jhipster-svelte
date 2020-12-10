@@ -61,6 +61,11 @@ module.exports = class extends ClientGenerator {
 			writeAdditionalFile() {
 				writeFiles.call(this);
 			},
+
+			updatePackageJson() {
+				const packageTemplate = this.fs.read(this.templatePath('svelte/package.json'));
+				this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(packageTemplate));
+			},
 		};
 	}
 
