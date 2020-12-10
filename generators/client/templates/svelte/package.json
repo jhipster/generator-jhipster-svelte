@@ -10,7 +10,7 @@
 		"@babel/plugin-transform-runtime": "7.11.5",
 		"@babel/preset-env": "7.11.5",
 		"@babel/runtime": "7.11.2",
-		"@fortawesome/free-solid-svg-icons": "5.15.0",
+		"@fortawesome/free-solid-svg-icons": "5.15.1",
 		"@fullhuman/postcss-purgecss": "3.0.0",
 		"@rollup/plugin-babel": "5.2.1",
 		"@rollup/plugin-commonjs": "15.1.0",
