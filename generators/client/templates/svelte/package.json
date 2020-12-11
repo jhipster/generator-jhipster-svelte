@@ -12,7 +12,7 @@
 		"@babel/runtime": "7.11.2",
 		"@fortawesome/free-solid-svg-icons": "5.15.1",
 		"@fullhuman/postcss-purgecss": "3.0.0",
-		"@rollup/plugin-babel": "5.2.1",
+		"@rollup/plugin-babel": "5.2.2",
 		"@rollup/plugin-commonjs": "15.1.0",
 		"@rollup/plugin-node-resolve": "9.0.0",
 		"@rollup/plugin-replace": "2.3.3",
