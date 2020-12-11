@@ -25,7 +25,7 @@
 	},
 	"dependencies": {
 		"chalk": "4.1.0",
-		"generator-jhipster": "6.10.3",
+		"generator-jhipster": "6.10.5",
 		"mkdirp": "^1.0.4",
 		"pluralize": "^8.0.0"
 	},
