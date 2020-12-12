@@ -122,6 +122,6 @@ describe('Register User', () => {
 		cy.getBySel('successMsg').contains(
 			'User account successfully created. Please check your email for confirmation.'
 		)
-		cy.getBySel('registerForm').should('not.be.visible')
+		cy.getBySel('registerForm').should('not.exist')
 	})
 })
