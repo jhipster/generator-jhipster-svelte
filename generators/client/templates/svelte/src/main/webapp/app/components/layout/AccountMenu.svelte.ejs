@@ -31,6 +31,7 @@
 			sm:hover:bg-transparent focus:outline-none"
 	>
 		<button
+			aria-label="Account Menu"
 			data-test="svlAccountLink"
 			on:click="{() => (isOpen = !isOpen)}"
 			class="sm:z-10 sm:h-8 sm:w-8 sm:flex sm:justify-center

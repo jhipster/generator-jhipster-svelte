@@ -6,7 +6,7 @@ describe('User login', () => {
 	it('should greets with Sign in', () => {
 		cy.getBySel('signInTitle')
 			.should('be.visible')
-			.should('contain', 'Sign in to SvelteHipster')
+			.should('contain', 'Sign in to <%= baseName  %>')
 	})
 
 	it('should display link to register', () => {
