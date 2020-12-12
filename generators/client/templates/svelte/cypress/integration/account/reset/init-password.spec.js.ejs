@@ -47,6 +47,6 @@ describe('Forgot password', () => {
 				'contain',
 				'Check your email for details on how to reset your password.'
 			)
-		cy.getBySel('forgotPwdForm').should('not.be.visible')
+		cy.getBySel('forgotPwdForm').should('not.exist')
 	})
 })

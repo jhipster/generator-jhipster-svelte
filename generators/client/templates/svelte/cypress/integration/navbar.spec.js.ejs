@@ -21,7 +21,7 @@ describe('Navbar', () => {
 		})
 
 		it('should not display account menu', () => {
-			cy.getBySel('svlAcctMenu').should('not.be.visible')
+			cy.getBySel('svlAcctMenu').should('not.exist')
 		})
 
 		it('should display sign in link', () => {
@@ -43,11 +43,11 @@ describe('Navbar', () => {
 		})
 
 		it('should not display register link', () => {
-			cy.getBySel('svlRegisterLink').should('not.be.visible')
+			cy.getBySel('svlRegisterLink').should('not.exist')
 		})
 
 		it('should not display sign in link', () => {
-			cy.getBySel('svlLoginLink').should('not.be.visible')
+			cy.getBySel('svlLoginLink').should('not.exist')
 		})
 
 		it('should display account menu', () => {
