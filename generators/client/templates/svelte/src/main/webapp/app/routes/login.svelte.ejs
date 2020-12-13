@@ -3,6 +3,7 @@
 
 	import AppLogo from './../components/svg/AppLogo.svelte'
 	import Alert from './../components/Alert.svelte'
+	import Button from '../components/Button.svelte'
 	import InputControl from '../components/InputControl.svelte'
 
 	import auth from './../components/auth/auth-store.js'
@@ -89,12 +90,9 @@
 				</label>
 			</div>
 
-			<button
-				type="submit"
-				on:click|preventDefault="{login}"
-				class="my-4 w-32 m-auto btn btn-primary"
-				disabled="{!validForm}"
-			>Sign in</button>
+			<Button type="submit" on:click="{login}" disabled="{!validForm}">
+				Sign in
+			</Button>
 		</form>
 
 		<div class="mt-5 px-4 flex justify-between text-blue-700">

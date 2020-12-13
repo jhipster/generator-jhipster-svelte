@@ -1,0 +1,14 @@
+<script>
+	export let disabled = false
+	export let role = 'primary'
+	export let classes = ''
+</script>
+
+<button
+	on:click|preventDefault
+	class="my-4 m-auto btn btn-{role} {classes}"
+	disabled="{disabled}"
+	{...$$restProps}
+>
+	<slot />
+</button>

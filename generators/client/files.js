@@ -116,6 +116,7 @@ const svelteFiles = {
 				'account/Password.svelte',
 				'account/PasswordConfirm.svelte',
 				'Alert.svelte',
+				'Button.svelte',
 				'InputControl.svelte',
 				'auth/auth-service.js',
 				'auth/auth-store.js',

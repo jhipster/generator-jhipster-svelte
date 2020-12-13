@@ -3,6 +3,7 @@
 
 	import accountService from './../../../components/account/account-service'
 	import Alert from './../../../components/Alert.svelte'
+	import Button from './../../../components/Button.svelte'
 	import PasswordConfirm from './../../../components/account/PasswordConfirm.svelte'
 
 	let error
@@ -53,12 +54,13 @@
 					on:input="{event => (password = event.detail.value)}"
 					on:validate="{event => (validPassword = event.detail.valid)}"
 				/>
-				<button
+				<Button
 					type="submit"
-					on:click|preventDefault="{resetPassword}"
-					class="my-4 w-64 m-auto btn btn-primary"
+					on:click="{resetPassword}"
 					disabled="{!validPassword}"
-				>Reset password</button>
+				>
+					Reset password
+				</Button>
 			</form>
 		{/if}
 	</div>
