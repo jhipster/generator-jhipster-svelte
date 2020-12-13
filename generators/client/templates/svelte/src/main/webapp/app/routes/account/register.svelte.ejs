@@ -1,5 +1,6 @@
 <script>
 	import Alert from './../../components/Alert.svelte'
+	import Button from '../../components/Button.svelte'
 	import InputControl from '../../components/InputControl.svelte'
 	import accountService from './../../components/account/account-service'
 	import PasswordConfirm from './../../components/account/PasswordConfirm.svelte'
@@ -106,12 +107,13 @@
 					on:validate="{event => (validPassword = event.detail.valid)}"
 				/>
 
-				<button
+				<Button
 					type="submit"
-					on:click|preventDefault="{createUserAccount}"
-					class="my-4 w-48 m-auto btn btn-primary"
+					on:click="{createUserAccount}"
 					disabled="{!validForm}"
-				>Create account</button>
+				>
+					Create account
+				</Button>
 			</form>
 		{/if}
 	</div>
