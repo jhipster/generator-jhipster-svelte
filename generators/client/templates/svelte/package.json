@@ -37,6 +37,6 @@
 		"rollup-plugin-terser": "7.0.2",
 		"sapper": "0.28.10",
 		"svelte": "3.31.0",
-		"tailwindcss": "1.9.6"
+		"tailwindcss": "2.0.2"
 	}
 }
