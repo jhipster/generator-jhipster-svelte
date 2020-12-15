@@ -21,7 +21,7 @@
 		"cypress": "6.1.0",
 		"eslint": "7.15.0",
 		"eslint-plugin-cypress": "2.11.2",
-		"eslint-plugin-svelte3": "2.7.3",
+		"eslint-plugin-svelte3": "3.0.0",
 		"fa-svelte": "3.1.0",
 		"http-proxy-middleware": "1.0.6",
 		"husky": "4.3.6",
