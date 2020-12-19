@@ -114,9 +114,12 @@ const svelteFiles = {
 			templates: [
 				'account/account-service.js',
 				'account/ChangePasswordForm.svelte',
+				'account/ForgotPasswordForm.svelte',
 				'account/Password.svelte',
 				'account/PasswordConfirm.svelte',
 				'account/RegisterUserForm.svelte',
+				'account/ResetPasswordForm.svelte',
+				'account/UserSettingsForm.svelte',
 				'page/Page.svelte',
 				'page/PageHeader.svelte',
 				'page/Form.svelte',
