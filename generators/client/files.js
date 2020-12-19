@@ -113,8 +113,13 @@ const svelteFiles = {
 			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
 				'account/account-service.js',
+				'account/ChangePasswordForm.svelte',
 				'account/Password.svelte',
 				'account/PasswordConfirm.svelte',
+				'account/RegisterUserForm.svelte',
+				'page/Page.svelte',
+				'page/PageHeader.svelte',
+				'page/Form.svelte',
 				'Alert.svelte',
 				'Button.svelte',
 				'InputControl.svelte',
