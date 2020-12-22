@@ -73,6 +73,19 @@ describe('Navbar', () => {
 				.and('contain', 'Sign out')
 		})
 
+		it('should display administrator menu', () => {
+			cy.getBySel('svlAdminMenu')
+				.should('be.visible')
+				.getBySel('svlAdminLink')
+				.should('not.be.disabled')
+				.click()
+
+			cy.getBySel('svlUserMgmtLink')
+				.should('be.visible')
+				.and('have.attr', 'href', '/admin/user-management')
+				.and('contain', 'User Management')
+		})
+
 		it('should navigate to change password page', () => {
 			cy.getBySel('svlAcctMenu').getBySel('svlAccountLink').click()
 			cy.getBySel('svlChgPwdLink').should('be.visible').click()
@@ -95,6 +108,17 @@ describe('Navbar', () => {
 			cy.getBySel('svlLoginLink')
 				.should('be.visible')
 				.and('contain', 'Sign in')
+		})
+	})
+
+	describe(`authenticated 'ROLE_USER' ROLE user`, () => {
+		beforeEach(() => {
+			cy.loginByApi('user', 'user')
+			cy.visit('/')
+		})
+
+		it('should not display administrator menu', () => {
+			cy.getBySel('svlAdminMenu').should('not.exist')
 		})
 	})
 })

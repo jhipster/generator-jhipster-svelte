@@ -1,0 +1,19 @@
+<script>
+	import auth from './auth-store.js'
+
+	export let role = 'USER'
+
+	function hasRole() {
+		return (
+			$auth.authorities &&
+			$auth.authorities.length &&
+			$auth.authorities.includes('ROLE_' + role)
+		)
+	}
+</script>
+
+<div>
+	{#if hasRole()}
+		<slot />
+	{/if}
+</div>

@@ -7,6 +7,8 @@
 	import NavItem from './NavItem.svelte'
 	import auth from '../auth/auth-store.js'
 	import AccountMenu from './AccountMenu.svelte'
+	import AdminMenu from './AdminMenu.svelte'
+	import RoleGuard from '../auth/RoleGuard.svelte'
 
 	let isToolbarOpen = false
 
@@ -50,6 +52,11 @@
 	</div>
 	<div class:hidden="{!isToolbarOpen}" class="sm:flex">
 		{#if $auth}
+			<RoleGuard role="ADMIN">
+				<div data-test="svlAdminMenu" class="sm:ml-4">
+					<AdminMenu />
+				</div>
+			</RoleGuard>
 			<div data-test="svlAcctMenu" class="sm:ml-4">
 				<AccountMenu />
 			</div>
