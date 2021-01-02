@@ -2,8 +2,11 @@ import { serverUrl } from '../../utils/env'
 import { prepareRequest } from '../../utils/request'
 
 export default {
-	fetchUserDetails: (page, size, sort) => {
-		const queryString = `page=${page - 1}&size=${size}&sort=${sort}`
+	fetchUserDetails: (page, size, sortPredicate, sortOrder) => {
+		const defaultSort = sortPredicate !== 'id' ? '&sort=id,asc' : ''
+		const queryString = `page=${
+			page - 1
+		}&size=${size}&sort=${sortPredicate},${sortOrder}${defaultSort}`
 		return fetch(`${serverUrl}api/users?${queryString}`, prepareRequest())
 			.then(response => {
 				if (response.ok) {

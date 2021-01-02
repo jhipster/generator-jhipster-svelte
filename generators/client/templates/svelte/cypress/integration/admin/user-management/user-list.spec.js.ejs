@@ -104,4 +104,56 @@ describe('User Management list page', () => {
 					.should('not.be.disabled')
 			})
 	})
+
+	it('should validate the pagination controls', () => {
+		cy.getBySel('userMgmtPageCtrl')
+			.eq(0)
+			.contains('div', /1-\d+ of \d+/)
+			.next()
+			.within($div => {
+				cy.root()
+					.get('button')
+					.eq(0)
+					.should('be.disabled')
+					.get('div')
+					.should('have.text', '1')
+					.get('button')
+					.eq(1)
+					.should('be.disabled')
+			})
+	})
+
+	it('should sort the records by login field', () => {
+		cy.getBySel('userMgmtTable')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(1)
+					.should('contain', 'system')
+					.get('td')
+					.eq(2)
+					.should('contain', 'system@localhost')
+			})
+
+		cy.getBySel('userMgmtTable')
+			.contains('th', 'Login')
+			.within($tr => {
+				cy.root().get('span').eq(1).click()
+			})
+
+		cy.getBySel('userMgmtTable')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(1)
+					.should('contain', 'user')
+					.get('td')
+					.eq(2)
+					.should('contain', 'user@localhost')
+			})
+	})
 })
