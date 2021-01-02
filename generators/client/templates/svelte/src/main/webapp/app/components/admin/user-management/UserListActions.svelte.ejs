@@ -1,0 +1,61 @@
+<script>
+	import Icon from 'fa-svelte'
+	import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+	import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+	import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
+	import { faToggleOn } from '@fortawesome/free-solid-svg-icons/faToggleOn'
+	import { faToggleOff } from '@fortawesome/free-solid-svg-icons/faToggleOff'
+
+	import Button from '../../Button.svelte'
+	import { createEventDispatcher } from 'svelte'
+
+	export let user = undefined
+	export let currentUser = undefined
+	export let showActions = false
+	const dispatch = createEventDispatcher()
+</script>
+
+<div
+	class="flex flex-row justify-center items-center leading-none"
+	class:hidden="{!showActions}"
+>
+	<Button
+		role="action"
+		classes="sm:my-0"
+		title="{user.activated ? 'Deactivate user' : 'Activate user'}"
+		on:click="{() => dispatch('toggleuseraccount', {
+				...user,
+				activated: !user.activated,
+			})}"
+		disabled="{user.login === currentUser}"
+	>
+		<Icon
+			class="fa-icon"
+			icon="{user && user.activated ? faToggleOn : faToggleOff}"
+		/>
+	</Button>
+	<Button
+		role="action"
+		classes="sm:my-0"
+		title="View"
+		disabled="{user.login === currentUser}"
+	>
+		<Icon class="fa-icon" icon="{faEye}" />
+	</Button>
+	<Button
+		role="action"
+		classes="sm:my-0"
+		title="Edit"
+		disabled="{user.login === currentUser}"
+	>
+		<Icon class="fa-icon" icon="{faPencilAlt}" />
+	</Button>
+	<Button
+		role="action"
+		classes="sm:my-0"
+		title="Delete"
+		disabled="{user.login === currentUser}"
+	>
+		<Icon class="fa-icon" icon="{faTrashAlt}" />
+	</Button>
+</div>

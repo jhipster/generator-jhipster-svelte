@@ -1,0 +1,82 @@
+<script>
+	import { onMount } from 'svelte'
+
+	import auth from '../../../components/auth/auth-store.js'
+	import userService from './../../../components/user/user-service.js'
+	import Page from './../../../components/page/Page.svelte'
+	import Pagination from '../../../components/table/Pagination.svelte'
+	import UsersTable from '../../../components/admin/user-management/UsersTable.svelte'
+
+	let error
+	let users = []
+	let sortPredicate = 'id'
+	let sortOrder = 'asc'
+	let pageSize = 15
+	let page = 1
+	let totalCount = 0
+	let loading = true
+	onMount(() => fetchUsers())
+
+	function fetchUsers() {
+		loading = true
+		error = undefined
+		userService
+			.fetchUserDetails(page, pageSize, sortPredicate, sortOrder)
+			.then(res => {
+				users = res.data
+				totalCount = res.totalCount
+			})
+			.catch(err => (error = err))
+			.finally((loading = false))
+	}
+
+	function toggleUserAccount(event) {
+		userService
+			.update(event.detail)
+			.then(res => fetchUsers())
+			.catch(err => (error = err))
+	}
+
+	function sortByPredicate(event) {
+		sortPredicate = event.detail.sortPredicate
+		sortOrder = event.detail.sortOrder
+		fetchUsers()
+	}
+
+	function handlePageChange(event) {
+		page = event.detail.page
+		fetchUsers()
+	}
+</script>
+
+<svelte:head>
+	<title>Users</title>
+	<meta name="Description" content="User list" />
+</svelte:head>
+
+<Page testId="userMgmt" width="full">
+	<div class="text-left" slot="header">Users</div>
+	{#if !loading && users.length}
+		<Pagination
+			totalCount="{totalCount}"
+			pageSize="{pageSize}"
+			page="{page}"
+			classes="my-2"
+			on:pagechange="{handlePageChange}"
+		/>
+		<UsersTable
+			users="{users}"
+			currentUser="{$auth}"
+			sortPredicate="{sortPredicate}"
+			on:sortbypredicate="{sortByPredicate}"
+			on:toggleuseraccount="{toggleUserAccount}"
+		/>
+		<Pagination
+			totalCount="{totalCount}"
+			pageSize="{pageSize}"
+			page="{page}"
+			classes="mt-4"
+			on:pagechange="{handlePageChange}"
+		/>
+	{/if}
+</Page>

@@ -1,5 +1,13 @@
 name: Svelte Application Generator
-on: [push, pull_request]
+on:
+    push:
+        branches:
+            - main
+            - release
+    pull_request:
+        branches:
+            - main
+            - release
 env:
     TEST_SCRIPTS_PATH: ${{ github.workspace }}/.github/workflows/scripts
 jobs:
