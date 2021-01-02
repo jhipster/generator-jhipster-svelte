@@ -106,19 +106,17 @@ describe('User Management list page', () => {
 	})
 
 	it('should validate the pagination controls', () => {
-		cy.getBySel('userMgmtPageCtrl')
+		cy.getBySel('pageCtrl')
 			.eq(0)
 			.contains('div', /1-\d+ of \d+/)
 			.next()
 			.within($div => {
 				cy.root()
-					.get('button')
-					.eq(0)
+					.getBySel('prevPageCtrl')
 					.should('be.disabled')
 					.get('div')
 					.should('have.text', '1')
-					.get('button')
-					.eq(1)
+					.getBySel('nextPageCtrl')
 					.should('be.disabled')
 			})
 	})

@@ -1,13 +1,12 @@
 <script>
-	import Sort from '../../table/Sort.svelte.ejs'
-	import { formatDate } from '../../../utils/date'
-
+	import UserListActions from './UserListActions.svelte'
+	import Sort from '../../table/Sort.svelte'
 	import Table from '../../table/Table.svelte'
 	import TableData from '../../table/TableData.svelte'
 	import TableHeader from '../../table/TableHeader.svelte'
 	import TableRow from '../../table/TableRow.svelte'
-	import UserListActions from './UserListActions.svelte'
-
+	import { formatDate } from '../../../utils/date'
+	
 	export let users = []
 	export let currentUser = null
 	let sortPredicate = 'id'
