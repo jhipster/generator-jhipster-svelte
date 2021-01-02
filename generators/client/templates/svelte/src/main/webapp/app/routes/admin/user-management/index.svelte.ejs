@@ -1,0 +1,93 @@
+<script>
+	import { onMount } from 'svelte'
+	import auth from '../../../components/auth/auth-store.js'
+
+	import Table from '../../../components/table/Table.svelte'
+	import TableData from '../../../components/table/TableData.svelte'
+	import TableHeader from '../../../components/table/TableHeader.svelte'
+	import TableRow from '../../../components/table/TableRow.svelte'
+	import { formatDate } from './../../../utils/date'
+
+	import Page from './../../../components/page/Page.svelte'
+	import userService from './../../../components/user/user-service'
+	import UserListActions from '../../../components/admin/user-management/UserListActions.svelte'
+
+	let error
+	let users = []
+	onMount(() => fetchUsers())
+
+	function fetchUsers() {
+		error = undefined
+		userService
+			.fetchUserDetails(1, 10, 'id')
+			.then(res => (users = res.data))
+			.catch(err => (error = err))
+	}
+
+	function toggleUserAccount(event) {
+		userService
+			.update(event.detail)
+			.then(res => fetchUsers())
+			.catch(err => (error = err))
+	}
+</script>
+
+<svelte:head>
+	<title>Users</title>
+	<meta name="Description" content="User list" />
+</svelte:head>
+
+<Page testId="userMgmt" width="full">
+	<div class="text-left" slot="header">Users</div>
+	{#if users.length}
+		<Table testId="userMgmt">
+			<thead slot="head">
+				<TableRow>
+					<TableHeader>ID</TableHeader>
+					<TableHeader>Login</TableHeader>
+					<TableHeader>Email</TableHeader>
+					<TableHeader>Roles</TableHeader>
+					<TableHeader>Created At</TableHeader>
+					<TableHeader>Last Modified By</TableHeader>
+					<TableHeader>Last Modified At</TableHeader>
+				</TableRow>
+			</thead>
+			<tbody>
+				{#each users as user (user.id)}
+					<TableRow let:showActions>
+						<TableData
+							classes="{!user.activated ? 'border-l-4 border-red-300' : ''}"
+						>
+							{user.id}
+						</TableData>
+						<TableData>{user.login}</TableData>
+						<TableData>{user.email}</TableData>
+						<TableData>
+							{#each user.authorities as authority, authIndex (authority)}
+								<span class="uppercase">{authority}
+									{authIndex !== user.authorities.length - 1 ? ', ' : ''}</span>
+							{/each}
+						</TableData>
+						<TableData>{formatDate(user.createdDate)}</TableData>
+						<TableData>{user.lastModifiedBy}</TableData>
+						<TableData
+							classes="w-48 min-w-min {showActions ? 'sm:py-0' : ''}"
+						>
+							<div class:hidden="{showActions}">
+								{formatDate(user.lastModifiedDate)}
+							</div>
+							<UserListActions
+								currentUser="{$auth.login}"
+								user="{user}"
+								showActions="{showActions}"
+								on:toggleuseraccount="{event => toggleUserAccount(event)}"
+							/>
+						</TableData>
+					</TableRow>
+				{/each}
+			</tbody>
+		</Table>
+	{:else}
+		<p class="text-center text-lg w-full mt-4">No users found</p>
+	{/if}
+</Page>
