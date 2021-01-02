@@ -20,9 +20,13 @@
 	}
 </script>
 
-<span on:click="{sortByPredicate}">
+<span
+	on:click="{sortByPredicate}"
+	title="{active ? (ascending ? 'Ascending order' : 'Descending order') : 'Click to sort records'}"
+>
 	<Icon
-		class="fa-icon"
+		class="fa-icon cursor-pointer"
 		icon="{active ? (ascending ? faSortUp : faSortDown) : faSort}"
 	/>
 </span>
+

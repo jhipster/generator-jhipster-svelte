@@ -9,7 +9,7 @@
 	
 	export let users = []
 	export let currentUser = null
-	let sortPredicate = 'id'
+	export let sortPredicate = 'id'
 </script>
 
 <Table testId="userMgmt">
@@ -41,14 +41,7 @@
 			</TableHeader>
 			<TableHeader>Roles</TableHeader>
 			<TableHeader>Created At</TableHeader>
-			<TableHeader>
-				<span>Last Modified By</span>
-				<Sort
-					active="{sortPredicate === 'lastModifiedBy'}"
-					sortPredicate="lastModifiedBy"
-					on:sortbypredicate
-				/>
-			</TableHeader>
+			<TableHeader>Last Modified By</TableHeader>
 			<TableHeader>Last Modified At</TableHeader>
 		</TableRow>
 	</thead>
