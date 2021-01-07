@@ -3,7 +3,7 @@
 		"promptValues": {
 			"packageName": "tech.jhipster.sample"
 		},
-		"jhipsterVersion": "6.10.3",
+		"jhipsterVersion": "6.10.5",
 		"applicationType": "monolith",
 		"baseName": "svelteSampleApplication",
 		"packageName": "tech.jhipster.sample",
