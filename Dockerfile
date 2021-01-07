@@ -53,7 +53,7 @@ RUN \
 
 RUN npm install -g --no-audit --quiet generator-jhipster@6.10.5
 
-COPY [--chown=jhipster:jhipster] package.json package-lock.json $SVELTE_PATH/
+COPY package.json package-lock.json $SVELTE_PATH/
 
 WORKDIR $SVELTE_PATH
 

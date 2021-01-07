@@ -30,7 +30,6 @@
 		"pluralize": "8.0.0"
 	},
 	"devDependencies": {
-		"axios": "0.21.1",
 		"ejs-lint": "1.1.0",
 		"eslint": "7.17.0",
 		"eslint-config-airbnb-base": "14.2.1",
@@ -45,10 +44,6 @@
 		"yeoman-assert": "3.1.1",
 		"yeoman-test": "4.0.0"
 	},
-	"resolutions": {
-		"axios": ">=0.21.1",
-		"lodash": ">=4.17.20"
-	},
 	"husky": {
 		"hooks": {
 			"pre-commit": "pretty-quick --staged"
@@ -56,8 +51,7 @@
 	},
 	"scripts": {
 		"lint": "eslint .",
-		"format": "pretty-quick",
-		"preinstall": "npx npm-force-resolutions"
+		"format": "pretty-quick"
 	},
 	"license": "Apache-2.0",
 	"bugs": {
