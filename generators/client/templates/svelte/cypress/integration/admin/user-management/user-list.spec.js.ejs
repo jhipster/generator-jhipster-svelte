@@ -34,10 +34,10 @@ describe('User Management list page', () => {
 			.should('contain', 'Created At')
 			.get('th')
 			.eq(5)
-			.should('contain', 'Last Modified By')
+			.should('contain', 'Modified By')
 			.get('th')
 			.eq(6)
-			.should('contain', 'Last Modified At')
+			.should('contain', 'Modified At')
 	})
 
 	it('should display "system" user record in the table', () => {
@@ -79,7 +79,7 @@ describe('User Management list page', () => {
 					.should('be.disabled')
 					.get('button')
 					.eq(1)
-					.should('be.disabled')
+					.should('not.be.disabled')
 					.get('button')
 					.eq(2)
 					.should('be.disabled')

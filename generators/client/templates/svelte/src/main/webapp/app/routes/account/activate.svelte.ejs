@@ -1,6 +1,5 @@
 <script>
-
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { stores } from '@sapper/app'
 
 	import accountService from './../../components/account/account-service'
@@ -11,23 +10,23 @@
 	let accountActivated = false
 	const { page } = stores()
 
-	$: activationKey = $page && $page.query && $page.query.key;
+	$: activationKey = $page && $page.query && $page.query.key
 
-	onMount(() => activateUserAccount());
+	onMount(() => activateUserAccount())
 
 	function activateUserAccount() {
 		error = undefined
 		accountActivated = false
 		accountService
 			.activateAccount(activationKey)
-			.then(() => accountActivated = true)
-			.catch((err) => error = err)
+			.then(() => (accountActivated = true))
+			.catch(err => (error = err))
 	}
 </script>
 
 <svelte:head>
 	<title>Activate user account</title>
-	<meta name="Description" content="Activate user account">
+	<meta name="Description" content="Activate user account" />
 </svelte:head>
 
 <Page testId="activate">
@@ -35,10 +34,13 @@
 	<div slot="alerts">
 		<Alert show="{accountActivated}" closeable="{false}">
 			<span>Your user account has been activated. Please </span>
-                <a class="font-semibold underline" href="/login" >Sign in</a>.
+			<a class="font-semibold underline" href="/login">Sign in</a>.
 		</Alert>
 		<Alert type="danger" show="{!!error}" closeable="{false}">
-			Your user could not be activated. Please use the registration form to <a class="font-semibold underline" href="/account/register" >Sign up</a>.
+			Your user could not be activated. Please use the registration form
+			to <a class="font-semibold underline" href="/account/register"
+				>Sign up</a
+			>.
 		</Alert>
 	</div>
 </Page>

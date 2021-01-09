@@ -21,27 +21,22 @@
 
 <svelte:head>
 	<title>Reset your password</title>
-	<meta name="Description" content="Reset your password - Init">
+	<meta name="Description" content="Reset your password - Init" />
 </svelte:head>
 
 <Page testId="forgotPwd">
 	<span slot="header">Reset your password</span>
 	<div slot="alerts">
-		<Alert
-			data-test="successMsg"
-			show="{passwordReset}"
-			closeable="{false}"
+		<Alert data-test="successMsg" show="{passwordReset}" closeable="{false}"
+			>Check your email for details on how to reset your password.</Alert
 		>
-			Check your email for details on how to reset your password.
-		</Alert>
 		<Alert
 			data-test="warningMsg"
 			type="warning"
 			show="{!passwordReset}"
 			closeable="{false}"
+		>Enter your user account's verified email address.</Alert
 		>
-			Enter your user account's verified email address.
-		</Alert>
 	</div>
 	{#if !passwordReset}
 		<ForgotPasswordForm bind:email on:click="{resetPassword}" />

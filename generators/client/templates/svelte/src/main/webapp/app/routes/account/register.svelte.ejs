@@ -18,28 +18,30 @@
 		accountCreated = false
 		accountService
 			.createAccount(username, email, password)
-			.then(() => accountCreated = true)
-			.catch((err) => {
+			.then(() => (accountCreated = true))
+			.catch(err => {
 				password = ''
-				if(err && err.type) {
-					if(err.type === (problemBaseUrl + '/email-already-used')) {
+				if (err && err.type) {
+					if (err.type === problemBaseUrl + '/email-already-used') {
 						error = 'duplicateEmail'
-					} else if(err.type === (problemBaseUrl + '/login-already-used')) {
+					} else if (
+						err.type ===
+						problemBaseUrl + '/login-already-used'
+					) {
 						error = 'duplicateLogin'
 					} else {
-						error = 'error';
+						error = 'error'
 					}
 				} else {
 					error = 'error'
 				}
 			})
 	}
-
 </script>
 
 <svelte:head>
 	<title>Create user account</title>
-	<meta name="Description" content="Sign up - Create user account">
+	<meta name="Description" content="Sign up - Create user account" />
 </svelte:head>
 
 <Page testId="register">
@@ -50,15 +52,16 @@
 			show="{accountCreated}"
 			closeable="{false}"
 		>
-			User account successfully created. Please check your email for confirmation.
+			User account successfully created. Please check your email for
+			confirmation.
 		</Alert>
 		<Alert data-test="errorMsg" type="danger" show="{!!error}">
 			{#if error === 'duplicateEmail'}
-			Email is already in use. Please choose another one.
+				Email is already in use. Please choose another one.
 			{:else if error === 'duplicateLogin'}
-			Login name already in use. Please choose another one.
+				Login name already in use. Please choose another one.
 			{:else if error}
-			User account creation failed. Please try again later.
+				User account creation failed. Please try again later.
 			{/if}
 		</Alert>
 	</div>

@@ -11,7 +11,7 @@
 	<div
 		class="px-2 py-1 sm:py-0 flex justify-start items-center rounded
 			sm:rounded-none font-semibold hover:text-white hover:bg-gray-700
-			sm:hover:bg-transparent focus:outline-none"
+			sm:hover:bg-transparent focus:outline-none focus:ring"
 	>
 		<button
 			aria-label="Administration Menu"
@@ -19,8 +19,7 @@
 			on:click="{() => (isOpen = !isOpen)}"
 			class="sm:h-8 sm:px-2 sm:w-auto sm:flex sm:justify-center focus:font-semibold
 				sm:items-center sm:rounded border-0 text-gray-500 focus:text-white
-				focus:outline-none"
-		>
+				focus:outline-none focus:ring">
 			<span class="leading-none">
 				<Icon class="fa-icon sm:mr-1" icon="{faUsersCog}" />
 			</span>
@@ -50,7 +49,8 @@
 				sm:text-gray-800 sm:hover:bg-indigo-500"
 			href="/admin/user-management"
 			on:click="{() => (isOpen = false)}"
-		><Icon class="fa-icon sm:mr-1" icon="{faUsers}" />
-			User Management</a>
+			><Icon class="fa-icon sm:mr-1" icon="{faUsers}" />
+			User Management</a
+		>
 	</div>
 </div>

@@ -6,7 +6,7 @@
 	import TableHeader from '../../table/TableHeader.svelte'
 	import TableRow from '../../table/TableRow.svelte'
 	import { formatDate } from '../../../utils/date'
-	
+
 	export let users = []
 	export let currentUser = null
 	export let sortPredicate = 'id'
@@ -41,15 +41,17 @@
 			</TableHeader>
 			<TableHeader>Roles</TableHeader>
 			<TableHeader>Created At</TableHeader>
-			<TableHeader>Last Modified By</TableHeader>
-			<TableHeader>Last Modified At</TableHeader>
+			<TableHeader>Modified By</TableHeader>
+			<TableHeader>Modified At</TableHeader>
 		</TableRow>
 	</thead>
 	<tbody>
 		{#each users as user (user.id)}
 			<TableRow let:showActions>
 				<TableData
-					classes="{!user.activated ? 'border-l-4 border-red-300' : ''}"
+					classes="{!user.activated
+						? 'border-l-4 border-red-300'
+						: ''}"
 				>
 					{user.id}
 				</TableData>
@@ -57,8 +59,12 @@
 				<TableData>{user.email}</TableData>
 				<TableData>
 					{#each user.authorities as authority, authIndex (authority)}
-						<span class="uppercase">{authority}
-							{authIndex !== user.authorities.length - 1 ? ', ' : ''}</span>
+						<span class="uppercase"
+							>{authority}
+							{authIndex !== user.authorities.length - 1
+								? ', '
+								: ''}</span
+						>
 					{/each}
 				</TableData>
 				<TableData>{formatDate(user.createdDate)}</TableData>
@@ -74,6 +80,7 @@
 						user="{user}"
 						showActions="{showActions}"
 						on:toggleuseraccount
+						on:viewuseraccount
 					/>
 				</TableData>
 			</TableRow>
