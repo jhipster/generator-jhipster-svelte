@@ -69,9 +69,7 @@
 				</TableData>
 				<TableData>{formatDate(user.createdDate)}</TableData>
 				<TableData>{user.lastModifiedBy}</TableData>
-				<TableData
-					classes="w-48 min-w-min {showActions ? 'sm:py-0' : ''}"
-				>
+				<TableData classes="w-48 {showActions ? 'sm:py-0' : ''}">
 					<div class:hidden="{showActions}">
 						{formatDate(user.lastModifiedDate)}
 					</div>
@@ -81,6 +79,7 @@
 						showActions="{showActions}"
 						on:toggleuseraccount
 						on:viewuseraccount
+						on:deleteuseraccount
 					/>
 				</TableData>
 			</TableRow>

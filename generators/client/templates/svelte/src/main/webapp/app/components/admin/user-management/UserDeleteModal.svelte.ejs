@@ -1,0 +1,30 @@
+<script>
+	import { createEventDispatcher } from 'svelte'
+
+	import Icon from 'fa-svelte'
+	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
+	import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
+
+	import Button from '../../Button.svelte'
+	import Modal from '../../Modal.svelte'
+
+	export let id = ''
+	const dispatch = createEventDispatcher()
+</script>
+
+<Modal title="Confirm delete operation" on:close="{() => dispatch('close')}">
+	<p class="w-112">Are you sure you want to delete the user?</p>
+	<div slot="footer">
+		<Button
+			role="secondary"
+			classes="mr-4"
+			on:click="{() => dispatch('close')}"
+		>
+			<Icon class="fa-icon mr-2" icon="{faBan}" />Cancel
+		</Button>
+
+		<Button role="danger" on:click="{() => dispatch('deleteUser', { id })}">
+			<Icon class="fa-icon mr-2" icon="{faTrashAlt}" />Delete
+		</Button>
+	</div>
+</Modal>

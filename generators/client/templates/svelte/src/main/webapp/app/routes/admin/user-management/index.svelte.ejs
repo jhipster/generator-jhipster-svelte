@@ -7,6 +7,7 @@
 	import Page from './../../../components/page/Page.svelte'
 	import Pagination from '../../../components/table/Pagination.svelte'
 	import UsersTable from '../../../components/admin/user-management/UsersTable.svelte'
+	import UserDeleteModal from '../../../components/admin/user-management/UserDeleteModal.svelte'
 
 	let error
 	let users = []
@@ -16,6 +17,9 @@
 	let page = 1
 	let totalCount = 0
 	let loading = true
+	let showDeleteModal = false
+	let userId = null
+
 	onMount(() => fetchUsers())
 
 	function fetchUsers() {
@@ -42,6 +46,24 @@
 		goto(`/admin/user-management/${event.detail.id}/view`)
 	}
 
+	function showDeleteUserModal(event) {
+		userId = event.detail.id
+		showDeleteModal = true
+	}
+
+	function closeDeleteUserModal() {
+		showDeleteModal = false
+		userId = null
+	}
+
+	function deleteUserAccount(event) {
+		userService
+			.delete(userId)
+			.then(() => fetchUsers())
+			.catch(err => (error = err))
+			.finally(() => (showDeleteModal = false), (userId = null))
+	}
+
 	function sortByPredicate(event) {
 		sortPredicate = event.detail.sortPredicate
 		sortOrder = event.detail.sortOrder
@@ -62,6 +84,13 @@
 <Page testId="userMgmt" width="full">
 	<div class="text-left" slot="header">Users</div>
 	{#if !loading && users.length}
+		{#if showDeleteModal}
+			<UserDeleteModal
+				id="{userId}"
+				on:close="{closeDeleteUserModal}"
+				on:deleteUser="{deleteUserAccount}"
+			/>
+		{/if}
 		<Pagination
 			totalCount="{totalCount}"
 			pageSize="{pageSize}"
@@ -76,6 +105,7 @@
 			on:sortbypredicate="{sortByPredicate}"
 			on:toggleuseraccount="{toggleUserAccount}"
 			on:viewuseraccount="{viewUserAccount}"
+			on:deleteuseraccount="{showDeleteUserModal}"
 		/>
 		<Pagination
 			totalCount="{totalCount}"
