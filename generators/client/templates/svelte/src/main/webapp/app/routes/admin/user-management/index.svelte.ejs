@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte'
+	import { goto } from '@sapper/app'
 
 	import auth from '../../../components/auth/auth-store.js'
 	import userService from './../../../components/user/user-service.js'
@@ -37,6 +38,10 @@
 			.catch(err => (error = err))
 	}
 
+	function viewUserAccount(event) {
+		goto(`/admin/user-management/${event.detail.id}/view`)
+	}
+
 	function sortByPredicate(event) {
 		sortPredicate = event.detail.sortPredicate
 		sortOrder = event.detail.sortOrder
@@ -70,6 +75,7 @@
 			sortPredicate="{sortPredicate}"
 			on:sortbypredicate="{sortByPredicate}"
 			on:toggleuseraccount="{toggleUserAccount}"
+			on:viewuseraccount="{viewUserAccount}"
 		/>
 		<Pagination
 			totalCount="{totalCount}"

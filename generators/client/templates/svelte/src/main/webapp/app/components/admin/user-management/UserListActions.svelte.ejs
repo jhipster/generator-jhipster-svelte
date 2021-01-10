@@ -23,7 +23,8 @@
 		role="action"
 		classes="sm:my-0"
 		title="{user.activated ? 'Deactivate user' : 'Activate user'}"
-		on:click="{() => dispatch('toggleuseraccount', {
+		on:click="{() =>
+			dispatch('toggleuseraccount', {
 				...user,
 				activated: !user.activated,
 			})}"
@@ -38,7 +39,10 @@
 		role="action"
 		classes="sm:my-0"
 		title="View"
-		disabled="{user.login === currentUser}"
+		on:click="{() =>
+			dispatch('viewuseraccount', {
+				id: user.login,
+			})}"
 	>
 		<Icon class="fa-icon" icon="{faEye}" />
 	</Button>

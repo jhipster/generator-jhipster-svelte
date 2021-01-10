@@ -36,7 +36,7 @@
 
 <svelte:head>
 	<title>Update user settings</title>
-	<meta name="Description" content="Update user settings">
+	<meta name="Description" content="Update user settings" />
 </svelte:head>
 
 <Page testId="settings">
@@ -46,17 +46,15 @@
 			data-test="successMsg"
 			show="{settingsUpdated}"
 			closeable="{false}"
+		>Settings changed!</Alert
 		>
-			Settings changed!
-		</Alert>
 		<Alert
 			data-test="errorMsg"
 			type="danger"
 			show="{error}"
 			closeable="{false}"
+		>An error has occurred! The user settings could not be saved.</Alert
 		>
-			An error has occurred! The user settings could not be saved.
-		</Alert>
 	</div>
 	<UserSettingsForm
 		bind:firstName

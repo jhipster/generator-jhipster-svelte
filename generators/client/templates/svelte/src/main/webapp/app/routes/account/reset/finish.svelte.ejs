@@ -20,29 +20,40 @@
 		accountService
 			.resetAccountPassword(passwordResetKey, password)
 			.then(() => (passwordReset = true))
-			.catch(err => (password = '', error = err))
+			.catch(err => ((password = ''), (error = err)))
 	}
 </script>
 
 <svelte:head>
 	<title>Reset your password</title>
-	<meta name="Description" content="Reset your password">
+	<meta name="Description" content="Reset your password" />
 </svelte:head>
 
 <Page testId="forgotPwd">
 	<span slot="header">Reset your password</span>
 	<div slot="alerts">
 		<Alert show="{passwordReset}" closeable="{false}">
-			Your password has been reset. Please <a class="font-semibold underline" href="/login">Sign in</a>.
+			Your password has been reset. Please <a
+				class="font-semibold underline"
+				href="/login">Sign in</a
+			>.
 		</Alert>
-		<Alert type="warning" show="{ passwordResetKey && !passwordReset && !error}" closeable="{false}">
-			Choose a new password
-		</Alert>
-		<Alert type="danger" show="{ !passwordResetKey || error}" closeable="{false}">
+		<Alert
+			type="warning"
+			show="{passwordResetKey && !passwordReset && !error}"
+			closeable="{false}"
+		>Choose a new password</Alert
+		>
+		<Alert
+			type="danger"
+			show="{!passwordResetKey || error}"
+			closeable="{false}"
+		>
 			{#if !passwordResetKey}
-			The password reset key is missing.
+				The password reset key is missing.
 			{:else}
-			Your password couldn't be reset. Remember a password request is only valid for 24 hours.
+				Your password couldn't be reset. Remember a password request is
+				only valid for 24 hours.
 			{/if}
 		</Alert>
 	</div>
