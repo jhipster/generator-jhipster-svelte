@@ -59,6 +59,10 @@
 		classes="sm:my-0"
 		title="Delete"
 		disabled="{user.login === currentUser}"
+		on:click="{() =>
+			dispatch('deleteuseraccount', {
+				id: user.login,
+			})}"
 	>
 		<Icon class="fa-icon" icon="{faTrashAlt}" />
 	</Button>

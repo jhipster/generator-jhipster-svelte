@@ -44,6 +44,18 @@ export default {
 				return Promise.reject(err)
 			})
 	},
+	delete: login => {
+		return fetch(`${serverUrl}api/users/${login}`, prepareRequest('DELETE'))
+			.then(response => {
+				if (response.ok) {
+					return Promise.resolve()
+				}
+				return Promise.reject(response.err)
+			})
+			.catch(err => {
+				return Promise.reject(err)
+			})
+	},
 	fetchUserByLogin: login => {
 		return fetch(`${serverUrl}api/users/${login}`, prepareRequest())
 			.then(response => {
