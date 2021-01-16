@@ -27,6 +27,23 @@ export default {
 				return Promise.reject(err)
 			})
 	},
+	create: user => {
+		return fetch(
+			`${serverUrl}api/users`,
+			prepareRequest('POST', JSON.stringify(user), {
+				'Content-Type': 'application/json',
+			})
+		)
+			.then(response => {
+				if (response.ok) {
+					return response.json()
+				}
+				return Promise.reject(response.err)
+			})
+			.catch(err => {
+				return Promise.reject(err)
+			})
+	},
 	update: user => {
 		return fetch(
 			`${serverUrl}api/users`,
@@ -58,6 +75,18 @@ export default {
 	},
 	fetchUserByLogin: login => {
 		return fetch(`${serverUrl}api/users/${login}`, prepareRequest())
+			.then(response => {
+				if (response.ok) {
+					return response.json()
+				}
+				return Promise.reject(response.err)
+			})
+			.catch(err => {
+				return Promise.reject(err)
+			})
+	},
+	fetchAuthorities: () => {
+		return fetch(`${serverUrl}api/users/authorities`, prepareRequest())
 			.then(response => {
 				if (response.ok) {
 					return response.json()
