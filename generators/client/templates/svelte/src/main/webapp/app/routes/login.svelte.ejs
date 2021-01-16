@@ -5,6 +5,7 @@
 	import Alert from './../components/Alert.svelte'
 	import Button from '../components/Button.svelte'
 	import InputControl from '../components/InputControl.svelte'
+	import CheckboxControl from '../components/CheckboxControl.svelte'
 
 	import auth from './../components/auth/auth-store.js'
 	import authService from './../components/auth/auth-service.js'
@@ -77,15 +78,13 @@
 				on:validate="{event => (validPassword = event.detail.valid)}"
 			/>
 
-			<div class="mt-2">
-				<label class="flex items-center">
-					<input
-						class="mr-2"
-						type="checkbox"
-						name="rememberMe"
-						bind:checked="{rememberMe}"
-					/> Remember me
-				</label>
+			<div class="mt-1 mb-2 ml-1">
+				<CheckboxControl
+					name="rememberMe"
+					checked="{rememberMe}"
+					on:change="{event => (rememberMe = event.target.checked)}"
+				>Remember me</CheckboxControl
+				>
 			</div>
 
 			<Button type="submit" on:click="{login}" disabled="{!validForm}">

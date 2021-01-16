@@ -1,9 +1,9 @@
 <script>
-	import { createEventDispatcher } from 'svelte'
+	import { createEventDispatcher, afterUpdate } from 'svelte'
 	import Icon from 'fa-svelte'
 	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle'
 
-	import validate from '../utils/validator.js'
+	import { validate, createValidator } from '../utils/validator.js'
 
 	export let value = ''
 	export let type = 'text'
@@ -26,12 +26,20 @@
 	$: isRequired =
 		validations.find(validation => validation.type === 'required') !==
 		undefined
+
 	function handleValidationResponse(event) {
 		dirty = true
 		valid = event.detail.valid
 		message = event.detail.message
 		dispatch('validate', { valid, message })
 	}
+
+	afterUpdate(async () => {
+		const validationResponse = await createValidator(validations)(value)
+		valid = validationResponse.valid
+		message = validationResponse.message
+		dispatch('validate', { valid: valid, message: message })
+	})
 </script>
 
 <style>

@@ -1,10 +1,13 @@
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '@sapper/app'
+	import Icon from 'fa-svelte'
+	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
 	import auth from '../../../components/auth/auth-store.js'
 	import userService from './../../../components/user/user-service.js'
 	import Page from './../../../components/page/Page.svelte'
+	import Button from './../../../components/Button.svelte'
 	import Pagination from '../../../components/table/Pagination.svelte'
 	import UsersTable from '../../../components/admin/user-management/UsersTable.svelte'
 	import UserDeleteModal from '../../../components/admin/user-management/UserDeleteModal.svelte'
@@ -46,6 +49,10 @@
 		goto(`/admin/user-management/${event.detail.id}/view`)
 	}
 
+	function updateUserAccount(event) {
+		goto(`/admin/user-management/${event.detail.id}/edit`)
+	}
+
 	function showDeleteUserModal(event) {
 		userId = event.detail.id
 		showDeleteModal = true
@@ -82,7 +89,21 @@
 </svelte:head>
 
 <Page testId="userMgmt" width="full">
-	<div class="text-left" slot="header">Users</div>
+	<div
+		class="text-left flex flex-row justify-between items-center"
+		slot="header"
+	>
+		<span>Users</span>
+		<div class="flex flex-row justify-end text-base">
+			<Button
+				classes="sm:my-0"
+				on:click="{() => goto(`/admin/user-management/new`)}"
+			>
+				<Icon class="fa-icon mr-2" icon="{faPlus}" />
+				Create user
+			</Button>
+		</div>
+	</div>
 	{#if !loading && users.length}
 		{#if showDeleteModal}
 			<UserDeleteModal
@@ -91,6 +112,7 @@
 				on:deleteUser="{deleteUserAccount}"
 			/>
 		{/if}
+
 		<Pagination
 			totalCount="{totalCount}"
 			pageSize="{pageSize}"
@@ -104,6 +126,7 @@
 			sortPredicate="{sortPredicate}"
 			on:sortbypredicate="{sortByPredicate}"
 			on:toggleuseraccount="{toggleUserAccount}"
+			on:updateuseraccount="{updateUserAccount}"
 			on:viewuseraccount="{viewUserAccount}"
 			on:deleteuseraccount="{showDeleteUserModal}"
 		/>

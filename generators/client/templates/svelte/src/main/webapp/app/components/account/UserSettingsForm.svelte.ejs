@@ -1,44 +1,39 @@
 <script>
+	import { createEventDispatcher } from 'svelte'
 	import Button from '../Button.svelte'
 	import InputControl from '../InputControl.svelte'
 	import Form from '../page/Form.svelte'
 
-	export let firstName = ''
-	export let lastName = ''
-	export let email = ''
+	export let user = { firstName: '', lastName: '', email: '' }
 
 	let validFirstName = false
 	let validLastName = false
 	let validEmail = false
-	let pristine = true
+
+	const dispatch = createEventDispatcher()
 
 	function updateFirstName(event) {
-		firstName = event.target.value
-		pristine = false
+		user.firstName = event.target.value
 	}
 
 	function updateLastName(event) {
-		lastName = event.target.value
-		pristine = false
+		user.lastName = event.target.value
 	}
 
 	function updateEmail(event) {
-		email = event.target.value
-		pristine = false
+		user.email = event.target.value
 	}
 
-	$: validForm = pristine || (validFirstName && validLastName && validEmail)
+	$: validForm = validFirstName && validLastName && validEmail
 </script>
 
 <Form testId="settings">
 	<InputControl
 		label="First Name"
 		name="firstName"
-		value="{firstName}"
+		value="{user.firstName}"
 		on:input="{event => updateFirstName(event)}"
-		required
 		validations="{[
-			{ type: 'required', message: 'First name is mandatory' },
 			{
 				type: 'maxlength',
 				maxlength: 50,
@@ -50,11 +45,9 @@
 	<InputControl
 		label="Last Name"
 		name="lastName"
-		value="{lastName}"
+		value="{user.lastName}"
 		on:input="{event => updateLastName(event)}"
-		required
 		validations="{[
-			{ type: 'required', message: 'Last name is mandatory' },
 			{
 				type: 'maxlength',
 				maxlength: 50,
@@ -68,7 +61,7 @@
 		type="email"
 		label="Email"
 		name="email"
-		value="{email}"
+		value="{user.email}"
 		on:input="{event => updateEmail(event)}"
 		required
 		validations="{[
@@ -91,7 +84,10 @@
 		]}"
 		on:validate="{event => (validEmail = event.detail.valid)}"
 	/>
-	<Button type="submit" on:click disabled="{!validForm}">
-		Update Settings
-	</Button>
+	<Button
+		type="submit"
+		on:click="{() => dispatch('updatesettings', { ...user })}"
+		disabled="{!validForm}"
+	>Update Settings</Button
+	>
 </Form>

@@ -7,25 +7,25 @@
 	import UserSettingsForm from '../../components/account/UserSettingsForm.svelte'
 
 	let error
-	let login
-	let firstName
-	let lastName
-	let email
+	let user = {}
 	let settingsUpdated = false
 
 	onMount(() => initAccount())
 
 	function initAccount() {
-		login = $auth.login
-		firstName = $auth.firstName
-		lastName = $auth.lastName
-		email = $auth.email
+		user = {
+			...user,
+			login: $auth.login,
+			firstName: $auth.firstName,
+			lastName: $auth.lastName,
+			email: $auth.email,
+		}
 	}
 
-	function updateAccount() {
+	function updateAccount(event) {
 		error = undefined
 		settingsUpdated = false
-		const updatedAccount = { ...$auth, firstName, lastName, email }
+		const updatedAccount = { ...$auth, ...event.detail }
 		accountService
 			.updateAccount(updatedAccount)
 			.then(() => auth.loadUser())
@@ -40,7 +40,7 @@
 </svelte:head>
 
 <Page testId="settings">
-	<span slot="header">User settings for [{login}]</span>
+	<span slot="header">User settings for [{user ? user.login : ''}]</span>
 	<div slot="alerts">
 		<Alert
 			data-test="successMsg"
@@ -56,10 +56,5 @@
 		>An error has occurred! The user settings could not be saved.</Alert
 		>
 	</div>
-	<UserSettingsForm
-		bind:firstName
-		bind:lastName
-		bind:email
-		on:click="{updateAccount}"
-	/>
+	<UserSettingsForm user="{user}" on:updatesettings="{updateAccount}" />
 </Page>

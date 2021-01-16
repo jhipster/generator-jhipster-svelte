@@ -51,6 +51,10 @@
 		classes="sm:my-0"
 		title="Edit"
 		disabled="{user.login === currentUser}"
+		on:click="{() =>
+			dispatch('updateuseraccount', {
+				id: user.login,
+			})}"
 	>
 		<Icon class="fa-icon" icon="{faPencilAlt}" />
 	</Button>

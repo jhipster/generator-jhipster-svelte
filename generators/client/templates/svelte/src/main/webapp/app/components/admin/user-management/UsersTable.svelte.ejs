@@ -58,14 +58,7 @@
 				<TableData>{user.login}</TableData>
 				<TableData>{user.email}</TableData>
 				<TableData>
-					{#each user.authorities as authority, authIndex (authority)}
-						<span class="uppercase"
-							>{authority}
-							{authIndex !== user.authorities.length - 1
-								? ', '
-								: ''}</span
-						>
-					{/each}
+					<span class="uppercase">{user.authorities.join(', ')}</span>
 				</TableData>
 				<TableData>{formatDate(user.createdDate)}</TableData>
 				<TableData>{user.lastModifiedBy}</TableData>
@@ -79,6 +72,7 @@
 						showActions="{showActions}"
 						on:toggleuseraccount
 						on:viewuseraccount
+						on:updateuseraccount
 						on:deleteuseraccount
 					/>
 				</TableData>
