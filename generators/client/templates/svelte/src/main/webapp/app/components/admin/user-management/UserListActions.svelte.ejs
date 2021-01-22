@@ -9,36 +9,43 @@
 	import Button from '../../Button.svelte'
 	import { createEventDispatcher } from 'svelte'
 
-	export let user = undefined
-	export let currentUser = undefined
+	export let user
+	export let currentUser
 	export let showActions = false
 	const dispatch = createEventDispatcher()
+
+	$: activationIcon = user.activated ? faToggleOn : faToggleOff
+	$: activationIconTitle = user.activated
+		? 'Deactivate user'
+		: 'Activate user'
+	$: isUserSameAsCurrentUser = user.login === currentUser
 </script>
 
 <div
 	class="flex flex-row justify-center items-center leading-none"
 	class:hidden="{!showActions}"
+	data-testid="rowactions"
 >
 	<Button
 		role="action"
 		classes="sm:my-0"
-		title="{user.activated ? 'Deactivate user' : 'Activate user'}"
-		on:click="{() =>
+		title="{activationIconTitle}"
+		disabled="{isUserSameAsCurrentUser}"
+		aria-label="toggleActivation"
+		on:click="{() => {
 			dispatch('toggleuseraccount', {
 				...user,
 				activated: !user.activated,
-			})}"
-		disabled="{user.login === currentUser}"
+			})
+		}}"
 	>
-		<Icon
-			class="fa-icon"
-			icon="{user && user.activated ? faToggleOn : faToggleOff}"
-		/>
+		<Icon class="fa-icon" icon="{activationIcon}" />
 	</Button>
 	<Button
 		role="action"
 		classes="sm:my-0"
 		title="View"
+		aria-label="view"
 		on:click="{() =>
 			dispatch('viewuseraccount', {
 				id: user.login,
@@ -50,7 +57,8 @@
 		role="action"
 		classes="sm:my-0"
 		title="Edit"
-		disabled="{user.login === currentUser}"
+		disabled="{isUserSameAsCurrentUser}"
+		aria-label="edit"
 		on:click="{() =>
 			dispatch('updateuseraccount', {
 				id: user.login,
@@ -62,7 +70,8 @@
 		role="action"
 		classes="sm:my-0"
 		title="Delete"
-		disabled="{user.login === currentUser}"
+		disabled="{isUserSameAsCurrentUser}"
+		aria-label="delete"
 		on:click="{() =>
 			dispatch('deleteuseraccount', {
 				id: user.login,
