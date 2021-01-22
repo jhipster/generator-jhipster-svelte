@@ -15,6 +15,7 @@ const svelteFiles = {
 	base: [
 		{
 			templates: [
+				'.babelrc.json',
 				'.eslintignore',
 				'.eslintrc.json',
 				'cypress.json',
@@ -22,6 +23,7 @@ const svelteFiles = {
 					file: generator => `package-template.json`,
 					renameTo: () => `package.json`,
 				},
+				'jest.config.js',
 				'postcss.config.js',
 				'rollup.config.js',
 				'tailwind.config.js',
@@ -131,6 +133,7 @@ const svelteFiles = {
 				'admin/user-management/UserForm.svelte',
 				'admin/user-management/UserListActions.svelte',
 				'admin/user-management/UsersTable.svelte',
+				'admin/user-management/__tests__/user-list-actions.spec.js',
 				'page/Page.svelte',
 				'page/PageHeader.svelte',
 				'page/Form.svelte',

@@ -1,5 +1,10 @@
 {
-	"extends": ["eslint:recommended", "plugin:cypress/recommended"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:cypress/recommended",
+		"plugin:jest-dom/recommended",
+		"plugin:testing-library/recommended"
+	],
 	"parserOptions": {
 		"ecmaVersion": 2019,
 		"sourceType": "module"
@@ -8,9 +13,10 @@
 		"es6": true,
 		"browser": true,
 		"node": true,
-		"cypress/globals": true
+		"cypress/globals": true,
+		"jest": true
 	},
-	"plugins": ["svelte3", "cypress"],
+	"plugins": ["svelte3", "cypress", "jest-dom", "testing-library"],
 	"overrides": [
 		{
 			"files": ["**/*.svelte"],
