@@ -18,7 +18,7 @@ jobs:
             fail-fast: false
             matrix:
                 apps: ['monolithic-session-maven.json', 'monolithic-session-gradle.json']
-                os: [ubuntu-latest, windows-latest]
+                os: [ubuntu-latest]
                 node_version: [12.x, 14.x]
         steps:
             - uses: actions/checkout@v2
@@ -31,12 +31,7 @@ jobs:
             - uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node_version }}
-            - name: Windows - Create Svelte Hipster docker image
-              if: contains(matrix.os , 'windows-latest')
-              run: |
-                  docker build -t jhipster/svelte-hipster:latest .
-            - name: Ubuntu - Create Svelte Hipster docker image
-              if: contains(matrix.os , 'ubuntu-latest')
+            - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
             - name: Prepare environment
@@ -71,14 +66,14 @@ jobs:
                   cd "$HOME/svelte-app"
                   docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/jhipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster -Pprod bootJar --no-daemon
             - name: Maven - Cypress tests
-              if: contains(matrix.apps , 'maven') && contains(matrix.os , 'ubuntu-latest')
+              if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
                   docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/jhipster/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e
             - name: Gradle Cypress tests
-              if: contains(matrix.apps, 'gradle') && contains(matrix.os , 'ubuntu-latest')
+              if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
                   docker run -d  --rm -v $PWD:/app -v $HOME/.gradle:/home/jhipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
