@@ -9,7 +9,7 @@
 	import Page from './../../../components/page/Page.svelte'
 	import Button from './../../../components/Button.svelte'
 	import Pagination from '../../../components/table/Pagination.svelte'
-	import UsersTable from '../../../components/admin/user-management/UsersTable.svelte'
+	import UserTable from '../../../components/admin/user-management/UserTable.svelte'
 	import UserDeleteModal from '../../../components/admin/user-management/UserDeleteModal.svelte'
 
 	let error
@@ -120,7 +120,7 @@
 			classes="my-2"
 			on:pagechange="{handlePageChange}"
 		/>
-		<UsersTable
+		<UserTable
 			users="{users}"
 			currentUser="{$auth}"
 			sortPredicate="{sortPredicate}"
