@@ -18,7 +18,7 @@ jobs:
             fail-fast: false
             matrix:
                 apps: ['monolithic-session-maven.json', 'monolithic-session-gradle.json']
-                os: [ubuntu-latest, windows-latest, macOS-latest]
+                os: [ubuntu-latest, windows-latest]
                 node_version: [12.x, 14.x]
         steps:
             - uses: actions/checkout@v2
@@ -31,7 +31,12 @@ jobs:
             - uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node_version }}
-            - name: Create Svelte Hipster docker image
+            - name: Windows - Create Svelte Hipster docker image
+              if: contains(matrix.os , 'windows-latest')
+              run: |
+                  docker build -t jhipster/svelte-hipster:latest .
+            - name: Ubuntu - Create Svelte Hipster docker image
+              if: contains(matrix.os , 'ubuntu-latest')
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
             - name: Prepare environment
