@@ -1,4 +1,4 @@
-export default function validate(node, validations) {
+export function validate(node, validations) {
 	const validator = createValidator(validations)
 	function validateField(event) {
 		if (node && event.target) {
@@ -19,7 +19,7 @@ export default function validate(node, validations) {
 	}
 }
 
-function createValidator(validations) {
+export function createValidator(validations) {
 	return function validate(value) {
 		if (!validations || validations.length === 0) {
 			return { valid: true }
@@ -90,4 +90,3 @@ function pattern(validationArgs) {
 		}
 	}
 }
-

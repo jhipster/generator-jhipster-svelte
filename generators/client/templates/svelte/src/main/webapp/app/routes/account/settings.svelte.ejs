@@ -3,107 +3,58 @@
 	import auth from '../../components/auth/auth-store.js'
 	import accountService from './../../components/account/account-service'
 	import Alert from './../../components/Alert.svelte'
-	import InputControl from './../../components/InputControl.svelte'
+	import Page from '../../components/page/Page.svelte'
+	import UserSettingsForm from '../../components/account/UserSettingsForm.svelte'
 
 	let error
-	let login
-	let firstName
-	let lastName
-	let email
-	let validFirstName = false
-	let validLastName = false
-	let validEmail = false
+	let user = {}
 	let settingsUpdated = false
-	let pristine = true
-
-	$: validForm = pristine || (validFirstName && validLastName && validEmail)
 
 	onMount(() => initAccount())
 
 	function initAccount() {
-		login = $auth.login
-		firstName = $auth.firstName
-		lastName = $auth.lastName
-		email = $auth.email
+		user = {
+			...user,
+			login: $auth.login,
+			firstName: $auth.firstName,
+			lastName: $auth.lastName,
+			email: $auth.email,
+		}
 	}
 
-	function updateAccount() {
+	function updateAccount(event) {
 		error = undefined
 		settingsUpdated = false
-		const updatedAccount = { ...$auth, firstName, lastName, email }
+		const updatedAccount = { ...$auth, ...event.detail }
 		accountService
 			.updateAccount(updatedAccount)
 			.then(() => auth.loadUser())
 			.then(() => (settingsUpdated = true))
 			.catch(err => (error = err))
 	}
-
-	function updateFormState() {
-		pristine = false
-	}
 </script>
 
 <svelte:head>
 	<title>Update user settings</title>
-	<meta name="Description" content="Update user settings">
+	<meta name="Description" content="Update user settings" />
 </svelte:head>
 
-<section class="m-3 relative bg-white shadow-md rounded p-4">
-	<div class="p-4 w-full sm:max-w-3xl sm:mx-auto">
-		<div data-test="settingsTitle" class="px-4 w-full text-4xl text-center">
-			User settings for [{login}]
-		</div>
+<Page testId="settings">
+	<span slot="header">User settings for [{user ? user.login : ''}]</span>
+	<div slot="alerts">
 		<Alert
 			data-test="successMsg"
 			show="{settingsUpdated}"
 			closeable="{false}"
+		>Settings changed!</Alert
 		>
-			Settings changed!
-		</Alert>
 		<Alert
 			data-test="errorMsg"
 			type="danger"
 			show="{error}"
 			closeable="{false}"
+		>An error has occurred! The user settings could not be saved.</Alert
 		>
-			An error has occurred! The user settings could not be saved.
-		</Alert>
-		<form data-test="settingsForm" class="mt-4 flex flex-col">
-			<InputControl
-				label="First Name"
-				name="firstName"
-				value="{firstName}"
-				on:input="{(event => (firstName = event.target.value), updateFormState())}"
-				required
-				validations="{[{ type: 'required', message: 'First name is mandatory' }, { type: 'maxlength', maxlength: 50, message: 'First name cannot be longer than 50 characters' }]}"
-				on:validate="{event => (validFirstName = event.detail.valid)}"
-			/>
-			<InputControl
-				label="Last Name"
-				name="lastName"
-				value="{lastName}"
-				on:input="{(event => (lastName = event.target.value), updateFormState())}"
-				required
-				validations="{[{ type: 'required', message: 'Last name is mandatory' }, { type: 'maxlength', maxlength: 50, message: 'Last name cannot be longer than 50 characters' }]}"
-				on:validate="{event => (validLastName = event.detail.valid)}"
-			/>
-
-			<InputControl
-				type="email"
-				label="Email"
-				name="email"
-				value="{email}"
-				on:input="{(event => (email = event.target.value), updateFormState())}"
-				required
-				validations="{[{ type: 'required', message: 'Email is mandatory' }, { type: 'minlength', minlength: 5, message: 'Email is required to be at least 5 characters' }, { type: 'maxlength', maxlength: 254, message: 'Email cannot be longer than 254 characters' }, { type: 'pattern', pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: 'Email address is not valid' }]}"
-				on:validate="{event => (validEmail = event.detail.valid)}"
-			/>
-			<button
-				type="submit"
-				on:click|preventDefault="{updateAccount}"
-				class="my-4 w-64 m-auto btn btn-primary"
-				disabled="{!validForm}"
-			>Update Settings</button>
-		</form>
 	</div>
-</section>
+	<UserSettingsForm user="{user}" on:updatesettings="{updateAccount}" />
+</Page>

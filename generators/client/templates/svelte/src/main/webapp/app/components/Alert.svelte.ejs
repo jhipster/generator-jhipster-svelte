@@ -14,8 +14,8 @@
 	class:text-green-900="{type === 'success'}"
 	class:bg-red-200="{type === 'danger'}"
 	class:text-red-900="{type === 'danger'}"
-	class:bg-orange-200="{type === 'warning'}"
-	class:text-orange-900="{type === 'warning'}"
+	class:bg-yellow-100="{type === 'warning'}"
+	class:text-yellow-900="{type === 'warning'}"
 	class="px-7 py-3 mt-4 flex justify-between rounded text-sm"
 >
 	<div {...$$restProps}>
@@ -26,7 +26,7 @@
 			class:hover:text-red-700="{type === 'danger'}"
 			class="self-start text-xl leading-4 bg-transparent border-0
 				focus:outline-none"
-			on:click="{closeAlert}"
-		>&times</button>
+			on:click="{closeAlert}">&times</button
+		>
 	{/if}
 </div>

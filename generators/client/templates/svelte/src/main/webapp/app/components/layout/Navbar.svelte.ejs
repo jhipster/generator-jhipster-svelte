@@ -7,6 +7,8 @@
 	import NavItem from './NavItem.svelte'
 	import auth from '../auth/auth-store.js'
 	import AccountMenu from './AccountMenu.svelte'
+	import AdminMenu from './AdminMenu.svelte'
+	import RoleGuard from '../auth/RoleGuard.svelte'
 
 	let isToolbarOpen = false
 
@@ -21,13 +23,15 @@
 >
 	<div class="flex items-center justify-between px-4 py-3 sm:p-0">
 		<div class="flex items-baseline justify-between text-gray-100">
-			<a href="/" on:click="{() => (isToolbarOpen = false)}"><img
+			<a href="/" on:click="{() => (isToolbarOpen = false)}"
+				><img
 					width="48px"
 					height="20px"
 					class="w-12 m-auto"
 					src="img/logo-jhipster.png"
 					alt="Application logo"
-				/></a>
+				/></a
+			>
 			<div data-test="svlAppName" class="ml-2 font-semibold text-xl">
 				<%= baseName %>
 			</div>
@@ -40,16 +44,20 @@
 				data-test="svlNavBtn"
 				on:click="{toggleToolbar}"
 				type="button"
-				class="block px-2 py-1 outline-none hover:text-white
-					focus:outline-none focus:shadow-outline rounded
-					focus:text-white text-gray-500"
-			>
+				class="block px-2 py-1 hover:text-white
+					focus:outline-none focus:ring rounded
+					focus:text-white text-gray-500">
 				<Icon class="fa-icon" icon="{faBars}" />
 			</button>
 		</div>
 	</div>
 	<div class:hidden="{!isToolbarOpen}" class="sm:flex">
 		{#if $auth}
+			<RoleGuard role="ADMIN">
+				<div data-test="svlAdminMenu" class="sm:ml-4">
+					<AdminMenu />
+				</div>
+			</RoleGuard>
 			<div data-test="svlAcctMenu" class="sm:ml-4">
 				<AccountMenu />
 			</div>

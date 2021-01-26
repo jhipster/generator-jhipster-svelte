@@ -1,45 +1,46 @@
 <script>
-
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { stores } from '@sapper/app'
 
 	import accountService from './../../components/account/account-service'
 	import Alert from './../../components/Alert.svelte'
+	import Page from './../../components/page/Page.svelte'
 
 	let error
 	let accountActivated = false
 	const { page } = stores()
 
-	$: activationKey = $page && $page.query && $page.query.key;
+	$: activationKey = $page && $page.query && $page.query.key
 
-	onMount(() => activateUserAccount());
+	onMount(() => activateUserAccount())
 
 	function activateUserAccount() {
 		error = undefined
 		accountActivated = false
 		accountService
 			.activateAccount(activationKey)
-			.then(() => accountActivated = true)
-			.catch((err) => error = err)
+			.then(() => (accountActivated = true))
+			.catch(err => (error = err))
 	}
 </script>
 
 <svelte:head>
 	<title>Activate user account</title>
-	<meta name="Description" content="Activate user account">
+	<meta name="Description" content="Activate user account" />
 </svelte:head>
 
-<section class="m-3 relative bg-white shadow-md rounded p-4">
-	<div class="p-4 w-full sm:max-w-3xl sm:mx-auto">
-		<div class="px-4 w-full text-4xl text-center">
-			Activate user account
-		</div>
+<Page testId="activate">
+	<span slot="header">Activate user account</span>
+	<div slot="alerts">
 		<Alert show="{accountActivated}" closeable="{false}">
 			<span>Your user account has been activated. Please </span>
-                <a class="font-semibold underline" href="/login" >Sign in</a>.
+			<a class="font-semibold underline" href="/login">Sign in</a>.
 		</Alert>
 		<Alert type="danger" show="{!!error}" closeable="{false}">
-			Your user could not be activated. Please use the registration form to <a class="font-semibold underline" href="/account/register" >Sign up</a>.
+			Your user could not be activated. Please use the registration form
+			to <a class="font-semibold underline" href="/account/register"
+				>Sign up</a
+			>.
 		</Alert>
 	</div>
-</section>
+</Page>

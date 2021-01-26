@@ -6,7 +6,11 @@
 }
 
 .btn {
-	@apply py-2 px-4 font-bold rounded transition-colors duration-200;
+	@apply py-2 px-6 font-bold rounded transition-colors duration-200;
+}
+
+.btn-sm {
+	@apply py-2 px-2 font-semibold rounded transition-colors duration-200;
 }
 
 .btn-primary {
@@ -18,8 +22,39 @@
 }
 
 .btn-primary:disabled {
-	@apply bg-blue-400 opacity-75 pointer-events-none;
+	@apply opacity-75 pointer-events-none;
 }
 
+.btn-secondary {
+	@apply bg-gray-500 text-white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+	@apply bg-gray-700;
+}
+
+.btn-danger {
+	@apply bg-red-700 text-white;
+}
+
+.btn-danger:hover:not(:disabled) {
+	@apply bg-red-800;
+}
+
+.btn-danger:disabled {
+	@apply opacity-75 pointer-events-none;
+}
+
+.btn-action {
+	@apply btn-sm px-3 text-gray-600;
+}
+
+.btn-action:hover:not(:disabled) {
+	@apply bg-gray-300 text-gray-900;
+}
+
+.btn-action:disabled {
+	@apply opacity-75 pointer-events-none;
+}
 
 @tailwind utilities;

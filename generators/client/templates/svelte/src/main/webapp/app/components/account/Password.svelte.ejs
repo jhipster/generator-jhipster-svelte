@@ -16,7 +16,19 @@
 	name="{name}"
 	on:input
 	required
-	validations="{[{ type: 'required', message: 'Password is mandatory' }, { type: 'minlength', minlength: 4, message: 'Password is required to be at least 4 characters' }, { type: 'maxlength', maxlength: 50, message: 'Password cannot be longer than 50 characters' }]}"
+	validations="{[
+		{ type: 'required', message: 'Password is mandatory' },
+		{
+			type: 'minlength',
+			minlength: 4,
+			message: 'Password is required to be at least 4 characters',
+		},
+		{
+			type: 'maxlength',
+			maxlength: 50,
+			message: 'Password cannot be longer than 50 characters',
+		},
+	]}"
 	on:validate
 	let:message
 	let:dirty

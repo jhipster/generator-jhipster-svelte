@@ -21,7 +21,12 @@ module.exports = {
 			},
 		},
 	},
-	variants: {},
+	variants: {
+		extend: {
+			backgroundColor: ['checked'],
+			borderColor: ['checked'],
+		},
+	},
 	plugins: [],
 	future: {
 		removeDeprecatedGapUtilities: true,

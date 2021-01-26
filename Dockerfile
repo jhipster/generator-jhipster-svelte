@@ -51,11 +51,12 @@ RUN \
 	&& echo PATH="$NPM_PATH/bin:$PATH" >> "$HOME/.profile" \
 	&& . "$HOME/.profile"
 
-RUN npm install -g --no-audit --quiet generator-jhipster@6.10.3
+RUN npm install -g --no-audit --quiet generator-jhipster@6.10.5
 
 COPY package.json package-lock.json $SVELTE_PATH/
 
 WORKDIR $SVELTE_PATH
+
 RUN	npm install --quiet \
 	&& npm link
 
