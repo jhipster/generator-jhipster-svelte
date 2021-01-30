@@ -11,7 +11,7 @@ Cypress.Commands.add('getBySel', (selector, ...args) => {
 Cypress.Commands.add('getByName', selector => {
 	return cy.get(`[name=${selector}]`)
 })
-
+<%_ if (authenticationType === 'session') { _%>
 Cypress.Commands.add('loginByApi', (username, password) => {
 	cy.request({ method: 'GET', url: `api/authenticate` })
 		.then(res => {
@@ -41,3 +41,30 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 			expect(res.status).to.eq(200)
 		})
 })
+<%_ } else if (authenticationType === 'jwt') { _%>
+Cypress.Commands.add('loginByApi', (username, password) => {
+	cy.request({
+			method: 'POST',
+			url: `api/authenticate`,
+			body: {
+				username: username,
+				password: password,
+				'remember-me': false,
+			},
+		})
+	.then(res => {
+		expect(res.status).to.eq(200)
+		sessionStorage.setItem('authToken', res.body.id_token)
+		return cy.request({
+			method: 'GET',
+			url: `api/account`, 
+			headers: {
+				'Authorization': `Bearer ${res.body.id_token}`
+			}
+		})
+	})
+	.then(res => {
+		expect(res.status).to.eq(200)
+	})
+})
+<%_ } _%>

@@ -5,6 +5,16 @@ const userStore = writable(undefined)
 
 export default {
 	subscribe: userStore.subscribe,
+<%_ if (authenticationType === 'jwt') { _%>
+	storeToken: (authToken, rememberMe) => {
+		if (rememberMe) {
+			localStorage.setItem('authToken', authToken)
+		} else {
+			sessionStorage.setItem('authToken', authToken)
+		}
+		return Promise.resolve()
+	},
+<%_ } _%>
 	loadUser: () => {
 		return authService
 			.fetchAuthenticatedUserDetails()
@@ -37,5 +47,9 @@ export default {
 	},
 	logout: () => {
 		userStore.set(undefined)
+<%_ if (authenticationType === 'jwt') { _%>
+		localStorage.removeItem('authToken')
+		sessionStorage.removeItem('authToken')
+<%_ } _%>
 	},
 }

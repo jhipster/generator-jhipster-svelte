@@ -19,6 +19,7 @@
 
 	$: validForm = validUsername && validPassword
 
+<%_ if (authenticationType === 'session') { _%>
 	function login() {
 		authError = false
 
@@ -28,6 +29,18 @@
 			.then(() => goto('/'))
 			.catch(() => ((password = ''), (authError = true)))
 	}
+<%_ } else if (authenticationType === 'jwt') { _%>
+	function login() {
+		authError = false
+
+		authService
+			.login(username, password, rememberMe)
+			.then(response => auth.storeToken(response.id_token, rememberMe))
+			.then(() => auth.loadUser())
+			.then(() => goto('/'))
+			.catch(() => ((password = ''), (authError = true)))
+	}
+<%_ } _%>
 </script>
 
 <svelte:head>

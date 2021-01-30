@@ -8,10 +8,12 @@
 	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 
 	import auth from '../auth/auth-store.js'
+<%_ if (authenticationType === 'session') { _%>
 	import authService from './../auth/auth-service.js'
-
+<%_ } _%>
 	let isOpen = false
 
+<%_ if (authenticationType === 'session') { _%>
 	function logout() {
 		authService
 			.logout()
@@ -22,6 +24,12 @@
 			.then(() => goto('/'))
 			.catch()
 	}
+<%_ } else if (authenticationType === 'jwt') { _%>
+	function logout() {
+		auth.logout()
+		goto('/')
+	}
+<%_ } _%>
 </script>
 
 <div class="px-2 pt-2 pb-4 sm:p-0 relative sm:flex sm:mr-2 sm:z-10">
