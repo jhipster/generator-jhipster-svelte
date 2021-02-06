@@ -14,11 +14,11 @@
 }
 
 .btn-primary {
-	@apply bg-blue-700 text-white;
+	@apply bg-blue-700 text-white dark:bg-blue-500 dark:text-gray-100;
 }
 
 .btn-primary:hover:not(:disabled) {
-	@apply bg-blue-800;
+	@apply bg-blue-800 dark:bg-blue-400;
 }
 
 .btn-primary:disabled {
@@ -26,19 +26,19 @@
 }
 
 .btn-secondary {
-	@apply bg-gray-500 text-white;
+	@apply bg-gray-500 dark:bg-gray-300 text-white dark:text-gray-800;
 }
 
 .btn-secondary:hover:not(:disabled) {
-	@apply bg-gray-700;
+	@apply bg-gray-700 dark:bg-gray-500;
 }
 
 .btn-danger {
-	@apply bg-red-700 text-white;
+	@apply bg-red-700 dark:bg-red-500 text-white;
 }
 
 .btn-danger:hover:not(:disabled) {
-	@apply bg-red-800;
+	@apply bg-red-800 dark:bg-red-400;
 }
 
 .btn-danger:disabled {
@@ -46,11 +46,11 @@
 }
 
 .btn-action {
-	@apply btn-sm px-3 text-gray-600;
+	@apply btn-sm px-3 text-gray-600 dark:text-gray-300;
 }
 
 .btn-action:hover:not(:disabled) {
-	@apply bg-gray-300 text-gray-900;
+	@apply bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100;
 }
 
 .btn-action:disabled {

@@ -9,6 +9,7 @@
 	import AccountMenu from './AccountMenu.svelte'
 	import AdminMenu from './AdminMenu.svelte'
 	import RoleGuard from '../auth/RoleGuard.svelte'
+	import ThemeToggle from './ThemeToggle.svelte'
 
 	let isToolbarOpen = false
 
@@ -18,8 +19,7 @@
 </script>
 
 <header
-	class="sticky top-0 w-full bg-gray-800 sm:flex sm:justify-between sm:px-4
-		sm:py-3"
+	class="sticky top-0 w-full bg-gray-800 sm:flex sm:justify-between items-center sm:px-4 sm:py-3 shadow-md"
 >
 	<div class="flex items-center justify-between px-4 py-3 sm:p-0">
 		<div class="flex items-baseline justify-between text-gray-100">
@@ -35,23 +35,32 @@
 			<div data-test="svlAppName" class="ml-2 font-semibold text-xl">
 				<%= baseName %>
 			</div>
-			<div data-test="svlAppVersion" class="ml-2 text-xs text-gray-500">
+			<div data-test="svlAppVersion" class="ml-2 text-xs text-gray-400">
 				DEV
 			</div>
 		</div>
-		<div class="sm:hidden">
-			<button
-				data-test="svlNavBtn"
-				on:click="{toggleToolbar}"
-				type="button"
-				class="block px-2 py-1 hover:text-white
-					focus:outline-none focus:ring rounded
-					focus:text-white text-gray-500">
-				<Icon class="fa-icon" icon="{faBars}" />
-			</button>
+		<div class="flex flex-row justify-items-end items-center">
+			<div class="block sm:hidden mr-2">
+				<ThemeToggle />
+			</div>
+			<div class="sm:hidden">
+				<button
+					data-test="svlNavBtn"
+					on:click="{toggleToolbar}"
+					type="button"
+					class="block px-2 py-1 hover:text-white
+						focus:outline-none focus:ring rounded
+						focus:text-white text-gray-400 leading-none"
+				>
+					<Icon class="fa-icon" icon="{faBars}" />
+				</button>
+			</div>
 		</div>
 	</div>
-	<div class:hidden="{!isToolbarOpen}" class="sm:flex">
+	<div class:hidden="{!isToolbarOpen}" class="sm:flex sm:items-center">
+		<div class="hidden sm:block">
+			<ThemeToggle />
+		</div>
 		{#if $auth}
 			<RoleGuard role="ADMIN">
 				<div data-test="svlAdminMenu" class="sm:ml-4">

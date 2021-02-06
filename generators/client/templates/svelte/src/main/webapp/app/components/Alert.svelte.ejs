@@ -11,12 +11,18 @@
 <div
 	class:hidden="{!show}"
 	class:bg-green-200="{type === 'success'}"
+	class:dark:bg-green-200="{type === 'success'}"
 	class:text-green-900="{type === 'success'}"
+	class:dark:text-green-900="{type === 'success'}"
 	class:bg-red-200="{type === 'danger'}"
+	class:dark:bg-red-200="{type === 'danger'}"
 	class:text-red-900="{type === 'danger'}"
+	class:dark:text-red-900="{type === 'danger'}"
 	class:bg-yellow-100="{type === 'warning'}"
+	class:dark:bg-yellow-200="{type === 'warning'}"
 	class:text-yellow-900="{type === 'warning'}"
-	class="px-7 py-3 mt-4 flex justify-between rounded text-sm"
+	class:dark:text-yellow-900="{type === 'warning'}"
+	class="px-7 py-3 mt-4 flex justify-between transition-colors duration-150 rounded text-sm"
 >
 	<div {...$$restProps}>
 		<slot />
@@ -24,6 +30,7 @@
 	{#if closeable}
 		<button
 			class:hover:text-red-700="{type === 'danger'}"
+			class:dark:hover:text-red-500="{type === 'danger'}"
 			class="self-start text-xl leading-4 bg-transparent border-0
 				focus:outline-none"
 			on:click="{closeAlert}">&times</button

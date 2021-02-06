@@ -4,8 +4,7 @@
 </script>
 
 <footer
-	class="flex flex-col justify-between items-center sm:flex-row bg-gray-200
-		p-3"
+	class="flex flex-col justify-between items-center sm:flex-row bg-gray-200 dark:bg-gray-800 p-3"
 >
 	<div class="text-sm">
 		<p data-test="copyrightMsg">
@@ -20,7 +19,7 @@
 			<a
 				href="https://twitter.com/vishal423"
 				target="tab"
-				class="text-yellow-800">@vishal423</a
+				class="text-yellow-800 dark:text-yellow-300">@vishal423</a
 			>
 		</p>
 	</div>
