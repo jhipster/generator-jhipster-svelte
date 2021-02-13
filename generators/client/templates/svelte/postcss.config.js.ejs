@@ -5,7 +5,7 @@ module.exports = {
 		process.env.NODE_ENV === 'production' &&
 			require('@fullhuman/postcss-purgecss')({
 				content: ['./src/**/*.svelte', './src/**/*.html'],
-				whitelistPatterns: [/svelte-/],
+				safelist: [/svelte-/],
 				defaultExtractor: content => {
 					const regExp = new RegExp(/[A-Za-z0-9-_:/]+/g);
 
