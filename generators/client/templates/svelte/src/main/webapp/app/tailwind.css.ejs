@@ -1,60 +1,62 @@
 @tailwind base;
 @tailwind components;
 
-.fa-icon {
-	@apply w-4 h-4 overflow-visible inline-block fill-current;
-}
+@layer components {
+	.fa-icon {
+		@apply w-4 h-4 overflow-visible inline-block fill-current;
+	}
 
-.btn {
-	@apply py-2 px-6 font-bold rounded transition-colors duration-200;
-}
+	.btn {
+		@apply py-2 px-6 font-bold rounded transition-colors duration-200;
+	}
 
-.btn-sm {
-	@apply py-2 px-2 font-semibold rounded transition-colors duration-200;
-}
+	.btn-sm {
+		@apply py-2 px-2 font-semibold rounded transition-colors duration-200;
+	}
 
-.btn-primary {
-	@apply bg-blue-700 text-white;
-}
+	.btn-primary {
+		@apply bg-blue-700 text-white dark:bg-blue-500 dark:text-gray-100;
+	}
 
-.btn-primary:hover:not(:disabled) {
-	@apply bg-blue-800;
-}
+	.btn-primary:hover:not(:disabled) {
+		@apply bg-blue-800 dark:bg-blue-400;
+	}
 
-.btn-primary:disabled {
-	@apply opacity-75 pointer-events-none;
-}
+	.btn-primary:disabled {
+		@apply opacity-75 pointer-events-none;
+	}
 
-.btn-secondary {
-	@apply bg-gray-500 text-white;
-}
+	.btn-secondary {
+		@apply bg-gray-500 dark:bg-gray-300 text-white dark:text-gray-800;
+	}
 
-.btn-secondary:hover:not(:disabled) {
-	@apply bg-gray-700;
-}
+	.btn-secondary:hover:not(:disabled) {
+		@apply bg-gray-700 dark:bg-gray-500;
+	}
 
-.btn-danger {
-	@apply bg-red-700 text-white;
-}
+	.btn-danger {
+		@apply bg-red-700 dark:bg-red-500 text-white;
+	}
 
-.btn-danger:hover:not(:disabled) {
-	@apply bg-red-800;
-}
+	.btn-danger:hover:not(:disabled) {
+		@apply bg-red-800 dark:bg-red-400;
+	}
 
-.btn-danger:disabled {
-	@apply opacity-75 pointer-events-none;
-}
+	.btn-danger:disabled {
+		@apply opacity-75 pointer-events-none;
+	}
 
-.btn-action {
-	@apply btn-sm px-3 text-gray-600;
-}
+	.btn-action {
+		@apply btn-sm px-3 text-gray-600 dark:text-gray-300;
+	}
 
-.btn-action:hover:not(:disabled) {
-	@apply bg-gray-300 text-gray-900;
-}
+	.btn-action:hover:not(:disabled) {
+		@apply bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100;
+	}
 
-.btn-action:disabled {
-	@apply opacity-75 pointer-events-none;
+	.btn-action:disabled {
+		@apply opacity-75 pointer-events-none;
+	}
 }
 
 @tailwind utilities;

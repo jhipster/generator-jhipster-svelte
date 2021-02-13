@@ -14,7 +14,7 @@
 
 <Table testId="userMgmt">
 	<thead slot="head">
-		<TableRow classes="bg-gray-100">
+		<TableRow classes="bg-gray-100 dark:bg-gray-700">
 			<TableHeader>
 				<span>ID</span>
 				<Sort
@@ -50,7 +50,7 @@
 			<TableRow let:showActions>
 				<TableData
 					classes="{!user.activated
-						? 'border-l-4 border-red-300'
+						? 'border-l-4 border-red-300 dark:border-red-700'
 						: ''}"
 				>
 					{user.id}

@@ -40,7 +40,9 @@
 		>
 			<Icon class="fa-icon" icon="{faAngleLeft}" />
 		</Button>
-		<div class="font-bold bg-blue-700 text-white py-2 px-4 rounded">
+		<div
+			class="font-bold bg-blue-700 dark:bg-blue-500 text-white py-2 px-4 rounded"
+		>
 			{page}
 		</div>
 		<Button

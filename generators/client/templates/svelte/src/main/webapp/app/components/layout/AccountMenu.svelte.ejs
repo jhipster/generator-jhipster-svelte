@@ -6,6 +6,7 @@
 	import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
 	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
+	import MenuItem from './MenuItem.svelte'
 
 	import auth from '../auth/auth-store.js'
 <%_ if (authenticationType === 'session') { _%>
@@ -44,7 +45,7 @@
 			on:click="{() => (isOpen = !isOpen)}"
 			class="sm:z-10 sm:h-8 sm:w-8 sm:flex sm:justify-center
 				sm:items-center sm:rounded-full sm:overflow-hidden border-0
-				sm:border-2 sm:border-gray-600 text-gray-500 focus:text-white
+				sm:border-2 sm:border-gray-600 text-gray-400 focus:text-white
 				focus:outline-none focus:border-white focus:ring">
 			<Icon class="fa-icon" icon="{faUser}" />
 			<span class="sm:hidden">{$auth.login}</span>
@@ -63,38 +64,26 @@
 	{/if}
 	<div
 		class:hidden="{!isOpen}"
-		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white rounded
+		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white sm:dark:bg-gray-700 rounded
 			sm:rounded-lg sm:shadow-lg"
 	>
-		<a
-			data-test="svlChgPwdLink"
-			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
-				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
-				sm:text-gray-800 sm:hover:bg-indigo-500"
-			href="/account/password"
+		<MenuItem
+			testId="svlChgPwdLink"
+			link="/account/password"
 			on:click="{() => (isOpen = false)}"
 			><Icon class="fa-icon sm:mr-1" icon="{faLock}" />
-			Change Password</a
-		>
-		<a
-			data-test="svlSettingsLink"
-			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
-				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
-				sm:text-gray-800 sm:hover:bg-indigo-500"
-			href="/account/settings"
+			Change Password
+		</MenuItem>
+		<MenuItem
+			testId="svlSettingsLink"
+			link="/account/settings"
 			on:click="{() => (isOpen = false)}"
 			><Icon class="fa-icon sm:mr-1" icon="{faWrench}" />
-			Settings</a
-		>
-		<a
-			data-test="svlSignoutLink"
-			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
-				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
-				sm:text-gray-800 sm:hover:bg-indigo-500"
-			href="/"
-			on:click="{logout}"
+			Settings
+		</MenuItem>
+		<MenuItem testId="svlSignoutLink" link="/" on:click="{logout}"
 			><Icon class="fa-icon sm:mr-1" icon="{faSignOutAlt}" />
-			Sign out</a
-		>
+			Sign out
+		</MenuItem>
 	</div>
 </div>
