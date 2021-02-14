@@ -147,6 +147,7 @@ const svelteFiles = {
 				'SelectControl.svelte',
 				'auth/auth-service.js',
 				'auth/auth-store.js',
+				'auth/AuthGuard.svelte',
 				'auth/RoleGuard.svelte',
 				'layout/AccountMenu.svelte',
 				'layout/AdminMenu.svelte',
