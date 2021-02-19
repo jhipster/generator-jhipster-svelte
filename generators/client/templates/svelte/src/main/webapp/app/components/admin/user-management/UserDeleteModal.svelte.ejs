@@ -16,6 +16,7 @@
 	<p class="w-112">Are you sure you want to delete the user?</p>
 	<div slot="footer">
 		<Button
+			name="cancelBtn"
 			role="secondary"
 			classes="mr-4"
 			on:click="{() => dispatch('close')}"
@@ -23,7 +24,7 @@
 			<Icon class="fa-icon mr-2" icon="{faBan}" />Cancel
 		</Button>
 
-		<Button role="danger" on:click="{() => dispatch('deleteUser', { id })}">
+		<Button name="deleteUserBtn" role="danger" on:click="{() => dispatch('deleteUser', { id })}">
 			<Icon class="fa-icon mr-2" icon="{faTrashAlt}" />Delete
 		</Button>
 	</div>
