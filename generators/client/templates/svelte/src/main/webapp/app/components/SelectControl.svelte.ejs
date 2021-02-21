@@ -117,7 +117,7 @@
 			tabindex="-1"
 			class:z-20="{isOpen}"
 			class="focus:outline-none focus:ring-0"
-			on:click="{() => (isOpen = !isOpen)}">
+			on:click|preventDefault="{() => (isOpen = !isOpen)}">
 			<Icon
 				class="fa-icon {isOpen ? 'opacity-100' : 'opacity-70'}"
 				icon="{faCaretDown}"
@@ -126,12 +126,14 @@
 	</div>
 	{#if isOpen}
 		<button
+			data-test="{name}-bg"
 			tabindex="-1"
-			on:click="{() => (isOpen = false)}"
+			on:click|preventDefault="{() => (isOpen = false)}"
 			class="fixed block inset-0 w-full h-full z-10 bg-gray-200 dark:bg-gray-700 opacity-50 cursor-default"
 		></button>
 	{/if}
 	<div
+		data-test="{name}-options"
 		class:hidden="{!isOpen}"
 		class="absolute left-0 w-full py-2 bg-white dark:bg-gray-800 border-b-2 rounded shadow-md border-2 z-10 border-t-0 rounded-tl-none rounded-tr-none"
 		class:border-blue-600="{focusedAndValidOrPristine || !dirtyAndInvalid}"

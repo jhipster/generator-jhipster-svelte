@@ -12,9 +12,9 @@ describe('User view details page', () => {
 			email: `${randomUser}@localhost.org`,
 			activated: true,
 			authorities: ['ROLE_USER'],
+		}).then(res => {
+			cy.visit(`/admin/user-management/${res.login}/view`)
 		})
-
-		cy.visit(`/admin/user-management/${randomUser}/view`)
 	})
 
 	afterEach(() => {

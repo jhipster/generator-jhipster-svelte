@@ -175,12 +175,13 @@
 
 	<div class="w-full p-4 flex flex-row justify-center items-center">
 		<div class="mr-4">
-			<Button role="secondary" on:click="{() => dispatch('cancel')}">
+			<Button name="cancelBtn" role="secondary" on:click="{() => dispatch('cancel')}">
 				<Icon class="fa-icon mr-2" icon="{faBan}" />Cancel
 			</Button>
 		</div>
 		<div>
 			<Button
+				name="saveBtn"
 				type="submit"
 				on:click="{() => dispatch('saveorupdate', { ...user })}"
 				disabled="{!validForm}"
