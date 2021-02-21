@@ -8,32 +8,38 @@
 
 This is a [JHipster](https://www.jhipster.tech/) blueprint, that intends to use [Sapper](https://sapper.svelte.dev/) / [Svelte](https://svelte.dev/) as the client side development framework.
 
+## What's new
+
+Refer to the [changelog](./CHANGELOG.md) to gain more insights into each release details.
+
 ## Supported flows and integrations
 
 > Under active development
 
 Following integrations are supported:
 
-    ✅ Session authentication
+    ✅ Session, JWT authentication
+    ✅ Dark Mode support
+    ✅ Tailwind CSS, PurgeCSS, PostCSS integration for optimized CSS bundles
     ✅ Prettier, EsLint integration
     ✅ Cypress integration for end to end tests
     ✅ Jest and Testing Library integration for unit tests
     ✅ Rollup module bundler
 
-Following functional flows are covered:
+Following functional flows are covered with end to end tests:
 
     ✅ Sign in
     ✅ Sign up
     ✅ Forgot Password
-    ✅ Home<
+    ✅ Home
     ✅ Account
         ✅ Change Password
         ✅ Settings
         ✅ Sign out
     ✅ Administration
-        ✅ User Management
+        ✅ User Management (List, Create, Update, View, Delete)
 
-For details, you can check out the source code of [sample application](https://github.com/jhipster/jhipster-sample-app-svelte)
+For more details, you can check out the source code of [sample application](https://github.com/jhipster/jhipster-sample-app-svelte)
 
 ## Technical Stack
 
@@ -121,7 +127,9 @@ docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
 docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jhipster/.m2 --entrypoint sh jhipster/svelte-hipster
 ```
 
-## 🛠️ Development
+## 🛠️ Local Development
+
+> Pull requests are encouraged and always welcome.
 
 To setup your development environment, follow below steps:
 

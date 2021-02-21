@@ -160,7 +160,7 @@ const svelteFiles = {
 				'layout/MenuItem.svelte',
 				'layout/Navbar.svelte',
 				'layout/NavItem.svelte',
-				'layout/ThemeToggle.svelte',
+				'layout/ThemeModeToggle.svelte',
 				'table/Pagination.svelte',
 				'table/Sort.svelte',
 				'table/Table.svelte',
