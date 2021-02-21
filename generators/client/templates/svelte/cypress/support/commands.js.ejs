@@ -58,6 +58,7 @@ Cypress.Commands.add('save', (url, body, status = 201) => {
 		})
 		.then(res => {
 			expect(res.status).to.eq(status)
+			return cy.wrap(res.body)
 		})
 })
 
@@ -118,6 +119,7 @@ Cypress.Commands.add('save', (url, body, status = 201) => {
 	})
 	.then(res => {
 		expect(res.status).to.eq(status)
+		return cy.wrap(res.body)
 	})
 })
 
