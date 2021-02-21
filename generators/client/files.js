@@ -45,6 +45,7 @@ const svelteFiles = {
 				'cypress/integration/admin/user-management/user-create.spec.js',
 				'cypress/integration/admin/user-management/user-delete.spec.js',
 				'cypress/integration/admin/user-management/user-list.spec.js',
+				'cypress/integration/admin/user-management/user-update.spec.js',
 				'cypress/integration/admin/user-management/user-view.spec.js',
 				'cypress/plugins/index.js',
 				'cypress/support/index.js',

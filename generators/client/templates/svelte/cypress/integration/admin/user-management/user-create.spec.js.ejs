@@ -46,7 +46,7 @@ describe('Create user page', () => {
 			.click()
 			.getBySel('roles-options')
 			.within(() => {
-				cy.root().get("input[type='checkbox']").eq(0).click().click()
+				cy.root().get("input[type='checkbox']").eq(0).check().uncheck()
 			})
 			.getBySel('roles-bg')
 			.click()
@@ -91,7 +91,7 @@ describe('Create user page', () => {
 				.click()
 				.getBySel('roles-options')
 				.within(() => {
-					cy.root().get("input[type='checkbox']").eq(0).click()
+					cy.root().get("input[type='checkbox']").eq(0).check()
 				})
 				.getBySel('roles-bg')
 				.click()
