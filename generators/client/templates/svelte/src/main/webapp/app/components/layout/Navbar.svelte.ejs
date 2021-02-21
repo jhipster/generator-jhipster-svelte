@@ -9,7 +9,7 @@
 	import AccountMenu from './AccountMenu.svelte'
 	import AdminMenu from './AdminMenu.svelte'
 	import RoleGuard from '../auth/RoleGuard.svelte'
-	import ThemeToggle from './ThemeToggle.svelte'
+	import ThemeModeToggle from './ThemeModeToggle.svelte'
 
 	let isToolbarOpen = false
 
@@ -41,7 +41,7 @@
 		</div>
 		<div class="flex flex-row justify-items-end items-center">
 			<div class="block sm:hidden mr-2">
-				<ThemeToggle />
+				<ThemeModeToggle />
 			</div>
 			<div class="sm:hidden">
 				<button
@@ -59,7 +59,7 @@
 	</div>
 	<div class:hidden="{!isToolbarOpen}" class="sm:flex sm:items-center">
 		<div class="hidden sm:block">
-			<ThemeToggle />
+			<ThemeModeToggle />
 		</div>
 		{#if $auth}
 			<RoleGuard role="ADMIN">
