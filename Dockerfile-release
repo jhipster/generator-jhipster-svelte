@@ -53,7 +53,7 @@ RUN \
 
 RUN npm install -g --no-audit --quiet generator-jhipster@6.10.5
 
-RUN npm install -g --no-audit --quiet generator-jhipster-svelte@0.2.0
+RUN npm install -g --no-audit --quiet generator-jhipster-svelte@0.2.1
 
 WORKDIR $APP_PATH
 
