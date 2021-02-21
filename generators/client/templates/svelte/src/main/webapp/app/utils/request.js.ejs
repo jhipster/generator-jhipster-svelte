@@ -15,6 +15,7 @@ function getCookieValue(cookieName) {
 
 export function prepareRequest(method = 'GET', body = undefined, headers = {}) {
 	let requestHeaders = { ...headers }
+<%_ if (authenticationType === 'session') { _%>
 	if (['POST', 'PUT', 'DELETE'].includes(method)) {
 		const csrfCookieValue = getCookieValue('XSRF-TOKEN')
 		if (csrfCookieValue) {
@@ -24,7 +25,16 @@ export function prepareRequest(method = 'GET', body = undefined, headers = {}) {
 			}
 		}
 	}
-
+<%_ } else if (authenticationType === 'jwt') { _%>
+	const authToken =
+		localStorage.getItem('authToken') || sessionStorage.getItem('authToken')
+	if (authToken) {
+		requestHeaders = {
+			...requestHeaders,
+			Authorization: `Bearer ${authToken}`,
+		}
+	}
+<%_ } _%>
 	return {
 		method,
 		body,

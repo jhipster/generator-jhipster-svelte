@@ -60,23 +60,30 @@
 			pointer-events-none"
 		class:-mt-2="{focusedOrContainsValue}"
 		class:bg-white="{focusedOrContainsValue}"
+		class:dark:bg-gray-800="{focusedOrContainsValue}"
 		class:top-0="{focusedOrContainsValue}"
 		class:pt-3="{!focusedOrContainsValue}"
 		class:pt-0="{focusedOrContainsValue}"
 		class:text-xs="{focusedOrContainsValue}"
 		class:text-gray-700="{!focused}"
+		class:dark:text-gray-400="{!focused}"
 		class:text-blue-700="{focusedAndValidOrPristine}"
+		class:dark:text-blue-500="{focusedAndValidOrPristine}"
 		class:text-red-600="{dirtyAndInvalid && focused}"
+		class:dark:text-red-500="{dirtyAndInvalid && focused}"
 		for="{name + randomSuffix}"
 		>{label}<span class="ml-px">{isRequired ? '*' : ''}</span>
 	</label>
 	<input
-		class="px-3 py-3 w-full shadow-none bg-white outline-none focus:ring-0 rounded z-10 focus:bg-gray-100"
+		class="px-3 py-3 w-full shadow-none bg-white dark:bg-gray-800 outline-none focus:ring-0 rounded z-10"
 		class:border="{!focused}"
 		class:border-2="{focused}"
 		class:border-gray-400="{pristineOrValid}"
+		class:dark:border-gray-700="{pristineOrValid}"
 		class:border-blue-600="{focusedAndValidOrPristine}"
+		class:dark:border-blue-500="{focusedAndValidOrPristine}"
 		class:border-red-600="{dirtyAndInvalid}"
+		class:dark:border-red-500="{dirtyAndInvalid}"
 		type="{type}"
 		name="{name}"
 		id="{name + randomSuffix}"
@@ -89,7 +96,7 @@
 		{...$$restProps}
 	/>
 </div>
-<div class="flex flex-col mt-1 px-3 text-xs text-red-600">
+<div class="flex flex-col mt-1 pr-3 text-xs text-red-600 dark:text-red-500">
 	<slot message="{message}" dirty="{dirty}" valid="{valid}">
 		{#if dirty && !valid}
 			<div data-test="{name}-error" class="flex items-center">

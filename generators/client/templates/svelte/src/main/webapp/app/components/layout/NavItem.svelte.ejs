@@ -11,7 +11,7 @@
 	$: textClass =
 		$page && $page.path && $page.path === route
 			? 'text-white'
-			: 'text-gray-500'
+			: 'text-gray-400'
 </script>
 
 <div class="px-2 py-1 sm:flex sm:p-0">

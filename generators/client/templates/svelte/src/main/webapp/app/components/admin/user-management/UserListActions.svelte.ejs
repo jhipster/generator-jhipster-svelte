@@ -27,6 +27,7 @@
 	data-testid="rowactions"
 >
 	<Button
+		name="toggleUserAcctBtn"
 		role="action"
 		classes="sm:my-0"
 		title="{activationIconTitle}"
@@ -42,6 +43,7 @@
 		<Icon class="fa-icon" icon="{activationIcon}" />
 	</Button>
 	<Button
+		name="viewUserBtn"
 		role="action"
 		classes="sm:my-0"
 		title="View"
@@ -54,6 +56,7 @@
 		<Icon class="fa-icon" icon="{faEye}" />
 	</Button>
 	<Button
+		name="editUserBtn"
 		role="action"
 		classes="sm:my-0"
 		title="Edit"
@@ -67,6 +70,7 @@
 		<Icon class="fa-icon" icon="{faPencilAlt}" />
 	</Button>
 	<Button
+		name="deleteUserBtn"
 		role="action"
 		classes="sm:my-0"
 		title="Delete"

@@ -3,6 +3,7 @@
 	import { faUsersCog } from '@fortawesome/free-solid-svg-icons/faUsersCog'
 	import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
+	import MenuItem from './MenuItem.svelte'
 
 	let isOpen = false
 </script>
@@ -18,7 +19,7 @@
 			data-test="svlAdminLink"
 			on:click="{() => (isOpen = !isOpen)}"
 			class="sm:h-8 sm:px-2 sm:w-auto sm:flex sm:justify-center focus:font-semibold
-				sm:items-center sm:rounded border-0 text-gray-500 focus:text-white
+				sm:items-center sm:rounded border-0 text-gray-400 focus:text-white
 				focus:outline-none focus:ring">
 			<span class="leading-none">
 				<Icon class="fa-icon sm:mr-1" icon="{faUsersCog}" />
@@ -39,18 +40,15 @@
 	{/if}
 	<div
 		class:hidden="{!isOpen}"
-		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white rounded
-			sm:rounded-lg sm:shadow-lg"
+		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white sm:dark:bg-gray-700 rounded sm:rounded-lg sm:shadow-lg"
 	>
-		<a
-			data-test="svlUserMgmtLink"
-			class="block px-2 sm:px-4 py-1 rounded sm:rounded-none font-semibold
-				sm:font-normal text-gray-500 hover:text-white hover:bg-gray-700
-				sm:text-gray-800 sm:hover:bg-indigo-500"
-			href="/admin/user-management"
+		<MenuItem
+			testId="svlUserMgmtLink"
+			link="/admin/user-management"
 			on:click="{() => (isOpen = false)}"
-			><Icon class="fa-icon sm:mr-1" icon="{faUsers}" />
-			User Management</a
 		>
+			<Icon class="fa-icon sm:mr-1" icon="{faUsers}" />
+			User Management
+		</MenuItem>
 	</div>
 </div>

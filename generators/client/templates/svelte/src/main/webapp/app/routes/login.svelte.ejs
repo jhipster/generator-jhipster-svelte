@@ -19,6 +19,7 @@
 
 	$: validForm = validUsername && validPassword
 
+<%_ if (authenticationType === 'session') { _%>
 	function login() {
 		authError = false
 
@@ -28,6 +29,18 @@
 			.then(() => goto('/'))
 			.catch(() => ((password = ''), (authError = true)))
 	}
+<%_ } else if (authenticationType === 'jwt') { _%>
+	function login() {
+		authError = false
+
+		authService
+			.login(username, password, rememberMe)
+			.then(response => auth.storeToken(response.id_token, rememberMe))
+			.then(() => auth.loadUser())
+			.then(() => goto('/'))
+			.catch(() => ((password = ''), (authError = true)))
+	}
+<%_ } _%>
 </script>
 
 <svelte:head>
@@ -38,7 +51,7 @@
 <section class="flex h-screen items-start justify-center">
 	<div class="p-4 w-full sm:w-112 mx-4 sm:m-0">
 		<div class="px-4 py-3 mt-4 sm:mx-0 flex justify-center">
-			<div class="w-3/4">
+			<div class="w-3/4 dark:text-blue-100">
 				<AppLogo />
 			</div>
 		</div>
@@ -51,7 +64,7 @@
 		</Alert>
 		<form
 			data-test="loginForm"
-			class="mt-4 p-4 flex flex-col bg-white shadow-md rounded"
+			class="mt-4 p-4 flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md rounded"
 		>
 			<InputControl
 				label="Username"
@@ -92,7 +105,9 @@
 			</Button>
 		</form>
 
-		<div class="mt-5 px-4 flex justify-between text-blue-700">
+		<div
+			class="mt-5 px-4 flex justify-between text-blue-700 dark:text-blue-500"
+		>
 			<div>
 				<a
 					data-test="forgotPwdLink"

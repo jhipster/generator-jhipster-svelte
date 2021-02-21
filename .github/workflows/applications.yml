@@ -17,9 +17,15 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                apps: ['monolithic-session-maven.json', 'monolithic-session-gradle.json']
+                apps:
+                    [
+                        'monolithic-session-maven.json',
+                        'monolithic-session-gradle.json',
+                        'monolithic-jwt-maven.json',
+                        'monolithic-jwt-gradle.json',
+                    ]
                 os: [ubuntu-latest]
-                node_version: [12.x, 14.x]
+                node_version: [14.x]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary

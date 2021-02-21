@@ -8,7 +8,9 @@
 	<meta name="Description" content="<%= baseName  %> home page" />
 </svelte:head>
 
-<section class="m-3 bg-white shadow-md rounded p-4">
+<section
+	class="m-3 bg-white dark:bg-gray-800 shadow-lg rounded p-4 border border-gray-200 dark:border-gray-700 transition-colors duration-200"
+>
 	<div
 		class="flex flex-col justify-center items-center sm:flex-row
 			sm:justify-between"
@@ -30,14 +32,14 @@
 				{#if $auth}
 					<div
 						data-test="greetMsg"
-						class="px-5 py-3 bg-green-200 text-green-900 rounded"
+						class="px-5 py-3 bg-green-100 dark:bg-green-800 text-green-900 dark:text-green-100 transition-colors duration-200 rounded"
 					>
 						<span>You are logged in as user "{$auth.login}".</span>
 					</div>
 				{:else}
 					<div
 						data-test="loginInstructions"
-						class="px-5 py-3 bg-yellow-100 text-yellow-900 rounded"
+						class="px-5 py-3 bg-yellow-100 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 rounded transition-colors duration-200"
 					>
 						<span>If you want to </span>
 						<a class="font-semibold" href="/login">sign in</a><span
@@ -47,8 +49,7 @@
 						>
 					</div>
 					<div
-						class="px-5 py-3 mt-4 bg-yellow-100 text-yellow-900
-							rounded"
+						class="px-5 py-3 mt-4 bg-yellow-100 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 rounded transition-colors duration-200"
 					>
 						<span>You don't have an account yet?</span>&nbsp;
 						<a
@@ -62,7 +63,9 @@
 
 			<p class="mt-4">If you have any question on JHipster:</p>
 
-			<ul class="mt-4 pl-10 list-disc text-yellow-900 font-semibold">
+			<ul
+				class="mt-4 pl-10 list-disc text-yellow-900 dark:text-yellow-200 font-semibold"
+			>
 				<li>
 					<a
 						href="https://www.jhipster.tech/"
@@ -106,7 +109,7 @@
 					on</span
 				>
 				<a
-					class="font-semibold text-yellow-900"
+					class="font-semibold text-yellow-900 dark:text-yellow-200"
 					href="https://github.com/jhipster/generator-jhipster-svelte"
 					target="_blank"
 					rel="noopener noreferrer">GitHub</a

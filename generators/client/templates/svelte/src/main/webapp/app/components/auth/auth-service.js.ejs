@@ -26,6 +26,7 @@ export default {
 				return Promise.reject(err)
 			})
 	},
+<%_ if (authenticationType === 'session') { _%>
 	login: (username, password, rememberMe) => {
 		const body = `username=${encodeURIComponent(
 			username
@@ -59,4 +60,25 @@ export default {
 				return Promise.reject(err)
 			})
 	},
+<%_ } else if (authenticationType === 'jwt') { _%>
+	login: (username, password, rememberMe) => {
+		const body = JSON.stringify({ username, password, rememberMe })
+
+		return fetch(
+			`${serverUrl}api/authenticate`,
+			prepareRequest('POST', body, {
+				'Content-Type': 'application/json',
+			})
+		)
+			.then(response => {
+				if (response.ok) {
+					return response.json()
+				}
+				return Promise.reject(response.error)
+			})
+			.catch(err => {
+				return Promise.reject(err)
+			})
+	},
+<%_ } _%>
 }
