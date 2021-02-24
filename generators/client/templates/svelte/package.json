@@ -7,7 +7,7 @@
 	"devDependencies": {
 		"@babel/core": "7.12.17",
 		"@babel/plugin-syntax-dynamic-import": "7.8.3",
-		"@babel/plugin-transform-runtime": "7.12.17",
+		"@babel/plugin-transform-runtime": "7.13.7",
 		"@babel/preset-env": "7.13.5",
 		"@babel/runtime": "7.13.7",
 		"@fortawesome/free-solid-svg-icons": "5.15.2",
