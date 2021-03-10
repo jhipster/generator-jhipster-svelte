@@ -9,7 +9,7 @@
 		"@babel/plugin-syntax-dynamic-import": "7.8.3",
 		"@babel/plugin-transform-runtime": "7.13.9",
 		"@babel/preset-env": "7.13.9",
-		"@babel/runtime": "7.13.9",
+		"@babel/runtime": "7.13.10",
 		"@fortawesome/free-solid-svg-icons": "5.15.2",
 		"@fullhuman/postcss-purgecss": "4.0.2",
 		"@rollup/plugin-babel": "5.3.0",
