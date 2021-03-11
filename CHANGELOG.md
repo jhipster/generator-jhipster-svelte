@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Changed
+
+-   ✅ Bump third party library dependencies
+-   ✅ Use `svelte:fragment` instead of a DOM node to wrap forwarded components to a slot
+
 ## [0.2.1] - 2021-02-21
 
 ### Added
