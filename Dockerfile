@@ -12,7 +12,7 @@ ARG UID=1000
 
 RUN apk update \
 	&& apk --no-cache --update add \
-		git=2.26.2-r0 \
+		git \
 		openjdk11 \
 		ca-certificates \
 		wget
