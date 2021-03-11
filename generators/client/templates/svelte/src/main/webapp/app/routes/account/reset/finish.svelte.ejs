@@ -31,7 +31,7 @@
 
 <Page testId="forgotPwd">
 	<span slot="header">Reset your password</span>
-	<div slot="alerts">
+	<svelte:fragment slot="alerts">
 		<Alert show="{passwordReset}" closeable="{false}">
 			Your password has been reset. Please <a
 				class="font-semibold underline"
@@ -41,8 +41,7 @@
 		<Alert
 			type="warning"
 			show="{passwordResetKey && !passwordReset && !error}"
-			closeable="{false}"
-		>Choose a new password</Alert
+			closeable="{false}">Choose a new password</Alert
 		>
 		<Alert
 			type="danger"
@@ -56,7 +55,7 @@
 				only valid for 24 hours.
 			{/if}
 		</Alert>
-	</div>
+	</svelte:fragment>
 	{#if passwordResetKey && !passwordReset}
 		<ResetPasswordForm bind:password on:click="{resetPassword}" />
 	{/if}

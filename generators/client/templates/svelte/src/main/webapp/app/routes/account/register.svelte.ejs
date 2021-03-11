@@ -46,7 +46,7 @@
 
 <Page testId="register">
 	<span slot="header">Create user account</span>
-	<div slot="alerts">
+	<svelte:fragment slot="alerts">
 		<Alert
 			data-test="successMsg"
 			show="{accountCreated}"
@@ -64,7 +64,7 @@
 				User account creation failed. Please try again later.
 			{/if}
 		</Alert>
-	</div>
+	</svelte:fragment>
 	{#if !accountCreated}
 		<RegisterUserForm
 			bind:username
