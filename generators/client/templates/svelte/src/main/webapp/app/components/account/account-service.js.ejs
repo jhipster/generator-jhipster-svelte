@@ -1,5 +1,5 @@
 import { serverUrl } from '../../utils/env'
-import { prepareRequest } from '../../utils/request'
+import { request } from '../../utils/request'
 
 export default {
 	createAccount: (username, email, password) => {
@@ -10,102 +10,62 @@ export default {
 			langKey: 'en',
 		})
 
-		return fetch(
+		return request(
 			`${serverUrl}api/register`,
-			prepareRequest('POST', body, {
+			'POST',
+			body,
+			{
 				'Content-Type': 'application/json',
-			})
+			},
+			false
 		)
-			.then(response => {
-				if (response.ok) {
-					return Promise.resolve()
-				}
-				return response.json().then(Promise.reject.bind(Promise))
-			})
-			.catch(err => {
-				return Promise.reject(err)
-			})
 	},
 	updateAccount: updatedAccount => {
 		const body = JSON.stringify(updatedAccount)
 
-		return fetch(
+		return request(
 			`${serverUrl}api/account`,
-			prepareRequest('POST', body, {
+			'POST',
+			body,
+			{
 				'Content-Type': 'application/json',
-			})
+			},
+			false
 		)
-			.then(response => {
-				if (response.ok) {
-					return Promise.resolve()
-				}
-				return response.json().then(Promise.reject.bind(Promise))
-			})
-			.catch(err => {
-				return Promise.reject(err)
-			})
 	},
-	activateAccount: activationKey => {
-		return fetch(`${serverUrl}api/activate?key=${activationKey}`)
-			.then(response => {
-				if (response.ok) {
-					return Promise.resolve()
-				}
-				return response.json().then(Promise.reject.bind(Promise))
-			})
-			.catch(err => {
-				return Promise.reject(err)
-			})
-	},
+	activateAccount: activationKey =>
+		request(`${serverUrl}api/activate?key=${activationKey}`),
 	initiateResetAccountPassword: email => {
-		return fetch(
+		return request(
 			`${serverUrl}api/account/reset-password/init`,
-			prepareRequest('POST', email)
+			'POST',
+			email,
+			{},
+			false
 		)
-			.then(response => {
-				if (response.ok) {
-					return Promise.resolve()
-				}
-				return response.json().then(Promise.reject.bind(Promise))
-			})
-			.catch(err => {
-				return Promise.reject(err)
-			})
 	},
 	resetAccountPassword: (key, password) => {
 		const body = JSON.stringify({ key, newPassword: password })
-		return fetch(
+		return request(
 			`${serverUrl}api/account/reset-password/finish`,
-			prepareRequest('POST', body, {
+			'POST',
+			body,
+			{
 				'Content-Type': 'application/json',
-			})
+			},
+			false
 		)
-			.then(response => {
-				if (response.ok) {
-					return Promise.resolve()
-				}
-				return response.json().then(Promise.reject.bind(Promise))
-			})
-			.catch(err => {
-				return Promise.reject(err)
-			})
 	},
 	changeAccountPassword: (currentPassword, newPassword) => {
 		const body = JSON.stringify({ currentPassword, newPassword })
-		return fetch(
+		return request(
 			`${serverUrl}api/account/change-password`,
-			prepareRequest('POST', body, {
+			'POST',
+			body,
+			{
 				'Content-Type': 'application/json',
-			})
+			},
+			false
 		)
-			.then(response => {
-				if (response.ok) {
-					return Promise.resolve()
-				}
-				return response.json().then(Promise.reject.bind(Promise))
-			})
-			.catch(err => {
-				return Promise.reject(err)
-			})
 	},
 }

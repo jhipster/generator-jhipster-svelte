@@ -4,6 +4,7 @@
 	import AuthGuard from '../components/auth/AuthGuard.svelte'
 	import Footer from '../components/layout/Footer.svelte'
 	import Navbar from '../components/layout/Navbar.svelte'
+	import Notification from '../components/notification/Notification.svelte'
 	import auth from '../components/auth/auth-store.js'
 
 	const { page } = stores()
@@ -25,6 +26,7 @@
 		<div class="z-10" class:hidden="{isLoginRouteActivated}">
 			<Navbar />
 		</div>
+		<Notification />
 		<main class="flex-grow">
 			<AuthGuard>
 				<slot />
