@@ -60,6 +60,11 @@ describe('User delete dialog page', () => {
 		cy.getBySel('svlModal').within(() =>
 			cy.getByName('deleteUserBtn').click()
 		)
+
+		cy.getBySel('toast-success').contains(
+			'A user is deleted with identifier'
+		)
+
 		cy.getBySel('userMgmtTitle')
 			.should('be.visible')
 			.should('contain', 'Users')

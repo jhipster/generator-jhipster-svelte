@@ -101,6 +101,10 @@ describe('Create user page', () => {
 				.should('not.be.disabled')
 				.click()
 
+			cy.getBySel('toast-success').contains(
+				'A user is created with identifier'
+			)
+
 			cy.location('pathname')
 				.should('eq', '/admin/user-management')
 				.getBySel('userMgmtTitle')

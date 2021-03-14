@@ -113,6 +113,10 @@ describe('Update user page', () => {
 			.should('not.be.disabled')
 			.click()
 
+		cy.getBySel('toast-success').contains(
+			'A user is updated with identifier'
+		)
+
 		cy.location('pathname')
 			.should('eq', '/admin/user-management')
 			.getBySel('userMgmtTitle')
