@@ -49,6 +49,10 @@
 			"pre-commit": "pretty-quick --staged"
 		}
 	},
+	"bin": {
+		"sh": "./cli/sh.js",
+		"shipster": "./cli/sh.js"
+	},
 	"scripts": {
 		"lint": "eslint .",
 		"format": "pretty-quick"
