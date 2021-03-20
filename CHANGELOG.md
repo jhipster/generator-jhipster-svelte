@@ -6,14 +6,15 @@
 
 ### Added
 
+-   ✅ Svelte Hipster `cli` (`shipster`)
 -   ✅ Support dynamic server (success/error) notifications and integrate them into `User` CRUD flows
 -   ✅ `Toast` component to display notification messages
 
 ### Changed
 
--   ✅ Bump third party library dependencies
 -   ✅ Use `svelte:fragment` instead of a DOM node to wrap forwarded components to a slot
 -   ✅ Encapsulate `fetch` API invocation and refactor request/response processing
+-   ✅ Bump third party library dependencies
 
 ## [0.2.1] - 2021-02-21
 
