@@ -16,6 +16,7 @@
 		"url": "https://twitter.com/vishal423"
 	},
 	"files": [
+		"cli",
 		"generators"
 	],
 	"main": "generators/app/index.js",
@@ -50,8 +51,7 @@
 		}
 	},
 	"bin": {
-		"sh": "./cli/sh.js",
-		"shipster": "./cli/sh.js"
+		"shipster": "./cli/shipster.js"
 	},
 	"scripts": {
 		"lint": "eslint .",

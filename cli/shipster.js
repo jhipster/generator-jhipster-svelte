@@ -22,16 +22,17 @@ if (!process.argv.includes('svelte') && process.argv.includes('--blueprints')) {
 	process.argv.push('svelte');
 }
 
-requireCLI();
+requireCLI(preferLocal);
 
 /*
  * Require cli.js giving priority to local version over global one if it exists.
  */
-function requireCLI() {
+/* eslint-disable no-shadow  */
+function requireCLI(preferLocal) {
 	if (preferLocal) {
 		try {
 			const localCLI = require.resolve(
-				path.join(process.cwd(), 'node_modules', 'generator-jhipster-svelte', 'cli', 'cli.js')
+				path.join(process.cwd(), 'node_modules', 'generator-jhipster', 'cli', 'cli.js')
 			);
 			if (__dirname !== path.dirname(localCLI)) {
 				// load local version

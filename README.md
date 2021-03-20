@@ -53,10 +53,6 @@ For more details, you can check out the source code of [sample application](http
 <a href="https://prettier.io/" target="_blank"><img alt="ESLint" height="50px" src="https://api.iconify.design/logos:eslint.svg"></a>
 <a href="https://rollupjs.org/guide/en/" target="_blank"><img alt="Rollup" height="50px" src="https://api.iconify.design/logos:rollupjs.svg"></a>
 
-## Prerequisites
-
-This guide assumes that you have already setup [JHipster](https://www.jhipster.tech/installation/) on your workstation.
-
 ## Installation
 
 To install the blueprint, run below command:
@@ -73,11 +69,25 @@ npm update -g generator-jhipster-svelte
 
 ## Usage
 
-To use the blueprint, run the below command:
+Svelte Hipster blueprint exposes a `cli` to use the correct version of `JHipster`. Run the below command to generate new applications:
+
+```bash
+shipster
+```
+
+If you have already setup [JHipster](https://www.jhipster.tech/installation/) on your workstation, then, run the below command (it overrides to use the global `JHipster` version). Be cautious to use compatible `Svelte Hipster` and `JHipster` versions.
 
 ```bash
 jhipster --blueprints svelte
 ```
+
+## JHipster Compatibility Matrix
+
+| `JHipster` | `Svelte Hipster` |
+| ---------- | ---------------- |
+| `6.10.5`   | >= `0.1`         |
+| `7.x`      | `Not Supported`  |
+|            |
 
 ## Docker development
 
@@ -110,13 +120,13 @@ docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
     -   To run unit test cases, use the command:
 
     ```sh
-    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jhipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster clean test
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster clean test
     ```
 
     -   To start the application using the default `dev` profile, use the command:
 
     ```sh
-    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jhipster/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
     ```
 
     Access application with http://localhost:8080/
@@ -124,7 +134,7 @@ docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
 -   If you would like to access the container file system, you can also attach a bourne shell:
 
 ```sh
-docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jhipster/.m2 --entrypoint sh jhipster/svelte-hipster
+docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 --entrypoint sh jhipster/svelte-hipster
 ```
 
 ## 🛠️ Local Development
@@ -158,7 +168,7 @@ mkdir my-app && cd my-app
 npm link generator-jhipster-svelte
 npm link generator-jhipster (Optional: Needed only if you are using a non-released JHipster version)
 
-jhipster --blueprints svelte
+shipster
 
 ```
 
