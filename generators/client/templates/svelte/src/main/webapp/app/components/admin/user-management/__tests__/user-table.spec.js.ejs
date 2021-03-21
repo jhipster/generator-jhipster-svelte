@@ -122,7 +122,7 @@ test('should render table data for inactive user', () => {
 		screen.getByRole('cell', { name: /ROLE_ADMIN, ROLE_USER/i })
 	).toBeInTheDocument()
 	expect(
-		screen.getByRole('cell', { name: /4\/11\/2011, 10:20/i })
+		screen.getByRole('cell', { name: /4\/11\/2011/i })
 	).toBeInTheDocument()
 	expect(screen.getByRole('cell', { name: /^admin$/i })).toBeInTheDocument()
 	expect(screen.getByRole('cell', { name: /-/i })).toBeInTheDocument()

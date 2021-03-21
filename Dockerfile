@@ -10,6 +10,8 @@ ARG GIT_USERNAME="JHipster Svelte Bot"
 ARG GID=1000
 ARG UID=1000
 
+ENV	MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+
 RUN apk update \
 	&& apk --no-cache --update add \
 		git \
