@@ -19,6 +19,13 @@ module.exports = {
 				outputName: 'TESTS-results-sonar.xml',
 			},
 		],
+		[
+			'jest-sonar',
+			{
+				outputDirectory: '<%= BUILD_DIR %>test-results/jest',
+				outputName: 'TESTS-results-sonar.xml',
+				reportedFilePath: 'relative',
+			},
+		],
 	],
-	testResultsProcessor: 'jest-sonar-reporter',
 }

@@ -28,7 +28,13 @@ const prettierConfigFiles = {
 const commonFiles = {
 	global: [
 		{
-			templates: ['.editorconfig', '.gitignore', 'README.md', 'src/main/resources/banner.txt'],
+			templates: [
+				'.editorconfig',
+				'.gitignore',
+				'README.md',
+				'src/main/resources/banner.txt',
+				'sonar-project.properties',
+			],
 		},
 	],
 	commitHooks: [
