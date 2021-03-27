@@ -75,7 +75,7 @@ describe('Create user page', () => {
 		})
 
 		afterEach(() => {
-			cy.delete(`api/users/${randomUser}`)
+			cy.delete(`api/admin/users/${randomUser}`)
 		})
 		it('should create a new user account', () => {
 			cy.getBySel('addUserForm')

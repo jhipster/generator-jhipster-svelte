@@ -11,19 +11,12 @@ module.exports = class extends ClientGenerator {
 
 		if (!jhContext) {
 			this.error(
-				`This is a JHipster blueprint and should be used only like ${chalk.yellow(
-					'jhipster --blueprints svelte'
-				)}`
+				`This is a JHipster blueprint and should be used like ${chalk.yellow('jhipster --blueprints svelte')}`
 			);
 		}
 
-		this.hipster = this.getHipster(this.baseName);
 		this.configOptions = jhContext.configOptions || {};
 		this.blueprintjs = blueprintPackageJson;
-		this.clientTheme = this.config.get('clientTheme') || 'none';
-		this.clientThemeVariant = this.config.get('clientThemeVariant') || '';
-		// This sets up options for this sub generator and is being reused from JHipster
-		jhContext.setupClientOptions(this, jhContext);
 	}
 
 	get initializing() {
@@ -33,22 +26,41 @@ module.exports = class extends ClientGenerator {
 	// eslint-disable-next-line class-methods-use-this
 	get prompting() {
 		return {
+			askForModuleName: undefined,
 			askForClient: undefined,
+			askForAdminUi: undefined,
 			askForClientTheme: undefined,
 			askForClientThemeVariant: undefined,
+			overrideConfigOptions() {
+				this.configOptions.clientFramework = this.jhipsterConfig.clientFramework = this.clientFramework =
+					'svelte';
+				this.configOptions.clientTheme = this.clientTheme = 'none';
+				this.configOptions.clientThemeVariant = this.clientThemeVariant = '';
+				this.configOptions.withAdminUi = this.askForAdminUi = '';
+			},
 		};
 	}
 
 	get configuring() {
-		const jhipsterDefault = super._configuring();
+		return super._configuring();
+	}
+
+	get composing() {
+		return super._composing();
+	}
+
+	get loading() {
+		const jhipsterDefault = super._loading();
 		return {
-			overrideConfigOptions() {
-				this.configOptions.clientFramework = this.clientFramework = 'svelte';
-				this.configOptions.clientTheme = this.clientTheme = 'none';
-				this.configOptions.clientThemeVariant = this.clientThemeVariant = '';
-			},
 			...jhipsterDefault,
+			loadPackageJson() {
+				// use different strategy to update dependabot packages
+			},
 		};
+	}
+
+	get preparing() {
+		return super._preparing();
 	}
 
 	get default() {
@@ -69,11 +81,26 @@ module.exports = class extends ClientGenerator {
 		};
 	}
 
-	get install() {
-		return super._install();
+	// eslint-disable-next-line class-methods-use-this
+	get postWriting() {
+		// override to not include package scripts
+		return {};
 	}
 
 	get end() {
-		return super._end();
+		const jhipsterDefault = super._end();
+		return {
+			...jhipsterDefault,
+			end() {
+				const logMsg = `Start frontend development server with: ${chalk.yellow.bold(
+					`${this.clientPackageManager} start`
+				)}\n`;
+
+				this.log(chalk.green(logMsg));
+				if (!this.options.skipInstall) {
+					this.spawnCommandSync(this.clientPackageManager, ['run', 'cleanup']);
+				}
+			},
+		};
 	}
 };

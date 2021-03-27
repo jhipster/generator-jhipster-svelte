@@ -35,8 +35,6 @@ function requireCLI(preferLocal) {
 				path.join(process.cwd(), 'node_modules', 'generator-jhipster', 'cli', 'cli.js')
 			);
 			if (__dirname !== path.dirname(localCLI)) {
-				// load local version
-				logger.info("Using Svelte Hipster version installed locally in current project's node_modules");
 				/* eslint-disable import/no-dynamic-require */
 				/* eslint-disable global-require */
 				require(localCLI);
@@ -44,7 +42,29 @@ function requireCLI(preferLocal) {
 			}
 		} catch (e) {
 			// Unable to find local version, so global one will be loaded anyway
-			logger.log('Local install was preferred but not found.', e);
+		}
+
+		// check for nested node_modules
+		try {
+			const localCLI = require.resolve(
+				path.join(
+					process.cwd(),
+					'node_modules',
+					'generator-jhipster-svelte',
+					'node_modules',
+					'generator-jhipster',
+					'cli',
+					'cli.js'
+				)
+			);
+			if (__dirname !== path.dirname(localCLI)) {
+				/* eslint-disable import/no-dynamic-require */
+				/* eslint-disable global-require */
+				require(localCLI);
+				return;
+			}
+		} catch (e) {
+			// Unable to find local version, so global one will be loaded anyway
 		}
 	}
 	// load global version

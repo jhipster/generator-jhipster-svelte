@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+### BREAKING CHANGES
+
+-   Support JHipster version `v7.0`
+
+### Known issues
+
+-   JHipster `v7.0` `dev` profile doesn't allow CORS on `localhost:9000`. For seamless developer experience, do change `application-dev.yml` to allow CORS by updating `allowed-origins` to `'http://localhost:8100, http://localhost:9000'`
+
 ### Added
 
 -   ✅ Svelte Hipster `cli` (`shipster`)

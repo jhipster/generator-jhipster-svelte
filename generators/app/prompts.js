@@ -31,17 +31,9 @@ async function askForApplicationType() {
 			choices: applicationTypeChoices,
 			default: 'monolith',
 		},
-		{
-			when: appTypeAnswers => ['gateway', 'monolith', 'microservice'].includes(appTypeAnswers.applicationType),
-			type: 'confirm',
-			name: 'reactive',
-			message: '[Beta] Do you want to make it reactive with Spring WebFlux?',
-			default: false,
-		},
 	]);
 
 	this.applicationType = this.jhipsterConfig.applicationType = answers.applicationType;
-	this.reactive = this.jhipsterConfig.reactive = answers.reactive;
 }
 
 async function askForTestOpts() {

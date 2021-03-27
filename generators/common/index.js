@@ -16,40 +16,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const chalk = require('chalk');
 const CommonGenerator = require('generator-jhipster/generators/common');
 const { writeFiles, writeMainGeneratorFiles, prettierConfigFiles } = require('./files');
+const blueprintPackageJson = require('../../package.json');
 
 module.exports = class extends CommonGenerator {
 	constructor(args, opts) {
 		super(args, { ...opts, fromBlueprint: true });
+		const jhContext = (this.jhipsterContext = this.options.jhipsterContext);
+
+		if (!jhContext) {
+			this.error(
+				`This is a JHipster blueprint and should be used like ${chalk.yellow('jhipster --blueprints svelte')}`
+			);
+		}
+
+		this.configOptions = jhContext.configOptions || {};
+		this.blueprintjs = blueprintPackageJson;
 	}
 
 	get initializing() {
-		// Here we are not overriding this phase and hence its being handled by JHipster
 		return super._initializing();
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	get default() {
+	get loading() {
+		const defaultPhaseFromJHipster = super._loading();
 		return {
-			writePrettierConfig() {
-				// Prettier configuration needs to be the first written files - all subgenerators considered - for prettier transform to work
-				this.writeFilesToDisk(prettierConfigFiles, this, false);
+			...defaultPhaseFromJHipster,
+			loadPackageJson() {
+				// override as the dependencies are differently managed
 			},
 		};
+	}
+
+	get preparing() {
+		return super._preparing();
+	}
+
+	get default() {
+		return super._default();
 	}
 
 	// eslint-disable-next-line class-methods-use-this
 	get writing() {
 		return {
-			getSharedConfigOptions() {
-				this.jhipsterVersion = this.config.get('jhipsterVersion');
-				this.applicationType = this.config.get('applicationType') || this.configOptions.applicationType;
-				this.enableSwaggerCodegen = this.configOptions.enableSwaggerCodegen;
-				this.serverPort = this.configOptions.serverPort;
-				this.clientFramework = this.configOptions.clientFramework;
-				this.protractorTests = this.testFrameworks.includes('protractor');
-				this.gatlingTests = this.testFrameworks.includes('gatling');
+			writePrettierConfig() {
+				// Prettier configuration needs to be the first written files - all subgenerators considered - for prettier transform to work
+				this.writeFilesToDisk(prettierConfigFiles, this, false);
 			},
 			writeAdditionalFile() {
 				writeMainGeneratorFiles.call(this);
