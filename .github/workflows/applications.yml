@@ -13,7 +13,7 @@ env:
 jobs:
     generator-jhipster-svelte:
         runs-on: ${{ matrix.os }}
-        timeout-minutes: 15
+        timeout-minutes: 20
         strategy:
             fail-fast: false
             matrix:

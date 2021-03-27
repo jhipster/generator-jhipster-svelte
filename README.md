@@ -85,9 +85,9 @@ jhipster --blueprints svelte
 
 | `JHipster` | `Svelte Hipster` |
 | ---------- | ---------------- |
-| `6.10.5`   | >= `0.1`         |
-| `7.x`      | `Not Supported`  |
-|            |
+| `6.10.5`   | `0.1` - `0.2.1`  |
+| `7.0.0`    | >= `0.3`         |
+|            |                  |
 
 ## Docker development
 
