@@ -86,6 +86,7 @@ jobs:
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
+                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster clean
                   docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
                   timeout 240 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e
