@@ -119,7 +119,7 @@ describe('User Management list page', () => {
 	it('should sort the records by login field', () => {
 		cy.getBySel('userMgmtTable')
 			.get('tbody>tr')
-			.eq(0)
+			.eq(1)
 			.within($tr => {
 				cy.root()
 					.get('td')
