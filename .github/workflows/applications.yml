@@ -80,12 +80,12 @@ jobs:
               run: |
                   cd "$HOME/svelte-app"
                   docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
-                  timeout 480 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
+                  timeout 240 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e
             - name: Gradle Cypress tests
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run -d  --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
-                  timeout 480 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
+                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
+                  timeout 240 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e
