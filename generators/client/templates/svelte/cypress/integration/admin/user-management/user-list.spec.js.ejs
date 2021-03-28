@@ -117,17 +117,17 @@ describe('User Management list page', () => {
 	})
 
 	it('should sort the records by login field', () => {
+		let loginValueBefore
+
 		cy.getBySel('userMgmtTable')
 			.get('tbody>tr')
-			.eq(1)
+			.eq(0)
 			.within($tr => {
 				cy.root()
 					.get('td')
 					.eq(1)
-					.should('contain', 'user')
-					.get('td')
-					.eq(2)
-					.should('contain', 'user@localhost')
+					.invoke('text')
+					.then(text => (loginValueBefore = text))
 			})
 
 		cy.getBySel('userMgmtTable')
@@ -143,10 +143,10 @@ describe('User Management list page', () => {
 				cy.root()
 					.get('td')
 					.eq(1)
-					.should('contain', 'user')
-					.get('td')
-					.eq(2)
-					.should('contain', 'user@localhost')
+					.invoke('text')
+					.then(text => {
+						expect(text).not.eq(loginValueBefore)
+					})
 			})
 	})
 })

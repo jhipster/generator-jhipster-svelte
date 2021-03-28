@@ -1,0 +1,11 @@
+application {
+    config {
+        baseName SampleBlogApp,
+        applicationType monolith,
+        authenticationType session,
+        packageName tech.jhipster.samples.blog,
+        prodDatabaseType postgresql,
+        cacheProvider caffeine,
+        buildTool maven
+    }
+}
