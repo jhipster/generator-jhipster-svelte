@@ -6,27 +6,17 @@ const blueprintPackageJson = require('../../package.json');
 
 module.exports = class extends AppGenerator {
 	constructor(args, opts) {
-		super(args, { ...opts, fromBlueprint: true });
+		super(args, { ...opts, fromBlueprint: true, skipClient: false });
 
-		const jhContext = (this.jhipsterContext = this.options.jhipsterContext);
-
-		if (!jhContext) {
-			this.error(
-				`This is a JHipster blueprint and should be used only like ${chalk.yellow(
-					'jhipster --blueprints svelte'
-				)}`
-			);
-		}
-
-		this.configOptions = jhContext.configOptions || {};
+		this.configOptions = {};
 		this.blueprintjs = blueprintPackageJson;
-		this.enableTranslation = this.config.get('enableTranslation') || false;
 	}
 
 	get initializing() {
 		const initPhaseFromJHipster = this._initializing();
 
-		const jhipsterInitAppPhaseSteps = {
+		return {
+			...initPhaseFromJHipster,
 			displayLogo() {
 				/* eslint-disable prettier/prettier */
 
@@ -70,8 +60,11 @@ module.exports = class extends AppGenerator {
 					)
 				);
 				this.log(
-					chalk.white(`  If you find Svelte Hipster useful, consider sponsoring the project at
-				${chalk.yellow('https://opencollective.com/generator-jhipster-svelte')}`)
+					chalk.white(
+						`  If you find Svelte Hipster useful, support with a star and follow ${chalk.yellow(
+							'https://github.com/jhipster/generator-jhipster-svelte'
+						)}`
+					)
 				);
 				this.log(
 					chalk.green(
@@ -80,8 +73,6 @@ module.exports = class extends AppGenerator {
 				);
 			},
 		};
-
-		return Object.assign(initPhaseFromJHipster, jhipsterInitAppPhaseSteps);
 	}
 
 	get prompting() {
@@ -93,30 +84,27 @@ module.exports = class extends AppGenerator {
 	}
 
 	get configuring() {
-		const jhipsterDefault = super._configuring();
-
-		return {
-			setConfigOptions() {
-				this.configOptions.enableTranslation = false;
-			},
-			...jhipsterDefault,
-			askFori18n: undefined,
-		};
+		return super._configuring();
 	}
 
-	get default() {
-		const jhipsterDefault = super._default();
+	get composing() {
+		const jhipsterDefault = super._composing();
 		return {
-			overrideAppOptions() {
-				this.enableTranslation = false;
-			},
 			...jhipsterDefault,
 			askForTestOpts: prompts.askForTestOpts,
 		};
 	}
 
+	get default() {
+		return super._default();
+	}
+
 	get writing() {
 		return super._writing();
+	}
+
+	get install() {
+		return super._install();
 	}
 
 	get end() {

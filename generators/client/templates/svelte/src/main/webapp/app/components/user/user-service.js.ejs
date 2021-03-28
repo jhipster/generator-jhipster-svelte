@@ -7,17 +7,17 @@ export default {
 		const queryString = `page=${
 			page - 1
 		}&size=${size}&sort=${sortPredicate},${sortOrder}${defaultSort}`
-		return request(`${serverUrl}api/users?${queryString}`)
+		return request(`${serverUrl}api/admin/users?${queryString}`)
 	},
 	create: user =>
-		request(`${serverUrl}api/users`, 'POST', JSON.stringify(user), {
+		request(`${serverUrl}api/admin/users`, 'POST', JSON.stringify(user), {
 			'Content-Type': 'application/json',
 		}),
 	update: user =>
-		request(`${serverUrl}api/users`, 'PUT', JSON.stringify(user), {
+		request(`${serverUrl}api/admin/users`, 'PUT', JSON.stringify(user), {
 			'Content-Type': 'application/json',
 		}),
-	delete: login => request(`${serverUrl}api/users/${login}`, 'DELETE'),
-	fetchUserByLogin: login => request(`${serverUrl}api/users/${login}`),
-	fetchAuthorities: () => request(`${serverUrl}api/users/authorities`),
+	delete: login => request(`${serverUrl}api/admin/users/${login}`, 'DELETE'),
+	fetchUserByLogin: login => request(`${serverUrl}api/admin/users/${login}`),
+	fetchAuthorities: () => request(`${serverUrl}api/authorities`),
 }

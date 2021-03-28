@@ -5,7 +5,7 @@ describe('Update user page', () => {
 		randomUser = 'test' + new Date().getTime()
 		cy.loginByApi('admin', 'admin')
 
-		cy.save('api/users', {
+		cy.save('api/admin/users', {
 			login: randomUser,
 			firstName: 'John',
 			lastName: 'Doe',
@@ -18,7 +18,7 @@ describe('Update user page', () => {
 	})
 
 	afterEach(() => {
-		cy.delete(`api/users/${randomUser}`)
+		cy.delete(`api/admin/users/${randomUser}`)
 	})
 
 	it('should greets with update user title', () => {

@@ -5,7 +5,7 @@ describe('User delete dialog page', () => {
 		randomUser = 'test' + new Date().getTime()
 		cy.loginByApi('admin', 'admin')
 
-		cy.save('api/users', {
+		cy.save('api/admin/users', {
 			login: randomUser,
 			firstName: '',
 			lastName: '',
@@ -30,7 +30,7 @@ describe('User delete dialog page', () => {
 	})
 
 	afterEach(() => {
-		cy.delete(`api/users/${randomUser}`)
+		cy.delete(`api/admin/users/${randomUser}`)
 	})
 
 	it('should display delete user dialog', () => {

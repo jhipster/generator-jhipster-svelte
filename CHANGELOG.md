@@ -4,9 +4,15 @@
 
 ## [Unreleased]
 
+### BREAKING CHANGES
+
+-   Support JHipster version `v7.0.0`
+
+### Known issues
+
 ### Added
 
--   ✅ Svelte Hipster `cli` (`shipster`)
+-   ✅ Svelte Hipster `cli` (`shipster`), a lightweight wrapper on the compatible localized `jhipster` cli
 -   ✅ Support dynamic server (success/error) notifications and integrate them into `User` CRUD flows
 -   ✅ `Toast` component to display notification messages
 
@@ -14,6 +20,7 @@
 
 -   ✅ Use `svelte:fragment` instead of a DOM node to wrap forwarded components to a slot
 -   ✅ Encapsulate `fetch` API invocation and refactor request/response processing
+-   ✅ Upgrade `JHipster` dependency to `v7.0.0`
 -   ✅ Bump third party library dependencies
 
 ## [0.2.1] - 2021-02-21

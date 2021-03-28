@@ -40,18 +40,18 @@ describe('User Management list page', () => {
 			.should('contain', 'Modified At')
 	})
 
-	it('should display "system" user record in the table', () => {
+	it('should display "user" user record in the table', () => {
 		cy.getBySel('userMgmtTable')
-			.contains('td', 'system')
+			.contains('td', 'user')
 			.parent()
 			.within($tr => {
 				cy.root()
 					.get('td')
 					.eq(2)
-					.should('contain', 'system@localhost')
+					.should('contain', 'user@localhost')
 					.get('td')
 					.eq(3)
-					.should('contain', 'ROLE_USER, ROLE_ADMIN')
+					.should('contain', 'ROLE_USER')
 					.get('td')
 					.eq(4)
 					.should('contain', '-')
@@ -119,15 +119,15 @@ describe('User Management list page', () => {
 	it('should sort the records by login field', () => {
 		cy.getBySel('userMgmtTable')
 			.get('tbody>tr')
-			.eq(0)
+			.eq(1)
 			.within($tr => {
 				cy.root()
 					.get('td')
 					.eq(1)
-					.should('contain', 'system')
+					.should('contain', 'user')
 					.get('td')
 					.eq(2)
-					.should('contain', 'system@localhost')
+					.should('contain', 'user@localhost')
 			})
 
 		cy.getBySel('userMgmtTable')

@@ -53,8 +53,6 @@ const sharedFiles = {
 					renameTo: () => '.gitattributes',
 					method: 'copy',
 				},
-
-				'sonar-project.properties',
 			],
 		},
 	],
