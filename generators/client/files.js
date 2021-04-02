@@ -96,7 +96,7 @@ const svelteFiles = {
 				'utils/env.js',
 				'utils/request.js',
 				'utils/validator.js',
-				{ file: 'images/logo-jhipster.png', method: 'copy' },
+				{ file: 'node_modules/images/logo-jhipster.png', method: 'copy' },
 			],
 		},
 	],

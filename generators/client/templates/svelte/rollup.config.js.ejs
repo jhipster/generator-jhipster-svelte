@@ -38,7 +38,7 @@ export default {
 				},
 			}),
 			url({
-				sourceDir: path.resolve(__dirname, 'app/images'),
+				sourceDir: path.resolve(__dirname, 'app/node_modules/images'),
 				publicPath: '/client/',
 			}),
 			resolve({
@@ -101,7 +101,7 @@ export default {
 				emitCss: false,
 			}),
 			url({
-				sourceDir: path.resolve(__dirname, 'app/images'),
+				sourceDir: path.resolve(__dirname, 'app/node_modules/images'),
 				publicPath: '/client/',
 				emitFiles: false, // already emitted by client build
 			}),

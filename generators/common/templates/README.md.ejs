@@ -159,9 +159,9 @@ There are three simple rules for naming the files that define your routes:
 -   The file `app/routes/index.svelte` (or `app/routes/index.js`) corresponds to the root of your app. `app/routes/about/index.svelte` is treated the same as `app/routes/about.svelte`.
 -   Files and directories with a leading underscore do _not_ create routes. This allows you to colocate helper modules and components with the routes that depend on them — for example you could have a file called `app/routes/_helpers/datetime.js` and it would _not_ create a `/_helpers/datetime` route
 
-##### app/images
+##### app/node_modules/images
 
-Images added to `app/images` can be imported into your code using `import 'images/<filename>'`. They will be given a dynamically generated filename containing a hash, allowing for efficient caching and serving the images on a CDN.
+Images added to `app/node_modules/images` can be imported into your code using `import 'images/<filename>'`. They will be given a dynamically generated filename containing a hash, allowing for efficient caching and serving the images on a CDN.
 
 ##### app/node_modules/@sapper
 
