@@ -13,6 +13,7 @@
 ### Added
 
 -   ✅ Svelte Hipster `cli` (`shipster`), a lightweight wrapper on the compatible localized `jhipster` cli
+-   ✅ JHipster application `JDL` support to generate new applications (`shipster import-jdl app.jdl`)
 -   ✅ Support dynamic server (success/error) notifications and integrate them into `User` CRUD flows
 -   ✅ `Toast` component to display notification messages
 

@@ -25,6 +25,7 @@ Following integrations are supported:
     ✅ Cypress integration for end to end tests
     ✅ Jest and Testing Library integration for unit tests
     ✅ Rollup module bundler
+    ✅ JHipster application JDL
 
 Following functional flows are covered with end to end tests:
 
@@ -69,17 +70,41 @@ npm update -g generator-jhipster-svelte
 
 ## Usage
 
-Svelte Hipster blueprint exposes a `cli` to use the correct version of `JHipster`. Run the below command to generate new applications:
+-   Svelte Hipster blueprint exposes a `cli` to use the correct version of `JHipster`. Run the below command to generate new applications (`interactive` approach):
 
-```bash
-shipster
-```
+    ```bash
+    shipster
+    ```
 
-If you have already setup [JHipster](https://www.jhipster.tech/installation/) on your workstation, then, run the below command (it overrides to use the global `JHipster` version). Be cautious to use compatible `Svelte Hipster` and `JHipster` versions.
+-   Alternatively, you can also use the application `JDL` to generate new applications (`config` approach). Refer to [JDL application](https://www.jhipster.tech/jdl/applications) documentation for all supported options.
 
-```bash
-jhipster --blueprints svelte
-```
+    Create a new application JDL like below and save it in a file (`app.jdl` in this example):
+
+    ```
+    application {
+        config {
+            baseName SampleBlogApp,
+            applicationType monolith,
+            authenticationType session,
+            packageName tech.jhipster.samples.blog,
+            prodDatabaseType postgresql,
+            cacheProvider caffeine,
+            buildTool maven
+        }
+    }
+    ```
+
+    Pass `import-jdl` option along the file path to `shipster` cli to generate new application:
+
+    ```bash
+    shipster import-jdl app.jdl
+    ```
+
+-   If you have already setup [JHipster](https://www.jhipster.tech/installation/) on your workstation, then, run the below command (it overrides to use the global `JHipster` version). Be cautious to use compatible `Svelte Hipster` and `JHipster` versions.
+
+    ```bash
+    jhipster --blueprints svelte
+    ```
 
 ## JHipster Compatibility Matrix
 
