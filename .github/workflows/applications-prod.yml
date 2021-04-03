@@ -37,6 +37,31 @@ jobs:
             - uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node_version }}
+            - name: Gradle - Configure cache
+              uses: actions/cache@v2
+              if: contains(matrix.apps, 'gradle')
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+            - name: Maven - Configure cache
+              uses: actions/cache@v2
+              if: contains(matrix.apps, 'maven')
+              with:
+                  path: ~/.m2/repository
+                  key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-maven-
+            - name: Configure cypress cache
+              uses: actions/cache@v2
+              with:
+                  path: ~/.cache/Cypress/
+                  key: ${{ runner.os }}-cypress-6.8 # Needs a better way to cache cypress binary
+                  restore-keys: |
+                      ${{ runner.os }}-cypress-
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
@@ -88,7 +113,7 @@ jobs:
               if: contains(matrix.apps, 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  ./mvnw -Pprod compile jib:dockerBuild
+                  ./mvnw -ntp -Pprod compile jib:dockerBuild
             - name: Gradle - Build application docker image
               if: contains(matrix.apps, 'gradle')
               run: |
