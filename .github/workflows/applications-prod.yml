@@ -18,8 +18,8 @@ jobs:
             fail-fast: false
             matrix:
                 apps: [
-                        'monolithic-jwt-maven-mongodb-prod.jdl',
-                        # 'monolithic-session-maven-reactive-prod.jdl',
+                        # 'monolithic-jwt-maven-mongodb-prod.jdl',
+                        'monolithic-session-maven-postgres-prod.jdl',
                     ]
                 os: [ubuntu-latest]
                 node_version: [14.x]

@@ -2,9 +2,9 @@ application {
     config {
         baseName SampleBlogApp,
         applicationType monolith,
-        authenticationType jwt,
+        authenticationType session,
         packageName tech.jhipster.samples.blog,
-        databaseType mongodb,
+        prodDatabaseType postgresql,
         cacheProvider caffeine,
         buildTool maven
     }
