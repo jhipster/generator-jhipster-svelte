@@ -72,12 +72,12 @@ const svelteFiles = {
 				'static/manifest.json',
 				{
 					file: generator => `static/img/${generator.hipster}.svg`,
-					renameTo: () => `app/components/svg/AppAvatar.svelte`,
+					renameTo: () => `app/components/svg/appAvatar.svg`,
 					method: 'copy',
 				},
 				{
 					file: generator => `static/img/logo-jhipster-long.svg`,
-					renameTo: () => `app/components/svg/AppLogo.svelte`,
+					renameTo: () => `app/components/svg/appLogo.svg`,
 					method: 'copy',
 				},
 			],
