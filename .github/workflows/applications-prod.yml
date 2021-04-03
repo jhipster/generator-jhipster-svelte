@@ -62,11 +62,13 @@ jobs:
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
+                  rm -rf node_modules/generator-jhipster-svelte
                   ./mvnw -ntp test
             - name: Gradle - Unit tests
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
+                  rm -rf node_modules/generator-jhipster-svelte
                   ./gradlew test --no-daemon
             - name: Frontend - Unit tests
               run: |
