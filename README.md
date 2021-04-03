@@ -1,6 +1,6 @@
 # Svelte Hipster
 
-[![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![code style: prettier][prettier-image]][prettier-url] [![Generated applications build status][github-actions-apps-generator-image]][github-actions-url] [![Generator Build Status][github-actions-generator-image]][github-actions-url]
+[![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![code style: prettier][prettier-image]][prettier-url] [![Generated applications build status][github-actions-apps-generator-dev-image]][github-actions-url] [![Generated applications build status][github-actions-apps-generator-prod-image]][github-actions-url] [![Generator Build Status][github-actions-generator-image]][github-actions-url]
 
 > Generate cybernetically enhanced JHipster Svelte web applications
 
@@ -207,6 +207,7 @@ Apache-2.0 © [Vishal Mahajan](https://twitter.com/vishal423)
 [daviddm-url]: https://david-dm.org/jhipster/generator-jhipster-svelte
 [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [prettier-url]: https://github.com/prettier/prettier
-[github-actions-apps-generator-image]: https://github.com/jhipster/generator-jhipster-svelte/workflows/Svelte%20Application%20Generator/badge.svg
+[github-actions-apps-generator-dev-image]: https://github.com/jhipster/generator-jhipster-svelte/workflows/Svelte%20Dev%20Profile%20Applications/badge.svg
+[github-actions-apps-generator-prod-image]: https://github.com/jhipster/generator-jhipster-svelte/workflows/Svelte%20Prod%20Profile%20Applications/badge.svg
 [github-actions-generator-image]: https://github.com/jhipster/generator-jhipster-svelte/workflows/Svelte%20Generator/badge.svg
 [github-actions-url]: https://github.com/jhipster/generator-jhipster-svelte/actions
