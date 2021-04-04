@@ -40,7 +40,7 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 				body: {
 					username: username,
 					password: password,
-					'remember-me': false,
+					'remember-me': true,
 				},
 			})
 		})
@@ -103,7 +103,7 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 		})
 	.then(res => {
 		expect(res.status).to.eq(200)
-		sessionStorage.setItem('authToken', res.body.id_token)
+		localStorage.setItem('authToken', res.body.id_token)
 		return cy.request({
 			method: 'GET',
 			url: `api/account`, 

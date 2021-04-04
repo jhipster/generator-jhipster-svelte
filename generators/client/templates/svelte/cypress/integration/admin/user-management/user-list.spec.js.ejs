@@ -43,31 +43,38 @@ describe('User Management list page', () => {
 
 	it('should display "user" user record in the table', () => {
 		cy.getBySel('userMgmtTable')
-			.contains('td', 'user')
+			.contains('td', 'user@localhost')
 			.parent()
 			.within($tr => {
 				cy.root()
+					.get('td')
+					.eq(1)
+					.should('contain', 'user')
 					.get('td')
 					.eq(2)
 					.should('contain', 'user@localhost')
 					.get('td')
 					.eq(3)
 					.should('contain', 'ROLE_USER')
+					<%_ if (databaseTypeSql) { _%>
 					.get('td')
 					.eq(4)
 					.should('contain', '-')
+					<%_ } _%>
 					.get('td')
 					.eq(5)
 					.should('contain', 'system')
+					<%_ if (databaseTypeSql) { _%>
 					.get('td')
 					.eq(6)
 					.should('contain', '-')
+					<%_ } _%>
 			})
 	})
 
 	it('should not allow actions on the current logged in user', () => {
 		cy.getBySel('userMgmtTable')
-			.contains('td', 'admin')
+			.contains('td', 'admin@localhost')
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
@@ -88,7 +95,7 @@ describe('User Management list page', () => {
 
 	it('should allow deactivation of "user" account record', () => {
 		cy.getBySel('userMgmtTable')
-			.contains('td', 'user')
+			.contains('td', 'user@localhost')
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
