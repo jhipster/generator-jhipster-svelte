@@ -1,5 +1,6 @@
 describe('User Settings', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.loginByApi('admin', 'admin')
 		cy.visit('/account/settings')
 	})

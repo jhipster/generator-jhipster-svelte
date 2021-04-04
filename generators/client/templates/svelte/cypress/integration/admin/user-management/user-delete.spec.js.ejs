@@ -2,6 +2,7 @@ describe('User delete dialog page', () => {
 	let randomUser
 
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		randomUser = 'test' + new Date().getTime()
 		cy.loginByApi('admin', 'admin')
 

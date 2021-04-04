@@ -1,5 +1,6 @@
 describe('Footer', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.visit('/')
 	})
 

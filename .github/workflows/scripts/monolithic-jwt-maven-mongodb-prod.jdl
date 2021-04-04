@@ -1,0 +1,11 @@
+application {
+    config {
+        baseName SampleBlogApp,
+        applicationType monolith,
+        authenticationType jwt,
+        packageName tech.jhipster.samples.blog,
+        databaseType mongodb,
+        cacheProvider caffeine,
+        buildTool maven
+    }
+}

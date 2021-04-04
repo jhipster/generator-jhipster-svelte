@@ -1,5 +1,6 @@
 describe('Create user page', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.loginByApi('admin', 'admin')
 		cy.visit(`/admin/user-management/new`)
 	})

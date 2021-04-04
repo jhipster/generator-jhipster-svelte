@@ -1,4 +1,4 @@
-name: Svelte Dev Profile Applications
+name: Svelte Prod Profile Applications
 on:
     push:
         branches:
@@ -17,12 +17,9 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                apps:
-                    [
-                        'monolithic-session-maven.jdl',
-                        'monolithic-session-gradle.json',
-                        'monolithic-jwt-maven.json',
-                        'monolithic-jwt-gradle.json',
+                apps: [
+                        # 'monolithic-jwt-maven-mongodb-prod.jdl',
+                        'monolithic-session-maven-postgres-prod.jdl',
                     ]
                 os: [ubuntu-latest]
                 node_version: [14.x]
@@ -34,6 +31,9 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
+            - uses: actions/setup-java@v1
+              with:
+                  java-version: '11'
             - uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node_version }}
@@ -87,38 +87,41 @@ jobs:
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp test
+                  rm -rf node_modules/generator-jhipster-svelte
+                  ./mvnw -ntp test
             - name: Gradle - Unit tests
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster test --no-daemon
+                  rm -rf node_modules/generator-jhipster-svelte
+                  ./gradlew test --no-daemon
             - name: Frontend - Unit tests
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app --entrypoint npm jhipster/svelte-hipster test -- --coverage
+                  npm run test -- --coverage
             - name: Maven - Package application
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp -Pprod package
+                  ./mvnw -ntp -Pprod package
             - name: Gradle - Package application
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster -Pprod bootJar --no-daemon
-            - name: Maven - Cypress tests
-              if: contains(matrix.apps , 'maven')
+                  ./gradlew -Pprod bootJar --no-daemon
+            - name: Maven - Build application docker image
+              if: contains(matrix.apps, 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
-                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  npm run e2e
-            - name: Gradle Cypress tests
+                  ./mvnw -ntp -Pprod compile jib:dockerBuild
+            - name: Gradle - Build application docker image
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster clean
-                  docker run -d --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
+                  ./gradlew -Pprod jibDockerBuild
+            - name: Run Cypress tests
+              run: |
+                  cd "$HOME/svelte-app"
+                  docker-compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e

@@ -16,6 +16,7 @@
 -   ✅ JHipster application `JDL` support to generate new applications (`shipster import-jdl app.jdl`)
 -   ✅ Support dynamic server (success/error) notifications and integrate them into `User` CRUD flows
 -   ✅ `Toast` component to display notification messages
+-   ✅ GitHub Actions to verify generated applications with `Prod` profile
 
 ### Changed
 

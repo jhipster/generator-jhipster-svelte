@@ -1,5 +1,6 @@
 describe('Forgot password', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.visit('/account/reset/init')
 	})
 
