@@ -1,5 +1,6 @@
 describe('User Management list page', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.loginByApi('admin', 'admin')
 		cy.visit('/admin/user-management')
 	})

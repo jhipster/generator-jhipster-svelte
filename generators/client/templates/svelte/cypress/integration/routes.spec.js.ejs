@@ -1,4 +1,8 @@
 describe('Routes', () => {
+
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+	})
 	
 	describe('unauthenticated user', () => {
 		it('should not allow navigation to settings page', () => {

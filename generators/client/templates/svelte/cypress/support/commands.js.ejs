@@ -4,6 +4,17 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 //
+
+Cypress.Commands.add('unregisterServiceWorkers', () => {
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker
+			.getRegistrations()
+			.then(registrations =>
+				registrations.forEach(reg => reg.unregister())
+			)
+	}
+})
+
 Cypress.Commands.add('getBySel', (selector, ...args) => {
 	return cy.get(`[data-test=${selector}]`, ...args)
 })
