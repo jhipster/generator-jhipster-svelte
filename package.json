@@ -42,7 +42,7 @@
 	},
 	"dependencies": {
 		"chalk": "4.1.0",
-		"generator-jhipster": "7.0.0",
+		"generator-jhipster": "7.0.1",
 		"lodash": "4.17.21",
 		"mkdirp": "1.0.4",
 		"pluralize": "8.0.0"
