@@ -39,6 +39,7 @@ describe('Navbar', () => {
 
 	describe('authenticated user', () => {
 		beforeEach(() => {
+			cy.unregisterServiceWorkers()
 			cy.loginByApi('admin', 'admin')
 			cy.visit('/')
 		})
@@ -114,6 +115,7 @@ describe('Navbar', () => {
 
 	describe(`authenticated 'ROLE_USER' ROLE user`, () => {
 		beforeEach(() => {
+			cy.unregisterServiceWorkers()
 			cy.loginByApi('user', 'user')
 			cy.visit('/')
 		})

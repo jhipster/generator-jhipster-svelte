@@ -139,9 +139,10 @@ describe('User Management list page', () => {
 			})
 
 		cy.getBySel('userMgmtTable')
-			.contains('th', 'Login')
+			.get('tr')
+			.eq(0)
 			.within($tr => {
-				cy.root().get('span').eq(1).click()
+				cy.root().get('th').eq(1).get('span').eq(1).click()
 			})
 
 		cy.getBySel('userMgmtTable')

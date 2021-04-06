@@ -71,6 +71,7 @@ describe('Create user page', () => {
 		let randomUser
 
 		beforeEach(() => {
+			cy.unregisterServiceWorkers()
 			randomUser = 'test' + new Date().getTime()
 			cy.visit(`/admin/user-management/new`)
 		})
