@@ -138,12 +138,21 @@ describe('User Management list page', () => {
 					.then(text => (loginValueBefore = text))
 			})
 
+		cy.intercept('**/admin/users?*').as('getUsers')
+
 		cy.getBySel('userMgmtTable')
 			.get('tr')
 			.eq(0)
 			.within($tr => {
-				cy.root().get('th').eq(1).get('span').eq(1).click()
+				cy.root()
+					.get('th')
+					.eq(1)
+					.within($td => {
+						cy.root().get('span').eq(1).click()
+					})
 			})
+
+		cy.wait('@getUsers')
 
 		cy.getBySel('userMgmtTable')
 			.get('tbody>tr')
