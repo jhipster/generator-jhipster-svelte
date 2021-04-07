@@ -154,6 +154,9 @@ describe('User Management list page', () => {
 
 		cy.wait('@getUsers')
 
+		// eslint-disable-next-line
+		cy.wait(100)
+
 		cy.getBySel('userMgmtTable')
 			.get('tbody>tr')
 			.eq(0)
