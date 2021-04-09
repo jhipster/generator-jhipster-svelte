@@ -44,7 +44,7 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.0.0
+                  key: ${{ runner.os }}-gradle-7.0.1
                   restore-keys: |
                       ${{ runner.os }}-gradle-
             - name: Maven - Configure cache
@@ -52,14 +52,14 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.0.0
+                  key: ${{ runner.os }}-maven-7.0.1
                   restore-keys: |
                       ${{ runner.os }}-maven-
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: ~/.cache/Cypress/
-                  key: ${{ runner.os }}-cypress-7.0 # Needs a better way to cache cypress binary
+                  key: ${{ runner.os }}-cypress-6.9.1 # Needs a better way to cache cypress binary
                   restore-keys: |
                       ${{ runner.os }}-cypress-
             - name: Create Svelte Hipster docker image

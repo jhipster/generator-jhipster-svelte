@@ -1,7 +1,7 @@
 const commonFiles = {
 	global: [
 		{
-			templates: ['src/main/resources/banner.txt', 'src/main/resources/config/application-dev.yml'],
+			templates: ['src/main/resources/banner.txt'],
 		},
 	],
 };
