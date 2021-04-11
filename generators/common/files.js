@@ -20,7 +20,7 @@
 const prettierConfigFiles = {
 	global: [
 		{
-			templates: ['.prettierrc.yml', '.prettierignore'],
+			templates: ['.prettierrc', '.prettierignore'],
 		},
 	],
 };

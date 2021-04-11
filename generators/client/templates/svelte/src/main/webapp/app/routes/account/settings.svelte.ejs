@@ -45,15 +45,14 @@
 		<Alert
 			data-test="successMsg"
 			show="{settingsUpdated}"
-			closeable="{false}"
-		>Settings changed!</Alert
+			closeable="{false}">Settings changed!</Alert
 		>
 		<Alert
 			data-test="errorMsg"
 			type="danger"
 			show="{error}"
 			closeable="{false}"
-		>An error has occurred! The user settings could not be saved.</Alert
+			>An error has occurred! The user settings could not be saved.</Alert
 		>
 	</svelte:fragment>
 	<UserSettingsForm user="{user}" on:updatesettings="{updateAccount}" />

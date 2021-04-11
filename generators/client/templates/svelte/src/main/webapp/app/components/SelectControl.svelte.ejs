@@ -117,7 +117,8 @@
 			tabindex="-1"
 			class:z-20="{isOpen}"
 			class="focus:outline-none focus:ring-0"
-			on:click|preventDefault="{() => (isOpen = !isOpen)}">
+			on:click|preventDefault="{() => (isOpen = !isOpen)}"
+		>
 			<Icon
 				class="fa-icon {isOpen ? 'opacity-100' : 'opacity-70'}"
 				icon="{faCaretDown}"
@@ -148,7 +149,7 @@
 					group="{value}"
 					value="{option.value}"
 					on:change="{event => selectOption(event)}"
-				>{option.name}</CheckboxControl
+					>{option.name}</CheckboxControl
 				>
 			</div>
 		{/each}
