@@ -58,7 +58,9 @@
 		<div
 			data-test="signInTitle"
 			class="mt-4 px-4 w-full text-3xl text-center"
-		>Sign in to <%= baseName  %></div>
+		>
+			Sign in to <%= baseName  %>
+		</div>
 		<Alert data-test="errorMsg" type="danger" show="{!!authError}">
 			Incorrect username or password.
 		</Alert>
@@ -96,7 +98,7 @@
 					name="rememberMe"
 					checked="{rememberMe}"
 					on:change="{event => (rememberMe = event.target.checked)}"
-				>Remember me</CheckboxControl
+					>Remember me</CheckboxControl
 				>
 			</div>
 

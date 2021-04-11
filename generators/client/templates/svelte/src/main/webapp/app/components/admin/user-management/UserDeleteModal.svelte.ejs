@@ -24,7 +24,11 @@
 			<Icon class="fa-icon mr-2" icon="{faBan}" />Cancel
 		</Button>
 
-		<Button name="deleteUserBtn" role="danger" on:click="{() => dispatch('deleteUser', { id })}">
+		<Button
+			name="deleteUserBtn"
+			role="danger"
+			on:click="{() => dispatch('deleteUser', { id })}"
+		>
 			<Icon class="fa-icon mr-2" icon="{faTrashAlt}" />Delete
 		</Button>
 	</div>
