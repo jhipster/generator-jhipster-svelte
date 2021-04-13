@@ -101,7 +101,7 @@ jobs:
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp -Pprod package
+                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster -ntp -Pprod verify
             - name: Gradle - Package application
               if: contains(matrix.apps, 'gradle')
               run: |

@@ -5,8 +5,8 @@
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
-		"prettier:format": "prettier --write \"{,src/**/}*.{md,json,js,svelte,css}\"",
-		"lint": "eslint <%= CLIENT_MAIN_SRC_DIR %>",
+		"prettier:format": "prettier --write \"{,src/**/}*.{md,json,js,svelte,css,html,yml}\"",
+		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
 		"cleanup": "rimraf <%= DIST_DIR %>",
 		"start": "run-s \"tailwind:build\" \"sapper:watch\"",
