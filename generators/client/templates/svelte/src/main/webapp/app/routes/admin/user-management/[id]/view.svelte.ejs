@@ -84,7 +84,10 @@
 		</div>
 	{/if}
 	<div class="flex mt-4 flex-row justify-center items-center leading-none">
-		<Button name="backBtn" on:click="{() => goto(`/admin/user-management`)}">
+		<Button
+			name="backBtn"
+			on:click="{() => goto(`/admin/user-management`)}"
+		>
 			<Icon class="fa-icon mr-2" icon="{faArrowLeft}" />
 			Back
 		</Button>

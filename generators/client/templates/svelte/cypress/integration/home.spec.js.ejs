@@ -1,5 +1,6 @@
 describe('Home page', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.visit('/')
 	})
 
@@ -31,6 +32,7 @@ describe('Home page', () => {
 
 	describe('authenticated user', () => {
 		beforeEach(() => {
+			cy.unregisterServiceWorkers()
 			cy.loginByApi('admin', 'admin')
 			cy.visit('/')
 		})

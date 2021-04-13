@@ -1,5 +1,6 @@
 describe('Create user page', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.loginByApi('admin', 'admin')
 		cy.visit(`/admin/user-management/new`)
 	})
@@ -70,12 +71,13 @@ describe('Create user page', () => {
 		let randomUser
 
 		beforeEach(() => {
+			cy.unregisterServiceWorkers()
 			randomUser = 'test' + new Date().getTime()
 			cy.visit(`/admin/user-management/new`)
 		})
 
 		afterEach(() => {
-			cy.delete(`api/users/${randomUser}`)
+			cy.delete(`api/admin/users/${randomUser}`)
 		})
 		it('should create a new user account', () => {
 			cy.getBySel('addUserForm')
@@ -100,6 +102,10 @@ describe('Create user page', () => {
 				.contains('Create user account')
 				.should('not.be.disabled')
 				.click()
+
+			cy.getBySel('toast-success').contains(
+				'A user is created with identifier'
+			)
 
 			cy.location('pathname')
 				.should('eq', '/admin/user-management')

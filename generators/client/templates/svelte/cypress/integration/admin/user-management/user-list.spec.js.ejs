@@ -1,5 +1,6 @@
 describe('User Management list page', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.loginByApi('admin', 'admin')
 		cy.visit('/admin/user-management')
 	})
@@ -40,33 +41,40 @@ describe('User Management list page', () => {
 			.should('contain', 'Modified At')
 	})
 
-	it('should display "system" user record in the table', () => {
+	it('should display "user" user record in the table', () => {
 		cy.getBySel('userMgmtTable')
-			.contains('td', 'system')
+			.contains('td', 'user@localhost')
 			.parent()
 			.within($tr => {
 				cy.root()
 					.get('td')
+					.eq(1)
+					.should('contain', 'user')
+					.get('td')
 					.eq(2)
-					.should('contain', 'system@localhost')
+					.should('contain', 'user@localhost')
 					.get('td')
 					.eq(3)
-					.should('contain', 'ROLE_USER, ROLE_ADMIN')
+					.should('contain', 'ROLE_USER')
+					<%_ if (databaseTypeSql) { _%>
 					.get('td')
 					.eq(4)
 					.should('contain', '-')
+					<%_ } _%>
 					.get('td')
 					.eq(5)
 					.should('contain', 'system')
+					<%_ if (databaseTypeSql) { _%>
 					.get('td')
 					.eq(6)
 					.should('contain', '-')
+					<%_ } _%>
 			})
 	})
 
 	it('should not allow actions on the current logged in user', () => {
 		cy.getBySel('userMgmtTable')
-			.contains('td', 'admin')
+			.contains('td', 'admin@localhost')
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
@@ -87,7 +95,7 @@ describe('User Management list page', () => {
 
 	it('should allow deactivation of "user" account record', () => {
 		cy.getBySel('userMgmtTable')
-			.contains('td', 'user')
+			.contains('td', 'user@localhost')
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
@@ -117,24 +125,7 @@ describe('User Management list page', () => {
 	})
 
 	it('should sort the records by login field', () => {
-		cy.getBySel('userMgmtTable')
-			.get('tbody>tr')
-			.eq(0)
-			.within($tr => {
-				cy.root()
-					.get('td')
-					.eq(1)
-					.should('contain', 'system')
-					.get('td')
-					.eq(2)
-					.should('contain', 'system@localhost')
-			})
-
-		cy.getBySel('userMgmtTable')
-			.contains('th', 'Login')
-			.within($tr => {
-				cy.root().get('span').eq(1).click()
-			})
+		let loginValueBefore
 
 		cy.getBySel('userMgmtTable')
 			.get('tbody>tr')
@@ -143,10 +134,40 @@ describe('User Management list page', () => {
 				cy.root()
 					.get('td')
 					.eq(1)
-					.should('contain', 'user')
+					.invoke('text')
+					.then(text => (loginValueBefore = text))
+			})
+
+		cy.intercept('**/admin/users?*').as('getUsers')
+
+		cy.getBySel('userMgmtTable')
+			.get('tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('th')
+					.eq(1)
+					.within($td => {
+						cy.root().get('span').eq(1).click()
+					})
+			})
+
+		cy.wait('@getUsers')
+
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('userMgmtTable')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
 					.get('td')
-					.eq(2)
-					.should('contain', 'user@localhost')
+					.eq(1)
+					.invoke('text')
+					.then(text => {
+						expect(text).not.eq(loginValueBefore)
+					})
 			})
 	})
 })

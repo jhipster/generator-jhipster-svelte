@@ -31,7 +31,7 @@
 
 <Page testId="activate">
 	<span slot="header">Activate user account</span>
-	<div slot="alerts">
+	<svelte:fragment slot="alerts">
 		<Alert show="{accountActivated}" closeable="{false}">
 			<span>Your user account has been activated. Please </span>
 			<a class="font-semibold underline" href="/login">Sign in</a>.
@@ -42,5 +42,5 @@
 				>Sign up</a
 			>.
 		</Alert>
-	</div>
+	</svelte:fragment>
 </Page>

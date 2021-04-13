@@ -41,20 +41,19 @@
 
 <Page testId="settings">
 	<span slot="header">User settings for [{user ? user.login : ''}]</span>
-	<div slot="alerts">
+	<svelte:fragment slot="alerts">
 		<Alert
 			data-test="successMsg"
 			show="{settingsUpdated}"
-			closeable="{false}"
-		>Settings changed!</Alert
+			closeable="{false}">Settings changed!</Alert
 		>
 		<Alert
 			data-test="errorMsg"
 			type="danger"
 			show="{error}"
 			closeable="{false}"
-		>An error has occurred! The user settings could not be saved.</Alert
+			>An error has occurred! The user settings could not be saved.</Alert
 		>
-	</div>
+	</svelte:fragment>
 	<UserSettingsForm user="{user}" on:updatesettings="{updateAccount}" />
 </Page>

@@ -5,8 +5,8 @@
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
-		"prettier:format": "prettier --write \"{,src/**/}*.{md,json,js,svelte,css}\"",
-		"lint": "eslint <%= CLIENT_MAIN_SRC_DIR %>",
+		"prettier:format": "prettier --write \"{,src/**/}*.{md,json,js,svelte,css,html,yml}\"",
+		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
 		"cleanup": "rimraf <%= DIST_DIR %>",
 		"start": "run-s \"tailwind:build\" \"sapper:watch\"",
@@ -19,9 +19,9 @@
 		"test:watch": "npm run test -- --watch",
 		"e2e": "cypress run",
 		"postbuild": "mv <%= DIST_DIR %>404/index.html <%= DIST_DIR %>404.html",
-		"webpack:build": "NODE_ENV=development run-s \"tailwind:build\" \"build\"",
-		"webpack:prod": "NODE_ENV=production run-s \"tailwind:build\" \"build\"",
-		"webpack:test": "npm run test"
+		"webapp:build": "NODE_ENV=development run-s \"tailwind:build\" \"build\"",
+		"webapp:prod": "NODE_ENV=production run-s \"tailwind:build\" \"build\"",
+		"webapp:test": "npm run test"
 	},
 
 	"devDependencies": {

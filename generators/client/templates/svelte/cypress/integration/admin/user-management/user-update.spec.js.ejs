@@ -2,10 +2,11 @@ describe('Update user page', () => {
 	let randomUser
 
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		randomUser = 'test' + new Date().getTime()
 		cy.loginByApi('admin', 'admin')
 
-		cy.save('api/users', {
+		cy.save('api/admin/users', {
 			login: randomUser,
 			firstName: 'John',
 			lastName: 'Doe',
@@ -18,7 +19,7 @@ describe('Update user page', () => {
 	})
 
 	afterEach(() => {
-		cy.delete(`api/users/${randomUser}`)
+		cy.delete(`api/admin/users/${randomUser}`)
 	})
 
 	it('should greets with update user title', () => {
@@ -112,6 +113,10 @@ describe('Update user page', () => {
 			.contains('Update user account')
 			.should('not.be.disabled')
 			.click()
+
+		cy.getBySel('toast-success').contains(
+			'A user is updated with identifier'
+		)
 
 		cy.location('pathname')
 			.should('eq', '/admin/user-management')

@@ -20,7 +20,7 @@
 const prettierConfigFiles = {
 	global: [
 		{
-			templates: ['.prettierrc.yml', '.prettierignore'],
+			templates: ['.prettierrc', '.prettierignore'],
 		},
 	],
 };
@@ -28,7 +28,13 @@ const prettierConfigFiles = {
 const commonFiles = {
 	global: [
 		{
-			templates: ['.editorconfig', '.gitignore', 'README.md', 'src/main/resources/banner.txt'],
+			templates: [
+				'.editorconfig',
+				'.gitignore',
+				'README.md',
+				'src/main/resources/banner.txt',
+				'sonar-project.properties',
+			],
 		},
 	],
 	commitHooks: [
@@ -47,8 +53,6 @@ const sharedFiles = {
 					renameTo: () => '.gitattributes',
 					method: 'copy',
 				},
-
-				'sonar-project.properties',
 			],
 		},
 	],

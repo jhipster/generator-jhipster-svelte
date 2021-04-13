@@ -2,10 +2,11 @@ describe('User delete dialog page', () => {
 	let randomUser
 
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		randomUser = 'test' + new Date().getTime()
 		cy.loginByApi('admin', 'admin')
 
-		cy.save('api/users', {
+		cy.save('api/admin/users', {
 			login: randomUser,
 			firstName: '',
 			lastName: '',
@@ -30,7 +31,7 @@ describe('User delete dialog page', () => {
 	})
 
 	afterEach(() => {
-		cy.delete(`api/users/${randomUser}`)
+		cy.delete(`api/admin/users/${randomUser}`)
 	})
 
 	it('should display delete user dialog', () => {
@@ -60,6 +61,11 @@ describe('User delete dialog page', () => {
 		cy.getBySel('svlModal').within(() =>
 			cy.getByName('deleteUserBtn').click()
 		)
+
+		cy.getBySel('toast-success').contains(
+			'A user is deleted with identifier'
+		)
+
 		cy.getBySel('userMgmtTitle')
 			.should('be.visible')
 			.should('contain', 'Users')

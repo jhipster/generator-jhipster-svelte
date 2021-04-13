@@ -1,5 +1,6 @@
 describe('Register User', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.visit('/account/register')
 	})
 

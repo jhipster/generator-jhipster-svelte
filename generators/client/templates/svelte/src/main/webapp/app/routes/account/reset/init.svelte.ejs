@@ -26,7 +26,7 @@
 
 <Page testId="forgotPwd">
 	<span slot="header">Reset your password</span>
-	<div slot="alerts">
+	<svelte:fragment slot="alerts">
 		<Alert data-test="successMsg" show="{passwordReset}" closeable="{false}"
 			>Check your email for details on how to reset your password.</Alert
 		>
@@ -35,9 +35,9 @@
 			type="warning"
 			show="{!passwordReset}"
 			closeable="{false}"
-		>Enter your user account's verified email address.</Alert
+			>Enter your user account's verified email address.</Alert
 		>
-	</div>
+	</svelte:fragment>
 	{#if !passwordReset}
 		<ForgotPasswordForm bind:email on:click="{resetPassword}" />
 	{/if}

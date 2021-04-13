@@ -1,4 +1,5 @@
 <script>
+	export let testId = 'alert'
 	export let show = false
 	export let type = 'success'
 	export let closeable = true
@@ -24,7 +25,7 @@
 	class:dark:text-yellow-900="{type === 'warning'}"
 	class="px-7 py-3 mt-4 flex justify-between transition-colors duration-150 rounded text-sm"
 >
-	<div {...$$restProps}>
+	<div data-test="{testId}-{type}" {...$$restProps}>
 		<slot />
 	</div>
 	{#if closeable}
@@ -33,7 +34,7 @@
 			class:dark:hover:text-red-500="{type === 'danger'}"
 			class="self-start text-xl leading-4 bg-transparent border-0
 				focus:outline-none"
-			on:click="{closeAlert}">&times</button
+			on:click|preventDefault="{closeAlert}">&times</button
 		>
 	{/if}
 </div>

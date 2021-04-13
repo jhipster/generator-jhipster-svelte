@@ -1,5 +1,6 @@
 describe('Change user password', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.loginByApi('admin', 'admin')
 		cy.visit('/account/password')
 	})

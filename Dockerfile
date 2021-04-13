@@ -2,7 +2,7 @@ FROM node:lts-alpine3.12
 
 LABEL maintainer="Vishal Mahajan"
 
-ARG SVELTE_PATH=/opt/svelte/
+ARG SVELTE_PATH=/opt/svelte
 ARG APP_PATH=/app
 ARG NPM_PATH=/opt/npm-global
 ARG GIT_USER_EMAIL=jhipster-svelte-bot@jhipster.tech
@@ -10,12 +10,15 @@ ARG GIT_USERNAME="JHipster Svelte Bot"
 ARG GID=1000
 ARG UID=1000
 
+ENV	MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+
 RUN apk update \
 	&& apk --no-cache --update add \
-		git=2.26.2-r0 \
+		git \
 		openjdk11 \
 		ca-certificates \
-		wget
+		wget \
+		bash
 
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
 	&& wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.32-r0/glibc-2.32-r0.apk \
@@ -33,32 +36,32 @@ RUN \
 
 RUN \
 	deluser --remove-home node \
-	&& addgroup -S jhipster -g ${GID} \
-  	&& adduser -S -G jhipster -u ${UID} jhipster
+	&& addgroup -S shipster -g ${GID} \
+  	&& adduser -S -G shipster -u ${UID} shipster
 
 RUN \
 	mkdir -p $APP_PATH \
 	&& mkdir -p $SVELTE_PATH \
 	&& mkdir -p $NPM_PATH \
-	&& chown -R jhipster:jhipster $APP_PATH \
-	&& chown -R jhipster:jhipster $SVELTE_PATH \
-	&& chown -R jhipster:jhipster $NPM_PATH
+	&& chown -R shipster:shipster $APP_PATH \
+	&& chown -R shipster:shipster $SVELTE_PATH \
+	&& chown -R shipster:shipster $NPM_PATH
 
-USER jhipster
+USER shipster
 
 RUN \
 	npm config set prefix "$NPM_PATH" \
 	&& echo PATH="$NPM_PATH/bin:$PATH" >> "$HOME/.profile" \
 	&& . "$HOME/.profile"
 
-RUN npm install -g --no-audit --quiet generator-jhipster@6.10.5
-
 COPY package.json package-lock.json $SVELTE_PATH/
 
 WORKDIR $SVELTE_PATH
 
-RUN	npm install --quiet \
-	&& npm link
+RUN	npm install --quiet
+
+COPY cli $SVELTE_PATH/cli
+RUN npm link
 
 COPY generators $SVELTE_PATH/generators
 

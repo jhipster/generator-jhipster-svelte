@@ -1,5 +1,6 @@
 describe('User Settings', () => {
 	beforeEach(() => {
+		cy.unregisterServiceWorkers()
 		cy.loginByApi('admin', 'admin')
 		cy.visit('/account/settings')
 	})
@@ -16,7 +17,7 @@ describe('User Settings', () => {
 			.getByName('firstName')
 			.invoke('val')
 			.then(val => {
-				expect(val).to.include('Admin')
+				expect(val).to.include(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ }_%>)
 			})
 		cy.getBySel('settingsForm')
 			.getByName('lastName')
@@ -79,7 +80,7 @@ describe('User Settings', () => {
 		cy.getBySel('settingsForm')
 			.getByName('firstName')
 			.clear()
-			.type('Admin')
+			.type(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ }_%>)
 			.blur()
 		cy.getBySel('settingsForm')
 			.getByName('lastName')
