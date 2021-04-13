@@ -100,7 +100,7 @@ jobs:
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  ./mvnw -ntp -Pprod package
+                  ./mvnw -ntp -Pprod verify
             - name: Gradle - Package application
               if: contains(matrix.apps, 'gradle')
               run: |
