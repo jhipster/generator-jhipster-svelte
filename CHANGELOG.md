@@ -4,11 +4,11 @@
 
 ## [Unreleased]
 
+## [0.3] - 2021-04-14
+
 ### BREAKING CHANGES
 
--   Support JHipster version `v7.0.0`
-
-### Known issues
+-   Support JHipster version `v7.0.x`
 
 ### Added
 
@@ -17,6 +17,11 @@
 -   ✅ Support dynamic server (success/error) notifications and integrate them into `User` CRUD flows
 -   ✅ `Toast` component to display notification messages
 -   ✅ GitHub Actions to verify generated applications with `Prod` profile
+
+### Fixed
+
+-   ✅ Fixed `SonarQube` integration issues observed in newly generated applications.
+-   ✅ Fixed `Prettier` formatting issues observed in newly generated applications.
 
 ### Changed
 
