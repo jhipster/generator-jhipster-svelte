@@ -2,8 +2,7 @@
 	"extends": [
 		"eslint:recommended",
 		"plugin:cypress/recommended",
-		"plugin:jest-dom/recommended",
-		"plugin:testing-library/recommended"
+		"plugin:jest-dom/recommended"
 	],
 	"parserOptions": {
 		"ecmaVersion": 2019,
@@ -21,6 +20,10 @@
 		{
 			"files": ["**/*.svelte"],
 			"processor": "svelte3/svelte3"
+		},
+		{
+			"files": ["src/**/*.spec.js"],
+			"extends": ["plugin:testing-library/dom"]
 		}
 	],
 	"rules": {
