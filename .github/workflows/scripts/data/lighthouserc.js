@@ -1,8 +1,8 @@
 module.exports = {
 	ci: {
-		assert: {
-			preset: 'lighthouse:recommended',
-		},
+		// assert: {
+		// 	preset: 'lighthouse:recommended',
+		// },
 		collect: {
 			url: ['http://localhost:8080/'],
 			startServerCommand: 'docker-compose -f src/main/docker/app.yml up -d',
