@@ -10,13 +10,14 @@
 	export let name
 	export let label
 	export let validations = []
+	export let id
 
 	let dirty = false
 	let valid = false
 	let message
 	let focused = false
 	const dispatch = createEventDispatcher()
-	const randomSuffix = Date.now()
+	const idVal = id ? id : (name + Date.now());
 
 	$: focusedOrContainsValue = value !== '' || focused
 	$: pristine = !focused && !dirty
@@ -71,7 +72,7 @@
 		class:dark:text-blue-500="{focusedAndValidOrPristine}"
 		class:text-red-600="{dirtyAndInvalid && focused}"
 		class:dark:text-red-500="{dirtyAndInvalid && focused}"
-		for="{name + randomSuffix}"
+		for="{idVal}"
 		>{label}<span class="ml-px">{isRequired ? '*' : ''}</span>
 	</label>
 	<input
@@ -86,7 +87,7 @@
 		class:dark:border-red-500="{dirtyAndInvalid}"
 		type="{type}"
 		name="{name}"
-		id="{name + randomSuffix}"
+		id="{idVal}"
 		value="{value}"
 		on:input
 		on:focus="{() => (focused = true)}"
