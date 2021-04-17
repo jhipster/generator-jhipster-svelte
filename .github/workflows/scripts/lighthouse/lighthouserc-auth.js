@@ -1,8 +1,12 @@
 module.exports = {
 	ci: {
-		// assert: {
-		// 	preset: 'lighthouse:recommended',
-		// },
+		assert: {
+			preset: 'lighthouse:recommended',
+			assertions: {
+				'apple-touch-icon': 'off',
+				' tap-targets': 'off',
+			},
+		},
 		collect: {
 			url: [
 				'http://localhost:8080/',
@@ -12,8 +16,6 @@ module.exports = {
 				'http://localhost:8080/account/password',
 				'http://localhost:8080/account/settings',
 			],
-			// startServerCommand: 'docker-compose -f src/main/docker/app.yml up -d',
-			// startServerReadyTimeout: 120000,
 			puppeteerScript: './puppeteer-auth.js',
 			puppeteerLaunchOptions: {
 				defaultViewport: null,
