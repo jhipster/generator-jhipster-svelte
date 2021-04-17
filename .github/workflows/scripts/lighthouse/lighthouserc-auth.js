@@ -4,7 +4,7 @@ module.exports = {
 			preset: 'lighthouse:recommended',
 			assertions: {
 				'apple-touch-icon': 'off',
-				' tap-targets': 'off',
+				'tap-targets': 'off',
 				'unsized-images': 'off',
 			},
 		},
