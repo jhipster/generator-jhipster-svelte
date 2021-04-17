@@ -5,7 +5,8 @@ module.exports = {
 			assertions: {
 				'apple-touch-icon': 'off',
 				'tap-targets': 'off',
-				'unsized-images': 'off',
+				// 'unsized-images': 'off',
+				'non-composited-animations': 'off',
 			},
 		},
 		collect: {
