@@ -6,4 +6,5 @@ module.exports = async (browser, context) => {
 	await page.type('#password', 'admin');
 	await page.click('[type="submit"]');
 	await page.waitForNavigation();
+	await page.close();
 };
