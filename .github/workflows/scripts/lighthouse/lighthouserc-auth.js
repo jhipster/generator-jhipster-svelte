@@ -12,8 +12,8 @@ module.exports = {
 				'http://localhost:8080/account/password',
 				'http://localhost:8080/account/settings',
 			],
-			startServerCommand: 'docker-compose -f src/main/docker/app.yml up -d',
-			startServerReadyTimeout: 120000,
+			// startServerCommand: 'docker-compose -f src/main/docker/app.yml up -d',
+			// startServerReadyTimeout: 120000,
 			puppeteerScript: './puppeteer-auth.js',
 			settings: {
 				disableStorageReset: true,
