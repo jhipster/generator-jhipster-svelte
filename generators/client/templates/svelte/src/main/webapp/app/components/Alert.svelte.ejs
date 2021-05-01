@@ -23,7 +23,7 @@
 	class:dark:bg-yellow-200="{type === 'warning'}"
 	class:text-yellow-900="{type === 'warning'}"
 	class:dark:text-yellow-900="{type === 'warning'}"
-	class="px-7 py-3 mt-4 flex justify-between transition-colors duration-150 rounded text-sm"
+	class="px-5 py-3 mt-4 flex justify-between transition-colors duration-150 rounded text-sm"
 >
 	<div data-test="{testId}-{type}" {...$$restProps}>
 		<slot />
