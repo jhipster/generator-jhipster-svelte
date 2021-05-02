@@ -1,9 +1,10 @@
 <script>
-	import Icon from 'fa-svelte'
 	import { createEventDispatcher } from 'svelte'
 	import { faSort } from '@fortawesome/free-solid-svg-icons/faSort'
 	import { faSortDown } from '@fortawesome/free-solid-svg-icons/faSortDown'
 	import { faSortUp } from '@fortawesome/free-solid-svg-icons/faSortUp'
+
+	import Icon from '../Icon.svelte'
 
 	export let sortPredicate = ''
 	export let active = false
@@ -29,7 +30,7 @@
 		: 'Click to sort records'}"
 >
 	<Icon
-		class="fa-icon cursor-pointer"
+		classes="cursor-pointer"
 		icon="{active ? (ascending ? faSortUp : faSortDown) : faSort}"
 	/>
 </span>

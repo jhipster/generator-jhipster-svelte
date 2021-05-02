@@ -1,9 +1,9 @@
 <script>
 	import { createEventDispatcher, afterUpdate } from 'svelte'
-	import Icon from 'fa-svelte'
 	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
 
+	import Icon from './Icon.svelte'
 	import CheckboxControl from './CheckboxControl.svelte'
 
 	export let name = ''
@@ -75,8 +75,8 @@
 		class:text-xs="{focusedOrContainsValue || isOpen}"
 		class:text-gray-700="{!focused}"
 		class:dark:text-gray-200="{!focused}"
-		class:text-blue-700="{focusedAndValidOrPristine}"
-		class:dark:text-blue-500="{focusedAndValidOrPristine}"
+		class:text-primary-700="{focusedAndValidOrPristine}"
+		class:dark:text-primary-500="{focusedAndValidOrPristine}"
 		class:text-red-600="{dirtyAndInvalid && (focused || isOpen)}"
 		class:dark:text-red-500="{dirtyAndInvalid && (focused || isOpen)}"
 		for="{name + randomSuffix}"
@@ -88,9 +88,9 @@
 		class:border-2="{focused || isOpen}"
 		class:border-gray-400="{pristineOrValid}"
 		class:dark:border-gray-700="{pristineOrValid}"
-		class:border-blue-600="{focusedAndValidOrPristine ||
+		class:border-primary-600="{focusedAndValidOrPristine ||
 			(isOpen && !dirtyAndInvalid)}"
-		class:dark:border-blue-500="{focusedAndValidOrPristine ||
+		class:dark:border-primary-500="{focusedAndValidOrPristine ||
 			(isOpen && !dirtyAndInvalid)}"
 		class:border-red-600="{dirtyAndInvalid}"
 		class:dark:border-red-500="{dirtyAndInvalid}"
@@ -121,7 +121,7 @@
 			on:click|preventDefault="{() => (isOpen = !isOpen)}"
 		>
 			<Icon
-				class="fa-icon {isOpen ? 'opacity-100' : 'opacity-70'}"
+				classes="{isOpen ? 'opacity-100' : 'opacity-70'}"
 				icon="{faCaretDown}"
 			/>
 		</button>
@@ -138,12 +138,13 @@
 		data-test="{name}-options"
 		class:hidden="{!isOpen}"
 		class="absolute left-0 w-full py-2 bg-white dark:bg-gray-800 border-b-2 rounded shadow-md border-2 z-10 border-t-0 rounded-tl-none rounded-tr-none"
-		class:border-blue-600="{focusedAndValidOrPristine || !dirtyAndInvalid}"
+		class:border-primary-600="{focusedAndValidOrPristine ||
+			!dirtyAndInvalid}"
 		class:border-red-600="{dirtyAndInvalid}"
 	>
 		{#each options as option (option.name)}
 			<div
-				class="block px-3 py-1 rounded-none font-normal hover:text-white dark:hover:text-gray-800 text-gray-800 dark:text-gray-200 hover:bg-blue-600 dark:hover:bg-blue-500"
+				class="block px-3 py-1 rounded-none font-normal hover:text-white dark:hover:text-gray-800 text-gray-800 dark:text-gray-200 hover:bg-primary-600 dark:hover:bg-primary-500"
 			>
 				<CheckboxControl
 					checked="{value.includes(option.value)}"
@@ -160,7 +161,7 @@
 	<slot message="{message}" dirty="{dirty}" valid="{valid}">
 		{#if dirty && !valid}
 			<div data-test="{name}-error" class="flex items-center">
-				<Icon class="fa-icon mr-2" icon="{faExclamationCircle}" />
+				<Icon classes="mr-2" icon="{faExclamationCircle}" />
 				{message}
 			</div>
 		{:else}&nbsp;{/if}

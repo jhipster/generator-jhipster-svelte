@@ -2,14 +2,13 @@
 	import { onMount } from 'svelte'
 	import { stores } from '@sapper/app'
 	import { goto } from '@sapper/app'
-	import Icon from 'fa-svelte'
 	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft'
 
 	import userService from './../../../../components/user/user-service.js'
 	import Page from './../../../../components/page/Page.svelte'
 	import Record from './../../../../components/page/Record.svelte'
 	import Button from './../../../../components/Button.svelte'
-
+	import Icon from './../../../../components/Icon.svelte'
 	import { formatDate } from '../../../../utils/date'
 
 	const { page } = stores()
@@ -88,7 +87,7 @@
 			name="backBtn"
 			on:click="{() => goto(`/admin/user-management`)}"
 		>
-			<Icon class="fa-icon mr-2" icon="{faArrowLeft}" />
+			<Icon classes="mr-2" icon="{faArrowLeft}" />
 			Back
 		</Button>
 	</div>

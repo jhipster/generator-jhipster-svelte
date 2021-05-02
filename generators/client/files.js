@@ -147,6 +147,7 @@ const svelteFiles = {
 				'Alert.svelte',
 				'Button.svelte',
 				'CheckboxControl.svelte',
+				'Icon.svelte',
 				'InputControl.svelte',
 				'Modal.svelte',
 				'SelectControl.svelte',
