@@ -1,9 +1,9 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import Icon from 'fa-svelte'
 	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle'
 
 	import Password from './Password.svelte'
+	import Icon from '../Icon.svelte'
 
 	export let label = 'Password'
 	export let name = 'password'
@@ -59,10 +59,10 @@
 >
 	<div data-test="{name}Confirm-error" class="flex items-center">
 		{#if confirmPasswordMismatch}
-			<Icon class="fa-icon mr-2" icon="{faExclamationCircle}" />
+			<Icon classes="mr-2" icon="{faExclamationCircle}" />
 			Password and its confirmation do not match
 		{:else if dirty && !valid}
-			<Icon class="fa-icon mr-2" icon="{faExclamationCircle}" />
+			<Icon classes="mr-2" icon="{faExclamationCircle}" />
 			{message}
 		{:else}&nbsp;{/if}
 	</div>

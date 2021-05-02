@@ -1,10 +1,10 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import Icon from 'fa-svelte'
 	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave'
 
 	import Button from '../../Button.svelte'
+	import Icon from '../../Icon.svelte'
 	import InputControl from '../../InputControl.svelte'
 	import SelectControl from '../../SelectControl.svelte'
 	import CheckboxControl from '../../CheckboxControl.svelte'
@@ -177,10 +177,10 @@
 		<div class="mr-4">
 			<Button
 				name="cancelBtn"
-				role="secondary"
+				role="neutral"
 				on:click="{() => dispatch('cancel')}"
 			>
-				<Icon class="fa-icon mr-2" icon="{faBan}" />Cancel
+				<Icon classes="mr-2" icon="{faBan}" />Cancel
 			</Button>
 		</div>
 		<div>
@@ -190,7 +190,7 @@
 				on:click="{() => dispatch('saveorupdate', { ...user })}"
 				disabled="{!validForm}"
 			>
-				<Icon class="fa-icon mr-2" icon="{faSave}" />
+				<Icon classes="mr-2" icon="{faSave}" />
 				{user.id ? 'Update ' : 'Create '}
 				user account
 			</Button>
