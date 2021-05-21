@@ -27,7 +27,7 @@
 		"eslint-plugin-cypress": "2.11.3",
 		"eslint-plugin-jest-dom": "3.9.0",
 		"eslint-plugin-svelte3": "3.2.0",
-		"eslint-plugin-testing-library": "4.4.0",
+		"eslint-plugin-testing-library": "4.5.0",
 		"fa-svelte": "3.1.0",
 		"http-proxy-middleware": "2.0.0",
 		"husky": "4.3.8",
