@@ -32,8 +32,10 @@ module.exports = class extends ClientGenerator {
 			askForClientTheme: undefined,
 			askForClientThemeVariant: undefined,
 			overrideConfigOptions() {
-				this.configOptions.clientFramework = this.jhipsterConfig.clientFramework = this.clientFramework =
-					'svelte';
+				this.configOptions.clientFramework =
+					this.jhipsterConfig.clientFramework =
+					this.clientFramework =
+						'svelte';
 				this.configOptions.clientTheme = this.clientTheme = 'none';
 				this.configOptions.clientThemeVariant = this.clientThemeVariant = '';
 				this.configOptions.withAdminUi = this.askForAdminUi = '';

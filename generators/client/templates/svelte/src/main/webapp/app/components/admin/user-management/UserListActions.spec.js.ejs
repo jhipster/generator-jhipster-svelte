@@ -51,14 +51,14 @@ test('should assert the component re-rendering on state change', async () => {
 		showActions: true,
 	})
 
-	expect(screen.getByTitle(/deactivate user/i)).toBeTruthy()
+	expect(screen.getByTitle(/deactivate user/i)).toBeInTheDocument()
 
 	await component.$set({
 		user: { activated: false, login: 'testA' },
 		currentUser: 'testA',
 		showActions: true,
 	})
-	expect(screen.getByTitle(/activate user/i)).toBeTruthy()
+	expect(screen.getByTitle(/activate user/i)).toBeInTheDocument()
 	expect(screen.getByRole('button', { name: /edit/i })).toBeDisabled()
 
 	await component.$set({
@@ -66,7 +66,7 @@ test('should assert the component re-rendering on state change', async () => {
 		currentUser: 'testB',
 		showActions: true,
 	})
-	expect(screen.getByTitle(/deactivate user/i)).toBeTruthy()
+	expect(screen.getByTitle(/deactivate user/i)).toBeInTheDocument()
 	expect(screen.getByRole('button', { name: /edit/i })).toBeEnabled()
 })
 
