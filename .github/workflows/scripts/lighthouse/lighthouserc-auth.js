@@ -12,6 +12,7 @@ module.exports = {
 		collect: {
 			url: [
 				'http://localhost:8080/',
+				'http://localhost:8080/admin/logger',
 				'http://localhost:8080/admin/user-management',
 				'http://localhost:8080/admin/user-management/new',
 				'http://localhost:8080/admin/user-management/admin/view',
