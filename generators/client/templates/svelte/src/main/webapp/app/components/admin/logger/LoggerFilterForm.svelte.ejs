@@ -1,0 +1,20 @@
+<script>
+	import { createEventDispatcher } from 'svelte'
+
+	import Form from '../../page/Form.svelte'
+	import SearchControl from '../../SearchControl.svelte'
+
+	let filter = ''
+	const dispatch = createEventDispatcher()
+
+	function filterLoggers(event) {
+		filter = event.target.value
+		dispatch('filterloggers', {
+			filter,
+		})
+	}
+</script>
+
+<Form testId="loggerFilter">
+	<SearchControl name="logger" value="{filter}" on:input="{filterLoggers}" />
+</Form>

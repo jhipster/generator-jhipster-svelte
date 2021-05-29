@@ -4,6 +4,19 @@
 
 ## [Unreleased]
 
+### Added
+
+-   ✅ Integrate `Lighthouse CI` in [GitHub Actions](https://github.com/jhipster/generator-jhipster-svelte/actions/workflows/application-lighthouse.yml). Lighthouse verification of all generated pages [#380](https://github.com/jhipster/generator-jhipster-svelte/pull/380)
+-   ✅ Integrate `Tailwind JIT` mode as default in the build system [#407](https://github.com/jhipster/generator-jhipster-svelte/pull/407)
+-   ✅ Generate `Loggers` page under `Administration` menu. Allows viewing default configured loggers level and change logger level on the fly [#461](https://github.com/jhipster/generator-jhipster-svelte/pull/461)
+
+### Changed
+
+-   ✅ Improved `Tailwind` CSS integration, theme colors externalization [#408](https://github.com/jhipster/generator-jhipster-svelte/pull/408)
+-   ✅ Improved layout of `Toast` notifications.
+-   ✅ Bump `Cypress` dependency.
+-   ✅ Bump third party library dependencies.
+
 ## [0.3] - 2021-04-14
 
 ### BREAKING CHANGES

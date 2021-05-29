@@ -1,6 +1,7 @@
 <script>
 	import { faUsersCog } from '@fortawesome/free-solid-svg-icons/faUsersCog'
 	import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
+	import { faTasks } from '@fortawesome/free-solid-svg-icons/faTasks'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
 
 	import MenuItem from './MenuItem.svelte'
@@ -47,6 +48,14 @@
 		>
 			<Icon classes="sm:mr-1" icon="{faUsers}" />
 			User Management
+		</MenuItem>
+		<MenuItem
+				testId="svlLoggerLink"
+				link="/admin/logger"
+				on:click="{() => (isOpen = false)}"
+		>
+			<Icon classes="sm:mr-1" icon="{faTasks}" />
+			Loggers
 		</MenuItem>
 	</div>
 </div>
