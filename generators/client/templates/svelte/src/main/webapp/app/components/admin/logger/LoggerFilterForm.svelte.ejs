@@ -16,5 +16,11 @@
 </script>
 
 <Form testId="loggerFilter">
-	<SearchControl name="logger" value="{filter}" on:input="{filterLoggers}" />
+	<SearchControl
+		label="Filter loggers"
+		name="logger"
+		value="{filter}"
+		placeholder="Filter loggers"
+		on:input="{filterLoggers}"
+	/>
 </Form>

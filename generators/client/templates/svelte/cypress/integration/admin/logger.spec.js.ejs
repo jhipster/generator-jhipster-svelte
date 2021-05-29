@@ -26,9 +26,9 @@ describe('Loggers page', () => {
 			.should('contain', 'Name')
 	})
 
-	it('should display "ROOT" logger and the default enabled logger level in the table', () => {
+	it('should display logger name and the default enabled logger level in the table', () => {
 		cy.getBySel('loggersTable')
-			.contains('td', 'ROOT')
+			.contains('td', 'org.hibernate.mapping.RootClass')
 			.parent()
 			.within($tr => {
 				cy.root()
@@ -37,23 +37,29 @@ describe('Loggers page', () => {
 					.get(`button`)
 					.should('have.length', 6)
 					.getBySel('offLogLevelBtn')
-					.should('not.be.visible').should('not.be.disabled')
+					.should('not.be.visible')
+					.should('not.be.disabled')
 					.getBySel('errorLogLevelBtn')
-					.should('not.be.visible').should('not.be.disabled')
+					.should('not.be.visible')
+					.should('not.be.disabled')
 					.getBySel('warnLogLevelBtn')
-					.should('not.be.visible').should('not.be.disabled')
+					.should('be.visible')
+					.should('be.disabled')
 					.getBySel('infoLogLevelBtn')
-					.should('not.be.visible').should('not.be.disabled')
+					.should('not.be.visible')
+					.should('not.be.disabled')
 					.getBySel('debugLogLevelBtn')
-					.should('be.visible').should('be.disabled')
+					.should('not.be.visible')
+					.should('not.be.disabled')
 					.getBySel('traceLogLevelBtn')
-					.should('not.be.visible').should('not.be.disabled')
+					.should('not.be.visible')
+					.should('not.be.disabled')
 			})
 	})
 
 	it('should display actions available on the current selected logger', () => {
 		cy.getBySel('loggersTable')
-			.contains('td', 'ROOT')
+			.contains('td', 'org.hibernate.mapping.RootClass')
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
@@ -63,26 +69,32 @@ describe('Loggers page', () => {
 					.get(`button`)
 					.should('have.length', 6)
 					.getBySel('offLogLevelBtn')
-					.should('be.visible').should('not.be.disabled')
+					.should('be.visible')
+					.should('not.be.disabled')
 					.getBySel('errorLogLevelBtn')
-					.should('be.visible').should('not.be.disabled')
+					.should('be.visible')
+					.should('not.be.disabled')
 					.getBySel('warnLogLevelBtn')
-					.should('be.visible').should('not.be.disabled')
+					.should('be.visible')
+					.should('be.disabled')
 					.getBySel('infoLogLevelBtn')
-					.should('be.visible').should('not.be.disabled')
+					.should('be.visible')
+					.should('not.be.disabled')
 					.getBySel('debugLogLevelBtn')
-					.should('be.visible').should('be.disabled')
+					.should('be.visible')
+					.should('not.be.disabled')
 					.getBySel('traceLogLevelBtn')
-					.should('be.visible').should('not.be.disabled')
+					.should('be.visible')
+					.should('not.be.disabled')
 			})
 	})
 
-	it('should change logger level of ROOT logger from DEBUG -> INFO, INFO -> DEBUG', () => {
+	it('should change logger level from WARN -> INFO, INFO -> WARN', () => {
 
 		cy.intercept('**/management/loggers/*').as('changeLoggers')
 
 		cy.getBySel('loggersTable')
-			.contains('td', 'ROOT')
+			.contains('td', 'org.hibernate.mapping.RootClass')
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
@@ -98,7 +110,7 @@ describe('Loggers page', () => {
 		cy.wait('@changeLoggers')
 
 		cy.getBySel('loggersTable')
-			.contains('td', 'ROOT')
+			.contains('td', 'org.hibernate.mapping.RootClass')
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
@@ -109,7 +121,7 @@ describe('Loggers page', () => {
 					.should('have.length', 6)
 					.getBySel('infoLogLevelBtn')
 					.should('be.visible').should('be.disabled')
-					.getBySel('debugLogLevelBtn')
+					.getBySel('warnLogLevelBtn')
 					.click();
 			})
 	})

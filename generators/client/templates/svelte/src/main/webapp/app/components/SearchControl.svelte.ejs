@@ -4,6 +4,8 @@
 	import Icon from './Icon.svelte'
 
 	export let value = ''
+	export let label
+	export let placeholder = ''
 	export let name
 	export let id
 
@@ -15,6 +17,7 @@
 
 <div class="relative h-12">
 	<label
+		aria-label="{label}"
 		class="absolute left-0 px-4 py-3 pointer-events-none"
 		class:text-gray-500="{!focused}"
 		class:dark:text-gray-700="{!focused}"
@@ -34,6 +37,7 @@
 		name="{name}"
 		id="{idVal}"
 		value="{value}"
+		placeholder="{placeholder}"
 		on:input
 		on:focus="{() => (focused = true)}"
 		on:blur="{() => (focused = false)}"
