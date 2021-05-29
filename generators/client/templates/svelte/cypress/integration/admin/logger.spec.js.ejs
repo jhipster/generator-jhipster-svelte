@@ -28,7 +28,12 @@ describe('Loggers page', () => {
 
 	it('should display logger name and the default enabled logger level in the table', () => {
 		cy.getBySel('loggersTable')
+<%_
+	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.mapping.RootClass')
+<%_ } else { _%>
+			.contains('td', 'org.mongodb.driver')
+<%_ } _%>
 			.parent()
 			.within($tr => {
 				cy.root()
@@ -59,7 +64,12 @@ describe('Loggers page', () => {
 
 	it('should display actions available on the current selected logger', () => {
 		cy.getBySel('loggersTable')
+<%_
+	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.mapping.RootClass')
+<%_ } else { _%>
+			.contains('td', 'org.mongodb.driver')
+<%_ } _%>
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
@@ -94,7 +104,12 @@ describe('Loggers page', () => {
 		cy.intercept('**/management/loggers/*').as('changeLoggers')
 
 		cy.getBySel('loggersTable')
+<%_
+	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.mapping.RootClass')
+<%_ } else { _%>
+			.contains('td', 'org.mongodb.driver')
+<%_ } _%>
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
@@ -110,7 +125,12 @@ describe('Loggers page', () => {
 		cy.wait('@changeLoggers')
 
 		cy.getBySel('loggersTable')
+<%_
+	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.mapping.RootClass')
+<%_ } else { _%>
+			.contains('td', 'org.mongodb.driver')
+<%_ } _%>
 			.parent()
 			.trigger('mouseenter')
 			.within($tr => {
