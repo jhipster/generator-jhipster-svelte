@@ -41,6 +41,8 @@
 		class:hidden="{!isOpen}"
 		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white sm:dark:bg-gray-700 rounded sm:rounded-lg sm:shadow-lg"
 	>
+		<%_
+		if (!skipUserManagement) { _%>
 		<MenuItem
 			testId="svlUserMgmtLink"
 			link="/admin/user-management"
@@ -49,6 +51,7 @@
 			<Icon classes="sm:mr-1" icon="{faUsers}" />
 			User Management
 		</MenuItem>
+		<%_ } _%>
 		<MenuItem
 				testId="svlLoggerLink"
 				link="/admin/logger"

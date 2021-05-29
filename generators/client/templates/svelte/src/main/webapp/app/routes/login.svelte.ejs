@@ -108,7 +108,8 @@
 				Sign in
 			</Button>
 		</form>
-
+		<%_
+		if (!skipUserManagement) { _%>
 		<div
 			class="mt-5 px-4 flex justify-between text-primary-700 dark:text-primary-500"
 		>
@@ -127,5 +128,6 @@
 				>
 			</div>
 		</div>
+		<%_ } _%>
 	</div>
 </section>

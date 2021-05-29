@@ -48,6 +48,8 @@
 							<br />- User (login="user" and password="user").</span
 						>
 					</div>
+				<%_
+					if (!skipUserManagement) { _%>
 					<div
 						class="px-5 py-3 mt-4 bg-yellow-100 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 rounded transition-colors duration-200"
 					>
@@ -58,6 +60,7 @@
 							href="/account/register">Register a new account</a
 						>
 					</div>
+				<%_ } _%>
 				{/if}
 			</div>
 

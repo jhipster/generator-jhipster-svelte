@@ -69,6 +69,8 @@
 		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white sm:dark:bg-gray-700 rounded
 			sm:rounded-lg sm:shadow-lg"
 	>
+		<%_
+		if (!skipUserManagement) { _%>
 		<MenuItem
 			testId="svlChgPwdLink"
 			link="/account/password"
@@ -83,6 +85,7 @@
 			><Icon classes="sm:mr-1" icon="{faWrench}" />
 			Settings
 		</MenuItem>
+		<%_ } _%>
 		<MenuItem testId="svlSignoutLink" link="/" on:click="{logout}"
 			><Icon classes="sm:mr-1" icon="{faSignOutAlt}" />
 			Sign out
