@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2021-05-30
+
 ### Added
 
 -   ✅ Integrate `Lighthouse CI` in [GitHub Actions](https://github.com/jhipster/generator-jhipster-svelte/actions/workflows/application-lighthouse.yml). Lighthouse verification of all generated pages [#380](https://github.com/jhipster/generator-jhipster-svelte/pull/380)
@@ -15,7 +17,7 @@
 
 -   ✅ Improved `Tailwind` CSS integration, theme colors externalization [#408](https://github.com/jhipster/generator-jhipster-svelte/pull/408)
 -   ✅ Improved layout of `Toast` notifications.
--   ✅ Bump `Cypress` dependency.
+-   ✅ Bump `Cypress`, `Tailwind` dependencies.
 -   ✅ Bump third party library dependencies.
 
 ## [0.3] - 2021-04-14
