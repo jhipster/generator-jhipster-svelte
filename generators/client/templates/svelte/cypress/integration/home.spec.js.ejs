@@ -21,13 +21,15 @@ describe('Home page', () => {
 				)
 				.and('contain', 'User (login="user" and password="user").')
 		})
-
+<%_
+	if (!skipUserManagement) { _%>
 		it('should have user registration link', () => {
 			cy.getBySel('svlRegisterHomeLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/account/register')
 				.and('contain', 'Register a new account')
 		})
+<%_ } _%>
 	})
 
 	describe('authenticated user', () => {

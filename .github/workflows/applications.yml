@@ -21,7 +21,7 @@ jobs:
                     [
                         'monolithic-session-maven.jdl',
                         'monolithic-session-gradle.json',
-                        'monolithic-jwt-maven.json',
+                        'monolithic-jwt-maven-skip-user.jdl',
                         'monolithic-jwt-gradle.json',
                     ]
                 os: [ubuntu-latest]
@@ -59,7 +59,7 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: ~/.cache/Cypress/
-                  key: ${{ runner.os }}-cypress-6.9.1 # Needs a better way to cache cypress binary
+                  key: ${{ runner.os }}-cypress-7.4.0
                   restore-keys: |
                       ${{ runner.os }}-cypress-
             - name: Create Svelte Hipster docker image

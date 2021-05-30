@@ -1,6 +1,7 @@
 <script>
-	import Icon from 'fa-svelte'
 	import { stores } from '@sapper/app'
+
+	import Icon from '../Icon.svelte'
 
 	export let icon
 	export let label
@@ -19,9 +20,9 @@
 		href="{route}"
 		on:click
 		class="flex items-center px-2 py-1 sm:py-1 rounded font-semibold
-			hover:text-white hover:bg-gray-700 focus:outline-none focus:ring {textClass}"
+			hover:text-white hover:bg-gray-700 focus:outline-none focus:ring focus:ring-primary-500 {textClass}"
 	>
-		<Icon class="fa-icon mr-1" icon="{icon}" />
+		<Icon classes="mr-1" icon="{icon}" />
 		{label}</a
 	>
 </div>

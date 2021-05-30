@@ -1,9 +1,10 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import Icon from 'fa-svelte'
 	import { faAngleLeft } from '@fortawesome/free-solid-svg-icons/faAngleLeft'
 	import { faAngleRight } from '@fortawesome/free-solid-svg-icons/faAngleRight'
+
 	import Button from '../Button.svelte'
+	import Icon from '../Icon.svelte'
 
 	const dispatch = createEventDispatcher()
 	export let totalCount = 0
@@ -38,10 +39,10 @@
 			title="Previous"
 			data-test="prevPageCtrl"
 		>
-			<Icon class="fa-icon" icon="{faAngleLeft}" />
+			<Icon icon="{faAngleLeft}" />
 		</Button>
 		<div
-			class="font-bold bg-blue-700 dark:bg-blue-500 text-white py-2 px-4 rounded"
+			class="font-bold bg-primary-700 dark:bg-primary-500 text-white py-2 px-4 rounded"
 		>
 			{page}
 		</div>
@@ -53,7 +54,7 @@
 			title="Next"
 			data-test="nextPageCtrl"
 		>
-			<Icon class="fa-icon" icon="{faAngleRight}" />
+			<Icon icon="{faAngleRight}" />
 		</Button>
 	</div>
 </div>

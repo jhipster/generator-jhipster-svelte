@@ -1,8 +1,8 @@
 <script>
 	import { createEventDispatcher, afterUpdate } from 'svelte'
-	import Icon from 'fa-svelte'
 	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle'
 
+	import Icon from './Icon.svelte'
 	import { validate, createValidator } from '../utils/validator.js'
 
 	export let value = ''
@@ -10,13 +10,14 @@
 	export let name
 	export let label
 	export let validations = []
+	export let id
 
 	let dirty = false
 	let valid = false
 	let message
 	let focused = false
 	const dispatch = createEventDispatcher()
-	const randomSuffix = Date.now()
+	const idVal = id ? id : name + Date.now()
 
 	$: focusedOrContainsValue = value !== '' || focused
 	$: pristine = !focused && !dirty
@@ -67,11 +68,11 @@
 		class:text-xs="{focusedOrContainsValue}"
 		class:text-gray-700="{!focused}"
 		class:dark:text-gray-400="{!focused}"
-		class:text-blue-700="{focusedAndValidOrPristine}"
-		class:dark:text-blue-500="{focusedAndValidOrPristine}"
+		class:text-primary-700="{focusedAndValidOrPristine}"
+		class:dark:text-primary-500="{focusedAndValidOrPristine}"
 		class:text-red-600="{dirtyAndInvalid && focused}"
 		class:dark:text-red-500="{dirtyAndInvalid && focused}"
-		for="{name + randomSuffix}"
+		for="{idVal}"
 		>{label}<span class="ml-px">{isRequired ? '*' : ''}</span>
 	</label>
 	<input
@@ -80,13 +81,13 @@
 		class:border-2="{focused}"
 		class:border-gray-400="{pristineOrValid}"
 		class:dark:border-gray-700="{pristineOrValid}"
-		class:border-blue-600="{focusedAndValidOrPristine}"
-		class:dark:border-blue-500="{focusedAndValidOrPristine}"
+		class:border-primary-600="{focusedAndValidOrPristine}"
+		class:dark:border-primary-500="{focusedAndValidOrPristine}"
 		class:border-red-600="{dirtyAndInvalid}"
 		class:dark:border-red-500="{dirtyAndInvalid}"
 		type="{type}"
 		name="{name}"
-		id="{name + randomSuffix}"
+		id="{idVal}"
 		value="{value}"
 		on:input
 		on:focus="{() => (focused = true)}"
@@ -100,7 +101,7 @@
 	<slot message="{message}" dirty="{dirty}" valid="{valid}">
 		{#if dirty && !valid}
 			<div data-test="{name}-error" class="flex items-center">
-				<Icon class="fa-icon mr-2" icon="{faExclamationCircle}" />
+				<Icon classes="mr-2" icon="{faExclamationCircle}" />
 				{message}
 			</div>
 		{:else}&nbsp;{/if}

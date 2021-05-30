@@ -1,0 +1,165 @@
+describe('Loggers page', () => {
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi('admin', 'admin')
+		cy.visit('/admin/logger')
+	})
+
+	it('should greets with loggers page title and filter control', () => {
+		cy.getBySel('loggersTitle')
+			.should('be.visible')
+			.should('contain', 'Loggers')
+		cy.getBySel('loggerFilterForm')
+			.getByName('logger')
+			.should('have.value', ``)
+	})
+
+	it('should display loggers table', () => {
+		cy.getBySel('loggersTable')
+			.should('be.visible')
+			.get('tr')
+			.eq(0)
+			.children()
+			.should('have.length', 1)
+			.get('th')
+			.eq(0)
+			.should('contain', 'Name')
+	})
+
+	it('should display logger name and the default enabled logger level in the table', () => {
+		cy.getBySel('loggersTable')
+<%_
+	if (databaseTypeSql) { _%>
+			.contains('td', 'org.hibernate.Version')
+<%_ } else { _%>
+			.contains('td', 'org.mongodb.driver')
+<%_ } _%>
+			.parent()
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.get(`button`)
+					.should('have.length', 6)
+					.getBySel('offLogLevelBtn')
+					.should('not.be.visible')
+					.should('not.be.disabled')
+					.getBySel('errorLogLevelBtn')
+					.should('not.be.visible')
+					.should('not.be.disabled')
+					.getBySel('warnLogLevelBtn')
+					.should('be.visible')
+					.should('be.disabled')
+					.getBySel('infoLogLevelBtn')
+					.should('not.be.visible')
+					.should('not.be.disabled')
+					.getBySel('debugLogLevelBtn')
+					.should('not.be.visible')
+					.should('not.be.disabled')
+					.getBySel('traceLogLevelBtn')
+					.should('not.be.visible')
+					.should('not.be.disabled')
+			})
+	})
+
+	it('should display actions available on the current selected logger', () => {
+		cy.getBySel('loggersTable')
+<%_
+	if (databaseTypeSql) { _%>
+			.contains('td', 'org.hibernate.Version')
+<%_ } else { _%>
+			.contains('td', 'org.mongodb.driver')
+<%_ } _%>
+			.parent()
+			.trigger('mouseenter')
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.get(`button`)
+					.should('have.length', 6)
+					.getBySel('offLogLevelBtn')
+					.should('be.visible')
+					.should('not.be.disabled')
+					.getBySel('errorLogLevelBtn')
+					.should('be.visible')
+					.should('not.be.disabled')
+					.getBySel('warnLogLevelBtn')
+					.should('be.visible')
+					.should('be.disabled')
+					.getBySel('infoLogLevelBtn')
+					.should('be.visible')
+					.should('not.be.disabled')
+					.getBySel('debugLogLevelBtn')
+					.should('be.visible')
+					.should('not.be.disabled')
+					.getBySel('traceLogLevelBtn')
+					.should('be.visible')
+					.should('not.be.disabled')
+			})
+	})
+
+	it('should change logger level from WARN -> INFO, INFO -> WARN', () => {
+
+		cy.intercept('**/management/loggers/*').as('changeLoggers')
+
+		cy.getBySel('loggersTable')
+<%_
+	if (databaseTypeSql) { _%>
+			.contains('td', 'org.hibernate.Version')
+<%_ } else { _%>
+			.contains('td', 'org.mongodb.driver')
+<%_ } _%>
+			.parent()
+			.trigger('mouseenter')
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.get(`button`)
+					.should('have.length', 6)
+					.getBySel('infoLogLevelBtn')
+					.click();
+			})
+
+		cy.wait('@changeLoggers')
+
+		cy.getBySel('loggersTable')
+<%_
+	if (databaseTypeSql) { _%>
+			.contains('td', 'org.hibernate.Version')
+<%_ } else { _%>
+			.contains('td', 'org.mongodb.driver')
+<%_ } _%>
+			.parent()
+			.trigger('mouseenter')
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.get(`button`)
+					.should('have.length', 6)
+					.getBySel('infoLogLevelBtn')
+					.should('be.visible').should('be.disabled')
+					.getBySel('warnLogLevelBtn')
+					.click();
+			})
+	})
+
+	it('should filter loggers by name', () => {
+
+		let countBeforeFilter
+
+		cy.getBySel('loggersTable')
+			.get('tr')
+			.then($tr => (countBeforeFilter = $tr.length))
+
+		cy.getBySel('loggerFilterForm')
+			.getByName('logger')
+			.type('ROOT');
+
+		cy.getBySel('loggersTable')
+			.get('tr')
+			.then($tr => (expect($tr.length).not.eq(countBeforeFilter)))
+	})
+})

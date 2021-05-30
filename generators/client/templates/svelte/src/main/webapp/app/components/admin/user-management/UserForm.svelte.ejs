@@ -1,10 +1,10 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import Icon from 'fa-svelte'
 	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave'
 
 	import Button from '../../Button.svelte'
+	import Icon from '../../Icon.svelte'
 	import InputControl from '../../InputControl.svelte'
 	import SelectControl from '../../SelectControl.svelte'
 	import CheckboxControl from '../../CheckboxControl.svelte'
@@ -78,7 +78,8 @@
 			},
 			{
 				type: 'pattern',
-				pattern: /^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$/,
+				pattern:
+					/^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$/,
 				message: 'Username can only contain letters and digits',
 			},
 		]}"
@@ -138,7 +139,8 @@
 			},
 			{
 				type: 'pattern',
-				pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+				pattern:
+					/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
 				message: 'Email address is not valid',
 			},
 		]}"
@@ -177,10 +179,10 @@
 		<div class="mr-4">
 			<Button
 				name="cancelBtn"
-				role="secondary"
+				role="neutral"
 				on:click="{() => dispatch('cancel')}"
 			>
-				<Icon class="fa-icon mr-2" icon="{faBan}" />Cancel
+				<Icon classes="mr-2" icon="{faBan}" />Cancel
 			</Button>
 		</div>
 		<div>
@@ -190,7 +192,7 @@
 				on:click="{() => dispatch('saveorupdate', { ...user })}"
 				disabled="{!validForm}"
 			>
-				<Icon class="fa-icon mr-2" icon="{faSave}" />
+				<Icon classes="mr-2" icon="{faSave}" />
 				{user.id ? 'Update ' : 'Create '}
 				user account
 			</Button>

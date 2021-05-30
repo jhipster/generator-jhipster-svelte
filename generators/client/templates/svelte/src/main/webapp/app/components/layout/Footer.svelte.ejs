@@ -1,6 +1,7 @@
 <script>
-	import Icon from 'fa-svelte'
 	import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+
+	import Icon from '../Icon.svelte'
 </script>
 
 <footer
@@ -14,7 +15,7 @@
 	<div class="text-base mt-1">
 		<p>
 			Made with
-			<Icon class="fa-icon text-red-700" icon="{faHeart}" />
+			<Icon classes="text-red-700" icon="{faHeart}" />
 			by
 			<a
 				href="https://twitter.com/vishal423"

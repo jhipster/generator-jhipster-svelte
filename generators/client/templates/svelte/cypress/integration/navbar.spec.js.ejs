@@ -30,11 +30,14 @@ describe('Navbar', () => {
 				.should('be.visible')
 				.and('contain', 'Sign in')
 		})
+<%_
+	if (!skipUserManagement) { _%>
 		it('should display register link', () => {
 			cy.getBySel('svlRegisterLink')
 				.should('be.visible')
 				.and('contain', 'Sign up')
 		})
+<%_ } _%>
 	})
 
 	describe('authenticated user', () => {
@@ -44,9 +47,12 @@ describe('Navbar', () => {
 			cy.visit('/')
 		})
 
+<%_
+if (!skipUserManagement) { _%>
 		it('should not display register link', () => {
 			cy.getBySel('svlRegisterLink').should('not.exist')
 		})
+<%_ } _%>
 
 		it('should not display sign in link', () => {
 			cy.getBySel('svlLoginLink').should('not.exist')
@@ -59,6 +65,8 @@ describe('Navbar', () => {
 				.should('not.be.disabled')
 				.click()
 
+<%_
+if (!skipUserManagement) { _%>
 			cy.getBySel('svlChgPwdLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/account/password')
@@ -68,6 +76,7 @@ describe('Navbar', () => {
 				.should('be.visible')
 				.and('have.attr', 'href', '/account/settings')
 				.and('contain', 'Settings')
+<%_ } _%>
 
 			cy.getBySel('svlSignoutLink')
 				.should('be.visible')
@@ -82,12 +91,21 @@ describe('Navbar', () => {
 				.should('not.be.disabled')
 				.click()
 
+			cy.getBySel('svlLoggerLink')
+				.should('be.visible')
+				.and('have.attr', 'href', '/admin/logger')
+				.and('contain', 'Loggers')
+<%_
+	if (!skipUserManagement) { _%>
 			cy.getBySel('svlUserMgmtLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/admin/user-management')
 				.and('contain', 'User Management')
+<%_ } _%>
 		})
 
+<%_
+	if (!skipUserManagement) { _%>
 		it('should navigate to change password page', () => {
 			cy.getBySel('svlAcctMenu').getBySel('svlAccountLink').click()
 			cy.getBySel('svlChgPwdLink').should('be.visible').click()
@@ -101,6 +119,7 @@ describe('Navbar', () => {
 
 			cy.location('pathname').should('eq', '/account/settings')
 		})
+<%_ } _%>
 
 		it('should logout user', () => {
 			cy.getBySel('svlAcctMenu').getBySel('svlAccountLink').click()
@@ -112,7 +131,8 @@ describe('Navbar', () => {
 				.and('contain', 'Sign in')
 		})
 	})
-
+<%_
+	if (!skipUserManagement) { _%>
 	describe(`authenticated 'ROLE_USER' ROLE user`, () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()
@@ -124,4 +144,5 @@ describe('Navbar', () => {
 			cy.getBySel('svlAdminMenu').should('not.exist')
 		})
 	})
+<%_ } _%>
 })

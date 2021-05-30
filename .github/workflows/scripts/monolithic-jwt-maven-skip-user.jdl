@@ -1,0 +1,12 @@
+application {
+    config {
+        baseName SampleBlogApp,
+        applicationType monolith,
+        authenticationType jwt,
+        packageName tech.jhipster.samples.blog,
+        prodDatabaseType mysql,
+        cacheProvider ehcache,
+        buildTool maven,
+        skipUserManagement true
+    }
+}

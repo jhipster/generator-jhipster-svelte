@@ -1,13 +1,13 @@
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '@sapper/app'
-	import Icon from 'fa-svelte'
 	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
 	import auth from '../../../components/auth/auth-store.js'
-	import userService from './../../../components/user/user-service.js'
+	import userService from './../../../components/admin/user-management/user-service.js'
 	import Page from './../../../components/page/Page.svelte'
 	import Button from './../../../components/Button.svelte'
+	import Icon from './../../../components/Icon.svelte'
 	import Pagination from '../../../components/table/Pagination.svelte'
 	import UserTable from '../../../components/admin/user-management/UserTable.svelte'
 	import UserDeleteModal from '../../../components/admin/user-management/UserDeleteModal.svelte'
@@ -99,7 +99,7 @@
 				classes="sm:my-0"
 				on:click="{() => goto(`/admin/user-management/new`)}"
 			>
-				<Icon class="fa-icon mr-2" icon="{faPlus}" />
+				<Icon classes="mr-2" icon="{faPlus}" />
 				Create user
 			</Button>
 		</div>

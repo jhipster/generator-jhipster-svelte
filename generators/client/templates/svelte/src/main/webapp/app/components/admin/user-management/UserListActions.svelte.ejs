@@ -1,5 +1,4 @@
 <script>
-	import Icon from 'fa-svelte'
 	import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
 	import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 	import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
@@ -7,6 +6,7 @@
 	import { faToggleOff } from '@fortawesome/free-solid-svg-icons/faToggleOff'
 
 	import Button from '../../Button.svelte'
+	import Icon from '../../Icon.svelte'
 	import { createEventDispatcher } from 'svelte'
 
 	export let user
@@ -40,7 +40,7 @@
 			})
 		}}"
 	>
-		<Icon class="fa-icon" icon="{activationIcon}" />
+		<Icon icon="{activationIcon}" />
 	</Button>
 	<Button
 		name="viewUserBtn"
@@ -53,7 +53,7 @@
 				id: user.login,
 			})}"
 	>
-		<Icon class="fa-icon" icon="{faEye}" />
+		<Icon icon="{faEye}" />
 	</Button>
 	<Button
 		name="editUserBtn"
@@ -67,7 +67,7 @@
 				id: user.login,
 			})}"
 	>
-		<Icon class="fa-icon" icon="{faPencilAlt}" />
+		<Icon icon="{faPencilAlt}" />
 	</Button>
 	<Button
 		name="deleteUserBtn"
@@ -81,6 +81,6 @@
 				id: user.login,
 			})}"
 	>
-		<Icon class="fa-icon" icon="{faTrashAlt}" />
+		<Icon icon="{faTrashAlt}" />
 	</Button>
 </div>

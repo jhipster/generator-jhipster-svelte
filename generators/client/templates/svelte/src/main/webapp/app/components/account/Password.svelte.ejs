@@ -1,8 +1,8 @@
 <script>
-	import Icon from 'fa-svelte'
 	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle'
 
 	import InputControl from '../InputControl.svelte'
+	import Icon from '../Icon.svelte'
 
 	export let name = 'password'
 	export let label = 'Password'
@@ -38,7 +38,7 @@
 	<slot message="{message}" dirty="{dirty}" valid="{valid}">
 		{#if dirty && !valid}
 			<div data-test="{name}-error" class="flex items-center">
-				<Icon class="fa-icon mr-2" icon="{faExclamationCircle}" />
+				<Icon classes="mr-2" icon="{faExclamationCircle}" />
 				{message}
 			</div>
 		{:else}&nbsp;{/if}

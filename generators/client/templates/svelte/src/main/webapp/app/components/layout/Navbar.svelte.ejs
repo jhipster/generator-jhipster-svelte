@@ -1,10 +1,10 @@
 <script>
-	import Icon from 'fa-svelte'
 	import { faBars } from '@fortawesome/free-solid-svg-icons/faBars'
 	import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
 	import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
 
 	import applogo from 'images/logo-jhipster.png'
+	import Icon from '../Icon.svelte'
 	import NavItem from './NavItem.svelte'
 	import auth from '../auth/auth-store.js'
 	import AccountMenu from './AccountMenu.svelte'
@@ -49,11 +49,12 @@
 					data-test="svlNavBtn"
 					on:click="{toggleToolbar}"
 					type="button"
+					aria-label="Toggle Navigation"
 					class="block px-2 py-1 hover:text-white
-						focus:outline-none focus:ring rounded
+						focus:outline-none focus:ring focus:ring-primary-500 rounded
 						focus:text-white text-gray-400 leading-none"
 				>
-					<Icon class="fa-icon" icon="{faBars}" />
+					<Icon icon="{faBars}" />
 				</button>
 			</div>
 		</div>

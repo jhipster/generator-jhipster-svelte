@@ -49,9 +49,9 @@
 </svelte:head>
 
 <section class="flex h-screen items-start justify-center">
-	<div class="p-4 w-full sm:w-112 mx-4 sm:m-0">
+	<div class="p-4 w-full sm:w-[450px] mx-4 sm:m-0">
 		<div class="px-4 py-3 mt-4 sm:mx-0 flex justify-center">
-			<div class="w-3/4 dark:text-blue-100">
+			<div class="w-3/4 dark:text-primary-100">
 				<img src="{appLogo}" alt="Application Logo" />
 			</div>
 		</div>
@@ -69,6 +69,7 @@
 			class="mt-4 p-4 flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md rounded"
 		>
 			<InputControl
+				id="username"
 				label="Username"
 				name="username"
 				value="{username}"
@@ -81,6 +82,7 @@
 			/>
 
 			<InputControl
+				id="password"
 				type="password"
 				label="Password"
 				name="password"
@@ -106,9 +108,10 @@
 				Sign in
 			</Button>
 		</form>
-
+		<%_
+		if (!skipUserManagement) { _%>
 		<div
-			class="mt-5 px-4 flex justify-between text-blue-700 dark:text-blue-500"
+			class="mt-5 px-4 flex justify-between text-primary-700 dark:text-primary-500"
 		>
 			<div>
 				<a
@@ -125,5 +128,6 @@
 				>
 			</div>
 		</div>
+		<%_ } _%>
 	</div>
 </section>

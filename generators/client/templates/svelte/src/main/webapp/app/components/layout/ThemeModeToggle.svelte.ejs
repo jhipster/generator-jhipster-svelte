@@ -1,7 +1,8 @@
 <script>
-	import Icon from 'fa-svelte'
 	import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon'
 	import { faSun } from '@fortawesome/free-solid-svg-icons/faSun'
+
+	import Icon from '../Icon.svelte'
 
 	let darkMode = false
 	let focused = false
@@ -52,17 +53,18 @@
 			<span class="opacity-0 absolute">Mode</span>
 			<span
 				class="absolute w-6 top-0 bottom-0 rounded-full bg-white border-2 shadow-md z-10 transition-all duration-200 transform"
-				class:border-blue-500="{focused}"
+				class:border-primary-500="{focused}"
 				class:ring-2="{focused}"
+				class:ring-primary-500="{focused}"
 				class:-translate-x-3="{!darkMode}"
 				class:translate-x-3="{darkMode}"></span>
 			<span class="w-6 h-6">
 				<Icon
-					class="fa-icon absolute top-1/2 transform -translate-x-2 -translate-y-1/2 text-white"
+					classes="absolute top-1/2 transform -translate-x-2 -translate-y-1/2 text-white"
 					icon="{faMoon}"
 				/>
 				<Icon
-					class="fa-icon absolute top-1/2 transform translate-x-4 -translate-y-1/2 text-yellow-500"
+					classes="absolute top-1/2 transform translate-x-4 -translate-y-1/2 text-yellow-500"
 					icon="{faSun}"
 				/>
 			</span>
