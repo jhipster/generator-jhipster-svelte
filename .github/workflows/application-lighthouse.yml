@@ -46,7 +46,7 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: ~/.cache/Cypress/
-                  key: ${{ runner.os }}-cypress-7.3.0 # Needs a better way to cache cypress binary
+                  key: ${{ runner.os }}-cypress-7.4.0 # Needs a better way to cache cypress binary
                   restore-keys: |
                       ${{ runner.os }}-cypress-
             - name: Create Svelte Hipster docker image
