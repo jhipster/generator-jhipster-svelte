@@ -201,7 +201,7 @@ const svelteFiles = {
 				'admin/user-management/UserListActions.svelte',
 				'admin/user-management/UserTable.spec.js',
 				'admin/user-management/UserTable.svelte',
-				'user/user-service.js',
+				'admin/user-management/user-service.js',
 			],
 		},
 	],
