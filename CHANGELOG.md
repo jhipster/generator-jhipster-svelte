@@ -9,6 +9,7 @@
 -   ✅ Integrate `Lighthouse CI` in [GitHub Actions](https://github.com/jhipster/generator-jhipster-svelte/actions/workflows/application-lighthouse.yml). Lighthouse verification of all generated pages [#380](https://github.com/jhipster/generator-jhipster-svelte/pull/380)
 -   ✅ Integrate `Tailwind JIT` mode as default in the build system [#407](https://github.com/jhipster/generator-jhipster-svelte/pull/407)
 -   ✅ Generate `Loggers` page under `Administration` menu. Allows viewing default configured loggers level and change logger level on the fly [#461](https://github.com/jhipster/generator-jhipster-svelte/pull/461)
+-   ✅ Support `--skip-user-management` option in the `CLI` and `JDL`. Allows to not generate the `User Management` pages.[#463](https://github.com/jhipster/generator-jhipster-svelte/pull/463)
 
 ### Changed
 

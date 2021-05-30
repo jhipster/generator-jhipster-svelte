@@ -34,13 +34,14 @@
 			tabindex="-1"
 			on:click="{() => (isOpen = false)}"
 			class="fixed hidden sm:block inset-0 w-full h-full bg-gray-400
-				opacity-50 cursor-default"
-		></button>
+				opacity-50 cursor-default"></button>
 	{/if}
 	<div
 		class:hidden="{!isOpen}"
 		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white sm:dark:bg-gray-700 rounded sm:rounded-lg sm:shadow-lg"
 	>
+		<%_
+		if (!skipUserManagement) { _%>
 		<MenuItem
 			testId="svlUserMgmtLink"
 			link="/admin/user-management"
@@ -49,10 +50,11 @@
 			<Icon classes="sm:mr-1" icon="{faUsers}" />
 			User Management
 		</MenuItem>
+		<%_ } _%>
 		<MenuItem
-				testId="svlLoggerLink"
-				link="/admin/logger"
-				on:click="{() => (isOpen = false)}"
+			testId="svlLoggerLink"
+			link="/admin/logger"
+			on:click="{() => (isOpen = false)}"
 		>
 			<Icon classes="sm:mr-1" icon="{faTasks}" />
 			Loggers
