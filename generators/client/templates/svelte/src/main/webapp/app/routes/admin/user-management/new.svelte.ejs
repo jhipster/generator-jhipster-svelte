@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 	import { goto } from '@sapper/app'
 
-	import userService from './../../../components/user/user-service.js'
+	import userService from './../../../components/admin/user-management/user-service.js'
 	import Page from './../../../components/page/Page.svelte'
 	import UserForm from '../../../components/admin/user-management/UserForm.svelte'
 
