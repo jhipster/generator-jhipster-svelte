@@ -17,7 +17,7 @@
 	let message
 	let focused = false
 	const dispatch = createEventDispatcher()
-	const idVal = id ? id : (name + Date.now());
+	const idVal = id ? id : name + Date.now()
 
 	$: focusedOrContainsValue = value !== '' || focused
 	$: pristine = !focused && !dirty
