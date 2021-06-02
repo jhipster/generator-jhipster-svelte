@@ -48,6 +48,6 @@
 		"sapper": "0.29.1",
 		"svelte": "3.38.2",
 		"svelte-jester": "1.7.0",
-		"tailwindcss": "2.1.2"
+		"tailwindcss": "2.1.3"
 	}
 }
