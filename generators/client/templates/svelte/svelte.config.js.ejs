@@ -4,19 +4,19 @@ import adapter from '@sveltejs/adapter-static';
 const config = {
 	kit: {
 		adapter: adapter({
-			pages: 'target/classes/static',
-			assets: 'target/classes/static',
+			pages: '<%= DIST_DIR %>',
+			assets: '<%= DIST_DIR %>',
 			fallback: 'index.html'
 		}),
 		target: '#svelte',
 		appDir: '_app',
 		files: {
-			assets: 'src/main/webapp/static',
-			hooks: 'src/main/webapp/hooks',
-			lib: 'src/main/webapp/app/lib',
-			routes: 'src/main/webapp/app/routes',
-			serviceWorker: 'src/main/webapp/app/service-worker',
-			template: 'src/main/webapp/app/app.html'
+			assets: '<%= CLIENT_MAIN_SRC_DIR %>static',
+			hooks: '<%= CLIENT_MAIN_SRC_DIR %>hooks',
+			lib: '<%= CLIENT_MAIN_SRC_DIR %>app/lib',
+			routes: '<%= CLIENT_MAIN_SRC_DIR %>app/routes',
+			serviceWorker: '<%= CLIENT_MAIN_SRC_DIR %>app/service-worker',
+			template: '<%= CLIENT_MAIN_SRC_DIR %>app/app.html'
 		},
 		vite: () => ({
 			server: {

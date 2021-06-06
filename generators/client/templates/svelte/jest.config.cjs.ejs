@@ -4,11 +4,11 @@ module.exports = {
 		'^.+\\.js$': 'babel-jest',
 		'^.+\\.svelte$': 'svelte-jester',
 	},
-	testMatch: ['<rootDir>/(src/main/webapp/**/*.spec.js)'],
+	testMatch: ['<rootDir>/(<%= CLIENT_MAIN_SRC_DIR %>**/*.spec.js)'],
 	transformIgnorePatterns: ['node_modules/(?!fa-svelte)'],
 	moduleFileExtensions: ['js', 'svelte'],
 	moduleNameMapper: {
-		'^\\$lib(.*)$': '<rootDir>/src/main/webapp/app/lib$1',
+		'^\\$lib(.*)$': '<rootDir>/<%= CLIENT_MAIN_SRC_DIR %>app/lib$1',
 	},
 	setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
 	resolver: 'jest-svelte-resolver',

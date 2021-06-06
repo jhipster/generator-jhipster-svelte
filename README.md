@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This is a [JHipster](https://www.jhipster.tech/) blueprint, that intends to use [Sapper](https://sapper.svelte.dev/) / [Svelte](https://svelte.dev/) as the client side development framework.
+This is a [JHipster](https://www.jhipster.tech/) blueprint, that intends to use [SvelteKit](https://kit.svelte.dev/) / [Svelte](https://svelte.dev/) as the client side development framework.
 
 ## What's new
 
@@ -20,11 +20,11 @@ Following integrations are supported:
 
     ✅ Session, JWT authentication
     ✅ Dark Mode support
+    ✅ SvelteKit
     ✅ Tailwind CSS, PurgeCSS, PostCSS integration for optimized CSS bundles
     ✅ Prettier, EsLint integration
     ✅ Cypress integration for end to end tests
     ✅ Jest and Testing Library integration for unit tests
-    ✅ Rollup module bundler
     ✅ JHipster application JDL
 
 Following functional flows are covered with end to end tests:
@@ -39,6 +39,7 @@ Following functional flows are covered with end to end tests:
         ✅ Sign out
     ✅ Administration
         ✅ User Management (List, Create, Update, View, Delete)
+        ✅ Loggers
 
 For more details, you can check out the source code of [sample application](https://github.com/jhipster/jhipster-sample-app-svelte)
 
@@ -52,7 +53,7 @@ For more details, you can check out the source code of [sample application](http
 <a href="https://testing-library.com/" target="_blank"><img alt="Testing Library" height="50px" src="https://testing-library.com/img/octopus-128x128.png"></a>
 <a href="https://prettier.io/" target="_blank"><img alt="Prettier" height="50px" src="https://raw.githubusercontent.com/prettier/prettier-logo/master/images/prettier-banner-dark.png"></a>
 <a href="https://prettier.io/" target="_blank"><img alt="ESLint" height="50px" src="https://api.iconify.design/logos:eslint.svg"></a>
-<a href="https://rollupjs.org/guide/en/" target="_blank"><img alt="Rollup" height="50px" src="https://api.iconify.design/logos:rollupjs.svg"></a>
+<a href="https://vitejs.dev/guide/" target="_blank"><img alt="Vite" height="50px" src="https://vitejs.dev/logo.svg"></a>
 
 ## Installation
 

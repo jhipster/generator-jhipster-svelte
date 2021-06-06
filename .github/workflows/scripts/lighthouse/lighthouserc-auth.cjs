@@ -19,7 +19,7 @@ module.exports = {
 				'http://localhost:8080/account/password',
 				'http://localhost:8080/account/settings',
 			],
-			puppeteerScript: './puppeteer-auth.js',
+			puppeteerScript: './puppeteer-auth.cjs',
 			puppeteerLaunchOptions: {
 				defaultViewport: null,
 				args: ['--disable-gpu --window-size=1920,1080', '--no-sandbox'],
