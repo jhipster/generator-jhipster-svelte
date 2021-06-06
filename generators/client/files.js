@@ -4,7 +4,7 @@ const constants = require('generator-jhipster/generators/generator-constants');
 const FRONTEND_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
 const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/`;
-const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/components/`;
+const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/`;
 const CLIENT_TEMPLATES_DIR = 'svelte';
 
 module.exports = {
@@ -23,10 +23,11 @@ const svelteFiles = {
 					file: generator => `package-template.json`,
 					renameTo: () => `package.json`,
 				},
-				'jest.config.js',
-				'postcss.config.js',
-				'rollup.config.js',
-				'tailwind.config.js',
+				'jest.config.cjs',
+				'jsconfig.json',
+				'postcss.config.cjs',
+				'svelte.config.js',
+				'tailwind.config.cjs',
 			],
 		},
 	],
@@ -39,7 +40,7 @@ const svelteFiles = {
 				'cypress/integration/navbar.spec.js',
 				'cypress/integration/routes.spec.js',
 				'cypress/integration/admin/logger.spec.js',
-				'cypress/plugins/index.js',
+				'cypress/plugins/index.cjs',
 				'cypress/support/index.js',
 				'cypress/support/commands.js',
 			],
@@ -76,47 +77,36 @@ const svelteFiles = {
 					method: 'copy',
 				},
 				{ file: 'static/favicon.ico', method: 'copy' },
-				'static/global.css',
 				'static/manifest.json',
 				{
 					file: generator => `static/img/${generator.hipster}.svg`,
-					renameTo: () => `app/components/svg/appAvatar.svg`,
+					renameTo: () => `app/lib/svg/appAvatar.svg`,
 					method: 'copy',
 				},
 				{
 					file: generator => `static/img/logo-jhipster-long.svg`,
-					renameTo: () => `app/components/svg/appLogo.svg`,
+					renameTo: () => `app/lib/svg/appLogo.svg`,
 					method: 'copy',
 				},
+				{ file: 'static/img/logo-jhipster.png', method: 'copy' },
 			],
 		},
 	],
 	app: [
 		{
 			path: FRONTEND_APP_DIR,
-			templates: [
-				'client.js',
-				'server.js',
-				'service-worker.js',
-				'tailwind.css',
-				'template.html',
-				'utils/date.js',
-				'utils/env.js',
-				'utils/request.js',
-				'utils/validator.js',
-				{ file: 'node_modules/images/logo-jhipster.png', method: 'copy' },
-			],
+			templates: ['app.html', 'global.css', 'service-worker.js', 'tailwind.css'],
 		},
 	],
 	routes: [
 		{
 			path: FRONTEND_ROUTES_DIR,
 			templates: [
-				'_error.svelte',
-				'_layout.svelte',
+				'__error.svelte',
+				'__layout.svelte',
 				'index.svelte',
 				'login.svelte',
-				'admin/_layout.svelte',
+				'admin/__layout.svelte',
 				'admin/logger.svelte',
 			],
 		},
@@ -139,7 +129,7 @@ const svelteFiles = {
 			],
 		},
 	],
-	components: [
+	lib: [
 		{
 			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
@@ -179,10 +169,14 @@ const svelteFiles = {
 				'table/TableData.svelte',
 				'table/TableHeader.svelte',
 				'table/TableRow.svelte',
+				'utils/date.js',
+				'utils/env.js',
+				'utils/request.js',
+				'utils/validator.js',
 			],
 		},
 	],
-	componentsUserManagement: [
+	libUserManagement: [
 		{
 			path: FRONTEND_COMPONENTS_DIR,
 			condition: generator => !generator.skipUserManagement,

@@ -1,10 +1,10 @@
 <script>
 	import { onMount } from 'svelte'
-	import auth from '../../components/auth/auth-store.js'
-	import accountService from './../../components/account/account-service'
-	import Alert from './../../components/Alert.svelte'
-	import Page from '../../components/page/Page.svelte'
-	import UserSettingsForm from '../../components/account/UserSettingsForm.svelte'
+	import auth from '$lib/auth/auth-store.js'
+	import accountService from '$lib/account/account-service'
+	import Alert from '$lib/Alert.svelte'
+	import Page from '$lib/page/Page.svelte'
+	import UserSettingsForm from '$lib/account/UserSettingsForm.svelte'
 
 	let error
 	let user = {}

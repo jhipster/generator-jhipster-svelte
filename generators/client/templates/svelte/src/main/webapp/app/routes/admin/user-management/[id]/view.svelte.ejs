@@ -1,17 +1,16 @@
 <script>
 	import { onMount } from 'svelte'
-	import { stores } from '@sapper/app'
-	import { goto } from '@sapper/app'
-	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft'
+	import { page } from '$app/stores'
+	import { goto } from '$app/navigation'
+	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft.js'
 
-	import userService from './../../../../components/admin/user-management/user-service.js'
-	import Page from './../../../../components/page/Page.svelte'
-	import Record from './../../../../components/page/Record.svelte'
-	import Button from './../../../../components/Button.svelte'
-	import Icon from './../../../../components/Icon.svelte'
-	import { formatDate } from '../../../../utils/date'
+	import userService from '$lib/admin/user-management/user-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import Record from '$lib/page/Record.svelte'
+	import Button from '$lib/Button.svelte'
+	import Icon from '$lib/Icon.svelte'
+	import { formatDate } from '$lib/utils/date'
 
-	const { page } = stores()
 	$: id = $page && $page.params && $page.params.id
 	onMount(() => fetchUserDetails())
 

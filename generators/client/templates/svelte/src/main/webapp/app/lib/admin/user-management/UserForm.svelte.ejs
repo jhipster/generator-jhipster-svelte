@@ -1,0 +1,201 @@
+<script>
+	import { createEventDispatcher } from 'svelte'
+	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan.js'
+	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave.js'
+
+	import Button from '$lib/Button.svelte'
+	import Icon from '$lib/Icon.svelte'
+	import InputControl from '$lib/InputControl.svelte'
+	import SelectControl from '$lib/SelectControl.svelte'
+	import CheckboxControl from '$lib/CheckboxControl.svelte'
+	import Form from '$lib/page/Form.svelte'
+
+	export let user = {
+		id: null,
+		login: '',
+		firstName: '',
+		lastName: '',
+		email: '',
+		activated: true,
+		authorities: [],
+	}
+
+	export let authorities = []
+
+	const dispatch = createEventDispatcher()
+
+	let validUsername = false
+	let validFirstName = false
+	let validLastName = false
+	let validEmail = false
+	let validAuthorities = false
+
+	function updateUsername(event) {
+		user.login = event.target.value
+	}
+
+	function updateFirstName(event) {
+		user.firstName = event.target.value
+	}
+
+	function updateLastName(event) {
+		user.lastName = event.target.value
+	}
+
+	function updateEmail(event) {
+		user.email = event.target.value
+	}
+
+	function updateUserAuthorities(event) {
+		user.authorities = event.detail.value
+	}
+
+	function updateActivationStatus(event) {
+		user.activated = event.target.checked
+	}
+
+	$: validForm =
+		validUsername &&
+		validFirstName &&
+		validLastName &&
+		validEmail &&
+		validAuthorities
+</script>
+
+<Form testId="addUser">
+	<InputControl
+		label="Username"
+		name="username"
+		value="{user.login}"
+		on:input="{event => updateUsername(event)}"
+		required
+		validations="{[
+			{ type: 'required', message: 'Username is mandatory' },
+			{
+				type: 'maxlength',
+				maxlength: 50,
+				message: 'Username cannot be longer than 50 characters',
+			},
+			{
+				type: 'pattern',
+				pattern:
+					/^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$/,
+				message: 'Username can only contain letters and digits',
+			},
+		]}"
+		on:validate="{event => {
+			validUsername = event.detail.valid
+		}}"
+	/>
+	<InputControl
+		label="First Name"
+		name="firstName"
+		value="{user.firstName}"
+		on:input="{event => updateFirstName(event)}"
+		validations="{[
+			{
+				type: 'maxlength',
+				maxlength: 50,
+				message: 'First name cannot be longer than 50 characters',
+			},
+		]}"
+		on:validate="{event => (validFirstName = event.detail.valid)}"
+	/>
+	<InputControl
+		label="Last Name"
+		name="lastName"
+		value="{user.lastName}"
+		on:input="{event => updateLastName(event)}"
+		validations="{[
+			{
+				type: 'maxlength',
+				maxlength: 50,
+				message: 'Last name cannot be longer than 50 characters',
+			},
+		]}"
+		on:validate="{event => {
+			validLastName = event.detail.valid
+		}}"
+	/>
+
+	<InputControl
+		type="email"
+		label="Email"
+		name="email"
+		value="{user.email}"
+		on:input="{event => updateEmail(event)}"
+		required
+		validations="{[
+			{ type: 'required', message: 'Email is mandatory' },
+			{
+				type: 'minlength',
+				minlength: 5,
+				message: 'Email is required to be at least 5 characters',
+			},
+			{
+				type: 'maxlength',
+				maxlength: 254,
+				message: 'Email cannot be longer than 254 characters',
+			},
+			{
+				type: 'pattern',
+				pattern:
+					/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+				message: 'Email address is not valid',
+			},
+		]}"
+		on:validate="{event => {
+			validEmail = event.detail.valid
+		}}"
+	/>
+
+	<div class="mt-1 mb-2 ml-1">
+		<CheckboxControl
+			name="activated"
+			checked="{user.activated}"
+			on:change="{event => updateActivationStatus(event)}"
+			>Activate</CheckboxControl
+		>
+	</div>
+
+	<SelectControl
+		name="roles"
+		label="Roles"
+		value="{user.authorities}"
+		options="{authorities.map(authority => ({
+			name: authority,
+			value: authority,
+		}))}"
+		on:validate="{event => {
+			validAuthorities = event.detail.valid
+		}}"
+		validations="{[
+			{ type: 'required', message: 'Select at least one role' },
+		]}"
+		on:select="{event => updateUserAuthorities(event)}"
+	/>
+
+	<div class="w-full p-4 flex flex-row justify-center items-center">
+		<div class="mr-4">
+			<Button
+				name="cancelBtn"
+				role="neutral"
+				on:click="{() => dispatch('cancel')}"
+			>
+				<Icon classes="mr-2" icon="{faBan}" />Cancel
+			</Button>
+		</div>
+		<div>
+			<Button
+				name="saveBtn"
+				type="submit"
+				on:click="{() => dispatch('saveorupdate', { ...user })}"
+				disabled="{!validForm}"
+			>
+				<Icon classes="mr-2" icon="{faSave}" />
+				{user.id ? 'Update ' : 'Create '}
+				user account
+			</Button>
+		</div>
+	</div>
+</Form>

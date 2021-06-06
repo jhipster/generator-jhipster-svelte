@@ -1,14 +1,13 @@
 <script>
 	import { onMount } from 'svelte'
-	import { stores } from '@sapper/app'
+	import { page } from '$app/stores'
 
-	import accountService from './../../components/account/account-service'
-	import Alert from './../../components/Alert.svelte'
-	import Page from './../../components/page/Page.svelte'
+	import accountService from '$lib/account/account-service'
+	import Alert from '$lib/Alert.svelte'
+	import Page from '$lib/page/Page.svelte'
 
 	let error
 	let accountActivated = false
-	const { page } = stores()
 
 	$: activationKey = $page && $page.query && $page.query.key
 

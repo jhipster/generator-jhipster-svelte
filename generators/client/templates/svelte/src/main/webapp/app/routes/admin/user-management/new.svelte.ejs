@@ -1,10 +1,10 @@
 <script>
 	import { onMount } from 'svelte'
-	import { goto } from '@sapper/app'
+	import { goto } from '$app/navigation'
 
-	import userService from './../../../components/admin/user-management/user-service.js'
-	import Page from './../../../components/page/Page.svelte'
-	import UserForm from '../../../components/admin/user-management/UserForm.svelte'
+	import userService from '$lib/admin/user-management/user-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import UserForm from '$lib/admin/user-management/UserForm.svelte'
 
 	onMount(() => {
 		fetchUserAuthorities()

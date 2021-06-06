@@ -1,12 +1,12 @@
 <script>
 	import { onMount } from 'svelte'
-	import { goto, stores } from '@sapper/app'
+	import { goto } from '$app/navigation'
+	import { page } from '$app/stores'
 
-	import userService from './../../../../components/admin/user-management/user-service.js'
-	import Page from './../../../../components/page/Page.svelte'
-	import UserForm from '../../../../components/admin/user-management/UserForm.svelte'
+	import userService from '$lib/admin/user-management/user-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import UserForm from '$lib/admin/user-management/UserForm.svelte'
 
-	const { page } = stores()
 	$: id = $page && $page.params && $page.params.id
 	onMount(() => {
 		fetchUserDetails()
