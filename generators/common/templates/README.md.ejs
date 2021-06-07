@@ -30,7 +30,7 @@ if (clientPackageManager === 'yarn') {
 }
 let DOCUMENTATION_ARCHIVE_URL = `${DOCUMENTATION_URL + DOCUMENTATION_ARCHIVE_PATH}v${jhipsterVersion}`;
 _%>
-This application was generated using JHipster <%= jhipsterVersion %>, you can find documentation and help at [<%= DOCUMENTATION_ARCHIVE_URL %>](<%= DOCUMENTATION_ARCHIVE_URL %>).
+This application was generated using `Svelte Hipster` v`0.3.0` and `JHipster` v`<%= jhipsterVersion %>`, you can find documentation and help at [<%= DOCUMENTATION_ARCHIVE_URL %>](<%= DOCUMENTATION_ARCHIVE_URL %>).
 <%_ if (applicationType === 'gateway' || applicationType === 'microservice' || applicationType === 'uaa') { _%>
 
 This is a "<%= applicationType %>" application intended to be part of a microservice architecture, please refer to the [Doing microservices with JHipster][] page of the documentation for more information.
@@ -64,7 +64,7 @@ You will only need to run this command when dependencies change in [package.json
 
     <%= clientPackageManager %> install
 
-We use <%= clientPackageManager %> scripts and [Rollup][] as our build system.
+We use <%= clientPackageManager %> scripts and [Vite][https://vitejs.dev/guide/why.html] as our build system.
 
 Run the following commands in two separate terminals to create a blissful development experience where your browser
 auto-refreshes when files change on your hard drive.
@@ -77,7 +77,7 @@ auto-refreshes when files change on your hard drive.
 specifying a newer version in [package.json](package.json). You can also run `<%= clientPackageManager %> update` and `<%= clientPackageManager %> install` to manage dependencies.
 Add the `help` flag on any command to see how you can use it. For example, `<%= clientPackageManager %> help update`.
 
-The `<%= clientPackageManager %> run` command will list all of the scripts available to run for this project.
+The `<%= clientPackageManager %> run` command will list all the scripts available to run for this project.
 <%_ if (authenticationType === 'oauth2') { _%>
 
 ## OAuth 2.0 / OpenID Connect
@@ -139,59 +139,17 @@ Navigate to **API** > **Authorization Servers**, click the **Authorization Serve
 After making these changes, you should be good to go! If you have any issues, please post them to [Stack Overflow](https://stackoverflow.com/questions/tagged/jhipster). Make sure to tag your question with "jhipster" and "okta".
 <%_ } _%>
 
-### Structure
-
-Sapper expects to find two directories in the root of your web project — `app` and `static`.
-
-#### app
-
-The [app](app) directory contains the entry points for your app — `client.js`, `server.js` and (optionally) a `service-worker.js` — along with a `template.html` file and a `routes` directory.
-
-##### app/routes
-
-This is the heart of your Sapper app.
-
-**Pages** are Svelte components written in `.svelte` files. When a user first visits the application, they will be served a server-rendered version of the route in question, plus some JavaScript that 'hydrates' the page and initialises a client-side router. From that point forward, navigating to other pages is handled entirely on the client for a fast, app-like feel. (Sapper will preload and cache the code for these subsequent pages, so that navigation is instantaneous.)
-
-There are three simple rules for naming the files that define your routes:
-
--   A file called `app/routes/about.svelte` corresponds to the `/about` route. A file called `app/routes/blog/[slug].svelte` corresponds to the `/blog/:slug` route, in which case `params.slug` is available to the route
--   The file `app/routes/index.svelte` (or `app/routes/index.js`) corresponds to the root of your app. `app/routes/about/index.svelte` is treated the same as `app/routes/about.svelte`.
--   Files and directories with a leading underscore do _not_ create routes. This allows you to colocate helper modules and components with the routes that depend on them — for example you could have a file called `app/routes/_helpers/datetime.js` and it would _not_ create a `/_helpers/datetime` route
-
-##### app/node_modules/images
-
-Images added to `app/node_modules/images` can be imported into your code using `import 'images/<filename>'`. They will be given a dynamically generated filename containing a hash, allowing for efficient caching and serving the images on a CDN.
-
-##### app/node_modules/@sapper
-
-This directory is managed by Sapper and generated when building. It contains all the code you import from `@sapper` modules.
-
-##### static
-
-The [static](static) directory contains static assets that should be served publicly. Files in this directory will be available directly under the root URL, e.g. an `image.jpg` will be available as `/image.jpg`.
-
-The default [service-worker.js](app/service-worker.js) will preload and cache these files, by retrieving a list of `files` from the generated manifest:
-
-```js
-import { files } from '@sapper/service-worker'
-```
-
-If you have static files you do not want to cache, you should exclude them from this list after importing it (and before passing it to `cache.addAll`).
-
-Static files are served using [sirv](https://github.com/lukeed/sirv).
-
 ### Using external components
 
 When using Svelte components installed from npm, such as [@sveltejs/svelte-virtual-list](https://github.com/sveltejs/svelte-virtual-list), Svelte needs the original component source (rather than any precompiled JavaScript that ships with the component). This allows the component to be rendered server-side, and also keeps your client-side app smaller.
 
-Because of that, it's essential that the bundler doesn't treat the package as an _external dependency_. You can either modify the `external` option under `server` in [rollup.config.js](rollup.config.js), or simply install the package to `devDependencies` rather than `dependencies`, which will cause it to get bundled (and therefore compiled) with your app:
+Because of that, it's essential that the bundler doesn't treat the package as an _external dependency_. We recommend you to install the package to `devDependencies`, which will cause it to get bundled (and therefore compiled) with your app:
 
 ```bash
 npm install -D @sveltejs/svelte-virtual-list
 ```
 <%_ } _%>
-For further instructions on how to develop with JHipster and Sapper, have a look at [Using JHipster in development][] and [sapper.svelte.dev](https://sapper.svelte.dev).
+For further instructions on how to develop with JHipster and SvelteKit, have a look at [Using JHipster in development][] and [kit.svelte.dev](https://kit.svelte.dev/).
 
 <%_ if (enableSwaggerCodegen) { _%>
 ### Doing API-First development using openapi-generator
@@ -313,14 +271,6 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 <% if (testFrameworks.includes("gatling")) { %>[Gatling]: https://gatling.io/<% } %>
 <%_ if (!skipClient) {_%>
 [Node.js]: https://nodejs.org/
-[Yarn]: https://yarnpkg.org/
-[Rollup]: https://rollupjs.org/
-[BrowserSync]: https://www.browsersync.io/
-[Jest]: https://facebook.github.io/jest/
-[Jasmine]: https://jasmine.github.io/2.0/introduction.html
-[Protractor]: https://www.protractortest.org/
-[Leaflet]: https://leafletjs.com/
-[DefinitelyTyped]: https://definitelytyped.org/
 <%_ } _%>
 <%_ if (enableSwaggerCodegen) { _%>
 [OpenAPI-Generator]: https://openapi-generator.tech

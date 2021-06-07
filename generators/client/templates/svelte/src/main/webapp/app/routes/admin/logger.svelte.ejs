@@ -1,10 +1,10 @@
 <script>
 	import { onMount } from 'svelte'
 
-	import Page from '../../components/page/Page.svelte'
-	import loggerService from '../../components/admin/logger/logger-service'
-	import LoggerTable from '../../components/admin/logger/LoggerTable.svelte'
-	import LoggerFilterForm from '../../components/admin/logger/LoggerFilterForm.svelte'
+	import Page from '$lib/page/Page.svelte'
+	import loggerService from '$lib/admin/logger/logger-service'
+	import LoggerTable from '$lib/admin/logger/LoggerTable.svelte'
+	import LoggerFilterForm from '$lib/admin/logger/LoggerFilterForm.svelte'
 
 	let error
 	let loading = true

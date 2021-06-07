@@ -1,6 +1,6 @@
 <script>
-	import auth from '../components/auth/auth-store.js'
-	import appAvatar from '../components/svg/appAvatar.svg'
+	import auth from '$lib/auth/auth-store.js'
+	import appAvatar from '$lib/svg/appAvatar.svg'
 </script>
 
 <svelte:head>
@@ -18,7 +18,7 @@
 		<div
 			class="w-1/2 sm:w-1/4 sm:h-auto sm:px-4 object-cover object-center"
 		>
-			<img src="{appAvatar}" alt="Avatar" />
+			<img src="{appAvatar}" width="450" height="550" alt="Avatar" />
 		</div>
 
 		<div class="sm:flex-grow sm:px-4">

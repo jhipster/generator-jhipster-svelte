@@ -1,8 +1,8 @@
 <script>
-	import accountService from './../../components/account/account-service'
-	import Alert from './../../components/Alert.svelte'
-	import Page from './../../components/page/Page.svelte'
-	import ChangePasswordForm from '../../components/account/ChangePasswordForm.svelte'
+	import accountService from '$lib/account/account-service'
+	import Alert from '$lib/Alert.svelte'
+	import Page from '$lib/page/Page.svelte'
+	import ChangePasswordForm from '$lib/account/ChangePasswordForm.svelte'
 
 	let error
 	let currentPassword

@@ -1,16 +1,16 @@
 <script>
 	import { onMount } from 'svelte'
-	import { goto } from '@sapper/app'
-	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+	import { goto } from '$app/navigation'
+	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus.js'
 
-	import auth from '../../../components/auth/auth-store.js'
-	import userService from './../../../components/admin/user-management/user-service.js'
-	import Page from './../../../components/page/Page.svelte'
-	import Button from './../../../components/Button.svelte'
-	import Icon from './../../../components/Icon.svelte'
-	import Pagination from '../../../components/table/Pagination.svelte'
-	import UserTable from '../../../components/admin/user-management/UserTable.svelte'
-	import UserDeleteModal from '../../../components/admin/user-management/UserDeleteModal.svelte'
+	import auth from '$lib/auth/auth-store.js'
+	import userService from '$lib/admin/user-management/user-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import Button from '$lib/Button.svelte'
+	import Icon from '$lib/Icon.svelte'
+	import Pagination from '$lib/table/Pagination.svelte'
+	import UserTable from '$lib/admin/user-management/UserTable.svelte'
+	import UserDeleteModal from '$lib/admin/user-management/UserDeleteModal.svelte'
 
 	let error
 	let users = []

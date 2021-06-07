@@ -1,10 +1,10 @@
 <script>
-	import accountService from './../../components/account/account-service'
-	import { problemBaseUrl } from './../../utils/env'
+	import accountService from '$lib/account/account-service'
+	import { problemBaseUrl } from '$lib/utils/env'
 
-	import Alert from './../../components/Alert.svelte'
-	import Page from '../../components/page/Page.svelte'
-	import RegisterUserForm from '../../components/account/RegisterUserForm.svelte'
+	import Alert from '$lib/Alert.svelte'
+	import Page from '$lib/page/Page.svelte'
+	import RegisterUserForm from '$lib/account/RegisterUserForm.svelte'
 
 	let username
 	let email

@@ -1,16 +1,14 @@
 <script>
-	import { stores } from '@sapper/app'
-	import accountService from './../../../components/account/account-service'
+	import { page } from '$app/stores'
+	import accountService from '$lib/account/account-service'
 
-	import Alert from './../../../components/Alert.svelte'
-	import Page from '../../../components/page/Page.svelte'
-	import ResetPasswordForm from '../../../components/account/ResetPasswordForm.svelte'
+	import Alert from '$lib/Alert.svelte'
+	import Page from '$lib/page/Page.svelte'
+	import ResetPasswordForm from '$lib/account/ResetPasswordForm.svelte'
 
 	let error
 	let password
 	let passwordReset = false
-
-	const { page } = stores()
 
 	$: passwordResetKey = $page && $page.query && $page.query.key
 
