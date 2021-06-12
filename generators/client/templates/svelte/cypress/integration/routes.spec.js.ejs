@@ -5,8 +5,7 @@ describe('Routes', () => {
 	})
 
 	describe('unauthenticated user', () => {
-<%_
-	if (!skipUserManagement) { _%>
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 		it('should not allow navigation to settings page', () => {
 			cy.visit('/account/settings')
 
@@ -25,6 +24,7 @@ describe('Routes', () => {
 				.should('contain', 'Sign in to <%= baseName  %>')
 		})
 <%_ } _%>
+<%_ if (authenticationType !== 'oauth2') { _%>
 		it('should not allow navigation to Loggers page', () => {
 			cy.visit('/admin/logger')
 
@@ -33,6 +33,7 @@ describe('Routes', () => {
 				.should('be.visible')
 				.should('contain', 'Sign in to <%= baseName  %>')
 		})
+<%_ } _%>
 
 		it('should allow navigation to home page', () => {
 			cy.visit('/')
@@ -50,16 +51,24 @@ describe('Routes', () => {
 			cy.loginByApi('admin', 'admin')
 		})
 
-		it('should not allow navigation to login page', () => {
-			cy.visit('/login')
+<%_ if (authenticationType === 'oauth2') { _%>
+		afterEach(() => {
+			cy.logoutByApi()
+		})
+<%_ } _%>
 
+		it('should not allow navigation to login page', () => {
+<%_ if (authenticationType === 'oauth2') { _%>
+			cy.visit('/oauth2/authorization/oidc')
+<%_ } else { _%>
+			cy.visit('/login')
+<%_ } _%>
 			cy.location('pathname').should('eq', '/')
 			cy.getBySel('welcomeTitle')
 				.should('be.visible')
 				.and('contain', 'Welcome, Svelte Hipster!')
 		})
-<%_
-	if (!skipUserManagement) { _%>
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 		it('should not allow navigation to register page', () => {
 			cy.visit('/account/register')
 

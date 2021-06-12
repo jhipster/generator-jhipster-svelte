@@ -1,9 +1,17 @@
 <script>
 	import { goto } from '$app/navigation'
+<%_ if (authenticationType === 'oauth2') { _%>
+	import { browser } from '$app/env'
+<%_ } _%>
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
 	import auth from '$lib/auth/auth-store.js'
 
+<%_ if (authenticationType === 'oauth2') { _%>
+	const allowedUnAuthenticatedRoutes = []
+<%_ } else if (authenticationType !== 'oauth2' && skipUserManagement) { _%>
+	const allowedUnAuthenticatedRoutes = ['/login']
+<%_ } else { _%>
 	const allowedUnAuthenticatedRoutes = [
 		'/login',
 		'/account/register',
@@ -11,6 +19,7 @@
 		'/account/reset/init',
 		'/account/reset/finish',
 	]
+<%_ } _%>
 
 	$: routeAccessAllowed =
 		($auth && $auth.login) ||
@@ -28,7 +37,13 @@
 		) {
 			goto('/')
 		} else if (!routeAccessAllowed) {
+<%_ if (authenticationType !== 'oauth2') { _%>
 			goto('/login')
+<%_ } else { _%>
+			if (browser) {
+				window.location.href = `${window.location.origin}/oauth2/authorization/oidc`
+			}
+<%_ } _%>
 		}
 	}
 	onMount(() => checkIfCurrentRouteAccessNotAllowed())

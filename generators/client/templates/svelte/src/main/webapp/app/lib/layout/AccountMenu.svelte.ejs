@@ -1,18 +1,23 @@
 <script>
 	import { goto } from '$app/navigation'
+<%_ if (authenticationType === 'oauth2') { _%>
+	import { browser } from '$app/env'
+<%_ } _%>
 	import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt.js'
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 	import { faLock } from '@fortawesome/free-solid-svg-icons/faLock.js'
 	import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench.js'
+<%_ } _%>
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown.js'
 	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser.js'
 
 	import MenuItem from '$lib/layout/MenuItem.svelte'
 	import Icon from '$lib/Icon.svelte'
-
 	import auth from '$lib/auth/auth-store.js'
-<%_ if (authenticationType === 'session') { _%>
+<%_ if (authenticationType === 'session' || authenticationType === 'oauth2') { _%>
 	import authService from '$lib/auth/auth-service.js'
 <%_ } _%>
+
 	let isOpen = false
 
 <%_ if (authenticationType === 'session') { _%>
@@ -30,6 +35,27 @@
 	function logout() {
 		auth.logout()
 		goto('/')
+	}
+<%_ } else if (authenticationType === 'oauth2') { _%>
+	function logout() {
+		authService
+			.logout()
+			.then(res => {
+				auth.logout()
+				let logoutUrl = res.logoutUrl
+				if (browser) {
+					const redirectUri = window.location.origin
+					// Keycloak: uri has protocol/openid-connect/token
+					if (logoutUrl.includes('/protocol')) {
+						logoutUrl = `${logoutUrl}?redirect_uri=${redirectUri}`
+					} else {
+						// Else, Okta
+						logoutUrl = `${logoutUrl}?id_token_hint=${res.idToken}&post_logout_redirect_uri=${redirectUri}`
+					}
+					goto(logoutUrl)
+				}
+			})
+			.catch()
 	}
 <%_ } _%>
 </script>

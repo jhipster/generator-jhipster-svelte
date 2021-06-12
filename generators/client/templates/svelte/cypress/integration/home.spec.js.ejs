@@ -21,8 +21,7 @@ describe('Home page', () => {
 				)
 				.and('contain', 'User (login="user" and password="user").')
 		})
-<%_
-	if (!skipUserManagement) { _%>
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 		it('should have user registration link', () => {
 			cy.getBySel('svlRegisterHomeLink')
 				.should('be.visible')
@@ -38,6 +37,12 @@ describe('Home page', () => {
 			cy.loginByApi('admin', 'admin')
 			cy.visit('/')
 		})
+<%_ if (authenticationType === 'oauth2') { _%>
+
+		afterEach(() => {
+			cy.logoutByApi()
+		})
+<%_ } _%>
 
 		it('should greets logged in user', () => {
 			cy.getBySel('greetMsg')

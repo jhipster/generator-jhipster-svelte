@@ -4,6 +4,12 @@ describe('Loggers page', () => {
 		cy.loginByApi('admin', 'admin')
 		cy.visit('/admin/logger')
 	})
+<%_ if (authenticationType === 'oauth2') { _%>
+
+		afterEach(() => {
+			cy.logoutByApi()
+		})
+<%_ } _%>
 
 	it('should greets with loggers page title and filter control', () => {
 		cy.getBySel('loggersTitle')
