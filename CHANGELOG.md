@@ -4,6 +4,19 @@
 
 ## [Unreleased]
 
+### BREAKING CHANGES
+
+-   Support `SvelteKit`
+
+### Added
+
+-   ✅ Sapper to `SvelteKit` migration. Use `jsconfig` to specify absolute paths from the `lib` directory. `Vite` is now used as the build tool to provide an awful frontend development experience with ESM module builds, Lighting fast HMR, Optimized production bundles [#482](https://github.com/jhipster/generator-jhipster-svelte/pull/482)
+-   ✅ Support `OIDC` authentication (`Keycloak` out of the box) [#495](https://github.com/jhipster/generator-jhipster-svelte/pull/495)
+
+### Changed
+
+-   ✅ Bump third party library dependencies.
+
 ## [0.4.0] - 2021-05-30
 
 ### Added
