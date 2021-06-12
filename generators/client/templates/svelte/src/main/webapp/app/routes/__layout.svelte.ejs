@@ -25,7 +25,7 @@
 	<div
 		class="flex flex-col text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-900 antialiased min-h-screen font-sans"
 	>
-		<div class="z-10" <% if (authenticationType !== 'oauth2') { %>class:hidden="{isLoginRouteActivated}"<% } %>>
+		<div class="z-10"<% if (authenticationType !== 'oauth2') { %> class:hidden="{isLoginRouteActivated}"<% } %>>
 			<Navbar />
 		</div>
 		<Notification />
@@ -34,7 +34,7 @@
 				<slot />
 			</AuthGuard>
 		</main>
-		<div <% if (authenticationType !== 'oauth2') { %>class:hidden="{isLoginRouteActivated}"<% } %>>
+		<div<% if (authenticationType !== 'oauth2') { %> class:hidden="{isLoginRouteActivated}"<% } %>>
 			<Footer />
 		</div>
 	</div>
