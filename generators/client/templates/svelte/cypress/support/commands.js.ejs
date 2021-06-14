@@ -151,33 +151,75 @@ Cypress.Commands.add('delete', (url, lenient = true) => {
 <%_ } else { _%>
 
 Cypress.Commands.add('loginByApi', (username, password) => {
+
 	cy.request({
-		method: 'GET',
-		url: `/oauth2/authorization/oidc`,
-		followRedirect: true,
+		url: '/oauth2/authorization/oidc',
+		followRedirect: false,
 	})
-		.then(res => {
-			const html = document.createElement('html')
-			html.innerHTML = res.body
-			const form = html.getElementsByTagName('form')[0]
-			const url = form.action
-			return cy.request({
-				method: 'POST',
-				url,
-				followRedirect: false,
-				form: true,
-				body: {
-					username: username,
-					password: password,
-				},
-			})
-		})
-		.then(() => {
-			return cy.request({
-				method: 'GET',
-				url: '/oauth2/authorization/oidc',
-				followRedirect: true,
-			})
+		.its('headers.location')
+		.as('authorizeUrl')
+		.then(function(){
+			const url = new URL(this.authorizeUrl);
+			const origin = url.origin
+
+			if(origin.includes('okta')) {
+				cy.request({
+					method: 'POST',
+					url: `${origin}/api/v1/authn`,
+					followRedirect: false,
+					body: {
+						username,
+						password,
+					},
+				})
+					.its('body.sessionToken')
+					.as('sessionToken')
+					.then(function() {
+						const sessionToken = this.sessionToken
+						const url = new URL(this.authorizeUrl);
+						const origin = url.origin
+						const clientId = url.searchParams.get('client_id');
+						const responseType = url.searchParams.get('response_type');
+						const redirectUri = url.searchParams.get('redirect_uri');
+						const nonce = url.searchParams.get('nonce');
+						const state = url.searchParams.get('state');
+						const scope = url.searchParams.get('scope');
+						cy.request({
+							method: 'GET',
+							url: `${origin}/oauth2/v1/authorize?client_id=${clientId}&response_type=${responseType}&scope=${scope}&prompt=none&redirect_uri=${redirectUri}&state=${state}&nonce=${nonce}&sessionToken=${sessionToken}`,
+							followRedirect: true
+						})
+					})
+			} else {
+				cy.request({
+					method: 'GET',
+					url: `/oauth2/authorization/oidc`,
+					followRedirect: true,
+				})
+					.then(res => {
+						const html = document.createElement('html')
+						html.innerHTML = res.body
+						const form = html.getElementsByTagName('form')[0]
+						const url = form.action
+						return cy.request({
+							method: 'POST',
+							url,
+							followRedirect: false,
+							form: true,
+							body: {
+								username: username,
+								password: password,
+							},
+						})
+					})
+					.then(() => {
+						return cy.request({
+							method: 'GET',
+							url: '/oauth2/authorization/oidc',
+							followRedirect: true,
+						})
+					})
+			}
 		})
 })
 

@@ -48,7 +48,7 @@ describe('Routes', () => {
 	describe('authenticated user', () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()
-			cy.loginByApi('admin', 'admin')
+			cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
 		})
 
 <%_ if (authenticationType === 'oauth2') { _%>
