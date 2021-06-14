@@ -4,7 +4,7 @@
 		"@fortawesome/free-solid-svg-icons": "5.15.3",
 		"@fullhuman/postcss-purgecss": "4.0.3",
 		"@sveltejs/adapter-static": "1.0.0-next.13",
-		"@sveltejs/kit": "1.0.0-next.114",
+		"@sveltejs/kit": "1.0.0-next.115",
 		"@testing-library/jest-dom": "5.13.0",
 		"@testing-library/svelte": "3.0.3",
 		"autoprefixer": "10.2.6",
