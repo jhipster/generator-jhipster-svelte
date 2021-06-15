@@ -176,18 +176,10 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 					.as('sessionToken')
 					.then(function() {
 						const sessionToken = this.sessionToken
-						const url = new URL(this.authorizeUrl);
-						const origin = url.origin
-						const clientId = url.searchParams.get('client_id');
-						const responseType = url.searchParams.get('response_type');
-						const redirectUri = url.searchParams.get('redirect_uri');
-						const nonce = url.searchParams.get('nonce');
-						const state = url.searchParams.get('state');
-						const scope = url.searchParams.get('scope');
 						cy.request({
 							method: 'GET',
-							url: `${origin}/oauth2/v1/authorize?client_id=${clientId}&response_type=${responseType}&scope=${scope}&prompt=none&redirect_uri=${redirectUri}&state=${state}&nonce=${nonce}&sessionToken=${sessionToken}`,
-							followRedirect: true
+							url: `${this.authorizeUrl}&sessionToken=${sessionToken}`,
+							followRedirect: true,
 						})
 					})
 			} else {
