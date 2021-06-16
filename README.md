@@ -18,7 +18,7 @@ Refer to the [changelog](./CHANGELOG.md) to gain more insights into each release
 
 Following integrations are supported:
 
-    ✅ Session, JWT authentication
+    ✅ Session, JWT, OIDC authentication
     ✅ Dark Mode support
     ✅ SvelteKit
     ✅ Tailwind CSS, PurgeCSS, PostCSS integration for optimized CSS bundles

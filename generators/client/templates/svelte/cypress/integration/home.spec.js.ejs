@@ -21,8 +21,7 @@ describe('Home page', () => {
 				)
 				.and('contain', 'User (login="user" and password="user").')
 		})
-<%_
-	if (!skipUserManagement) { _%>
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 		it('should have user registration link', () => {
 			cy.getBySel('svlRegisterHomeLink')
 				.should('be.visible')
@@ -35,14 +34,20 @@ describe('Home page', () => {
 	describe('authenticated user', () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()
-			cy.loginByApi('admin', 'admin')
+			cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
 			cy.visit('/')
 		})
+<%_ if (authenticationType === 'oauth2') { _%>
+
+		afterEach(() => {
+			cy.logoutByApi()
+		})
+<%_ } _%>
 
 		it('should greets logged in user', () => {
 			cy.getBySel('greetMsg')
 				.should('be.visible')
-				.and('contain', 'You are logged in as user "admin".')
+				.and('contain', `You are logged in as user "${Cypress.env('adminUsername')}".`)
 		})
 	})
 })

@@ -1,7 +1,9 @@
 <script>
 	import { faBars } from '@fortawesome/free-solid-svg-icons/faBars.js'
 	import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt.js'
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 	import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus.js'
+<%_ } _%>
 
 	import Icon from '$lib/Icon.svelte'
 	import NavItem from '$lib/layout/NavItem.svelte'
@@ -77,9 +79,15 @@
 					on:click="{toggleToolbar}"
 					label="Sign in"
 					icon="{faSignInAlt}"
+				<%_ if (authenticationType === 'oauth2') { _%>
+					rel="external"
+					route="oauth2/authorization/oidc"
+				<%_ } else { _%>
 					route="/login"
+				<%_ } _%>
 				/>
 			</div>
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 			<div data-test="svlRegisterLink" class="sm:ml-4 pb-3 sm:pb-0">
 				<NavItem
 					on:click="{toggleToolbar}"
@@ -88,6 +96,7 @@
 					route="/account/register"
 				/>
 			</div>
+<%_ } _%>
 		{/if}
 	</div>
 </header>

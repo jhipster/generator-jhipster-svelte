@@ -36,7 +36,6 @@ const svelteFiles = {
 			templates: [
 				'cypress/integration/footer.spec.js',
 				'cypress/integration/home.spec.js',
-				'cypress/integration/login.spec.js',
 				'cypress/integration/navbar.spec.js',
 				'cypress/integration/routes.spec.js',
 				'cypress/integration/admin/logger.spec.js',
@@ -46,9 +45,15 @@ const svelteFiles = {
 			],
 		},
 	],
+	e2eLogin: [
+		{
+			condition: generator => generator.authenticationType !== 'oauth2',
+			templates: ['cypress/integration/login.spec.js'],
+		},
+	],
 	e2eUserManagement: [
 		{
-			condition: generator => !generator.skipUserManagement,
+			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
 			templates: [
 				'cypress/integration/account/change-password.spec.js',
 				'cypress/integration/account/register.spec.js',
@@ -105,15 +110,21 @@ const svelteFiles = {
 				'__error.svelte',
 				'__layout.svelte',
 				'index.svelte',
-				'login.svelte',
 				'admin/__layout.svelte',
 				'admin/logger.svelte',
 			],
 		},
 	],
+	loginRoutes: [
+		{
+			condition: generator => generator.authenticationType !== 'oauth2',
+			path: FRONTEND_ROUTES_DIR,
+			templates: ['login.svelte'],
+		},
+	],
 	routesUserManagement: [
 		{
-			condition: generator => !generator.skipUserManagement,
+			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
 			path: FRONTEND_ROUTES_DIR,
 			templates: [
 				'account/activate.svelte',
@@ -179,7 +190,7 @@ const svelteFiles = {
 	libUserManagement: [
 		{
 			path: FRONTEND_COMPONENTS_DIR,
-			condition: generator => !generator.skipUserManagement,
+			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
 			templates: [
 				'account/account-service.js',
 				'account/ChangePasswordForm.svelte',

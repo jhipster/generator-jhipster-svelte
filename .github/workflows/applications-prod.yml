@@ -17,7 +17,12 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                apps: ['monolithic-jwt-maven-mongodb-prod.jdl', 'monolithic-session-maven-postgres-prod.jdl']
+                apps:
+                    [
+                        'monolithic-jwt-maven-mongodb-prod.jdl',
+                        'monolithic-session-maven-postgres-prod.jdl',
+                        'monolithic-oidc-maven-postgres-prod.jdl',
+                    ]
                 os: [ubuntu-latest]
                 node_version: [14.x]
         steps:
@@ -119,6 +124,7 @@ jobs:
             - name: Run Cypress tests
               run: |
                   cd "$HOME/svelte-app"
+                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
                   docker-compose -f src/main/docker/app.yml up -d
-                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/management/info)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e

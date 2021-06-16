@@ -42,7 +42,15 @@
 						class="px-5 py-3 bg-yellow-100 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 rounded transition-colors duration-200"
 					>
 						<span>If you want to </span>
+					<%_ if (authenticationType === 'oauth2') { _%>
+						<a
+							class="font-semibold"
+							rel="external"
+							href="oauth2/authorization/oidc">sign in</a
+						><span
+					<%_ } else { _%>
 						<a class="font-semibold" href="/login">sign in</a><span
+					<%_ } _%>
 							>, you can try the default accounts:<br />-
 							Administrator (login="admin" and password="admin")
 							<br />- User (login="user" and password="user").</span
