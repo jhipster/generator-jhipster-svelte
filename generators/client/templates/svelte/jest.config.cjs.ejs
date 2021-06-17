@@ -1,7 +1,7 @@
 module.exports = {
 	testEnvironment: 'jsdom',
 	transform: {
-		'^.+\\.js$': 'babel-jest',
+		'^.+\\.js$': 'esbuild-jest',
 		'^.+\\.svelte$': 'svelte-jester',
 	},
 	testMatch: ['<rootDir>/(<%= CLIENT_MAIN_SRC_DIR %>**/*.spec.js)'],
