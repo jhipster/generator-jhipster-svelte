@@ -15,7 +15,6 @@ const svelteFiles = {
 	base: [
 		{
 			templates: [
-				'.babelrc.json',
 				'.eslintignore',
 				'.eslintrc.json',
 				'cypress.json',
