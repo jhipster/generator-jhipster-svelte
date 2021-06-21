@@ -3,7 +3,7 @@ import { request } from '$lib/utils/request'
 
 export default {
 	fetchAuthenticatedUsername: () =>
-		request(`${serverUrl}api/<%_ if (authenticationType === 'oauth2') { _%>account<%_ } else { _%>authenticate<%_ } _%>`, 'GET', undefined, {}, false),
+		request(`${serverUrl}api/authenticate`, 'GET', undefined, {}, false),
 	fetchAuthenticatedUserDetails: () => request(`${serverUrl}api/account`),
 <%_ if (authenticationType === 'session') { _%>
 	login: (username, password, rememberMe) => {

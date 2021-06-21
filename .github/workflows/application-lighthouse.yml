@@ -39,7 +39,7 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.0.1
+                  key: ${{ runner.os }}-maven-7.1.0
                   restore-keys: |
                       ${{ runner.os }}-maven-
             - name: Configure cypress cache
@@ -71,8 +71,8 @@ jobs:
             - name: Prepare Lighthouse run prerequisites
               run: |
                   cd "$HOME/svelte-app"
-                  npm install -g @lhci/cli@0.7.x
-                  npm install --save puppeteer
+                  ./npmw install -g @lhci/cli@0.7.x
+                  ./npmw install --save puppeteer
                   docker-compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
             - name: Run Lighthouse tests - Unauthenticated Pages
