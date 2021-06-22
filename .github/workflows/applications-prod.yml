@@ -11,7 +11,8 @@ on:
 env:
     TEST_SCRIPTS_PATH: ${{ github.workspace }}/.github/workflows/scripts
 jobs:
-    generator-jhipster-svelte:
+    build:
+        name: ${{ matrix.apps }}
         runs-on: ${{ matrix.os }}
         timeout-minutes: 20
         strategy:
