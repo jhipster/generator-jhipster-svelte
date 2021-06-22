@@ -11,7 +11,8 @@ on:
 env:
     TEST_SCRIPTS_PATH: ${{ github.workspace }}/.github/workflows/scripts
 jobs:
-    generator-jhipster-svelte:
+    build:
+        name: ${{ matrix.apps }}
         runs-on: ${{ matrix.os }}
         timeout-minutes: 20
         strategy:
@@ -45,23 +46,19 @@ jobs:
                       ~/.gradle/caches
                       ~/.gradle/wrapper
                   key: ${{ runner.os }}-gradle-7.1.0
-                  restore-keys: |
-                      ${{ runner.os }}-gradle-
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
                   key: ${{ runner.os }}-maven-7.1.0
-                  restore-keys: |
-                      ${{ runner.os }}-maven-
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
-                  path: ~/.cache/Cypress/
-                  key: ${{ runner.os }}-cypress-7.5.0
-                  restore-keys: |
-                      ${{ runner.os }}-cypress-
+                  path: |
+                      ~/.cache/Cypress/7.5.0
+                      ~/.cache/Cypress/cy
+                  key: ${{ runner.os }}-cypress-7.5.x
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
@@ -96,7 +93,7 @@ jobs:
             - name: Frontend - Unit tests
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app --entrypoint ./npmw jhipster/svelte-hipster test -- --coverage
+                  docker run --rm -v $PWD:/app --entrypoint npm jhipster/svelte-hipster test -- --coverage
             - name: Maven - Package application
               if: contains(matrix.apps , 'maven')
               run: |
@@ -121,4 +118,4 @@ jobs:
                   docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster clean
                   docker run -d --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  ./npmw run e2e
+                  npm run e2e
