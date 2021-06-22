@@ -10,10 +10,6 @@ fi
 NPM_EXE="$basedir/$builddir/npm"
 
 if ! [ -x "$NPM_EXE" ]; then
-  $installCommand || true
-fi
-
-if ! [ -x "$NPM_EXE" ]; then
   echo "Using npm installed globally"
   npm "$@"
 else
