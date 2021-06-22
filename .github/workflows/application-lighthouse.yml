@@ -9,7 +9,8 @@ on:
 env:
     TEST_SCRIPTS_PATH: ${{ github.workspace }}/.github/workflows/scripts
 jobs:
-    generator-jhipster-svelte:
+    build:
+        name: ${{ matrix.apps }}
         runs-on: ${{ matrix.os }}
         timeout-minutes: 20
         strategy:
@@ -39,16 +40,14 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.0.1
-                  restore-keys: |
-                      ${{ runner.os }}-maven-
+                  key: ${{ runner.os }}-maven-7.1.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
-                  path: ~/.cache/Cypress/
-                  key: ${{ runner.os }}-cypress-7.5.0 # Needs a better way to cache cypress binary
-                  restore-keys: |
-                      ${{ runner.os }}-cypress-
+                  path: |
+                      ~/.cache/Cypress/7.5.0
+                      ~/.cache/Cypress/cy
+                  key: ${{ runner.os }}-cypress-7.5.x
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
