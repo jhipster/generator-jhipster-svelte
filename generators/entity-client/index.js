@@ -47,6 +47,7 @@ module.exports = class extends EntityClientGenerator {
 		return super._default();
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	get writing() {
 		return {
 			writeAdditionalFile() {
@@ -55,6 +56,7 @@ module.exports = class extends EntityClientGenerator {
 		};
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	get postWriting() {
 		// TODO: add menu option changes
 		return {};
