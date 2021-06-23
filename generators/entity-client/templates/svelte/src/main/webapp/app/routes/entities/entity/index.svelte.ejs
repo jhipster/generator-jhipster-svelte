@@ -1,0 +1,148 @@
+<script>
+	import { onMount } from 'svelte'
+	import { goto } from '$app/navigation'
+	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus.js'
+
+	import auth from '$lib/auth/auth-store.js'
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import Button from '$lib/Button.svelte'
+	import Icon from '$lib/Icon.svelte'
+<%_ if (!paginationNo) { _%>
+	import Pagination from '$lib/table/Pagination.svelte'
+<%_ } _%>
+	import <%= entityAngularName %>Table from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Table.svelte'
+	import <%= entityAngularName %>DeleteModal from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>DeleteModal.svelte'
+
+	let error
+	let <%= entityInstancePlural %> = []
+<%_ if (!paginationNo) { _%>
+	let sortPredicate = 'id'
+	let sortOrder = 'asc'
+	let pageSize = 15
+	let page = 1
+	let totalCount = 0
+<%_ } _%>
+	let loading = true
+	let showDeleteModal = false
+	let <%= entityInstance %>Id = null
+
+	onMount(() => fetch<%= entityClassPluralHumanized %>())
+
+	function fetch<%= entityClassPluralHumanized %>() {
+		loading = true
+		error = undefined
+		<%= entityInstance %>Service
+			.findAll(<% if (!paginationNo) { %>page, pageSize, sortPredicate, sortOrder<% } %>)
+			.then(res => {
+			<%_ if (!paginationNo) { _%>
+				<%= entityInstancePlural %> = res.data
+				totalCount = res.totalCount
+			<%_ } else { _%>
+				<%= entityInstancePlural %> = res
+			<%_ } _%>
+			})
+			.catch(err => (error = err))
+			.finally((loading = false))
+	}
+
+	function view<%= entityAngularName %>(event) {
+		goto(`/entities/<%= entityFolderName %>/${event.detail.id}/view`)
+	}
+
+	function update<%= entityAngularName %>(event) {
+		goto(`/entities/<%= entityFolderName %>/${event.detail.id}/edit`)
+	}
+
+	function showDelete<%= entityAngularName %>Modal(event) {
+		<%= entityInstance %>Id = event.detail.id
+		showDeleteModal = true
+	}
+
+	function closeDelete<%= entityAngularName %>Modal() {
+		showDeleteModal = false
+		<%= entityInstance %>Id = null
+	}
+
+	function delete<%= entityAngularName %>(event) {
+		<%= entityInstance %>Service
+			.delete(<%= entityInstance %>Id)
+			.then(() => fetch<%= entityClassPluralHumanized %>())
+			.catch(err => (error = err))
+			.finally(() => (showDeleteModal = false), (<%= entityInstance %>Id = null))
+	}
+<%_ if (!paginationNo) { _%>
+	function sortByPredicate(event) {
+		sortPredicate = event.detail.sortPredicate
+		sortOrder = event.detail.sortOrder
+		fetch<%= entityClassPluralHumanized %>()
+	}
+
+	function handlePageChange(event) {
+		page = event.detail.page
+		fetch<%= entityClassPluralHumanized %>()
+	}
+<%_ } _%>
+</script>
+
+<svelte:head>
+	<title><%= entityClassPluralHumanized %></title>
+	<meta name="Description" content="<%= entityAngularName %> list" />
+</svelte:head>
+
+<Page testId="<%= entityInstance %>ListPage" width="full">
+	<div
+		class="text-left flex flex-row justify-between items-center"
+		slot="header"
+	>
+		<span><%= entityClassPluralHumanized %></span>
+		<div class="flex flex-row justify-end text-base">
+			<Button
+				classes="sm:my-0"
+				disabled="disabled"
+				on:click="{() => goto(`/entities/<%= entityFolderName %>/new`)}"
+			>
+				<Icon classes="mr-2" icon="{faPlus}" />
+				Create <%= entityClassHumanized %>
+			</Button>
+		</div>
+	</div>
+	{#if !loading && <%= entityInstancePlural %>.length}
+		{#if showDeleteModal}
+			<<%= entityAngularName %>DeleteModal
+				id="{<%= entityInstance %>Id}"
+				on:close="{closeDelete<%= entityAngularName %>Modal}"
+				on:delete<%= entityAngularName %>="{delete<%= entityAngularName %>}"
+			/>
+		{/if}
+
+<%_ if (!paginationNo) { _%>
+		<Pagination
+			totalCount="{totalCount}"
+			pageSize="{pageSize}"
+			page="{page}"
+			classes="my-2"
+			on:pagechange="{handlePageChange}"
+		/>
+<%_ } _%>
+		<<%= entityAngularName %>Table
+			<%= entityInstancePlural %>="{<%= entityInstancePlural %>}"
+		<%_ if (!paginationNo) { _%>
+			sortPredicate="{sortPredicate}"
+			on:sortbypredicate="{sortByPredicate}"
+		<%_ } _%>
+			on:update<%= entityInstance %>="{update<%= entityAngularName %>}"
+			on:view<%= entityInstance %>="{view<%= entityAngularName %>}"
+			on:delete<%= entityInstance %>="{showDelete<%= entityAngularName %>Modal}"
+		/>
+<%_ if (!paginationNo) { _%>
+		<Pagination
+			totalCount="{totalCount}"
+			pageSize="{pageSize}"
+			page="{page}"
+			classes="mt-4"
+			on:pagechange="{handlePageChange}"
+		/>
+<%_ } _%>
+	{/if}
+</Page>
