@@ -82,6 +82,7 @@ Cypress.Commands.add('delete', (url, lenient = true) => {
 				headers: {
 					'X-XSRF-TOKEN': csrfCookie.value,
 				},
+				failOnStatusCode: lenient ? false : true
 			})
 		})
 		.then(res => {

@@ -1,0 +1,78 @@
+describe('<%= entityAngularName %> delete dialog page', () => {
+	let randomPrefix
+	let dynamicId
+
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		randomPrefix = 'test' + new Date().getTime()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+
+		cy.save('api/<%= entityApiUrl %>', {
+		<%_
+			for (field of fields.filter(field => !field.id)) {
+		_%>
+			<%= field.fieldName %>: randomPrefix,
+		<%_ } _%>
+		}).then(res => {
+			dynamicId = res.id
+		})
+
+		cy.visit('/entities/<%= entityFolderName %>')
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.contains('td', randomPrefix)
+			.parent()
+			.trigger('mouseenter')
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.children()
+					.getByName('delete<%= entityAngularName %>Btn')
+					.click()
+			})
+	})
+
+	afterEach(() => {
+		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`, true)
+	})
+
+	it('should display delete <%= entityAngularName %> dialog', () => {
+		cy.getBySel('svlModal').within(() => {
+			cy.root()
+				.get('h1')
+				.should('be.visible')
+				.should('contain', 'Confirm delete operation')
+				.get('p')
+				.should('be.visible')
+				.should('contain', 'Are you sure you want to delete the <%= entityAngularName %>?')
+				.getByName('delete<%= entityAngularName %>Btn')
+				.should('not.be.disabled')
+				.getByName('cancelBtn')
+				.should('not.be.disabled')
+		})
+	})
+
+	it('should close the dialog without deleting <%= entityAngularName %>', () => {
+		cy.getBySel('svlModal').within(() => cy.getByName('cancelBtn').click())
+		cy.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+
+	it('should delete the <%= entityAngularName %>', () => {
+		cy.getBySel('svlModal').within(() =>
+			cy.getByName('delete<%= entityAngularName %>Btn').click()
+		)
+
+		cy.getBySel('toast-success').contains(
+			'A <%= entityInstance %> is deleted with identifier'
+		)
+
+		cy.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+})

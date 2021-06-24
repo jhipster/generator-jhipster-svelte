@@ -53,6 +53,27 @@ const svelteFiles = {
 			],
 		},
 	],
+	entityE2eTests: [
+		{
+			templates: [
+				{
+					file: 'cypress/integration/entities/entity/entity-delete.spec.js',
+					renameTo: generator =>
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-delete.spec.js`,
+				},
+				{
+					file: 'cypress/integration/entities/entity/entity-list.spec.js',
+					renameTo: generator =>
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-list.spec.js`,
+				},
+				{
+					file: 'cypress/integration/entities/entity/entity-view.spec.js',
+					renameTo: generator =>
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-view.spec.js`,
+				},
+			],
+		},
+	],
 };
 
 function writeFiles() {

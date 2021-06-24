@@ -1,0 +1,131 @@
+describe('<%= entityAngularName %> list page', () => {
+	let randomPrefix
+	let dynamicId
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		randomPrefix = 'test' + new Date().getTime()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+		cy.save('api/<%= entityApiUrl %>', {
+		<%_
+			for (field of fields.filter(field => !field.id)) {
+		_%>
+			<%= field.fieldName %>: randomPrefix,
+		<%_ } _%>
+		}).then(res => {
+			dynamicId = res.id
+			cy.visit('/entities/<%= entityFolderName %>')
+		})
+
+	})
+
+	afterEach(() => {
+		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
+	})
+
+	it('should greets with <%= entityAngularName %> page title', () => {
+		cy.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+
+	it('should display <%= entityAngularName %> table', () => {
+		cy.getBySel('<%= entityInstance %>Table')
+			.should('be.visible')
+			.get('tr')
+			.eq(0)
+			.children()
+<%_
+	for (let loopIndex = 0; loopIndex > fields.length; loopIndex++) {
+		const field = fields[loopIndex];
+_%>
+			.should('have.length', <%= fields.length %>)
+			.get('th')
+			.eq(<%= loopIndex %>)
+			.should('contain', '<%= field.fieldNameHumanized %>')
+<%_ } _%>
+	})
+
+	it('should display <%= entityAngularName %> record in the table', () => {
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+<%_
+	for (let loopIndex = 0; loopIndex > fields.length; loopIndex++) {
+_%>
+					.get('td')
+					.eq(<%= loopIndex %>)
+					.should('not.be.empty')
+<%_ } _%>
+			})
+	})
+
+<%_ if (!paginationNo) { _%>
+	it('should validate the pagination controls', () => {
+		cy.getBySel('pageCtrl')
+			.eq(0)
+			.contains('div', /1-\d+ of \d+/)
+			.next()
+			.within($div => {
+				cy.root()
+					.getBySel('prevPageCtrl')
+					.should('be.disabled')
+					.get('div')
+					.should('have.text', '1')
+					.getBySel('nextPageCtrl')
+					.should('be.disabled')
+			})
+	})
+
+	it('should sort the records by Id field', () => {
+		let valueBeforeSort
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.invoke('text')
+					.then(text => (valueBeforeSort = text))
+			})
+
+		cy.intercept('**/api/tags?*').as('get<%= entityClassPluralHumanized %>')
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('th')
+					.eq(0)
+					.within($td => {
+						cy.root().get('span').eq(1).click()
+					})
+			})
+
+		cy.wait('@get<%= entityClassPluralHumanized %>')
+
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.invoke('text')
+					.then(text => {
+						expect(text).not.eq(valueBeforeSort)
+					})
+			})
+	})
+<%_ } _%>
+})
