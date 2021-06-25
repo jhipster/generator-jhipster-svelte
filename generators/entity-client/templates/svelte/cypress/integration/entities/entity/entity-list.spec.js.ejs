@@ -13,7 +13,7 @@ describe('<%= entityAngularName %> list page', () => {
 		)
 	<%_ if (!paginationNo) { _%>
 		// create another <%= entityAngularName %> to test sort implementation
-		randomPrefix = 'zest' + new Date().getTime()
+		randomPrefix2 = 'zest' + new Date().getTime()
 		cy.save('api/<%= entityApiUrl %>', {
 		<%_
 			for (field of fields.filter(field => !field.id)) {
