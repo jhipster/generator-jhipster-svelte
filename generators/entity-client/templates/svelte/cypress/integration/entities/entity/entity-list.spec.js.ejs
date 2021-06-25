@@ -41,6 +41,9 @@ describe('<%= entityAngularName %> list page', () => {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
 	<%_ if (!paginationNo) { _%>
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId2}`)
+	<%_ }
+	if (authenticationType === 'oauth2') { _%>
+		cy.logoutByApi()
 	<%_ } _%>
 	})
 

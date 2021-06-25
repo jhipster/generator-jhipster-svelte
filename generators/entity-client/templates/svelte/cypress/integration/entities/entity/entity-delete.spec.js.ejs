@@ -37,6 +37,9 @@ describe('<%= entityAngularName %> delete dialog page', () => {
 
 	afterEach(() => {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`, true)
+	<%_ if (authenticationType === 'oauth2') { _%>
+		cy.logoutByApi()
+	<%_ } _%>
 	})
 
 	it('should display delete <%= entityAngularName %> dialog', () => {
