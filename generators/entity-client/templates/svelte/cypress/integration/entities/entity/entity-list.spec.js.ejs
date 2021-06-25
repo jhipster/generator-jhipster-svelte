@@ -1,13 +1,30 @@
 describe('<%= entityAngularName %> list page', () => {
 	let randomPrefix
 	let dynamicId
+<%_ if (!paginationNo) { _%>
+	let randomPrefix2
+	let dynamicId2
+<%_ } _%>
 	beforeEach(() => {
 		cy.unregisterServiceWorkers()
-		randomPrefix = 'test' + new Date().getTime()
 		cy.loginByApi(
 			Cypress.env('adminUsername'),
 			Cypress.env('adminPassword')
 		)
+	<%_ if (!paginationNo) { _%>
+		// create another <%= entityAngularName %> to test sort implementation
+		randomPrefix = 'zest' + new Date().getTime()
+		cy.save('api/<%= entityApiUrl %>', {
+		<%_
+			for (field of fields.filter(field => !field.id)) {
+		_%>
+			<%= field.fieldName %>: randomPrefix2,
+		<%_ } _%>
+		}).then(res => {
+			dynamicId2 = res.id
+		})
+	<%_ } _%>
+		randomPrefix = 'test' + new Date().getTime()
 		cy.save('api/<%= entityApiUrl %>', {
 		<%_
 			for (field of fields.filter(field => !field.id)) {
@@ -18,11 +35,13 @@ describe('<%= entityAngularName %> list page', () => {
 			dynamicId = res.id
 			cy.visit('/entities/<%= entityFolderName %>')
 		})
-
 	})
 
 	afterEach(() => {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
+	<%_ if (!paginationNo) { _%>
+		cy.delete(`api/<%= entityApiUrl %>/${dynamicId2}`)
+	<%_ } _%>
 	})
 
 	it('should greets with <%= entityAngularName %> page title', () => {
