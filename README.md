@@ -26,6 +26,7 @@ Following integrations are supported:
     ✅ Cypress integration for end to end tests
     ✅ Jest and Testing Library integration for unit tests
     ✅ JHipster application JDL
+    ✅ JHipster entity JDL (simple data type, no relation)
 
 Following functional flows are covered with end to end tests:
 
@@ -40,6 +41,8 @@ Following functional flows are covered with end to end tests:
     ✅ Administration
         ✅ User Management (List, Create, Update, View, Delete)
         ✅ Loggers
+    ✅ Entities
+        ✅ Entity (List, View, Delete)
 
 For more details, you can check out the source code of [sample application](https://github.com/jhipster/jhipster-sample-app-svelte)
 
@@ -92,7 +95,19 @@ npm update -g generator-jhipster-svelte
             cacheProvider caffeine,
             buildTool maven
         }
+        entities *
     }
+
+    entity Blog {
+        name String required minlength(3)
+        handle String required minlength(2)
+    }
+
+    entity Tag {
+        name String required minlength(3)
+    }
+
+    paginate Tag with pagination
     ```
 
     Pass `import-jdl` option along the file path to `shipster` cli to generate new application:
@@ -112,8 +127,8 @@ npm update -g generator-jhipster-svelte
 | `JHipster` | `Svelte Hipster` |
 | ---------- | ---------------- |
 | `6.10.5`   | `0.1` - `0.2.1`  |
-| `7.0.0`    | >= `0.3`         |
-|            |                  |
+| `7.0.x`    | `0.3` - `0.4`    |
+| `7.1.x`    | >= `0.5`         |
 
 ## Docker development
 

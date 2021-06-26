@@ -6,15 +6,17 @@
 
 ### BREAKING CHANGES
 
--   Support `SvelteKit`
+-   ✅ Generate applications using the [`SvelteKit`](https://kit.svelte.dev/) framework in place of `Sapper`
 
 ### Added
 
 -   ✅ Sapper to `SvelteKit` migration. Use `jsconfig` to specify absolute paths from the `lib` directory. `Vite` is now used as the build tool to provide an awful frontend development experience with ESM module builds, Lighting fast HMR, Optimized production bundles [#482](https://github.com/jhipster/generator-jhipster-svelte/pull/482)
--   ✅ Support `OIDC` authentication (`Keycloak` out of the box) [#495](https://github.com/jhipster/generator-jhipster-svelte/pull/495)
+-   ✅ Support `OIDC` authentication (`Keycloak`, `Okta` integration out of the box) [#495](https://github.com/jhipster/generator-jhipster-svelte/pull/495)
+-   ✅ JHipster entity `JDL` support to generate `List`, `View`, and `Delete` entity pages along with `Cypress` e2e tests [#518](https://github.com/jhipster/generator-jhipster-svelte/pull/518)
 
 ### Changed
 
+-   ✅ Bump `JHipster` dependency to support `7.1.0` release [#513] (https://github.com/jhipster/generator-jhipster-svelte/pull/513)
 -   ✅ Bump third party library dependencies.
 
 ## [0.4.0] - 2021-05-30

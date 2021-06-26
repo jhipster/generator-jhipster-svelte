@@ -24,7 +24,7 @@ Cypress.Commands.add('getByName', selector => {
 })
 <%_ if (authenticationType === 'session') { _%>
 Cypress.Commands.add('loginByApi', (username, password) => {
-	cy.request({ method: 'GET', url: `api/authenticate` })
+	cy.request({ url: `api/authenticate` })
 		.then(res => {
 			expect(res.status).to.eq(200)
 			return cy.getCookie('XSRF-TOKEN').should('have.property', 'value')
@@ -52,44 +52,6 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 			expect(res.status).to.eq(200)
 		})
 })
-
-Cypress.Commands.add('save', (url, body, status = 201) => {
-	cy.getCookie('XSRF-TOKEN')
-		.then(csrfCookie => {
-			return cy.request({
-				method: 'POST',
-				url: url,
-				form: false,
-				headers: {
-					'X-XSRF-TOKEN': csrfCookie.value,
-					'Content-Type': 'application/json',
-				},
-				body: body,
-			})
-		})
-		.then(res => {
-			expect(res.status).to.eq(status)
-			return cy.wrap(res.body)
-		})
-})
-
-Cypress.Commands.add('delete', (url, lenient = true) => {
-	cy.getCookie('XSRF-TOKEN')
-		.then(csrfCookie => {
-			return cy.request({
-				method: 'DELETE',
-				url: url,
-				headers: {
-					'X-XSRF-TOKEN': csrfCookie.value,
-				},
-			})
-		})
-		.then(res => {
-			if (!lenient) {
-				expect(res.status).to.eq(204)
-			}
-		})
-})
 <%_ } else if (authenticationType === 'jwt') { _%>
 Cypress.Commands.add('loginByApi', (username, password) => {
 	cy.request({
@@ -105,7 +67,6 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 		expect(res.status).to.eq(200)
 		localStorage.setItem('authToken', res.body.id_token)
 		return cy.request({
-			method: 'GET',
 			url: `api/account`,
 			headers: {
 				'Authorization': `Bearer ${res.body.id_token}`
@@ -141,6 +102,7 @@ Cypress.Commands.add('delete', (url, lenient = true) => {
 		headers: {
 			Authorization: `Bearer ${localStorage.getItem('authToken') || sessionStorage.getItem('authToken')}`,
 		},
+		failOnStatusCode: lenient ? false : true
 	})
 	.then(res => {
 		if (!lenient) {
@@ -177,14 +139,12 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 					.then(function() {
 						const sessionToken = this.sessionToken
 						cy.request({
-							method: 'GET',
 							url: `${this.authorizeUrl}&sessionToken=${sessionToken}`,
 							followRedirect: true,
 						})
 					})
 			} else {
 				cy.request({
-					method: 'GET',
 					url: `/oauth2/authorization/oidc`,
 					followRedirect: true,
 				})
@@ -206,7 +166,6 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 					})
 					.then(() => {
 						return cy.request({
-							method: 'GET',
 							url: '/oauth2/authorization/oidc',
 							followRedirect: true,
 						})
@@ -240,7 +199,6 @@ Cypress.Commands.add('logoutByApi', () => {
 					logoutUrl = `${logoutUrl}?id_token_hint=${res.body.idToken}&post_logout_redirect_uri=${redirectUri}`
 				}
 				return cy.request({
-					method: 'GET',
 					url: logoutUrl,
 					followRedirect: true,
 				})
@@ -249,6 +207,47 @@ Cypress.Commands.add('logoutByApi', () => {
 		.then(res => {
 			expect(res.status).to.eq(200)
 			cy.visit('/')
+		})
+})
+<%_ }
+	if (authenticationType === 'session' || authenticationType === 'oauth2') { _%>
+
+Cypress.Commands.add('save', (url, body, status = 201) => {
+	cy.getCookie('XSRF-TOKEN')
+		.then(csrfCookie => {
+			return cy.request({
+				method: 'POST',
+				url: url,
+				form: false,
+				headers: {
+					'X-XSRF-TOKEN': csrfCookie.value,
+					'Content-Type': 'application/json',
+				},
+				body: body,
+			})
+		})
+		.then(res => {
+			expect(res.status).to.eq(status)
+			return cy.wrap(res.body)
+		})
+})
+
+Cypress.Commands.add('delete', (url, lenient = true) => {
+	cy.getCookie('XSRF-TOKEN')
+		.then(csrfCookie => {
+			return cy.request({
+				method: 'DELETE',
+				url: url,
+				headers: {
+					'X-XSRF-TOKEN': csrfCookie.value,
+				},
+				failOnStatusCode: lenient ? false : true
+			})
+		})
+		.then(res => {
+			if (!lenient) {
+				expect(res.status).to.eq(204)
+			}
 		})
 })
 <%_ } _%>

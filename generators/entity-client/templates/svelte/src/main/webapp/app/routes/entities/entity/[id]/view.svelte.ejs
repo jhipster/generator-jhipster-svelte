@@ -1,0 +1,61 @@
+<script>
+	import { onMount } from 'svelte'
+	import { page } from '$app/stores'
+	import { goto } from '$app/navigation'
+	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft.js'
+
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import Record from '$lib/page/Record.svelte'
+	import Button from '$lib/Button.svelte'
+	import Icon from '$lib/Icon.svelte'
+
+	$: id = $page && $page.params && $page.params.id
+	onMount(() => fetch<%= entityAngularName %>Details())
+
+	let error
+	let <%= entityInstance %>
+
+	function fetch<%= entityAngularName %>Details() {
+		error = undefined
+		<%= entityInstance %>Service
+			.findById(id)
+			.then(res => (<%= entityInstance %> = res))
+			.catch(err => (error = err))
+	}
+</script>
+
+<svelte:head>
+	<title><%= entityClassHumanized %> Details</title>
+	<meta name="Description" content="<%= entityClassHumanized %> details" />
+</svelte:head>
+<Page testId="<%= entityInstance %>" width="full">
+	<div class="text-left" slot="header">
+		<%= entityClassHumanized %> Details
+	</div>
+	{#if <%= entityInstance %>}
+		<div class="mt-4 table table-auto w-full">
+<%_
+	let isFirstRecord = true
+	for (field of fields.filter(field => !field.id)) {
+_%>
+			<Record<% if(isFirstRecord) { %> classes="border-t"<% } %>>
+				<span slot="label"><%= field.fieldNameHumanized %></span>
+				<span>{<%= entityInstance %>.<%= field.fieldName %>}</span>
+			</Record>
+<%_
+		isFirstRecord = false
+	}
+_%>
+		</div>
+	{/if}
+	<div class="flex mt-4 flex-row justify-center items-center leading-none">
+		<Button
+			name="backBtn"
+			on:click="{() => goto(`/entities/<%= entityFolderName %>`)}"
+		>
+			<Icon classes="mr-2" icon="{faArrowLeft}" />
+			Back
+		</Button>
+	</div>
+</Page>

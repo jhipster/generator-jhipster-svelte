@@ -165,6 +165,7 @@ const svelteFiles = {
 				'auth/RoleGuard.svelte',
 				'layout/AccountMenu.svelte',
 				'layout/AdminMenu.svelte',
+				'layout/EntityMenu.svelte',
 				'layout/Footer.svelte',
 				'layout/MenuItem.svelte',
 				'layout/Navbar.svelte',
