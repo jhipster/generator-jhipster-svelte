@@ -16,7 +16,8 @@
 
 ### Changed
 
--   ✅ Bump `JHipster` dependency to support `7.1.0` release [#513] (https://github.com/jhipster/generator-jhipster-svelte/pull/513)
+-   ✅ Bump `JHipster` dependency to support `7.1.0` release [#513](https://github.com/jhipster/generator-jhipster-svelte/pull/513)
+-   ✅ Bump `Cypress`, `Tailwind` dependencies.
 -   ✅ Bump third party library dependencies.
 
 ## [0.4.0] - 2021-05-30

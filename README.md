@@ -21,7 +21,7 @@ Following integrations are supported:
     ✅ Session, JWT, OIDC authentication
     ✅ Dark Mode support
     ✅ SvelteKit
-    ✅ Tailwind CSS, PurgeCSS, PostCSS integration for optimized CSS bundles
+    ✅ Tailwind CSS
     ✅ Prettier, EsLint integration
     ✅ Cypress integration for end to end tests
     ✅ Jest and Testing Library integration for unit tests

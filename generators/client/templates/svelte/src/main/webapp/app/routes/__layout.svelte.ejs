@@ -10,7 +10,7 @@
 	import Notification from '$lib/notification/Notification.svelte'
 	import auth from '$lib/auth/auth-store.js'
 	import '../global.css'
-	import '../vendor.css'
+	import '../tailwind.css'
 
 	function loadUserDetails() {
 		return (browser && auth.loadUserIfAuthenticated()) || Promise.resolve()
