@@ -1,13 +1,14 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
 	import { faSort } from '@fortawesome/free-solid-svg-icons/faSort.js'
-	import { faSortDown } from '@fortawesome/free-solid-svg-icons/faSortDown.js'
-	import { faSortUp } from '@fortawesome/free-solid-svg-icons/faSortUp.js'
+	import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown.js'
+	import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp.js'
 
 	import Icon from '$lib/Icon.svelte'
 
 	export let sortPredicate = ''
 	export let active = false
+	export let hasRecords = true
 	let ascending = true
 	const dispatch = createEventDispatcher()
 
@@ -21,8 +22,10 @@
 	}
 </script>
 
-<span
-	on:click="{sortByPredicate}"
+<button
+	on:click|preventDefault="{sortByPredicate}"
+	class="opacity-50 hover:opacity-100 disabled:pointer-events-none disabled:hover:opacity-50"
+	disabled="{!hasRecords}"
 	title="{active
 		? ascending
 			? 'Ascending order'
@@ -31,6 +34,6 @@
 >
 	<Icon
 		classes="cursor-pointer"
-		icon="{active ? (ascending ? faSortUp : faSortDown) : faSort}"
+		icon="{active ? (ascending ? faArrowUp : faArrowDown) : faSort}"
 	/>
-</span>
+</button>

@@ -12,7 +12,7 @@
 	export let page = 1
 	export let classes = ''
 
-	$: pageStart = (page - 1) * pageSize + 1
+	$: pageStart = totalCount === 0 ? 0 : (page - 1) * pageSize + 1
 	$: pageEnd = page * pageSize > totalCount ? totalCount : page * pageSize
 	$: pages = totalCount === 0 ? 0 : Math.ceil(totalCount / pageSize)
 
@@ -43,13 +43,14 @@
 		</Button>
 		<div
 			class="font-bold bg-primary-700 dark:bg-primary-500 text-white py-2 px-4 rounded"
+			title="Page {page}"
 		>
 			{page}
 		</div>
 		<Button
 			role="action"
 			classes="sm:my-0"
-			disabled="{page === pages}"
+			disabled="{totalCount === 0 || page === pages}"
 			on:click="{fetchNextPage}"
 			title="Next"
 			data-test="nextPageCtrl"

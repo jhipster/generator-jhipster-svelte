@@ -65,9 +65,11 @@
 				</TableData>
 			</TableRow>
 		{:else}
-			<div class="flex flex-row justify-center py-4">
-				No logger available
-			</div>
+			<TableRow let:showActions>
+				<TableData classes="text-center py-8"
+					>No loggers available</TableData
+				>
+			</TableRow>
 		{/each}
 	</tbody>
 </Table>

@@ -117,7 +117,7 @@ _%>
 					.then(text => (valueBeforeSort = text))
 			})
 
-		cy.intercept('**/api/tags?*').as('get<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
 
 		cy.getBySel('<%= entityInstance %>Table')
 			.get('tr')
