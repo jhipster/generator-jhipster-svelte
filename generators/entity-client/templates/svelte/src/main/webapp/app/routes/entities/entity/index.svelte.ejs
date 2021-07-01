@@ -12,7 +12,7 @@
 <%_ } _%>
 <%_ if (searchEngine) { _%>
 	import SearchForm from '$lib/page/SearchForm.svelte'
-<%_ } _%>>
+<%_ } _%>
 	import <%= entityAngularName %>Table from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Table.svelte'
 	import <%= entityAngularName %>DeleteModal from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>DeleteModal.svelte'
 
@@ -184,9 +184,9 @@
 			classes="my-2"
 			on:pagechange="{handlePageChange}"
 		/>
+<%_ } _%>
 	</div>
 	{#if !loading}
-<%_ } _%>
 		<<%= entityAngularName %>Table
 			<%= entityInstancePlural %>="{<%= entityInstancePlural %>}"
 		<%_ if (!paginationNo) { _%>
