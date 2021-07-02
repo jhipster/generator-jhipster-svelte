@@ -51,20 +51,24 @@ test('should render table with default sort by field', () => {
 	})
 
 	expect(
-		screen.getByRole('columnheader', { name: /id ascending order/i })
-	).toBeInTheDocument()
+		screen.getByRole('button', {
+			name: /id/i,
+			title: /ascending order/i
+		})
+	).toBeDisabled()
 
-	expect(screen.getAllByTitle(/click to sort records/i)).toHaveLength(2)
 	expect(
-		screen.getByRole('columnheader', {
-			name: /login click to sort records/i,
+		screen.getByRole('button', {
+			name: /login/i,
+			title: /click to sort records/i
 		})
-	).toBeInTheDocument()
+	).toBeDisabled()
 	expect(
-		screen.getByRole('columnheader', {
-			name: /email click to sort records/i,
+		screen.getByRole('button', {
+			name: /email/i,
+			title: /click to sort records/i
 		})
-	).toBeInTheDocument()
+	).toBeDisabled()
 })
 
 test('should render table with sort by email field', () => {
@@ -75,20 +79,24 @@ test('should render table with sort by email field', () => {
 	})
 
 	expect(
-		screen.getByRole('columnheader', { name: /email ascending order/i })
-	).toBeInTheDocument()
+		screen.getByRole('button', {
+			name: /id/i,
+			title: /click to sort records/i,
+		})
+	).toBeDisabled()
 
-	expect(screen.getAllByTitle(/click to sort records/i)).toHaveLength(2)
 	expect(
-		screen.getByRole('columnheader', {
-			name: /login click to sort records/i,
+		screen.getByRole('button', {
+			name: /login/i,
+			title: /click to sort records/i,
 		})
-	).toBeInTheDocument()
+	).toBeDisabled()
 	expect(
-		screen.getByRole('columnheader', {
-			name: /id click to sort records/i,
+		screen.getByRole('button', {
+			name: /email/i,
+			title: /ascending order/i,
 		})
-	).toBeInTheDocument()
+	).toBeDisabled()
 })
 
 test('should render table data for inactive user', () => {
@@ -174,8 +182,11 @@ test('should assert the table reactivity to change in data', async () => {
 		'border-l-4 border-red-300'
 	)
 	expect(
-		screen.getByRole('columnheader', { name: /email ascending order/i })
-	).toBeInTheDocument()
+		screen.getByRole('button', {
+			name: /email/i,
+			title: /ascending order/i,
+		})
+	).toBeEnabled()
 
 	await component.$set({
 		users: [
@@ -198,6 +209,9 @@ test('should assert the table reactivity to change in data', async () => {
 		'border-l-4 border-red-300'
 	)
 	expect(
-		screen.getByRole('columnheader', { name: /login ascending order/i })
-	).toBeInTheDocument()
+		screen.getByRole('button', {
+			name: /login/i,
+			title: /ascending order/i,
+		})
+	).toBeEnabled()
 })

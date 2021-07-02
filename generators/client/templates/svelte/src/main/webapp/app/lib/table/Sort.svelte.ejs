@@ -23,6 +23,7 @@
 </script>
 
 <button
+	aria-label="{sortPredicate}"
 	on:click|preventDefault="{sortByPredicate}"
 	class="opacity-50 hover:opacity-100 disabled:pointer-events-none disabled:hover:opacity-50"
 	disabled="{!hasRecords}"

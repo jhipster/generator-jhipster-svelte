@@ -8,7 +8,8 @@ test('should render an empty table', () => {
 	render(LoggerTable, {})
 
 	expect(screen.getByRole('table')).toBeInTheDocument()
-	expect(screen.queryAllByRole('cell').length).toEqual(0)
+	expect(screen.queryAllByRole('cell').length).toEqual(1)
+	expect(screen.getByText(/no loggers available/i)).toBeInTheDocument()
 })
 
 test('should render table with correct headers', () => {
