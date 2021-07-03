@@ -154,16 +154,15 @@ _%>
 <%_ if (searchEngine) { _%>
 	it('should search the records by valid Id field', () => {
 		let countBeforeSearch
-		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
-		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
 
-		cy.wait('@get<%= entityClassPluralHumanized %>')
 		// eslint-disable-next-line
-		cy.wait(100)
+		cy.wait(200)
 
 		cy.getBySel('<%= entityInstance %>Table')
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
+
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
 
 		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`${dynamicId}{enter}`)
 
@@ -191,16 +190,15 @@ _%>
 
 	it('should search the records by invalid Id', () => {
 		let countBeforeSearch
-		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
-		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
 
-		cy.wait('@get<%= entityClassPluralHumanized %>')
 		// eslint-disable-next-line
-		cy.wait(100)
+		cy.wait(200)
 
 		cy.getBySel('<%= entityInstance %>Table')
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
+
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
 
 		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`99999999{enter}`)
 

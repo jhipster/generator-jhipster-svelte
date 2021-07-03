@@ -16,7 +16,8 @@
 				"http://localhost:8080/admin/user-management/new",
 				"http://localhost:8080/admin/user-management/admin/view",
 				"http://localhost:8080/account/password",
-				"http://localhost:8080/account/settings"
+				"http://localhost:8080/account/settings",
+				"http://localhost:8080/account/entities/tag"
 			],
 			"puppeteerScript": "./puppeteer-auth.cjs",
 			"puppeteerLaunchOptions": {

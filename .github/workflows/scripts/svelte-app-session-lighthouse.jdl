@@ -4,8 +4,16 @@ application {
         applicationType monolith,
         authenticationType session,
         packageName tech.jhipster.samples.blog,
+        searchEngine elasticsearch
         prodDatabaseType postgresql,
         cacheProvider caffeine,
         buildTool maven
     }
+	entities *
 }
+
+entity Tag {
+  name String required minlength(3)
+}
+
+paginate Tag with pagination
