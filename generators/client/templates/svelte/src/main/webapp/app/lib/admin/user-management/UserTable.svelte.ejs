@@ -20,6 +20,7 @@
 				<Sort
 					active="{sortPredicate === 'id'}"
 					sortPredicate="id"
+					hasRecords="{users.length}"
 					on:sortbypredicate
 				/>
 			</TableHeader>
@@ -28,6 +29,7 @@
 				<Sort
 					active="{sortPredicate === 'login'}"
 					sortPredicate="login"
+					hasRecords="{users.length}"
 					on:sortbypredicate
 				/>
 			</TableHeader>
@@ -36,6 +38,7 @@
 				<Sort
 					active="{sortPredicate === 'email'}"
 					sortPredicate="email"
+					hasRecords="{users.length}"
 					on:sortbypredicate
 				/>
 			</TableHeader>

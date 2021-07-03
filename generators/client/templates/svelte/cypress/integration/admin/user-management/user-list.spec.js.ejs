@@ -148,7 +148,7 @@ describe('User Management list page', () => {
 					.get('th')
 					.eq(1)
 					.within($td => {
-						cy.root().get('span').eq(1).click()
+						cy.root().get('button').click()
 					})
 			})
 

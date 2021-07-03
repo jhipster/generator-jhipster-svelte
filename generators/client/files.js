@@ -144,12 +144,12 @@ const svelteFiles = {
 			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
 				'admin/logger/logger-service.js',
-				'admin/logger/LoggerFilterForm.svelte',
 				'admin/logger/LoggerTable.svelte',
 				'admin/logger/LoggerTable.spec.js',
 				'page/Page.svelte',
 				'page/PageHeader.svelte',
 				'page/Form.svelte',
+				'/page/SearchForm.svelte',
 				'page/Record.svelte',
 				'Alert.svelte',
 				'Button.svelte',

@@ -3,13 +3,15 @@
 	import { goto } from '$app/navigation'
 	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus.js'
 
-	import auth from '$lib/auth/auth-store.js'
 	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
 	import Page from '$lib/page/Page.svelte'
 	import Button from '$lib/Button.svelte'
 	import Icon from '$lib/Icon.svelte'
 <%_ if (!paginationNo) { _%>
 	import Pagination from '$lib/table/Pagination.svelte'
+<%_ } _%>
+<%_ if (searchEngine) { _%>
+	import SearchForm from '$lib/page/SearchForm.svelte'
 <%_ } _%>
 	import <%= entityAngularName %>Table from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Table.svelte'
 	import <%= entityAngularName %>DeleteModal from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>DeleteModal.svelte'
@@ -26,9 +28,56 @@
 	let loading = true
 	let showDeleteModal = false
 	let <%= entityInstance %>Id = null
+<%_ if (searchEngine) { _%>
+	let searchCriteria
+<%_ } _%>
 
 	onMount(() => fetch<%= entityClassPluralHumanized %>())
 
+<%_ if (searchEngine) { _%>
+	function fetch<%= entityClassPluralHumanized %>() {
+		loading = true
+		error = undefined
+
+		if (searchCriteria) {
+			<%= entityInstance %>Service
+			<%_ if (!paginationNo) { _%>
+				.search(
+					searchCriteria,
+					page,
+					pageSize,
+					sortPredicate,
+					sortOrder
+				)
+			<%_ } else { _%>
+				.search(searchCriteria)
+			<%_ } _%>
+				.then(res => {
+				<%_ if (!paginationNo) { _%>
+					<%= entityInstancePlural %> = res.data
+					totalCount = parseInt(res.totalCount)
+				<%_ } else { _%>
+					<%= entityInstancePlural %> = res
+				<%_ } _%>
+				})
+				.catch(err => (error = err))
+				.finally(() => (loading = false))
+		} else {
+			<%= entityInstance %>Service
+				.findAll(<% if (!paginationNo) { %>page, pageSize, sortPredicate, sortOrder<% } %>)
+				.then(res => {
+				<%_ if (!paginationNo) { _%>
+					<%= entityInstancePlural %> = res.data
+					totalCount = parseInt(res.totalCount)
+				<%_ } else { _%>
+					<%= entityInstancePlural %> = res
+				<%_ } _%>
+				})
+				.catch(err => (error = err))
+				.finally((loading = false))
+		}
+	}
+<%_ } else { _%>
 	function fetch<%= entityClassPluralHumanized %>() {
 		loading = true
 		error = undefined
@@ -45,6 +94,7 @@
 			.catch(err => (error = err))
 			.finally((loading = false))
 	}
+<%_ } _%>
 
 	function view<%= entityAngularName %>(event) {
 		goto(`/entities/<%= entityFolderName %>/${event.detail.id}/view`)
@@ -72,6 +122,7 @@
 			.finally(() => (showDeleteModal = false), (<%= entityInstance %>Id = null))
 	}
 <%_ if (!paginationNo) { _%>
+
 	function sortByPredicate(event) {
 		sortPredicate = event.detail.sortPredicate
 		sortOrder = event.detail.sortOrder
@@ -80,6 +131,13 @@
 
 	function handlePageChange(event) {
 		page = event.detail.page
+		fetch<%= entityClassPluralHumanized %>()
+	}
+<%_ } _%>
+<%_ if (searchEngine) { _%>
+
+	function search<%= entityClassPluralHumanized %>(event) {
+		searchCriteria = event.detail.criteria
 		fetch<%= entityClassPluralHumanized %>()
 	}
 <%_ } _%>
@@ -107,16 +165,18 @@
 			</Button>
 		</div>
 	</div>
-	{#if !loading && <%= entityInstancePlural %>.length}
-		{#if showDeleteModal}
-			<<%= entityAngularName %>DeleteModal
-				id="{<%= entityInstance %>Id}"
-				on:close="{closeDelete<%= entityAngularName %>Modal}"
-				on:delete<%= entityAngularName %>="{delete<%= entityAngularName %>}"
-			/>
-		{/if}
-
-<%_ if (!paginationNo) { _%>
+	{#if showDeleteModal}
+		<<%= entityAngularName %>DeleteModal
+			id="{<%= entityInstance %>Id}"
+			on:close="{closeDelete<%= entityAngularName %>Modal}"
+			on:delete<%= entityAngularName %>="{delete<%= entityAngularName %>}"
+		/>
+	{/if}
+	<div class="flex flex-row justify-between items-center text-base mt-4">
+	<%_ if (searchEngine) { _%>
+		<SearchForm testId="<%= entityInstance %>" name="<%= entityInstance %>" on:search="{search<%= entityClassPluralHumanized %>}" />
+	<%_ }
+		if (!paginationNo) { _%>
 		<Pagination
 			totalCount="{totalCount}"
 			pageSize="{pageSize}"
@@ -124,7 +184,9 @@
 			classes="my-2"
 			on:pagechange="{handlePageChange}"
 		/>
-<%_ } _%>
+	<%_ } _%>
+	</div>
+	{#if !loading}
 		<<%= entityAngularName %>Table
 			<%= entityInstancePlural %>="{<%= entityInstancePlural %>}"
 		<%_ if (!paginationNo) { _%>
@@ -135,14 +197,14 @@
 			on:view<%= entityInstance %>="{view<%= entityAngularName %>}"
 			on:delete<%= entityInstance %>="{showDelete<%= entityAngularName %>Modal}"
 		/>
-<%_ if (!paginationNo) { _%>
-		<Pagination
-			totalCount="{totalCount}"
-			pageSize="{pageSize}"
-			page="{page}"
-			classes="mt-4"
-			on:pagechange="{handlePageChange}"
-		/>
-<%_ } _%>
 	{/if}
+<%_ if (!paginationNo) { _%>
+	<Pagination
+		totalCount="{totalCount}"
+		pageSize="{pageSize}"
+		page="{page}"
+		classes="mt-4"
+		on:pagechange="{handlePageChange}"
+	/>
+<%_ } _%>
 </Page>
