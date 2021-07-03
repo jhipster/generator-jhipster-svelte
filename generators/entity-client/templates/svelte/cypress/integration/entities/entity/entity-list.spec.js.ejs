@@ -1,7 +1,7 @@
 describe('<%= entityAngularName %> list page', () => {
 	let randomPrefix
 	let dynamicId
-<%_ if (!paginationNo) { _%>
+<%_ if (!paginationNo || searchEngine) { _%>
 	let randomPrefix2
 	let dynamicId2
 <%_ } _%>
@@ -11,7 +11,7 @@ describe('<%= entityAngularName %> list page', () => {
 			Cypress.env('adminUsername'),
 			Cypress.env('adminPassword')
 		)
-	<%_ if (!paginationNo) { _%>
+	<%_ if (!paginationNo || searchEngine) { _%>
 		// create another <%= entityAngularName %> to test sort implementation
 		randomPrefix2 = 'zest' + new Date().getTime()
 		cy.save('api/<%= entityApiUrl %>', {
@@ -34,9 +34,7 @@ describe('<%= entityAngularName %> list page', () => {
 		}).then(res => {
 			dynamicId = res.id
 			cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
-
 			cy.visit('/entities/<%= entityFolderName %>')
-
 			cy.wait('@get<%= entityClassPluralHumanized %>')
 		})
 	})
