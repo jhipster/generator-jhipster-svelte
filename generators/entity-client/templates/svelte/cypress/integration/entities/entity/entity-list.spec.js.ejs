@@ -33,15 +33,17 @@ describe('<%= entityAngularName %> list page', () => {
 		<%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
-			cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
+			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPluralHumanized %>')
 			cy.visit('/entities/<%= entityFolderName %>')
 			cy.wait('@get<%= entityClassPluralHumanized %>')
+			// eslint-disable-next-line
+			cy.wait(100)
 		})
 	})
 
 	afterEach(() => {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
-	<%_ if (!paginationNo) { _%>
+	<%_ if (!paginationNo || searchEngine) { _%>
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId2}`)
 	<%_ }
 	if (authenticationType === 'oauth2') { _%>
