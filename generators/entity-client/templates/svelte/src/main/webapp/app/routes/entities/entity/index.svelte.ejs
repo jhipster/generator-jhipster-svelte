@@ -174,7 +174,7 @@
 	{/if}
 	<div class="flex flex-row justify-between items-center text-base mt-4">
 	<%_ if (searchEngine) { _%>
-		<SearchForm testId="blog" name="Tag" on:search="{search<%= entityClassPluralHumanized %>}" />
+		<SearchForm testId="<%= entityInstance %>" name="<%= entityInstance %>" on:search="{search<%= entityClassPluralHumanized %>}" />
 	<%_ }
 		if (!paginationNo) { _%>
 		<Pagination

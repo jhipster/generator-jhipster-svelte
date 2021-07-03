@@ -150,4 +150,80 @@ _%>
 			})
 	})
 <%_ } _%>
+
+<%_ if (searchEngine) { _%>
+	it('should search the records by valid Id field', () => {
+		let countBeforeSearch
+		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
+
+		cy.wait('@get<%= entityClassPluralHumanized %>')
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.then($tr => (countBeforeSearch = $tr.length))
+
+		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`${dynamicId}{enter}`)
+
+		cy.wait('@search<%= entityClassPluralHumanized %>')
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.then($tr => expect($tr.length).not.eq(countBeforeSearch))
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.invoke('text')
+					.then(text => {
+						expect(text).not.eq(dynamicId)
+					})
+			})
+	})
+
+	it('should search the records by invalid Id', () => {
+		let countBeforeSearch
+		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
+
+		cy.wait('@get<%= entityClassPluralHumanized %>')
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.then($tr => (countBeforeSearch = $tr.length))
+
+		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`99999999{enter}`)
+
+		cy.wait('@search<%= entityClassPluralHumanized %>')
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.then($tr => expect($tr.length).not.eq(countBeforeSearch))
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.invoke('text')
+					.then(text => {
+						expect(text).eq('No <%= entityClassPluralHumanized %> found')
+					})
+			})
+	})
+<%_ } _%>
 })
