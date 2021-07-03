@@ -41,43 +41,43 @@
 
 		if (searchCriteria) {
 			<%= entityInstance %>Service
+			<%_ if (!paginationNo) { _%>
+				.search(
+					searchCriteria,
+					page,
+					pageSize,
+					sortPredicate,
+					sortOrder
+				)
+			<%_ } else { _%>
+				.search(searchCriteria)
+			<%_ } _%>
+				.then(res => {
 				<%_ if (!paginationNo) { _%>
-					.search(
-							searchCriteria,
-							page,
-							pageSize,
-							sortPredicate,
-							sortOrder
-					)
+					<%= entityInstancePlural %> = res.data
+					totalCount = parseInt(res.totalCount)
 				<%_ } else { _%>
-					.search(searchCriteria)
+					<%= entityInstancePlural %> = res
 				<%_ } _%>
-					.then(res => {
-						<%_ if (!paginationNo) { _%>
-						<%= entityInstancePlural %> = res.data
-						totalCount = parseInt(res.totalCount)
-								<%_ } else { _%>
-								<%= entityInstancePlural %> = res
-						<%_ } _%>
-					})
-					.catch(err => (error = err))
-					.finally(() => (loading = false))
+				})
+				.catch(err => (error = err))
+				.finally(() => (loading = false))
 		} else {
 			<%= entityInstance %>Service
-					.findAll(<% if (!paginationNo) { %>page, pageSize, sortPredicate, sortOrder<% } %>)
-					.then(res => {
-						<%_ if (!paginationNo) { _%>
-						<%= entityInstancePlural %> = res.data
-						totalCount = parseInt(res.totalCount)
-								<%_ } else { _%>
-								<%= entityInstancePlural %> = res
-						<%_ } _%>
-					})
-					.catch(err => (error = err))
-					.finally((loading = false))
+				.findAll(<% if (!paginationNo) { %>page, pageSize, sortPredicate, sortOrder<% } %>)
+				.then(res => {
+				<%_ if (!paginationNo) { _%>
+					<%= entityInstancePlural %> = res.data
+					totalCount = parseInt(res.totalCount)
+				<%_ } else { _%>
+					<%= entityInstancePlural %> = res
+				<%_ } _%>
+				})
+				.catch(err => (error = err))
+				.finally((loading = false))
 		}
 	}
-<%_ } else { _%>>
+<%_ } else { _%>
 	function fetch<%= entityClassPluralHumanized %>() {
 		loading = true
 		error = undefined
@@ -175,8 +175,8 @@
 	<div class="flex flex-row justify-between items-center text-base mt-4">
 	<%_ if (searchEngine) { _%>
 		<SearchForm testId="blog" name="Tag" on:search="{search<%= entityClassPluralHumanized %>}" />
-	<%_ } _%>
-<%_ if (!paginationNo) { _%>
+	<%_ }
+		if (!paginationNo) { _%>
 		<Pagination
 			totalCount="{totalCount}"
 			pageSize="{pageSize}"
@@ -184,7 +184,7 @@
 			classes="my-2"
 			on:pagechange="{handlePageChange}"
 		/>
-<%_ } _%>
+	<%_ } _%>
 	</div>
 	{#if !loading}
 		<<%= entityAngularName %>Table
@@ -198,13 +198,13 @@
 			on:delete<%= entityInstance %>="{showDelete<%= entityAngularName %>Modal}"
 		/>
 	{/if}
-	<%_ if (!paginationNo) { _%>
-		<Pagination
-			totalCount="{totalCount}"
-			pageSize="{pageSize}"
-			page="{page}"
-			classes="mt-4"
-			on:pagechange="{handlePageChange}"
-		/>
+<%_ if (!paginationNo) { _%>
+	<Pagination
+		totalCount="{totalCount}"
+		pageSize="{pageSize}"
+		page="{page}"
+		classes="mt-4"
+		on:pagechange="{handlePageChange}"
+	/>
 <%_ } _%>
 </Page>

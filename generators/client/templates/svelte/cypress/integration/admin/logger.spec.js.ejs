@@ -15,7 +15,7 @@ describe('Loggers page', () => {
 		cy.getBySel('loggersTitle')
 			.should('be.visible')
 			.should('contain', 'Loggers')
-		cy.getBySel('LoggerSearchForm')
+		cy.getBySel('loggerSearchForm')
 			.getByName('logger')
 			.should('have.value', ``)
 	})
@@ -160,7 +160,7 @@ describe('Loggers page', () => {
 			.get('tr')
 			.then($tr => (countBeforeFilter = $tr.length))
 
-		cy.getBySel('LoggerSearchForm')
+		cy.getBySel('loggerSearchForm')
 			.getByName('logger')
 			.type('ROOT');
 

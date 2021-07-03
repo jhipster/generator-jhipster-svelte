@@ -30,9 +30,7 @@
 	<meta name="Description" content="<%= entityClassHumanized %> details" />
 </svelte:head>
 <Page testId="<%= entityInstance %>" width="full">
-	<div class="text-left" slot="header">
-		<%= entityClassHumanized %> Details
-	</div>
+	<div class="text-left" slot="header"><%= entityClassHumanized %> Details</div>
 	{#if <%= entityInstance %>}
 		<div class="mt-4 table table-auto w-full">
 <%_
@@ -50,10 +48,7 @@ _%>
 		</div>
 	{/if}
 	<div class="flex mt-4 flex-row justify-center items-center leading-none">
-		<Button
-			name="backBtn"
-			on:click="{() => goto(`/entities/<%= entityFolderName %>`)}"
-		>
+		<Button name="backBtn" on:click="{() => goto(`/entities/<%= entityFolderName %>`)}">
 			<Icon classes="mr-2" icon="{faArrowLeft}" />
 			Back
 		</Button>

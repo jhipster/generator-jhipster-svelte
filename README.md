@@ -20,13 +20,14 @@ Following integrations are supported:
 
     ✅ Session, JWT, OIDC authentication
     ✅ Dark Mode support
-    ✅ SvelteKit
+    ✅ SvelteKit, Vite integration
     ✅ Tailwind CSS
     ✅ Prettier, EsLint integration
     ✅ Cypress integration for end to end tests
     ✅ Jest and Testing Library integration for unit tests
     ✅ JHipster application JDL
     ✅ JHipster entity JDL (simple data type, no relation)
+    ✅ JHipster elasticsearch integration
 
 Following functional flows are covered with end to end tests:
 
@@ -42,7 +43,7 @@ Following functional flows are covered with end to end tests:
         ✅ User Management (List, Create, Update, View, Delete)
         ✅ Loggers
     ✅ Entities
-        ✅ Entity (List, View, Delete)
+        ✅ Entity (List, View, Delete, Search)
 
 For more details, you can check out the source code of [sample application](https://github.com/jhipster/jhipster-sample-app-svelte)
 

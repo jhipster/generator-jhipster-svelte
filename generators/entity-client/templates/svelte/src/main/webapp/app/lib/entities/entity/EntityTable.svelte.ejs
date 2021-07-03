@@ -63,11 +63,11 @@
 				</TableData>
 			</TableRow>
 		{:else}
-		<TableRow let:showActions>
-			<TableData colspan="3" classes="text-center py-8"
-			>No <%= entityClassPluralHumanized %> found</TableData
-			>
-		</TableRow>
+			<TableRow let:showActions>
+				<TableData colspan="3" classes="text-center py-8"
+					>No <%= entityClassPluralHumanized %> found</TableData
+				>
+			</TableRow>
 		{/each}
 	</tbody>
 </Table>

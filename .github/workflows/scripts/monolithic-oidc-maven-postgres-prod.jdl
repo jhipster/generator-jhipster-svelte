@@ -4,6 +4,7 @@ application {
         applicationType monolith,
         authenticationType oauth2,
         packageName tech.jhipster.samples.blog,
+        searchEngine elasticsearch
         prodDatabaseType postgresql,
         cacheProvider caffeine,
         buildTool maven
