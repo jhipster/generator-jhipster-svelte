@@ -33,7 +33,11 @@ describe('<%= entityAngularName %> list page', () => {
 		<%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
+			cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
+
 			cy.visit('/entities/<%= entityFolderName %>')
+
+			cy.wait('@get<%= entityClassPluralHumanized %>')
 		})
 	})
 
@@ -154,12 +158,6 @@ _%>
 <%_ if (searchEngine) { _%>
 	it('should search the records by valid Id field', () => {
 		let countBeforeSearch
-		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
-
-		cy.wait('@get<%= entityClassPluralHumanized %>')
-		// eslint-disable-next-line
-		cy.wait(100)
-
 		cy.getBySel('<%= entityInstance %>Table')
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
@@ -192,12 +190,6 @@ _%>
 
 	it('should search the records by invalid Id', () => {
 		let countBeforeSearch
-		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
-
-		cy.wait('@get<%= entityClassPluralHumanized %>')
-		// eslint-disable-next-line
-		cy.wait(100)
-
 		cy.getBySel('<%= entityInstance %>Table')
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
