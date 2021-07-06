@@ -15,7 +15,6 @@ module.exports = class extends EntityClientGenerator {
 			);
 		}
 
-		this.configOptions = jhContext.configOptions || {};
 		this.blueprintjs = blueprintPackageJson;
 	}
 

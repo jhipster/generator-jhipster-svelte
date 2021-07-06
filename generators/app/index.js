@@ -8,7 +8,6 @@ module.exports = class extends AppGenerator {
 	constructor(args, opts) {
 		super(args, { ...opts, fromBlueprint: true, skipClient: false });
 
-		this.configOptions = {};
 		this.blueprintjs = blueprintPackageJson;
 	}
 

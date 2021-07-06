@@ -15,7 +15,6 @@ module.exports = class extends ClientGenerator {
 			);
 		}
 
-		this.configOptions = jhContext.configOptions || {};
 		this.blueprintjs = blueprintPackageJson;
 	}
 

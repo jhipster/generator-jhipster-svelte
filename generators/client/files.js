@@ -1,4 +1,3 @@
-const mkdirp = require('mkdirp');
 const constants = require('generator-jhipster/generators/generator-constants');
 
 const FRONTEND_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
@@ -213,6 +212,5 @@ const svelteFiles = {
 };
 
 function writeFiles() {
-	mkdirp(FRONTEND_SRC_DIR);
 	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
 }
