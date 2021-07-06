@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const os = require('os');
 const ServerGenerator = require('generator-jhipster/generators/server');
 
 const { writeFiles } = require('./files');
@@ -81,9 +82,16 @@ module.exports = class extends ServerGenerator {
 					executable = 'gradlew';
 				}
 
+				const logMsgComment =
+					os.platform() === 'win32'
+						? ` (${chalk.yellow.bold(executable)} if using Windows Command Prompt)`
+						: '';
+
 				this.log(
 					chalk.green(
-						`\nStart backend Spring Boot application with : ${chalk.yellow.bold(`./${executable}`)}`
+						`\nStart backend Spring Boot application with : ${chalk.yellow.bold(
+							`./${executable}`
+						)}${logMsgComment}`
 					)
 				);
 			},
