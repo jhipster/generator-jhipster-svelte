@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2021-07-07
+
 ### BREAKING CHANGES
 
 -   ✅ Generate applications using the [`SvelteKit`](https://kit.svelte.dev/) framework in place of `Sapper`
