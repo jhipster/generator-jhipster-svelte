@@ -1,8 +1,6 @@
-const mkdirp = require('mkdirp');
 const constants = require('generator-jhipster/generators/generator-constants');
 const util = require('../util');
 
-const FRONTEND_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
 const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/entities/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/entities/`;
@@ -77,7 +75,6 @@ const svelteFiles = {
 };
 
 function writeFiles() {
-	mkdirp(FRONTEND_SRC_DIR);
 	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
 
 	util.addEntityToMenu(this, this.entityFolderName, this.entityAngularName, this.entityAngularName);
