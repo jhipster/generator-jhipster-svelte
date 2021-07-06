@@ -133,7 +133,7 @@ describe('Navbar', () => {
 		})
 <%_ } _%>
 	})
-<%_ if (!skipUserManagement) { _%>
+<%_ if (!skipUserManagement || authenticationType === 'oauth2') { _%>
 	describe(`authenticated 'ROLE_USER' ROLE user`, () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()

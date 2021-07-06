@@ -110,7 +110,7 @@ jobs:
                   cd "$HOME/svelte-app"
                   docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  npm run e2e
+                  npm run e2e:ci
             - name: Gradle Cypress tests
               if: contains(matrix.apps, 'gradle')
               run: |
@@ -118,4 +118,4 @@ jobs:
                   docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster clean
                   docker run -d --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  npm run e2e
+                  npm run e2e:ci
