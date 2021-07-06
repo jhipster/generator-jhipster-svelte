@@ -1,0 +1,223 @@
+describe('<%= entityAngularName %> list page', () => {
+	let randomPrefix
+	let dynamicId
+<%_ if (!paginationNo || searchEngine) { _%>
+	let randomPrefix2
+	let dynamicId2
+<%_ } _%>
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+	<%_ if (!paginationNo || searchEngine) { _%>
+		// create another <%= entityAngularName %> to test sort implementation
+		randomPrefix2 = 'zest' + new Date().getTime()
+		cy.save('api/<%= entityApiUrl %>', {
+		<%_
+			for (field of fields.filter(field => !field.id)) {
+		_%>
+			<%= field.fieldName %>: randomPrefix2,
+		<%_ } _%>
+		}).then(res => {
+			dynamicId2 = res.id
+		})
+	<%_ } _%>
+		randomPrefix = 'test' + new Date().getTime()
+		cy.save('api/<%= entityApiUrl %>', {
+		<%_
+			for (field of fields.filter(field => !field.id)) {
+		_%>
+			<%= field.fieldName %>: randomPrefix,
+		<%_ } _%>
+		}).then(res => {
+			dynamicId = res.id
+			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPluralHumanized %>')
+			cy.visit('/entities/<%= entityFolderName %>')
+			cy.wait('@get<%= entityClassPluralHumanized %>')
+			// eslint-disable-next-line
+			cy.wait(100)
+		})
+	})
+
+	afterEach(() => {
+		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
+	<%_ if (!paginationNo || searchEngine) { _%>
+		cy.delete(`api/<%= entityApiUrl %>/${dynamicId2}`)
+	<%_ }
+	if (authenticationType === 'oauth2') { _%>
+		cy.logoutByApi()
+	<%_ } _%>
+	})
+
+	it('should greets with <%= entityAngularName %> page title', () => {
+		cy.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+
+	it('should display <%= entityAngularName %> table', () => {
+		cy.getBySel('<%= entityInstance %>Table')
+			.should('be.visible')
+			.get('tr')
+			.eq(0)
+			.children()
+<%_
+	for (let loopIndex = 0; loopIndex > fields.length; loopIndex++) {
+		const field = fields[loopIndex];
+_%>
+			.should('have.length', <%= fields.length %>)
+			.get('th')
+			.eq(<%= loopIndex %>)
+			.should('contain', '<%= field.fieldNameHumanized %>')
+<%_ } _%>
+	})
+
+	it('should display <%= entityAngularName %> record in the table', () => {
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+<%_
+	for (let loopIndex = 0; loopIndex > fields.length; loopIndex++) {
+_%>
+					.get('td')
+					.eq(<%= loopIndex %>)
+					.should('not.be.empty')
+<%_ } _%>
+			})
+	})
+
+<%_ if (!paginationNo) { _%>
+	it('should validate the pagination controls', () => {
+		cy.getBySel('pageCtrl')
+			.eq(0)
+			.contains('div', /1-\d+ of \d+/)
+			.next()
+			.within($div => {
+				cy.root()
+					.getBySel('prevPageCtrl')
+					.should('be.disabled')
+					.get('div')
+					.should('have.text', '1')
+					.getBySel('nextPageCtrl')
+					.should('be.disabled')
+			})
+	})
+
+	it('should sort the records by Id field', () => {
+		let valueBeforeSort
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.invoke('text')
+					.then(text => (valueBeforeSort = text))
+			})
+
+		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('th')
+					.eq(0)
+					.within($td => {
+						cy.root().get('button').click()
+					})
+			})
+
+		cy.wait('@get<%= entityClassPluralHumanized %>')
+
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.invoke('text')
+					.then(text => {
+						expect(text).not.eq(valueBeforeSort)
+					})
+			})
+	})
+<%_ } _%>
+
+<%_ if (searchEngine) { _%>
+	it('should search the records by valid Id field', () => {
+		let countBeforeSearch
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.then($tr => (countBeforeSearch = $tr.length))
+
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
+
+		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`${dynamicId}{enter}`)
+
+		cy.wait('@search<%= entityClassPluralHumanized %>')
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.then($tr => expect($tr.length).not.eq(countBeforeSearch))
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.invoke('text')
+					.then(text => {
+						expect(text).not.eq(dynamicId)
+					})
+			})
+	})
+
+	it('should search the records by invalid Id', () => {
+		let countBeforeSearch
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.then($tr => (countBeforeSearch = $tr.length))
+
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
+
+		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`99999999{enter}`)
+
+		cy.wait('@search<%= entityClassPluralHumanized %>')
+		// eslint-disable-next-line
+		cy.wait(100)
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tr')
+			.then($tr => expect($tr.length).not.eq(countBeforeSearch))
+
+		cy.getBySel('<%= entityInstance %>Table')
+			.get('tbody>tr')
+			.eq(0)
+			.within($tr => {
+				cy.root()
+					.get('td')
+					.eq(0)
+					.invoke('text')
+					.then(text => {
+						expect(text).eq('No <%= entityClassPluralHumanized %> found')
+					})
+			})
+	})
+<%_ } _%>
+})

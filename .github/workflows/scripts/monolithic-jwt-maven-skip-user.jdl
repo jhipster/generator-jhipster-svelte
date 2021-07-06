@@ -9,4 +9,16 @@ application {
         buildTool maven,
         skipUserManagement true
     }
+    entities *
 }
+
+entity Blog {
+  name String required minlength(5)
+  handle String required minlength(2)
+}
+
+entity Tag {
+  name String required minlength(3)
+}
+
+paginate Tag with pagination

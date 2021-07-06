@@ -4,7 +4,7 @@ describe('User delete dialog page', () => {
 	beforeEach(() => {
 		cy.unregisterServiceWorkers()
 		randomUser = 'test' + new Date().getTime()
-		cy.loginByApi('admin', 'admin')
+		cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
 
 		cy.save('api/admin/users', {
 			login: randomUser,

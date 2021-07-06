@@ -1,0 +1,44 @@
+import adapter from '@sveltejs/adapter-static';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	kit: {
+		adapter: adapter({
+			pages: '<%= DIST_DIR %>',
+			assets: '<%= DIST_DIR %>',
+			fallback: 'index.html'
+		}),
+		target: '#svelte',
+		appDir: '_app',
+		files: {
+			assets: '<%= CLIENT_MAIN_SRC_DIR %>static',
+			hooks: '<%= CLIENT_MAIN_SRC_DIR %>hooks',
+			lib: '<%= CLIENT_MAIN_SRC_DIR %>app/lib',
+			routes: '<%= CLIENT_MAIN_SRC_DIR %>app/routes',
+			serviceWorker: '<%= CLIENT_MAIN_SRC_DIR %>app/service-worker',
+			template: '<%= CLIENT_MAIN_SRC_DIR %>app/app.html'
+		},
+		vite: () => ({
+			server: {
+				proxy: {
+					'/api': {
+						target: 'http://localhost:8080',
+						changeOrigin: true,
+					},
+					'/management': {
+						target: 'http://localhost:8080',
+						changeOrigin: true,
+					},
+				<%_ if (authenticationType === 'oauth2') { _%>
+					'/oauth2': {
+						target: 'http://localhost:8080',
+						changeOrigin: true,
+					},
+				<%_ } _%>
+				}
+			},
+		}),
+	}
+};
+
+export default config;

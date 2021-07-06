@@ -1,6 +1,6 @@
 <script>
-	import auth from '../components/auth/auth-store.js'
-	import appAvatar from '../components/svg/appAvatar.svg'
+	import auth from '$lib/auth/auth-store.js'
+	import appAvatar from '$lib/svg/appAvatar.svg'
 </script>
 
 <svelte:head>
@@ -18,7 +18,7 @@
 		<div
 			class="w-1/2 sm:w-1/4 sm:h-auto sm:px-4 object-cover object-center"
 		>
-			<img src="{appAvatar}" alt="Avatar" />
+			<img src="{appAvatar}" width="450" height="550" alt="Avatar" />
 		</div>
 
 		<div class="sm:flex-grow sm:px-4">
@@ -42,7 +42,15 @@
 						class="px-5 py-3 bg-yellow-100 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 rounded transition-colors duration-200"
 					>
 						<span>If you want to </span>
+					<%_ if (authenticationType === 'oauth2') { _%>
+						<a
+							class="font-semibold"
+							rel="external"
+							href="oauth2/authorization/oidc">sign in</a
+						><span
+					<%_ } else { _%>
 						<a class="font-semibold" href="/login">sign in</a><span
+					<%_ } _%>
 							>, you can try the default accounts:<br />-
 							Administrator (login="admin" and password="admin")
 							<br />- User (login="user" and password="user").</span

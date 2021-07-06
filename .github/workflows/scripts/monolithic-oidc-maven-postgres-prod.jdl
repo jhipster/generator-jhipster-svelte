@@ -1,0 +1,24 @@
+application {
+    config {
+        baseName SampleBlogApp,
+        applicationType monolith,
+        authenticationType oauth2,
+        packageName tech.jhipster.samples.blog,
+        searchEngine elasticsearch
+        prodDatabaseType postgresql,
+        cacheProvider caffeine,
+        buildTool maven
+    }
+    entities *
+}
+
+entity Blog {
+  name String required minlength(5)
+  handle String required minlength(2)
+}
+
+entity Tag {
+  name String required minlength(3)
+}
+
+paginate Tag with pagination

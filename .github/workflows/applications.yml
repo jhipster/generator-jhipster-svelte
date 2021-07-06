@@ -11,7 +11,8 @@ on:
 env:
     TEST_SCRIPTS_PATH: ${{ github.workspace }}/.github/workflows/scripts
 jobs:
-    generator-jhipster-svelte:
+    build:
+        name: ${{ matrix.apps }}
         runs-on: ${{ matrix.os }}
         timeout-minutes: 20
         strategy:
@@ -44,24 +45,20 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.0.1
-                  restore-keys: |
-                      ${{ runner.os }}-gradle-
+                  key: ${{ runner.os }}-gradle-7.1.0
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.0.1
-                  restore-keys: |
-                      ${{ runner.os }}-maven-
+                  key: ${{ runner.os }}-maven-7.1.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
-                  path: ~/.cache/Cypress/
-                  key: ${{ runner.os }}-cypress-7.4.0
-                  restore-keys: |
-                      ${{ runner.os }}-cypress-
+                  path: |
+                      ~/.cache/Cypress/7.6.0
+                      ~/.cache/Cypress/cy
+                  key: ${{ runner.os }}-cypress-7.6.x
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
@@ -113,7 +110,7 @@ jobs:
                   cd "$HOME/svelte-app"
                   docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  npm run e2e
+                  npm run e2e:ci
             - name: Gradle Cypress tests
               if: contains(matrix.apps, 'gradle')
               run: |
@@ -121,4 +118,4 @@ jobs:
                   docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster clean
                   docker run -d --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/svelte-hipster -x test
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  npm run e2e
+                  npm run e2e:ci

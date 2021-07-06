@@ -1,0 +1,71 @@
+import { serverUrl } from '$lib/utils/env'
+import { request } from '$lib/utils/request'
+
+export default {
+	createAccount: (username, email, password) => {
+		const body = JSON.stringify({
+			login: username,
+			email,
+			password,
+			langKey: 'en',
+		})
+
+		return request(
+			`${serverUrl}api/register`,
+			'POST',
+			body,
+			{
+				'Content-Type': 'application/json',
+			},
+			false
+		)
+	},
+	updateAccount: updatedAccount => {
+		const body = JSON.stringify(updatedAccount)
+
+		return request(
+			`${serverUrl}api/account`,
+			'POST',
+			body,
+			{
+				'Content-Type': 'application/json',
+			},
+			false
+		)
+	},
+	activateAccount: activationKey =>
+		request(`${serverUrl}api/activate?key=${activationKey}`),
+	initiateResetAccountPassword: email => {
+		return request(
+			`${serverUrl}api/account/reset-password/init`,
+			'POST',
+			email,
+			{},
+			false
+		)
+	},
+	resetAccountPassword: (key, password) => {
+		const body = JSON.stringify({ key, newPassword: password })
+		return request(
+			`${serverUrl}api/account/reset-password/finish`,
+			'POST',
+			body,
+			{
+				'Content-Type': 'application/json',
+			},
+			false
+		)
+	},
+	changeAccountPassword: (currentPassword, newPassword) => {
+		const body = JSON.stringify({ currentPassword, newPassword })
+		return request(
+			`${serverUrl}api/account/change-password`,
+			'POST',
+			body,
+			{
+				'Content-Type': 'application/json',
+			},
+			false
+		)
+	},
+}

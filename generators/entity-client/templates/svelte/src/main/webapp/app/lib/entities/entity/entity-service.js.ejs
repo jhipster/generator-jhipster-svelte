@@ -1,0 +1,41 @@
+import { serverUrl } from '$lib/utils/env'
+import { request } from '$lib/utils/request'
+<%_
+const baseApi = (applicationTypeGateway && locals.microserviceName) ? 'services/' + microserviceName.toLowerCase() + '/api/' : 'api/';
+_%>
+export default {
+<%_ if (!readOnly) { _%>
+	create: entity =>
+		request(`${serverUrl}<%= baseApi + entityApiUrl %>`, 'POST', JSON.stringify(entity), {
+			'Content-Type': 'application/json',
+		}),
+<%_ } _%>
+	findAll: (<% if (!paginationNo) { %>page, size, sortPredicate, sortOrder<% } %>) => {
+	<%_ if (!paginationNo) { _%>
+		const defaultSort = sortPredicate !== 'id' ? '&sort=id,asc' : ''
+		const queryString = `page=${
+			page - 1
+		}&size=${size}&sort=${sortPredicate},${sortOrder}${defaultSort}`
+	<%_ } _%>
+		return request(`${serverUrl}<%= baseApi + entityApiUrl %><% if (!paginationNo) { %>?${queryString}<% } %>`)
+	},
+	findById: id => request(`${serverUrl}<%= baseApi + entityApiUrl %>/${id}`),
+	search: (criteria<% if (!paginationNo) { %>, page, size, sortPredicate, sortOrder<% } %>) => {
+	<%_ if (!paginationNo) { _%>
+		const defaultSort = sortPredicate !== 'id' ? '&sort=id,asc' : ''
+		const queryString = `page=${
+		page - 1
+		}&size=${size}&sort=${sortPredicate},${sortOrder}${defaultSort}`
+	<%_ } _%>
+		return request(
+			`${serverUrl}<%= baseApi %>_search/<%= entityApiUrl %>?query=${criteria}<% if (!paginationNo) { %>&${queryString}<% } %>`
+		)
+	},
+<%_ if (!readOnly) { _%>
+	update: entity =>
+		request(`${serverUrl}<%= baseApi + entityApiUrl %>`, 'PUT', JSON.stringify(entity), {
+			'Content-Type': 'application/json',
+		}),
+	delete: id => request(`${serverUrl}<%= baseApi + entityApiUrl %>/${id}`, 'DELETE'),
+<%_ } _%>
+}

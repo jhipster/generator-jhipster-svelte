@@ -1,14 +1,13 @@
 <script>
-	import { goto } from '@sapper/app'
+	import { goto } from '$app/navigation'
 
-	import appLogo from './../components/svg/appLogo.svg'
-	import Alert from './../components/Alert.svelte'
-	import Button from '../components/Button.svelte'
-	import InputControl from '../components/InputControl.svelte'
-	import CheckboxControl from '../components/CheckboxControl.svelte'
-
-	import auth from './../components/auth/auth-store.js'
-	import authService from './../components/auth/auth-service.js'
+	import appLogo from '$lib/svg/appLogo.svg'
+	import Alert from '$lib/Alert.svelte'
+	import Button from '$lib/Button.svelte'
+	import InputControl from '$lib/InputControl.svelte'
+	import CheckboxControl from '$lib/CheckboxControl.svelte'
+	import auth from '$lib/auth/auth-store.js'
+	import authService from '$lib/auth/auth-service.js'
 
 	let username
 	let password
@@ -52,7 +51,12 @@
 	<div class="p-4 w-full sm:w-[450px] mx-4 sm:m-0">
 		<div class="px-4 py-3 mt-4 sm:mx-0 flex justify-center">
 			<div class="w-3/4 dark:text-primary-100">
-				<img src="{appLogo}" alt="Application Logo" />
+				<img
+					src="{appLogo}"
+					width="420"
+					height="90"
+					alt="Application Logo"
+				/>
 			</div>
 		</div>
 		<div

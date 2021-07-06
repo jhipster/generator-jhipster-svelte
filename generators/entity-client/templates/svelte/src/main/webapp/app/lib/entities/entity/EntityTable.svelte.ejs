@@ -1,0 +1,73 @@
+<script>
+	import <%= entityAngularName %>ListActions from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>ListActions.svelte'
+	import Sort from '$lib/table/Sort.svelte'
+	import Table from '$lib/table/Table.svelte'
+	import TableData from '$lib/table/TableData.svelte'
+	import TableHeader from '$lib/table/TableHeader.svelte'
+	import TableRow from '$lib/table/TableRow.svelte'
+
+	export let <%= entityInstancePlural %> = []
+<%_ if (!paginationNo) { _%>
+	export let sortPredicate = 'id'
+<%_ } _%>
+</script>
+
+<Table testId="<%= entityInstance %>">
+	<thead slot="head">
+		<TableRow classes="bg-gray-100 dark:bg-gray-700">
+			<TableHeader>
+				<span>ID</span>
+				<%_ if (!paginationNo) { _%>
+				<Sort
+					active="{sortPredicate === 'id'}"
+					sortPredicate="id"
+					hasRecords="{<%= entityInstancePlural %>.length}"
+					on:sortbypredicate
+				/>
+				<%_ } _%>
+			</TableHeader>
+		<%_ for (field of fields.filter(field => !field.id)) { _%>
+			<TableHeader>
+				<span><%= field.fieldNameHumanized %></span>
+			<%_ if (!paginationNo) { _%>
+				<Sort
+					active="{sortPredicate === '<%= field.fieldName%>'}"
+					sortPredicate="<%= field.fieldName%>"
+					hasRecords="{<%= entityInstancePlural %>.length}"
+					on:sortbypredicate
+				/>
+			<%_ } _%>
+			</TableHeader>
+		<%_ } _%>
+			<TableHeader />
+		</TableRow>
+	</thead>
+	<tbody>
+		{#each <%= entityInstancePlural %> as <%= entityInstance %> (<%= entityInstance %>.id)}
+			<TableRow let:showActions>
+				<TableData>{<%= entityInstance %>.id}</TableData>
+			<%_
+				for (field of fields.filter(field => !field.id)) {
+			_%>
+				<TableData>{<%=entityInstance %>.<%= field.fieldName %>}</TableData>
+			<%_ } _%>
+				<TableData classes="w-48 {showActions ? 'sm:py-0' : ''}">
+					<div class:hidden="{showActions}">&nbsp;</div>
+					<<%= entityAngularName %>ListActions
+						<%= entityInstance %>="{<%= entityInstance %>}"
+						showActions="{showActions}"
+						on:view<%= entityInstance %>
+						on:update<%= entityInstance %>
+						on:delete<%= entityInstance %>
+					/>
+				</TableData>
+			</TableRow>
+		{:else}
+			<TableRow let:showActions>
+				<TableData colspan="3" classes="text-center py-8"
+					>No <%= entityClassPluralHumanized %> found</TableData
+				>
+			</TableRow>
+		{/each}
+	</tbody>
+</Table>

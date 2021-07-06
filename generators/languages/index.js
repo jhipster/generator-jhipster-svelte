@@ -17,7 +17,6 @@ module.exports = class extends LanguagesGenerator {
 			);
 		}
 
-		this.configOptions = jhContext.configOptions || {};
 		this.blueprintjs = blueprintPackageJson;
 		this.enableTranslation = this.config.get('enableTranslation') || false;
 	}

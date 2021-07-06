@@ -1,0 +1,80 @@
+<script>
+	import Button from '$lib/Button.svelte'
+
+	import InputControl from '$lib/InputControl.svelte'
+	import Form from '$lib/page/Form.svelte'
+	import PasswordConfirm from '$lib/account/PasswordConfirm.svelte'
+
+	export let username = ''
+	export let email = ''
+	export let password = ''
+	let validUsername = false
+	let validEmail = false
+	let validPassword = false
+
+	$: validForm = validUsername && validEmail && validPassword
+</script>
+
+<Form testId="register">
+	<InputControl
+		label="Username"
+		name="username"
+		value="{username}"
+		on:input="{event => (username = event.target.value)}"
+		required
+		validations="{[
+			{ type: 'required', message: 'Username is mandatory' },
+			{
+				type: 'maxlength',
+				maxlength: 50,
+				message: 'Username cannot be longer than 50 characters',
+			},
+			{
+				type: 'pattern',
+				pattern:
+					/^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$/,
+				message: 'Username can only contain letters and digits',
+			},
+		]}"
+		on:validate="{event => (validUsername = event.detail.valid)}"
+	/>
+	<InputControl
+		type="email"
+		label="Email"
+		name="email"
+		value="{email}"
+		on:input="{event => (email = event.target.value)}"
+		required
+		validations="{[
+			{ type: 'required', message: 'Email is mandatory' },
+			{
+				type: 'minlength',
+				minlength: 5,
+				message: 'Email is required to be at least 5 characters',
+			},
+			{
+				type: 'maxlength',
+				maxlength: 254,
+				message: 'Email cannot be longer than 254 characters',
+			},
+			{
+				type: 'pattern',
+				pattern:
+					/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+				message: 'Email address is not valid',
+			},
+		]}"
+		on:validate="{event => (validEmail = event.detail.valid)}"
+	/>
+
+	<PasswordConfirm
+		label="Password"
+		value="{password}"
+		on:input="{event => (password = event.detail.value)}"
+		on:validate="{event => (validPassword = event.detail.valid)}"
+	/>
+
+	<Button type="submit" on:click disabled="{!validForm}">
+		Create account
+	</Button>
+</Form>

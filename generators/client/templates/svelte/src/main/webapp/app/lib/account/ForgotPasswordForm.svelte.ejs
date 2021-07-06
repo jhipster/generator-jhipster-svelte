@@ -1,0 +1,42 @@
+<script>
+	import Button from '$lib/Button.svelte'
+	import InputControl from '$lib/InputControl.svelte'
+	import Form from '$lib/page/Form.svelte'
+
+	export let email = ''
+	let validEmail
+</script>
+
+<Form testId="forgotPwd">
+	<InputControl
+		type="email"
+		label="Email"
+		name="email"
+		value="{email}"
+		on:input="{event => (email = event.target.value)}"
+		required
+		validations="{[
+			{ type: 'required', message: 'Email is mandatory' },
+			{
+				type: 'minlength',
+				minlength: 5,
+				message: 'Email is required to be at least 5 characters',
+			},
+			{
+				type: 'maxlength',
+				maxlength: 254,
+				message: 'Email cannot be longer than 254 characters',
+			},
+			{
+				type: 'pattern',
+				pattern:
+					/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+				message: 'Email address is not valid',
+			},
+		]}"
+		on:validate="{event => (validEmail = event.detail.valid)}"
+	/>
+	<Button type="submit" on:click disabled="{!validEmail}">
+		Send password reset email
+	</Button>
+</Form>

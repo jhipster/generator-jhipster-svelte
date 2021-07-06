@@ -5,26 +5,24 @@
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
-		"prettier:format": "prettier --write \"{,src/**/}*.{md,json,js,svelte,css,html,yml}\"",
+		"format": "prettier --write \"{,src/**/}*.{md,json,js,svelte,css,html,yml}\"",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
 		"cleanup": "rimraf <%= DIST_DIR %>",
-		"start": "run-p \"tailwind:watch\" \"sapper:watch\"",
-		"sapper:watch": "sapper dev --src <%= CLIENT_MAIN_SRC_DIR %>app --routes <%= CLIENT_MAIN_SRC_DIR %>app/routes --static <%= CLIENT_MAIN_SRC_DIR %>static --output <%= CLIENT_MAIN_SRC_DIR %>app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output --port 9000 --open true",
-		"build": "sapper export <%= DIST_DIR %> --entry '/ /404' --basepath / --src <%= CLIENT_MAIN_SRC_DIR %>app --routes <%= CLIENT_MAIN_SRC_DIR %>app/routes --static <%= CLIENT_MAIN_SRC_DIR %>static --output <%= CLIENT_MAIN_SRC_DIR %>app/node_modules/@sapper --build-dir <%= BUILD_DIR %>webapp/output",
-		"tailwind:build": "postcss <%= CLIENT_MAIN_SRC_DIR %>app/tailwind.css -o <%= CLIENT_MAIN_SRC_DIR %>static/vendor.css",
-		"tailwind:watch": "TAILWIND_MODE=watch npm run tailwind:build -- -w",
-		"cy:open": "cypress open",
+		"start": "svelte-kit dev --port 9000 --open true",
+		"preview": "svelte-kit preview",
 		"test": "jest <%= CLIENT_MAIN_SRC_DIR %>",
 		"test:watch": "npm run test -- --watch",
-		"e2e": "cypress run",
-		"postbuild": "mv <%= DIST_DIR %>404/index.html <%= DIST_DIR %>404.html",
-		"webapp:build": "NODE_ENV=development TAILWIND_MODE=build run-s \"tailwind:build\" \"build\"",
-		"webapp:prod": "NODE_ENV=production TAILWIND_MODE=build run-s \"tailwind:build\" \"build\"",
+		"e2e": "cypress run --browser chrome",
+		"e2e:ci": "npm run e2e -- --headless",
+		"cy:open": "cypress open",
+		"build": "svelte-kit build",
+		"webapp:build": "npm run build",
+		"webapp:prod": "npm run build",
 		"webapp:test": "npm run test"
 	},
-
 	"devDependencies": {
 		"generator-jhipster-svelte": "<%= blueprintjs.version %>"
-	}
+	},
+	"type": "module"
 }

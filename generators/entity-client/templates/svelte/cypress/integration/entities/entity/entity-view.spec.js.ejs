@@ -1,0 +1,57 @@
+describe('<%= entityAngularName %> view details page', () => {
+	let randomPrefix
+	let dynamicId
+
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		randomPrefix = 'test' + new Date().getTime()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+
+		cy.save('api/<%= entityApiUrl %>', {
+		<%_
+			for (field of fields.filter(field => !field.id)) {
+		_%>
+			<%= field.fieldName %>: randomPrefix,
+		<%_ } _%>
+		}).then(res => {
+			dynamicId = res.id
+			cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
+		})
+	})
+
+	afterEach(() => {
+		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
+	<%_ if (authenticationType === 'oauth2') { _%>
+		cy.logoutByApi()
+	<%_ } _%>
+	})
+
+	it('should display <%= entityAngularName %> details', () => {
+		cy.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.and('contain', `<%= entityAngularName %> Details`)
+
+		cy.get('div.table').within(() => {
+			cy.root()
+				.get('.table-cell')
+				.should('have.length', <%= (fields.length - 1) * 2 %>)
+			<%_
+				for (let loopIndex = 1; loopIndex > fields.length * 2; loopIndex= loopIndex + 2) {
+			_%>
+				.get('.table-cell')
+				.eq(<%= loopIndex %>)
+				.should('contain', randomPrefix)
+			<%_ }_%>
+		})
+	})
+
+	it('should navigate back to the <%= entityAngularName %> list page', () => {
+		cy.getByName('backBtn').click()
+		cy.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+})
