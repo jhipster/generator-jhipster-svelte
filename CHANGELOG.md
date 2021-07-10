@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+### Added
+
+-   ✅ `PaginatedTable` component to encapsulate pagination and sort events, client-side pagination [#557](https://github.com/jhipster/generator-jhipster-svelte/pull/557)
+
+### Changed
+
+-   ✅ Client-side pagination support in the `Logger` page [#557](https://github.com/jhipster/generator-jhipster-svelte/pull/557)
+
+### Fixed
+
+-   ✅ Fix an issue to apply filter criteria after an update of logger level on the selected page [#557](https://github.com/jhipster/generator-jhipster-svelte/pull/557)
+
 ## [0.5.0] - 2021-07-07
 
 ### BREAKING CHANGES
