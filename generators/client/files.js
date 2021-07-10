@@ -173,6 +173,7 @@ const svelteFiles = {
 				'notification/notification-store.js',
 				'notification/Notification.svelte',
 				'notification/Toast.svelte',
+				'table/PaginatedTable.svelte',
 				'table/Pagination.svelte',
 				'table/Sort.svelte',
 				'table/Table.svelte',
