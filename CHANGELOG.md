@@ -7,6 +7,7 @@
 ### Added
 
 -   ✅ `PaginatedTable` component to encapsulate pagination and sort events, client-side pagination [#557](https://github.com/jhipster/generator-jhipster-svelte/pull/557)
+-   ✅ Improvement in GitHub Action workflows to cancel previous PR runs on a new commit [#558](https://github.com/jhipster/generator-jhipster-svelte/pull/558)
 
 ### Changed
 
