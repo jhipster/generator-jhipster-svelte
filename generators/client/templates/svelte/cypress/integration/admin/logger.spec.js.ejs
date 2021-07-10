@@ -33,9 +33,15 @@ describe('Loggers page', () => {
 	})
 
 	it('should display logger name and the default enabled logger level in the table', () => {
+
+<%_	if (databaseTypeSql) { _%>
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.Version')
+<%_ } else { _%>
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+<%_ } _%>
+
 		cy.getBySel('loggersTable')
-<%_
-	if (databaseTypeSql) { _%>
+<%_	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.Version')
 <%_ } else { _%>
 			.contains('td', 'org.mongodb.driver')
@@ -69,6 +75,12 @@ describe('Loggers page', () => {
 	})
 
 	it('should display actions available on the current selected logger', () => {
+<%_	if (databaseTypeSql) { _%>
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.Version')
+<%_ } else { _%>
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+<%_ } _%>
+
 		cy.getBySel('loggersTable')
 <%_
 	if (databaseTypeSql) { _%>
@@ -106,6 +118,11 @@ describe('Loggers page', () => {
 	})
 
 	it('should change logger level from WARN -> INFO, INFO -> WARN', () => {
+<%_	if (databaseTypeSql) { _%>
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.Version')
+<%_ } else { _%>
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+<%_ } _%>
 
 		cy.intercept('**/management/loggers/*').as('changeLoggers')
 
@@ -157,7 +174,7 @@ describe('Loggers page', () => {
 		let countBeforeFilter
 
 		cy.getBySel('loggersTable')
-			.get('tr')
+			.get('tbody > tr')
 			.then($tr => (countBeforeFilter = $tr.length))
 
 		cy.getBySel('loggerSearchForm')
@@ -165,7 +182,29 @@ describe('Loggers page', () => {
 			.type('ROOT');
 
 		cy.getBySel('loggersTable')
-			.get('tr')
+			.get('tbody > tr')
 			.then($tr => (expect($tr.length).not.eq(countBeforeFilter)))
+
+		cy.getBySel('loggerSearchForm').getByName('logger').clear()
+
+		cy.getBySel('loggersTable')
+			.get('tbody > tr')
+			.then($tr => expect($tr.length).eq(countBeforeFilter))
+	})
+
+	it('should validate the pagination controls', () => {
+		cy.getBySel('pageCtrl')
+			.eq(0)
+			.contains('div', /1-\d+ of \d+/)
+			.next()
+			.within($div => {
+				cy.root()
+					.getBySel('prevPageCtrl')
+					.should('be.disabled')
+					.get('div')
+					.should('have.text', '1')
+					.getBySel('nextPageCtrl')
+					.should('be.enabled')
+			})
 	})
 })
