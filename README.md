@@ -43,7 +43,7 @@ Following functional flows are covered with end to end tests:
         ✅ User Management (List, Create, Update, View, Delete)
         ✅ Loggers
     ✅ Entities
-        ✅ Entity (List, View, Delete, Search)
+        ✅ Entity (List, View, Delete, Search, Pagination)
 
 For more details, you can check out the source code of [sample application](https://github.com/jhipster/jhipster-sample-app-svelte)
 
