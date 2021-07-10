@@ -10,6 +10,9 @@ on:
             - release
 jobs:
     generator-jhipster-svelte:
+        concurrency:
+            group: ${{ github.head_ref }}
+            cancel-in-progress: true
         runs-on: ${{ matrix.os }}
         timeout-minutes: 20
         strategy:

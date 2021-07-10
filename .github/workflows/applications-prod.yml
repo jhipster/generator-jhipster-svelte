@@ -3,16 +3,18 @@ on:
     push:
         branches:
             - main
-            - release
     pull_request:
         branches:
             - main
-            - release
 env:
     TEST_SCRIPTS_PATH: ${{ github.workspace }}/.github/workflows/scripts
 jobs:
     build:
         name: ${{ matrix.apps }}
+        concurrency:
+            group: ${{ github.head_ref }}
+            cancel-in-progress: true
+        if: github.event.action != 'closed'
         runs-on: ${{ matrix.os }}
         timeout-minutes: 20
         strategy:
