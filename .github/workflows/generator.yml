@@ -11,7 +11,7 @@ on:
 jobs:
     generator-jhipster-svelte:
         concurrency:
-            group: generator-${{ github.head_ref }}
+            group: generator-${{ github.head_ref }}-${{ matrix.node_version }}
             cancel-in-progress: true
         runs-on: ${{ matrix.os }}
         timeout-minutes: 20
