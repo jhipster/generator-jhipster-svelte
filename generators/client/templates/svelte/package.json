@@ -20,7 +20,7 @@
 		"jest-junit": "12.2.0",
 		"jest-sonar": "0.2.12",
 		"jest-svelte-resolver": "1.0.0",
-		"postcss": "8.3.5",
+		"postcss": "8.3.6",
 		"prettier": "2.3.2",
 		"prettier-plugin-svelte": "2.3.1",
 		"pretty-quick": "3.1.1",
