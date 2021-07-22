@@ -27,6 +27,6 @@
 		"rimraf": "3.0.2",
 		"svelte": "3.38.2",
 		"svelte-jester": "1.7.0",
-		"tailwindcss": "2.2.4"
+		"tailwindcss": "2.2.6"
 	}
 }
