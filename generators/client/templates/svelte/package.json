@@ -25,7 +25,7 @@
 		"prettier-plugin-svelte": "2.3.1",
 		"pretty-quick": "3.1.1",
 		"rimraf": "3.0.2",
-		"svelte": "3.40.0",
+		"svelte": "3.40.1",
 		"svelte-jester": "1.7.0",
 		"tailwindcss": "2.2.6"
 	}
