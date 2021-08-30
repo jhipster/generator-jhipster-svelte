@@ -2,7 +2,7 @@
 	"devDependencies": {
 		"@fortawesome/free-solid-svg-icons": "5.15.4",
 		"@sveltejs/adapter-static": "1.0.0-next.17",
-		"@sveltejs/kit": "1.0.0-next.158",
+		"@sveltejs/kit": "1.0.0-next.159",
 		"@testing-library/jest-dom": "5.14.1",
 		"@testing-library/svelte": "3.0.3",
 		"autoprefixer": "10.3.3",
