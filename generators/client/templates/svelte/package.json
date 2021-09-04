@@ -6,8 +6,8 @@
 		"@testing-library/jest-dom": "5.14.1",
 		"@testing-library/svelte": "3.0.3",
 		"autoprefixer": "10.3.4",
-		"cypress": "8.1.0",
-		"esbuild-jest":"0.5.0",
+		"cypress": "8.3.0",
+		"esbuild-jest": "0.5.0",
 		"esbuild": "0.12.25",
 		"eslint": "7.32.0",
 		"eslint-plugin-cypress": "2.11.3",
@@ -26,7 +26,7 @@
 		"pretty-quick": "3.1.1",
 		"rimraf": "3.0.2",
 		"svelte": "3.42.4",
-		"svelte-jester": "1.7.0",
+		"svelte-jester": "1.8.2",
 		"tailwindcss": "2.2.9"
 	}
 }
