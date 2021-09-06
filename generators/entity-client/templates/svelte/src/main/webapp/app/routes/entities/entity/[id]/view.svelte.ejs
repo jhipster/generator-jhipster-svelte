@@ -9,6 +9,10 @@
 	import Record from '$lib/page/Record.svelte'
 	import Button from '$lib/Button.svelte'
 	import Icon from '$lib/Icon.svelte'
+<%_ const timedFieldType = fields.find(field => field.fieldTypeTimed);
+	if (timedFieldType) { _%>
+	import { formatDate } from '$lib/utils/date'
+<%_ } _%>
 
 	$: id = $page && $page.params && $page.params.id
 	onMount(() => fetch<%= entityAngularName %>Details())
@@ -39,7 +43,11 @@
 _%>
 			<Record<% if(isFirstRecord) { %> classes="border-t"<% } %>>
 				<span slot="label"><%= field.fieldNameHumanized %></span>
+				<%_ if (field.fieldTypeTimed) { _%>
+				<span>{formatDate(<%= entityInstance %>.<%= field.fieldName %>)}</span>
+				<%_ } else { _%>
 				<span>{<%= entityInstance %>.<%= field.fieldName %>}</span>
+				<%_ } _%>
 			</Record>
 <%_
 		isFirstRecord = false

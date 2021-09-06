@@ -14,6 +14,7 @@ application {
 
 entity Tag {
   name String required minlength(3)
+  date Instant required
 }
 
 paginate Tag with pagination
