@@ -15,6 +15,7 @@ application {
 entity Blog {
   name String required minlength(5)
   handle String required minlength(2)
+  date Instant required
 }
 
 entity Tag {

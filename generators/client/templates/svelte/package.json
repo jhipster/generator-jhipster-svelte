@@ -1,4 +1,7 @@
 {
+	"dependencies": {
+		"date-fns": "2.23.0"
+	},
 	"devDependencies": {
 		"@fortawesome/free-solid-svg-icons": "5.15.4",
 		"@sveltejs/adapter-static": "1.0.0-next.18",

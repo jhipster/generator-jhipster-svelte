@@ -1,15 +1,9 @@
-export function formatDate(dateToFormat) {
-	if (dateToFormat) {
-		const date = new Date(Date.parse(dateToFormat))
-		return date.toLocaleDateString('en-US', {
-			hour12: false,
-			year: 'numeric',
-			month: 'numeric',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-		})
-	}
+import { format, formatDistanceToNow } from 'date-fns'
 
-	return '-'
+export function formatDate(dateToFormat) {
+	return dateToFormat ? format(new Date(Date.parse(dateToFormat)), 'MM/dd/yyyy HH:mm') : '-'
+}
+
+export function formatDistance(dateToFormat) {
+	return dateToFormat ? formatDistanceToNow(new Date(Date.parse(dateToFormat)), {addSuffix: true}) : '-'
 }

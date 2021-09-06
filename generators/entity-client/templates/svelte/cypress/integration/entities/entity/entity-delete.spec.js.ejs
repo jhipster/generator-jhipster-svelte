@@ -14,7 +14,11 @@ describe('<%= entityAngularName %> delete dialog page', () => {
 		<%_
 			for (field of fields.filter(field => !field.id)) {
 		_%>
+		<%_ if (field.fieldTypeTimed) { _%>
+			<%= field.fieldName %>: new Date(),
+		<%_ } else { _%>
 			<%= field.fieldName %>: randomPrefix,
+		<%_ } _%>
 		<%_ } _%>
 		}).then(res => {
 			dynamicId = res.id

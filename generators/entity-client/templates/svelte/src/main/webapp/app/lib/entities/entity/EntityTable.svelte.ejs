@@ -5,7 +5,10 @@
 	import TableData from '$lib/table/TableData.svelte'
 	import TableHeader from '$lib/table/TableHeader.svelte'
 	import TableRow from '$lib/table/TableRow.svelte'
-
+<%_ const timedFieldType = fields.find(field => field.fieldTypeTimed);
+	if (timedFieldType) { _%>
+	import { formatDate } from '$lib/utils/date'
+<%_ } _%>
 	export let <%= entityInstancePlural %> = []
 <%_ if (!paginationNo) { _%>
 	export let sortPredicate = 'id'
@@ -49,7 +52,11 @@
 			<%_
 				for (field of fields.filter(field => !field.id)) {
 			_%>
+				<%_ if (field.fieldTypeTimed) { _%>
+				<TableData>{formatDate(<%=entityInstance %>.<%= field.fieldName %>)}</TableData>
+				<%_ } else { _%>
 				<TableData>{<%=entityInstance %>.<%= field.fieldName %>}</TableData>
+				<%_ } _%>
 			<%_ } _%>
 				<TableData classes="w-48 {showActions ? 'sm:py-0' : ''}">
 					<div class:hidden="{showActions}">&nbsp;</div>
