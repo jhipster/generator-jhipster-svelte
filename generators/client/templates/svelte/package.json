@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"date-fns": "2.23.0"
+		"date-fns": "2.24.0"
 	},
 	"devDependencies": {
 		"@fortawesome/free-solid-svg-icons": "5.15.4",
