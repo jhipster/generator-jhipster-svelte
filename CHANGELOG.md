@@ -12,6 +12,8 @@
 ### Changed
 
 -   ✅ Client-side pagination support in the `Logger` page [#557](https://github.com/jhipster/generator-jhipster-svelte/pull/557)
+-   ✅ Bump `JHipster` dependency to support `7.2.0` release [#715](https://github.com/jhipster/generator-jhipster-svelte/pull/715)
+-   ✅ Bump `Cypress`, `Tailwind` dependencies.
 
 ### Fixed
 
