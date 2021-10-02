@@ -1,8 +1,10 @@
+<%_
+const entityFakeData = generateFakeData('cypress');
+_%>
 describe('<%= entityAngularName %> list page', () => {
 	let randomPrefix
 	let dynamicId
 <%_ if (!paginationNo || searchEngine) { _%>
-	let randomPrefix2
 	let dynamicId2
 <%_ } _%>
 	beforeEach(() => {
@@ -13,15 +15,26 @@ describe('<%= entityAngularName %> list page', () => {
 		)
 	<%_ if (!paginationNo || searchEngine) { _%>
 		// create another <%= entityAngularName %> to test sort implementation
-		randomPrefix2 = 'zest' + new Date().getTime()
 		cy.save('api/<%= entityApiUrl %>', {
 		<%_
 			for (field of fields.filter(field => !field.id)) {
+				const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+				if (fieldValue === undefined) {
+					warning(`Error generating a value for field ${field.fieldName}`);
+				}
 		_%>
-			<%_ if (field.fieldTypeTimed) { _%>
-			<%= field.fieldName %>: new Date(),
+		    <%_ if (field.fieldTypeBoolean) { _%>
+			<%= field.fieldName %>: true,
+		    <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+			<%= field.fieldName %>: null,
+			<%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+			<%= field.fieldName %>: '<%= fieldValue %>',
+			<%_ } else if (field.fieldTypeLocalDate || field.fieldTypeTimed || field.fieldTypeDuration) { _%>
+			<%= field.fieldName %>: '<%= fieldValue %>',
+			<%_ } else if (field.fieldTypeNumeric) { _%>
+			<%= field.fieldName %>: <%= fieldValue %>,
 			<%_ } else { _%>
-			<%= field.fieldName %>: randomPrefix2,
+			<%= field.fieldName %>: '<%= fieldValue %>',
 			<%_ } _%>
 		<%_ } _%>
 		}).then(res => {
@@ -32,11 +45,23 @@ describe('<%= entityAngularName %> list page', () => {
 		cy.save('api/<%= entityApiUrl %>', {
 		<%_
 			for (field of fields.filter(field => !field.id)) {
+				const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+				if (fieldValue === undefined) {
+					warning(`Error generating a value for field ${field.fieldName}`);
+				}
 		_%>
-			<%_ if (field.fieldTypeTimed) { _%>
-			<%= field.fieldName %>: new Date(),
+		    <%_ if (field.fieldTypeBoolean) { _%>
+			<%= field.fieldName %>: true,
+		    <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+			<%= field.fieldName %>: null,
+			<%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+			<%= field.fieldName %>: '<%= fieldValue %>',
+			<%_ } else if (field.fieldTypeLocalDate || field.fieldTypeTimed || field.fieldTypeDuration) { _%>
+			<%= field.fieldName %>: '<%= fieldValue %>',
+			<%_ } else if (field.fieldTypeNumeric) { _%>
+			<%= field.fieldName %>: <%= fieldValue %>,
 			<%_ } else { _%>
-			<%= field.fieldName %>: randomPrefix,
+			<%= field.fieldName %>: '<%= fieldValue %>',
 			<%_ } _%>
 		<%_ } _%>
 		}).then(res => {
