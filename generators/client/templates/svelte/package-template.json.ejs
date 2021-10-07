@@ -7,6 +7,7 @@
 	"scripts": {
 		"format": "prettier --write \"{,src/**/}*.{md,json,js,svelte,css,html,yml}\"",
 		"lint": "eslint .",
+		"prepare": "husky install",
 		"lint:fix": "npm run lint --fix",
 		"cleanup": "rimraf <%= DIST_DIR %>",
 		"start": "svelte-kit dev --port 9000 --open true",
