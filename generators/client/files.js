@@ -32,6 +32,7 @@ const svelteFiles = {
 	e2e: [
 		{
 			templates: [
+				'cypress/fixtures/integration-test.png',
 				'cypress/integration/footer.spec.js',
 				'cypress/integration/home.spec.js',
 				'cypress/integration/navbar.spec.js',
@@ -145,10 +146,11 @@ const svelteFiles = {
 				'admin/logger/logger-service.js',
 				'admin/logger/LoggerTable.svelte',
 				'admin/logger/LoggerTable.spec.js',
+				'page/BinaryRecord.svelte',
 				'page/Page.svelte',
 				'page/PageHeader.svelte',
 				'page/Form.svelte',
-				'/page/SearchForm.svelte',
+				'page/SearchForm.svelte',
 				'page/Record.svelte',
 				'Alert.svelte',
 				'Button.svelte',
@@ -181,6 +183,7 @@ const svelteFiles = {
 				'table/TableHeader.svelte',
 				'table/TableRow.svelte',
 				'utils/date.js',
+				'utils/data-util.js',
 				'utils/env.js',
 				'utils/request.js',
 				'utils/validator.js',

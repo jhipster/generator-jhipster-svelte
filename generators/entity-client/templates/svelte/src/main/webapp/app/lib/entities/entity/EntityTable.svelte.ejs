@@ -5,9 +5,16 @@
 	import TableData from '$lib/table/TableData.svelte'
 	import TableHeader from '$lib/table/TableHeader.svelte'
 	import TableRow from '$lib/table/TableRow.svelte'
-<%_ const timedFieldType = fields.find(field => field.fieldTypeTimed);
-	if (timedFieldType) { _%>
-	import { formatDate } from '$lib/utils/date'
+<%_ const timedFieldType = fields.find(field => (field.fieldTypeTimed || field.fieldTypeLocalDate));
+	const durationFieldType = fields.find(field => field.fieldTypeDuration);
+	const bothTimedAndDuration = timedFieldType && durationFieldType;
+	const binaryFieldType = fields.find(field => ((field.fieldTypeBinary && field.blobContentTypeImage) || (field.fieldTypeBinary && field.blobContentTypeAny)));
+	if (timedFieldType || durationFieldType ) { _%>
+	import { <%_ if (timedFieldType) { _%>formatDate <%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } else { _%><%_ } _%><%_ if (durationFieldType) { _%> formatDurationType <%_ } _%> } from '$lib/utils/date'
+<%_ }
+	if (binaryFieldType) {
+_%>
+	import BinaryRecord from '$lib/page/BinaryRecord.svelte'
 <%_ } _%>
 	export let <%= entityInstancePlural %> = []
 <%_ if (!paginationNo) { _%>
@@ -42,7 +49,6 @@
 			<%_ } _%>
 			</TableHeader>
 		<%_ } _%>
-			<TableHeader />
 		</TableRow>
 	</thead>
 	<tbody>
@@ -50,24 +56,53 @@
 			<TableRow let:showActions>
 				<TableData>{<%= entityInstance %>.id}</TableData>
 			<%_
+				// exclude id field in last field index calculation
+				const lastFieldIndex = fields.length - 1;
+				let fieldIndex = 1;
 				for (field of fields.filter(field => !field.id)) {
 			_%>
-				<%_ if (field.fieldTypeTimed) { _%>
-				<TableData>{formatDate(<%=entityInstance %>.<%= field.fieldName %>)}</TableData>
-				<%_ } else { _%>
-				<TableData>{<%=entityInstance %>.<%= field.fieldName %>}</TableData>
-				<%_ } _%>
-			<%_ } _%>
-				<TableData classes="w-48 {showActions ? 'sm:py-0' : ''}">
-					<div class:hidden="{showActions}">&nbsp;</div>
-					<<%= entityAngularName %>ListActions
-						<%= entityInstance %>="{<%= entityInstance %>}"
-						showActions="{showActions}"
-						on:view<%= entityInstance %>
-						on:update<%= entityInstance %>
-						on:delete<%= entityInstance %>
+				<TableData<% if(fieldIndex === lastFieldIndex) { %> classes="min-w-48 {showActions ? 'relative' : ''}"<%_ } _%>>
+					<%_ if(fieldIndex === lastFieldIndex) { _%>
+					<div class:opacity-20="{showActions}">
+					<%_ }_%>
+				<%_ if (field.fieldTypeBinary && field.blobContentTypeImage) { _%>
+					<BinaryRecord
+						field="{<%= entityInstance %>.<%= field.fieldName %>}"
+						fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
+						name="<%= field.fieldName %>"
+						fieldType="image"
 					/>
+				<%_ } else if (field.fieldTypeBinary && field.blobContentTypeAny) { _%>
+					<BinaryRecord
+						field="{<%= entityInstance %>.<%= field.fieldName %>}"
+						fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
+						name="<%= field.fieldName %>"
+					/>
+				<%_ } else if (field.fieldTypeTimed || field.fieldTypeLocalDate) { _%>
+					{formatDate(<%=entityInstance %>.<%= field.fieldName %>)}
+				<%_ } else if (field.fieldTypeDuration) { _%>
+					{formatDurationType(<%=entityInstance %>.<%= field.fieldName %>)}
+				<%_ } else { _%>
+					{<%=entityInstance %>.<%= field.fieldName %>}
+				<%_ } _%>
+				<%_ if(fieldIndex === lastFieldIndex) { _%>
+					</div>
+					<div
+						class="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-10"
+					>
+						<<%= entityAngularName %>ListActions
+							<%= entityInstance %>="{<%= entityInstance %>}"
+							showActions="{showActions}"
+							on:view<%= entityInstance %>
+							on:update<%= entityInstance %>
+							on:delete<%= entityInstance %>
+						/>
+					</div>
+				<%_ }_%>
 				</TableData>
+			<%_
+					fieldIndex++;
+				} _%>
 			</TableRow>
 		{:else}
 			<TableRow let:showActions>
