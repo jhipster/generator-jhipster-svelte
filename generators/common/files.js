@@ -40,7 +40,13 @@ const commonFiles = {
 	commitHooks: [
 		{
 			condition: generator => !generator.skipCommitHook,
-			templates: ['.huskyrc'],
+			templates: [
+				{
+					file: 'pre-commit',
+					renameTo: () => '.husky/pre-commit',
+					method: 'copy',
+				},
+			],
 		},
 	],
 };
