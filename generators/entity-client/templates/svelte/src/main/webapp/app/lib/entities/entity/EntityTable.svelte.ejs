@@ -10,7 +10,7 @@
 	const bothTimedAndDuration = timedFieldType && durationFieldType;
 	const binaryFieldType = fields.find(field => ((field.fieldTypeBinary && field.blobContentTypeImage) || (field.fieldTypeBinary && field.blobContentTypeAny)));
 	if (timedFieldType || durationFieldType ) { _%>
-	import { <%_ if (timedFieldType) { _%>formatDate<%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } _%><%_ if (durationFieldType) { _%>formatDurationType<%_ } _%> } from '$lib/utils/date'
+	import { <%_ if (timedFieldType) { _%>formatDate <%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } else { _%><%_ } _%><%_ if (durationFieldType) { _%> formatDurationType <%_ } _%> } from '$lib/utils/date'
 <%_ }
 	if (binaryFieldType) {
 _%>
@@ -61,7 +61,7 @@ _%>
 				let fieldIndex = 1;
 				for (field of fields.filter(field => !field.id)) {
 			_%>
-				<TableData <%_ if(fieldIndex === lastFieldIndex) { _%> classes="min-w-48 {showActions ? 'relative' : ''}"<%_ } _%>>
+				<TableData<% if(fieldIndex === lastFieldIndex) { %> classes="min-w-48 {showActions ? 'relative' : ''}"<%_ } _%>>
 					<%_ if(fieldIndex === lastFieldIndex) { _%>
 					<div class:opacity-20="{showActions}">
 					<%_ }_%>

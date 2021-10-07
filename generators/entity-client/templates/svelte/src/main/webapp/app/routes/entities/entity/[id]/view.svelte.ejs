@@ -14,7 +14,7 @@
 	const bothTimedAndDuration = timedFieldType && durationFieldType;
 	const binaryFieldType = fields.find(field => ((field.fieldTypeBinary && field.blobContentTypeImage) || (field.fieldTypeBinary && field.blobContentTypeAny)));
 	if (timedFieldType || durationFieldType ) { _%>
-	import { <%_ if (timedFieldType) { _%>formatDate<%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } _%><%_ if (durationFieldType) { _%>formatDurationType<%_ } _%> } from '$lib/utils/date'
+	import { <%_ if (timedFieldType) { _%> formatDate<%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } else { _%> <%_ } _%><%_ if (durationFieldType) { _%> formatDurationType <%_ } _%> } from '$lib/utils/date'
 <%_ }
 	if (binaryFieldType) {
 _%>

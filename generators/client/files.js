@@ -32,6 +32,7 @@ const svelteFiles = {
 	e2e: [
 		{
 			templates: [
+				'cypress/fixtures/integration-test.png',
 				'cypress/integration/footer.spec.js',
 				'cypress/integration/home.spec.js',
 				'cypress/integration/navbar.spec.js',
