@@ -48,9 +48,9 @@ _%>
 <%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
-			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPluralHumanized %>')
+			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
 			cy.visit('/entities/<%= entityFolderName %>')
-			cy.wait('@get<%= entityClassPluralHumanized %>')
+			cy.wait('@get<%= entityClassPlural %>')
 			// eslint-disable-next-line
 			cy.wait(100)
 			cy.getBySel('<%= entityInstance %>Table')
@@ -85,7 +85,7 @@ _%>
 				.should('contain', 'Confirm delete operation')
 				.get('p')
 				.should('be.visible')
-				.should('contain', 'Are you sure you want to delete the <%= entityAngularName %>?')
+				.should('contain', 'Are you sure you want to delete the <%= entityClassHumanized %>?')
 				.getByName('delete<%= entityAngularName %>Btn')
 				.should('not.be.disabled')
 				.getByName('cancelBtn')

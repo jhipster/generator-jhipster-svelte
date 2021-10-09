@@ -61,7 +61,7 @@ describe('<%= entityAngularName %> view details page', () => {
 	it('should display <%= entityAngularName %> details', () => {
 		cy.getBySel('<%= entityInstance %>Title')
 			.should('be.visible')
-			.and('contain', `<%= entityAngularName %> Details`)
+			.and('contain', `<%= entityClassHumanized %> Details`)
 
 		cy.get('div.table').within(() => {
 			cy.root()
