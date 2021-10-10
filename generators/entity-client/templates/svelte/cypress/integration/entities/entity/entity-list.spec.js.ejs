@@ -88,9 +88,9 @@ describe('<%= entityAngularName %> list page', () => {
 <%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
-			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPluralHumanized %>')
+			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
 			cy.visit('/entities/<%= entityFolderName %>')
-			cy.wait('@get<%= entityClassPluralHumanized %>')
+			cy.wait('@get<%= entityClassPlural %>')
 			// eslint-disable-next-line
 			cy.wait(100)
 		})
@@ -176,7 +176,7 @@ _%>
 					.then(text => (valueBeforeSort = text))
 			})
 
-		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPlural %>')
 
 		cy.getBySel('<%= entityInstance %>Table')
 			.get('tr')
@@ -190,7 +190,7 @@ _%>
 					})
 			})
 
-		cy.wait('@get<%= entityClassPluralHumanized %>')
+		cy.wait('@get<%= entityClassPlural %>')
 
 		// eslint-disable-next-line
 		cy.wait(100)
@@ -217,11 +217,11 @@ _%>
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
 
-		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPlural %>')
 
 		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`${dynamicId}{enter}`)
 
-		cy.wait('@search<%= entityClassPluralHumanized %>')
+		cy.wait('@search<%= entityClassPlural %>')
 		// eslint-disable-next-line
 		cy.wait(100)
 
@@ -249,11 +249,11 @@ _%>
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
 
-		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPlural %>')
 
 		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`99999999{enter}`)
 
-		cy.wait('@search<%= entityClassPluralHumanized %>')
+		cy.wait('@search<%= entityClassPlural %>')
 		// eslint-disable-next-line
 		cy.wait(100)
 

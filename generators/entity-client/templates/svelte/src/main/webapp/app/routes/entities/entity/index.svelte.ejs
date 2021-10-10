@@ -32,10 +32,10 @@
 	let searchCriteria
 <%_ } _%>
 
-	onMount(() => fetch<%= entityClassPluralHumanized %>())
+	onMount(() => fetch<%= entityClassPlural %>())
 
 <%_ if (searchEngine) { _%>
-	function fetch<%= entityClassPluralHumanized %>() {
+	function fetch<%= entityClassPlural %>() {
 		loading = true
 		error = undefined
 
@@ -78,7 +78,7 @@
 		}
 	}
 <%_ } else { _%>
-	function fetch<%= entityClassPluralHumanized %>() {
+	function fetch<%= entityClassPlural %>() {
 		loading = true
 		error = undefined
 		<%= entityInstance %>Service
@@ -117,7 +117,7 @@
 	function delete<%= entityAngularName %>(event) {
 		<%= entityInstance %>Service
 			.delete(<%= entityInstance %>Id)
-			.then(() => fetch<%= entityClassPluralHumanized %>())
+			.then(() => fetch<%= entityClassPlural %>())
 			.catch(err => (error = err))
 			.finally(() => (showDeleteModal = false), (<%= entityInstance %>Id = null))
 	}
@@ -126,19 +126,19 @@
 	function sortByPredicate(event) {
 		sortPredicate = event.detail.sortPredicate
 		sortOrder = event.detail.sortOrder
-		fetch<%= entityClassPluralHumanized %>()
+		fetch<%= entityClassPlural %>()
 	}
 
 	function handlePageChange(event) {
 		page = event.detail.page
-		fetch<%= entityClassPluralHumanized %>()
+		fetch<%= entityClassPlural %>()
 	}
 <%_ } _%>
 <%_ if (searchEngine) { _%>
 
-	function search<%= entityClassPluralHumanized %>(event) {
+	function search<%= entityClassPlural %>(event) {
 		searchCriteria = event.detail.criteria
-		fetch<%= entityClassPluralHumanized %>()
+		fetch<%= entityClassPlural %>()
 	}
 <%_ } _%>
 </script>
@@ -174,7 +174,7 @@
 	{/if}
 	<div class="flex flex-row justify-between items-center text-base mt-4">
 	<%_ if (searchEngine) { _%>
-		<SearchForm testId="<%= entityInstance %>" name="<%= entityInstance %>" on:search="{search<%= entityClassPluralHumanized %>}" />
+		<SearchForm testId="<%= entityInstance %>" name="<%= entityInstance %>" on:search="{search<%= entityClassPlural %>}" />
 	<%_ }
 		if (!paginationNo) { _%>
 		<Pagination
