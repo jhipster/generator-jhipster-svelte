@@ -61,7 +61,7 @@ _%>
 				let fieldIndex = 1;
 				for (field of fields.filter(field => !field.id)) {
 			_%>
-				<TableData<% if(fieldIndex === lastFieldIndex) { %> classes="min-w-48 {showActions ? 'relative' : ''}"<%_ } _%>>
+				<TableData<% if(fieldIndex === lastFieldIndex) { %> classes="min-w-[130px] {showActions ? 'relative' : ''}"<%_ } _%>>
 					<%_ if(fieldIndex === lastFieldIndex) { _%>
 					<div class:opacity-20="{showActions}">
 					<%_ }_%>
