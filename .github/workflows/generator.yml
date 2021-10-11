@@ -33,6 +33,7 @@ jobs:
             - name: Checkout svelte generator repository
               uses: actions/checkout@v2
             - uses: docker/metadata-action@v3
+              id: meta
               with:
                   images: jhipster/svelte-hipster
                   tags: |
