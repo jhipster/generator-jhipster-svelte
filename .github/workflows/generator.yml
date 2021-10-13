@@ -26,6 +26,7 @@ jobs:
             - run: npm ci
             - run: npm run lint
     publish-docker-image:
+        if: ${{ !github.head_ref }}
         runs-on: ubuntu-20.04
         strategy:
             fail-fast: false
