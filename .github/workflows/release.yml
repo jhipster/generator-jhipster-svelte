@@ -29,7 +29,7 @@ jobs:
             - uses: docker/metadata-action@v3
               id: meta
               with:
-                  images: jhipster/generator-jhipster-svelte
+                  images: jhipster/svelte-hipster
                   tags: |
                       type=ref,event=tag
             - name: Login to DockerHub
@@ -44,7 +44,7 @@ jobs:
                   file: Dockerfile-release
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
-                  labels: ${{ steps.meta.outputs.labels }
+                  labels: ${{ steps.meta.outputs.labels }}
     sample-svelte-app:
         needs: publish-svelte-blueprint
         runs-on: ubuntu-20.04
