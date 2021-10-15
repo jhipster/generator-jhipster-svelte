@@ -2,7 +2,7 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
-## [Unreleased]
+## [0.6.0] - 2021-10-15
 
 ### Added
 
