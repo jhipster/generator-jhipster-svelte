@@ -2,6 +2,7 @@ name: Release svelte blueprint
 on:
     release:
         types: [created]
+    workflow_dispatch:
 jobs:
     publish-svelte-blueprint:
         runs-on: ubuntu-20.04
