@@ -1,15 +1,36 @@
-export function formatDate(dateToFormat) {
-	if (dateToFormat) {
-		const date = new Date(Date.parse(dateToFormat))
-		return date.toLocaleDateString('en-US', {
-			hour12: false,
-			year: 'numeric',
-			month: 'numeric',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-		})
-	}
+import {
+	format,
+	formatDistanceToNow,
+	formatDuration,
+	intervalToDuration,
+} from 'date-fns'
 
-	return '-'
+export function formatDate(dateToFormat) {
+	return dateToFormat
+		? format(new Date(Date.parse(dateToFormat)), 'MM/dd/yyyy HH:mm')
+		: '-'
+}
+
+export function formatDistance(dateToFormat) {
+	return dateToFormat
+		? formatDistanceToNow(new Date(Date.parse(dateToFormat)), {
+				addSuffix: true,
+		  })
+		: '-'
+}
+
+export function formatDurationType(durationToFormat) {
+	if (durationToFormat) {
+		let valueInSeconds = durationToFormat.substring(
+			durationToFormat.indexOf('.') + 1,
+			durationToFormat.length - 1
+		)
+		return valueInSeconds
+			? formatDuration(
+					intervalToDuration({ start: 0, end: valueInSeconds * 1000 })
+			  )
+			: '-'
+	} else {
+		return '-'
+	}
 }

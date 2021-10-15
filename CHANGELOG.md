@@ -4,6 +4,24 @@
 
 ## [Unreleased]
 
+### Added
+
+-   ✅ JHipster entity `JDL` data types (`String`, `Integer`, `Long`, `BigDecimal`, `Float`, `Double`, `Boolean`, `LocalDate`, `ZonedDateTime`, `Instant`, `Duration`, `UUID`, `Enum`, `Blob`, `AnyBlob`, `ImageBlob`, `TextBlob` ) support in the `List`, `View`, and `Delete` entity pages along with `Cypress` e2e tests [#723](https://github.com/jhipster/generator-jhipster-svelte/pull/723)
+-   ✅ `date-fns` library integration to format and parse date data types [#651](https://github.com/jhipster/generator-jhipster-svelte/pull/651)
+-   ✅ `PaginatedTable` component to encapsulate pagination and sort events, client-side pagination [#557](https://github.com/jhipster/generator-jhipster-svelte/pull/557)
+-   ✅ Improvement in GitHub Action workflows to cancel previous PR runs on a new commit [#558](https://github.com/jhipster/generator-jhipster-svelte/pull/558)
+
+### Changed
+
+-   ✅ Client-side pagination support in the `Logger` page [#557](https://github.com/jhipster/generator-jhipster-svelte/pull/557)
+-   ✅ Bump `JHipster` dependency to support `7.3.0` release [#715](https://github.com/jhipster/generator-jhipster-svelte/pull/715), [#726](https://github.com/jhipster/generator-jhipster-svelte/pull/726)
+-   ✅ Bump `Cypress`, `Tailwind` dependencies [#714](https://github.com/jhipster/generator-jhipster-svelte/pull/714)
+-   ✅ Bump `husky` dependencies [#724](https://github.com/jhipster/generator-jhipster-svelte/pull/724) [#725](https://github.com/jhipster/generator-jhipster-svelte/pull/725)
+
+### Fixed
+
+-   ✅ Fix an issue to apply filter criteria after an update of logger level on the selected page [#557](https://github.com/jhipster/generator-jhipster-svelte/pull/557)
+
 ## [0.5.0] - 2021-07-07
 
 ### BREAKING CHANGES

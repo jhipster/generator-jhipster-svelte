@@ -8,7 +8,7 @@
 	import Page from '$lib/page/Page.svelte'
 	import Button from '$lib/Button.svelte'
 	import Icon from '$lib/Icon.svelte'
-	import Pagination from '$lib/table/Pagination.svelte'
+	import PaginatedTable from '$lib/table/PaginatedTable.svelte'
 	import UserTable from '$lib/admin/user-management/UserTable.svelte'
 	import UserDeleteModal from '$lib/admin/user-management/UserDeleteModal.svelte'
 
@@ -63,7 +63,7 @@
 		userId = null
 	}
 
-	function deleteUserAccount(event) {
+	function deleteUserAccount() {
 		userService
 			.delete(userId)
 			.then(() => fetchUsers())
@@ -71,14 +71,9 @@
 			.finally(() => (showDeleteModal = false), (userId = null))
 	}
 
-	function sortByPredicate(event) {
-		sortPredicate = event.detail.sortPredicate
-		sortOrder = event.detail.sortOrder
-		fetchUsers()
-	}
-
-	function handlePageChange(event) {
-		page = event.detail.page
+	function handleFetch(event) {
+		// eslint-disable-next-line no-extra-semi
+		;({ page, pageSize, sortPredicate, sortOrder } = event.detail)
 		fetchUsers()
 	}
 </script>
@@ -113,29 +108,25 @@
 			/>
 		{/if}
 
-		<Pagination
-			totalCount="{totalCount}"
-			pageSize="{pageSize}"
+		<PaginatedTable
+			component="{UserTable}"
 			page="{page}"
-			classes="my-2"
-			on:pagechange="{handlePageChange}"
-		/>
-		<UserTable
-			users="{users}"
-			currentUser="{$auth}"
+			pageSize="{pageSize}"
+			sortOrder="{sortOrder}"
 			sortPredicate="{sortPredicate}"
-			on:sortbypredicate="{sortByPredicate}"
+			totalCount="{totalCount}"
+			props="{{ users: users, currentUser: $auth }}"
+			events="{[
+				'toggleuseraccount',
+				'viewuseraccount',
+				'updateuseraccount',
+				'deleteuseraccount',
+			]}"
+			on:fetch="{handleFetch}"
 			on:toggleuseraccount="{toggleUserAccount}"
 			on:updateuseraccount="{updateUserAccount}"
 			on:viewuseraccount="{viewUserAccount}"
 			on:deleteuseraccount="{showDeleteUserModal}"
-		/>
-		<Pagination
-			totalCount="{totalCount}"
-			pageSize="{pageSize}"
-			page="{page}"
-			classes="mt-4"
-			on:pagechange="{handlePageChange}"
 		/>
 	{/if}
 </Page>

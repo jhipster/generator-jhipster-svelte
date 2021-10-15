@@ -12,8 +12,28 @@ application {
 	entities *
 }
 
-entity Tag {
-  name String required minlength(3)
+enum EntityStatus {
+    DUMMY, APP, SVELTE
 }
 
-paginate Tag with pagination
+entity SampleDomainEntity {
+  stringData String required minlength(5) maxlength(50)
+  integerData Integer required min(2) max(1000)
+  longData Long required min(2) max(4000)
+  bigDecimalData BigDecimal required
+  floatData Float
+  doubleData Double
+  booleanData Boolean
+  localDateData	LocalDate
+  zonedDateTimeData ZonedDateTime
+  instantData Instant
+  durationData Duration
+  uuidData UUID
+  blobData Blob
+  anyBlobData AnyBlob
+  imageBlobData ImageBlob
+  textBlobData TextBlob
+  enumData EntityStatus
+}
+
+paginate SampleDomainEntity with pagination

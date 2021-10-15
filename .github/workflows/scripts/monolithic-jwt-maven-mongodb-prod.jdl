@@ -11,13 +11,31 @@ application {
     entities *
 }
 
-entity Blog {
-  name String required minlength(5)
-  handle String required minlength(2)
+enum EntityStatus {
+    DUMMY, APP, SVELTE
 }
 
-entity Tag {
-  name String required minlength(3)
+entity SampleDomainEntity {
+  stringData String required minlength(5) maxlength(50)
+  integerData Integer required min(2) max(1000)
+  longData Long required min(2) max(4000)
+  bigDecimalData BigDecimal required
+  floatData Float
+  doubleData Double
+  booleanData Boolean
+  localDateData	LocalDate
+  zonedDateTimeData ZonedDateTime
+  instantData Instant
+  durationData Duration
+  uuidData UUID
+  enumData EntityStatus
 }
 
-paginate Tag with pagination
+entity SampleBlobEntity {
+  blobData Blob
+  anyBlobData AnyBlob
+  imageBlobData ImageBlob
+  textBlobData TextBlob
+}
+
+paginate SampleDomainEntity with pagination

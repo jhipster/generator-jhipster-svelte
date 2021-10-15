@@ -26,7 +26,7 @@
 </script>
 
 <div
-	class="flex flex-row justify-end items-center {classes}"
+	class="flex flex-row justify-end items-center w-full {classes}"
 	data-test="pageCtrl"
 >
 	<div>{pageStart}-{pageEnd} of {totalCount}</div>

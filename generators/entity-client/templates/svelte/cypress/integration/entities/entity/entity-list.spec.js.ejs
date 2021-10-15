@@ -1,8 +1,10 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+_%>
 describe('<%= entityAngularName %> list page', () => {
-	let randomPrefix
 	let dynamicId
 <%_ if (!paginationNo || searchEngine) { _%>
-	let randomPrefix2
 	let dynamicId2
 <%_ } _%>
 	beforeEach(() => {
@@ -13,29 +15,82 @@ describe('<%= entityAngularName %> list page', () => {
 		)
 	<%_ if (!paginationNo || searchEngine) { _%>
 		// create another <%= entityAngularName %> to test sort implementation
-		randomPrefix2 = 'zest' + new Date().getTime()
-		cy.save('api/<%= entityApiUrl %>', {
-		<%_
-			for (field of fields.filter(field => !field.id)) {
-		_%>
-			<%= field.fieldName %>: randomPrefix2,
-		<%_ } _%>
+<%_ if (containsBinaryField) { _%>
+		cy.fixture('integration-test.png')
+			.then($blob => {
+				return <% } %>cy.save('api/<%= entityApiUrl %>', {
+			<%_
+				for (field of fields.filter(field => !field.id)) {
+					const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+					if (fieldValue === undefined) {
+						warning(`Error generating a value for field ${field.fieldName}`);
+					}
+			_%>
+				<%_ if (field.fieldTypeBoolean) { _%>
+				<%= field.fieldName %>: true,
+				<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+				<%= field.fieldName %>: $blob,
+				<%= field.fieldName %>ContentType: 'image/png',
+				<%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>',
+				<%_ } else if (field.fieldTypeLocalDate) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>' ,
+				<%_ } else if (field.fieldTypeTimed) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>:00.000Z' ,
+				<%_ } else if (field.fieldTypeDuration) { _%>
+				<%= field.fieldName %>: 'PT0.000052484S',
+				<%_ } else if (field.fieldTypeNumeric) { _%>
+				<%= field.fieldName %>: <%= fieldValue %>,
+				<%_ } else { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>',
+				<%_ } _%>
+			<%_ } _%>
+<%_ if (containsBinaryField) { _%>
+			})
+<%_ } _%>
 		}).then(res => {
 			dynamicId2 = res.id
 		})
 	<%_ } _%>
-		randomPrefix = 'test' + new Date().getTime()
-		cy.save('api/<%= entityApiUrl %>', {
-		<%_
-			for (field of fields.filter(field => !field.id)) {
-		_%>
-			<%= field.fieldName %>: randomPrefix,
-		<%_ } _%>
+
+<%_ if (containsBinaryField) { _%>
+		cy.fixture('integration-test.png')
+			.then($blob => {
+				return <% } %>cy.save('api/<%= entityApiUrl %>', {
+			<%_
+				for (field of fields.filter(field => !field.id)) {
+					const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+					if (fieldValue === undefined) {
+						warning(`Error generating a value for field ${field.fieldName}`);
+					}
+			_%>
+				<%_ if (field.fieldTypeBoolean) { _%>
+				<%= field.fieldName %>: true,
+				<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+				<%= field.fieldName %>: $blob,
+				<%= field.fieldName %>ContentType: 'image/png',
+				<%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>',
+				<%_ } else if (field.fieldTypeLocalDate) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>' ,
+				<%_ } else if (field.fieldTypeTimed) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>:00.000Z' ,
+				<%_ } else if (field.fieldTypeDuration) { _%>
+				<%= field.fieldName %>: 'PT0.000052484S',
+				<%_ } else if (field.fieldTypeNumeric) { _%>
+				<%= field.fieldName %>: <%= fieldValue %>,
+				<%_ } else { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>',
+				<%_ } _%>
+			<%_ } _%>
+<%_ if (containsBinaryField) { _%>
+			})
+<%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
-			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPluralHumanized %>')
+			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
 			cy.visit('/entities/<%= entityFolderName %>')
-			cy.wait('@get<%= entityClassPluralHumanized %>')
+			cy.wait('@get<%= entityClassPlural %>')
 			// eslint-disable-next-line
 			cy.wait(100)
 		})
@@ -121,7 +176,7 @@ _%>
 					.then(text => (valueBeforeSort = text))
 			})
 
-		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPlural %>')
 
 		cy.getBySel('<%= entityInstance %>Table')
 			.get('tr')
@@ -135,7 +190,7 @@ _%>
 					})
 			})
 
-		cy.wait('@get<%= entityClassPluralHumanized %>')
+		cy.wait('@get<%= entityClassPlural %>')
 
 		// eslint-disable-next-line
 		cy.wait(100)
@@ -162,11 +217,11 @@ _%>
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
 
-		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPlural %>')
 
 		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`${dynamicId}{enter}`)
 
-		cy.wait('@search<%= entityClassPluralHumanized %>')
+		cy.wait('@search<%= entityClassPlural %>')
 		// eslint-disable-next-line
 		cy.wait(100)
 
@@ -194,11 +249,11 @@ _%>
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
 
-		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPluralHumanized %>')
+		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPlural %>')
 
 		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`99999999{enter}`)
 
-		cy.wait('@search<%= entityClassPluralHumanized %>')
+		cy.wait('@search<%= entityClassPlural %>')
 		// eslint-disable-next-line
 		cy.wait(100)
 

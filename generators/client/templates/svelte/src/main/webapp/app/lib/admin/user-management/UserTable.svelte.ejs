@@ -5,7 +5,7 @@
 	import TableData from '$lib/table/TableData.svelte'
 	import TableHeader from '$lib/table/TableHeader.svelte'
 	import TableRow from '$lib/table/TableRow.svelte'
-	import { formatDate } from '$lib/utils/date'
+	import { formatDistance } from '$lib/utils/date'
 
 	export let users = []
 	export let currentUser = null
@@ -63,11 +63,11 @@
 				<TableData>
 					<span class="uppercase">{user.authorities.join(', ')}</span>
 				</TableData>
-				<TableData>{formatDate(user.createdDate)}</TableData>
+				<TableData>{formatDistance(user.createdDate)}</TableData>
 				<TableData>{user.lastModifiedBy}</TableData>
 				<TableData classes="w-48 {showActions ? 'sm:py-0' : ''}">
 					<div class:hidden="{showActions}">
-						{formatDate(user.lastModifiedDate)}
+						{formatDistance(user.lastModifiedDate)}
 					</div>
 					<UserListActions
 						currentUser="{currentUser.login}"

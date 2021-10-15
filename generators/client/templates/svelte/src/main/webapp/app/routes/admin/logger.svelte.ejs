@@ -4,9 +4,12 @@
 	import Page from '$lib/page/Page.svelte'
 	import loggerService from '$lib/admin/logger/logger-service'
 	import LoggerTable from '$lib/admin/logger/LoggerTable.svelte'
+	import PaginatedTable from '$lib/table/PaginatedTable.svelte'
 	import SearchForm from '$lib/page/SearchForm.svelte'
 
 	let error
+	let filterCriteria
+	let page
 	let loading = true
 	let loggers = []
 	let filteredLoggers = []
@@ -27,6 +30,9 @@
 					name: key,
 					level: logger.effectiveLevel,
 				}))
+				if (filterCriteria) {
+					filter(filterCriteria)
+				}
 				levels = response.levels
 			})
 			.catch(err => (error = err))
@@ -41,13 +47,24 @@
 	}
 
 	function filterLoggers(event) {
-		filteredLoggers = loggers.filter(
-			logger =>
-				!event.detail.criteria ||
-				logger.name
-					.toLowerCase()
-					.includes(event.detail.criteria.toLowerCase())
+		page = 1
+		if (event.detail.criteria) {
+			filterCriteria = event.detail.criteria
+			filter(filterCriteria)
+		} else {
+			filterCriteria = undefined
+			filteredLoggers = loggers
+		}
+	}
+
+	function filter(criteria) {
+		filteredLoggers = loggers.filter(logger =>
+			logger.name.toLowerCase().includes(criteria.toLowerCase())
 		)
+	}
+
+	function handlePageChange(event) {
+		page = event.detail.page
 	}
 </script>
 
@@ -71,9 +88,15 @@
 		</div>
 	</div>
 	{#if !loading && loggers.length}
-		<LoggerTable
-			loggers="{filteredLoggers}"
-			levels="{levels}"
+		<PaginatedTable
+			clientSidePagination="true"
+			paginationKey="loggers"
+			page="{page}"
+			component="{LoggerTable}"
+			totalCount="{filteredLoggers.length}"
+			props="{{ loggers: filteredLoggers, levels }}"
+			events="{['changeloglevel']}"
+			on:pagechange="{handlePageChange}"
 			on:changeloglevel="{changeLogLevel}"
 		/>
 	{/if}

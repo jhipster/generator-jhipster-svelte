@@ -11,6 +11,9 @@ env:
 jobs:
     build:
         name: ${{ matrix.apps }}
+        concurrency:
+            group: lighthouse-${{ matrix.apps }}-${{ github.head_ref || github.sha }}
+            cancel-in-progress: true
         runs-on: ${{ matrix.os }}
         timeout-minutes: 20
         strategy:
@@ -40,14 +43,14 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.1.0
+                  key: ${{ runner.os }}-maven-7.3.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/7.6.0
+                      ~/.cache/Cypress/8.6.0
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-7.6.x
+                  key: ${{ runner.os }}-cypress-8.6.0
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .

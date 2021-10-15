@@ -33,27 +33,23 @@
 	],
 	"scripts": {
 		"lint": "eslint .",
-		"format": "pretty-quick"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "pretty-quick --staged"
-		}
+		"format": "pretty-quick",
+		"prepare": "husky install"
 	},
 	"dependencies": {
-		"chalk": "4.1.1",
-		"generator-jhipster": "7.1.0"
+		"chalk": "4.1.2",
+		"generator-jhipster": "7.3.0"
 	},
 	"devDependencies": {
-		"ejs-lint": "1.2.0",
-		"eslint": "7.30.0",
+		"ejs-lint": "1.2.1",
+		"eslint": "7.32.0",
 		"eslint-config-airbnb-base": "14.2.1",
 		"eslint-config-prettier": "8.3.0",
-		"eslint-plugin-import": "2.23.4",
-		"eslint-plugin-prettier": "3.4.0",
+		"eslint-plugin-import": "2.25.2",
+		"eslint-plugin-prettier": "4.0.0",
 		"fs-extra": "10.0.0",
-		"husky": "4.3.8",
-		"prettier": "2.3.2",
+		"husky": "7.0.2",
+		"prettier": "2.4.1",
 		"pretty-quick": "3.1.1",
 		"yeoman-assert": "3.1.1",
 		"yeoman-test": "6.2.0"

@@ -177,31 +177,22 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 Cypress.Commands.add('logoutByApi', () => {
 	cy.getCookie('XSRF-TOKEN')
 		.then(csrfCookie => {
-			return cy.request({
-				method: 'POST',
-				url: `api/logout`,
-				headers: {
-					'X-XSRF-TOKEN': csrfCookie.value,
-				},
+			return cy.location().then(loc$ => {
+				return cy.request({
+					method: 'POST',
+					url: `api/logout`,
+					headers: {
+						'X-XSRF-TOKEN': csrfCookie.value,
+						origin: loc$.origin,
+					},
+				})
 			})
 		})
 		.then(res => {
 			expect(res.status).to.eq(200)
-			let logoutUrl = res.body.logoutUrl
-			let redirectUri
-			cy.location().then(loc$ => {
-				redirectUri = loc$.origin
-				// Keycloak: uri has protocol/openid-connect/token
-				if (logoutUrl.includes('/protocol')) {
-					logoutUrl = `${logoutUrl}?redirect_uri=${redirectUri}`
-				} else {
-					// Else, Okta
-					logoutUrl = `${logoutUrl}?id_token_hint=${res.body.idToken}&post_logout_redirect_uri=${redirectUri}`
-				}
-				return cy.request({
-					url: logoutUrl,
-					followRedirect: true,
-				})
+			return cy.request({
+				url: res.body.logoutUrl,
+				followRedirect: true,
 			})
 		})
 		.then(res => {
