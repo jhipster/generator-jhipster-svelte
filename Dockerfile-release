@@ -52,7 +52,7 @@ RUN \
 	&& echo PATH="$NPM_PATH/bin:$PATH" >> "$HOME/.profile" \
 	&& . "$HOME/.profile"
 
-RUN npm install -g --no-audit --quiet generator-jhipster-svelte@0.5.0
+RUN npm install -g --no-audit --quiet generator-jhipster-svelte@0.6.0
 
 WORKDIR $APP_PATH
 

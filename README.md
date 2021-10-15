@@ -111,6 +111,8 @@ npm update -g generator-jhipster-svelte
     paginate Tag with pagination
     ```
 
+    Refer to [JDL entity fields](https://www.jhipster.tech/jdl/entities-fields) documentation for all supported entity data types and constraints.
+
     Pass `import-jdl` option along the file path to `shipster` cli to generate new application:
 
     ```bash
@@ -129,7 +131,8 @@ npm update -g generator-jhipster-svelte
 | ---------- | ---------------- |
 | `6.10.5`   | `0.1` - `0.2.1`  |
 | `7.0.x`    | `0.3` - `0.4`    |
-| `7.1.x`    | >= `0.5`         |
+| `7.1.x`    | `0.5`            |
+| `7.3.x`    | >= `0.6`         |
 
 ## Docker development
 
