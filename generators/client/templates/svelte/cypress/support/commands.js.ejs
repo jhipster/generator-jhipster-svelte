@@ -90,7 +90,17 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 		},
 		{
 			validate() {
-				cy.request({ url: `api/account`,  failOnStatusCode: false }).its('status').should('eq', 200)
+				cy.request({
+					url: `api/account`,
+					failOnStatusCode: false,
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem(
+							'authToken'
+						)}`,
+					},
+				})
+					.its('status')
+					.should('eq', 200)
 			},
 		}
 	)
