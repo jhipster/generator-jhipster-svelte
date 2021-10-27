@@ -9,7 +9,7 @@
 		"@testing-library/jest-dom": "5.14.1",
 		"@testing-library/svelte": "3.0.3",
 		"autoprefixer": "10.3.7",
-		"cypress": "8.6.0",
+		"cypress": "8.7.0",
 		"esbuild-jest": "0.5.0",
 		"esbuild": "0.13.9",
 		"eslint": "7.32.0",
