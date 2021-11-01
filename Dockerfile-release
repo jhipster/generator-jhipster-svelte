@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.12
+FROM node:lts-alpine3.14
 
 LABEL maintainer="Vishal Mahajan"
 
