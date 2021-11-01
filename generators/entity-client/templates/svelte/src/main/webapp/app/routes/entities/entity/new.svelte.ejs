@@ -1,0 +1,30 @@
+<script>
+	import { goto } from '$app/navigation'
+
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import <%= entityAngularName %>Form from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Form.svelte'
+
+	let error
+	let <%= entityInstance %>
+
+	function cancelSave() {
+		goto(`/entities/<%= entityFolderName %>`)
+	}
+
+	function save<%= entityAngularName %>(event) {
+		<%= entityInstance %>Service
+			.create(event.detail)
+			.then(() => goto(`/entities/<%= entityFolderName %>`))
+			.catch(err => (error = err))
+	}
+</script>
+
+<svelte:head>
+	<title>Add <%= entityInstance %></title>
+	<meta name="Description" content="Add <%= entityInstance %>" />
+</svelte:head>
+<Page testId="<%= entityInstance %>">
+	<div class="text-left" slot="header">Create <%= entityInstance %></div>
+	<<%= entityAngularName %>Form <%= entityInstance %>="{<%= entityInstance %>}" on:cancel="{cancelSave}" on:saveorupdate="{save<%= entityAngularName %>}" />
+</Page>

@@ -20,8 +20,16 @@ const svelteFiles = {
 					renameTo: generator => `${generator.entityFolderName}/index.svelte`,
 				},
 				{
+					file: 'entity/new.svelte',
+					renameTo: generator => `${generator.entityFolderName}/new.svelte`,
+				},
+				{
 					file: 'entity/[id]/view.svelte',
 					renameTo: generator => `${generator.entityFolderName}/[id]/view.svelte`,
+				},
+				{
+					file: 'entity/[id]/edit.svelte',
+					renameTo: generator => `${generator.entityFolderName}/[id]/edit.svelte`,
 				},
 			],
 		},
@@ -43,6 +51,10 @@ const svelteFiles = {
 				{
 					file: 'entity/EntityTable.svelte',
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityAngularName}Table.svelte`,
+				},
+				{
+					file: 'entity/EntityForm.svelte',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityAngularName}Form.svelte`,
 				},
 				{
 					file: 'entity/entity-service.js',
@@ -68,6 +80,16 @@ const svelteFiles = {
 					file: 'cypress/integration/entities/entity/entity-view.spec.js',
 					renameTo: generator =>
 						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-view.spec.js`,
+				},
+				{
+					file: 'cypress/integration/entities/entity/entity-create.spec.js',
+					renameTo: generator =>
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-create.spec.js`,
+				},
+				{
+					file: 'cypress/integration/entities/entity/entity-update.spec.js',
+					renameTo: generator =>
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-update.spec.js`,
 				},
 			],
 		},
