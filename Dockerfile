@@ -58,7 +58,7 @@ COPY package.json package-lock.json $SVELTE_PATH/
 
 WORKDIR $SVELTE_PATH
 
-RUN	npm install --quiet
+RUN	npm ci --quiet
 
 COPY cli $SVELTE_PATH/cli
 RUN npm link
