@@ -42,7 +42,7 @@
 <Form testId="add<%= entityAngularName %>">
 
 <%_	for (field of fields.filter(field => !field.id)) { _%>
-<%_ if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+<%_ if (field.fieldTypeString || field.fieldTypeUUID || field.fieldTypeInstant || (field.fieldTypeBinary && field.blobContentTypeText)) { _%>
 	<InputControl
 		<%_ if (field.fieldTypeInstant) { _%>
 		type="datetime-local"
