@@ -7,6 +7,10 @@
 	import Icon from '$lib/Icon.svelte'
 	import InputControl from '$lib/InputControl.svelte'
 	import Form from '$lib/page/Form.svelte'
+		import {
+		formatToDatetimeLocalInput,
+		parseFromDatetimeLocalInput,
+	} from '$lib/utils/date'
 
 	export let <%= entityInstance %> = {
 		id: null,
@@ -23,7 +27,11 @@
 
 	<%_	for (field of fields.filter(field => !field.id)) { _%>
 	function update<%= field.fieldNameCapitalized %>(event) {
+		<%_ if (field.fieldTypeInstant) { _%>
+		<%= entityInstance %>.<%= field.fieldName %> = parseFromDatetimeLocalInput(event.target.value)
+		<%_ } else { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.value
+		<%_ } _%>
 	}
 	<%_ } _%>
 
@@ -36,10 +44,20 @@
 <%_	for (field of fields.filter(field => !field.id)) { _%>
 <%_ if (field.fieldTypeString || field.fieldTypeUUID) { _%>
 	<InputControl
+		<%_ if (field.fieldTypeInstant) { _%>
+		type="datetime-local"
+		<%_ } else if (field.fieldTypeBinary && field.blobContentTypeText) { _%>
+		type="textarea"
+		<%_ } else { _%>
 		type="text"
+		<%_ } _%>
 		label="<%= field.fieldNameCapitalized %>"
 		name="<%= field.fieldName %>"
+		<%_ if (field.fieldTypeInstant) { _%>
+		value="{formatToDatetimeLocalInput(<%= entityInstance %>.<%= field.fieldName %>)}"
+		<%_ } else { _%>
 		value="{<%= entityInstance %>.<%= field.fieldName %>}"
+		<%_ } _%>
 		on:input="{event => update<%= field.fieldNameCapitalized %>(event)}"
 		<%_ if (field.fieldValidationRequired) { _%>
 		required

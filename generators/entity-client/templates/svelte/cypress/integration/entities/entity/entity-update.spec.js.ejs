@@ -83,8 +83,10 @@ describe('Update <%= entityInstance %> page', () => {
 			for (field of fields.filter(field => !field.id)) {
 				const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
 		_%>
+			<%_ if (!field.fieldTypeTimed) { _%>
 			.getByName('<%= field.fieldName %>')
 			.should('have.value', '<%= fieldValue %>')
+			<%_ } _%>
 		<%_ } _%>
 		cy.getBySel('add<%= entityAngularName %>Form')
 			.contains('Update <%= entityInstance %>')
