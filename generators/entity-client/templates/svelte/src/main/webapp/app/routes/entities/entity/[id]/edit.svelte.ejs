@@ -24,13 +24,13 @@
 	}
 
 	function cancelUpdate() {
-		goto(`/entities/<%= entityInstance %>`)
+		goto(`/entities/<%= entityFolderName %>`)
 	}
 
 	function update<%= entityAngularName %>(event) {
 		<%= entityInstance %>Service
 			.update(event.detail)
-			.then(() => goto(`/entities/<%= entityInstance %>`))
+			.then(() => goto(`/entities/<%= entityFolderName %>`))
 			.catch(err => (error = err))
 	}
 </script>
