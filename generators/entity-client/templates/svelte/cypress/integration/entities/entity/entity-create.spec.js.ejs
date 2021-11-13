@@ -51,7 +51,7 @@ _%>
 		cy.getBySel('add<%= entityAngularName %>Form')
 			.getBySel('<%= field.fieldName %>-error')
 			.should('be.visible')
-			.and('contain', '<%= field.fieldNameCapitalized %> is mandatory')
+			.and('contain', '<%= field.fieldNameHumanized %> is mandatory')
 	<%_ } _%>
 	<%_ if (field.fieldValidationMinLength) { _%>
 

@@ -64,13 +64,13 @@
 		<%_ } _%>
 		validations="{[
 		<%_ if (field.fieldValidationRequired) { _%>
-			{ type: 'required', message: '<%= field.fieldNameCapitalized %> is mandatory' },
+			{ type: 'required', message: '<%= field.fieldNameHumanized %> is mandatory' },
 		<%_ } _%>
 		<%_ if (field.fieldValidationMinLength) { _%>
 			{
 				type: 'minlength',
 				minlength: <%= field.fieldValidateRulesMinlength %>,
-				message: '<%= field.fieldNameCapitalized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters',
+				message: '<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters',
 			},
 		<%_ } _%>
 		<%_ if (field.fieldValidationMaxLength) { _%>
