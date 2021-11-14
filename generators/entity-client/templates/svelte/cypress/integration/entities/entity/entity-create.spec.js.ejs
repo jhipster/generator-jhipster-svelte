@@ -77,7 +77,7 @@ _%>
 		cy.getBySel('add<%= entityAngularName %>Form')
 			.getBySel('<%= field.fieldName %>-error')
 			.should('be.visible')
-			.and('contain', '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMinlength %> characters')
+			.and('contain', '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters')
 	<%_ } _%>
 <%_ 	} _%>
 	})
