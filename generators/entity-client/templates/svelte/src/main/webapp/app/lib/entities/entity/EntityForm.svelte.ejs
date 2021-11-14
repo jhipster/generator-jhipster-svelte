@@ -76,7 +76,7 @@
 		<%_ if (field.fieldValidationMaxLength) { _%>
 			{
 				type: 'maxlength',
-				minlength: <%= field.fieldValidateRulesMaxlength %>,
+				maxlength: <%= field.fieldValidateRulesMaxlength %>,
 				message: '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters',
 			},
 		<%_ } _%>
