@@ -1,0 +1,113 @@
+<script>
+	import { createEventDispatcher } from 'svelte'
+	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan.js'
+	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave.js'
+
+	import Button from '$lib/Button.svelte'
+	import Icon from '$lib/Icon.svelte'
+	import InputControl from '$lib/InputControl.svelte'
+	import Form from '$lib/page/Form.svelte'
+		import {
+		formatToDatetimeLocalInput,
+		parseFromDatetimeLocalInput,
+	} from '$lib/utils/date'
+
+	export let <%= entityInstance %> = {
+		id: null,
+	<%_	for (field of fields.filter(field => !field.id)) { _%>
+		<%= field.fieldName %>: '',
+	<%_ } _%>
+	}
+
+	const dispatch = createEventDispatcher()
+
+	<%_	for (field of fields.filter(field => !field.id)) { _%>
+	let valid<%= field.fieldNameCapitalized %> = false
+	<%_ } _%>
+
+	<%_	for (field of fields.filter(field => !field.id)) { _%>
+	function update<%= field.fieldNameCapitalized %>(event) {
+		<%_ if (field.fieldTypeInstant) { _%>
+		<%= entityInstance %>.<%= field.fieldName %> = parseFromDatetimeLocalInput(event.target.value)
+		<%_ } else { _%>
+		<%= entityInstance %>.<%= field.fieldName %> = event.target.value
+		<%_ } _%>
+	}
+	<%_ } _%>
+
+	$: validForm = <% let isFirst=true; for (field of fields.filter(field => !field.id)) { %><% if(!isFirst) { %>
+		&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%>
+</script>
+
+<Form testId="add<%= entityAngularName %>">
+
+<%_	for (field of fields.filter(field => !field.id)) { _%>
+<%_ if (field.fieldTypeString || field.fieldTypeUUID || field.fieldTypeInstant || (field.fieldTypeBinary && field.blobContentTypeText)) { _%>
+	<InputControl
+		<%_ if (field.fieldTypeInstant) { _%>
+		type="datetime-local"
+		<%_ } else if (field.fieldTypeBinary && field.blobContentTypeText) { _%>
+		type="textarea"
+		<%_ } else { _%>
+		type="text"
+		<%_ } _%>
+		label="<%= field.fieldNameCapitalized %>"
+		name="<%= field.fieldName %>"
+		<%_ if (field.fieldTypeInstant) { _%>
+		value="{formatToDatetimeLocalInput(<%= entityInstance %>.<%= field.fieldName %>)}"
+		<%_ } else { _%>
+		value="{<%= entityInstance %>.<%= field.fieldName %>}"
+		<%_ } _%>
+		on:input="{event => update<%= field.fieldNameCapitalized %>(event)}"
+		<%_ if (field.fieldValidationRequired) { _%>
+		required
+		<%_ } _%>
+		validations="{[
+		<%_ if (field.fieldValidationRequired) { _%>
+			{ type: 'required', message: '<%= field.fieldNameHumanized %> is mandatory' },
+		<%_ } _%>
+		<%_ if (field.fieldValidationMinLength) { _%>
+			{
+				type: 'minlength',
+				minlength: <%= field.fieldValidateRulesMinlength %>,
+				message: '<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters',
+			},
+		<%_ } _%>
+		<%_ if (field.fieldValidationMaxLength) { _%>
+			{
+				type: 'maxlength',
+				maxlength: <%= field.fieldValidateRulesMaxlength %>,
+				message: '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters',
+			},
+		<%_ } _%>
+		]}"
+		on:validate="{event => {
+			valid<%= field.fieldNameCapitalized %> = event.detail.valid
+		}}"
+	/>
+<%_ } _%>
+<%_ } _%>
+	<div class="w-full p-4 flex flex-row justify-center items-center">
+		<div class="mr-4">
+			<Button
+				name="cancelBtn"
+				role="neutral"
+				on:click="{() => dispatch('cancel')}"
+			>
+				<Icon classes="mr-2" icon="{faBan}" />Cancel
+			</Button>
+		</div>
+		<div>
+			<Button
+				name="saveBtn"
+				type="submit"
+				on:click="{() => dispatch('saveorupdate', { ...<%= entityInstance %> })}"
+				disabled="{!validForm}"
+			>
+				<Icon classes="mr-2" icon="{faSave}" />
+				{<%= entityInstance %>.id ? 'Update ' : 'Create '}
+				<%= entityInstance %>
+			</Button>
+		</div>
+	</div>
+</Form>

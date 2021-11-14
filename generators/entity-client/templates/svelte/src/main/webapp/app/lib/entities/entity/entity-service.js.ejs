@@ -33,7 +33,7 @@ export default {
 	},
 <%_ if (!readOnly) { _%>
 	update: entity =>
-		request(`${serverUrl}<%= baseApi + entityApiUrl %>`, 'PUT', JSON.stringify(entity), {
+		request(`${serverUrl}<%= baseApi + entityApiUrl %>/${entity.id}`, 'PUT', JSON.stringify(entity), {
 			'Content-Type': 'application/json',
 		}),
 	delete: id => request(`${serverUrl}<%= baseApi + entityApiUrl %>/${id}`, 'DELETE'),

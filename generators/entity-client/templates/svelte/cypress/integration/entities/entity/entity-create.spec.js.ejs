@@ -1,0 +1,95 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const containsMandatoryField = fields.find(field => field.fieldValidationRequired);
+	const containsFieldValidation = containsMandatoryField || fields.find(field => (field.fieldValidationMinLength || field.fieldValidationMaxLength));
+	const placeHolderText = 'lorem ipsum';
+	const getMinLengthText = function(len) {
+		return placeHolderText.substr(0, len > 1 ? len-1 : 0);
+	}
+	const getMaxLengthText = function(len) {
+		let maxLengthText = placeHolderText;
+		while(maxLengthText.length < len) {
+			maxLengthText+= placeHolderText;
+		}
+		return maxLengthText;
+	}
+_%>
+describe('Create <%= entityInstance %> page', () => {
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+		cy.visit('/entities/<%= entityFolderName %>/new')
+	})
+
+	it('should greets with Create <%= entityInstance %> title', () => {
+		cy.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', 'Create <%= entityInstance %>')
+	})
+
+<%_ if (containsMandatoryField) { _%>
+	it('should require mandatory fields', () => {
+		cy.getBySel('add<%= entityAngularName %>Form').contains('Create <%= entityInstance %>').should('be.disabled')
+	})
+
+<%_ } _%>
+<%_ if (containsFieldValidation) { _%>
+	it('should validate field values', () => {
+<%_
+		for (field of fields.filter(field => !field.id)) {
+			const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+			if (fieldValue === undefined) {
+				warning(`Error generating a value for field ${field.fieldName}`);
+			}
+_%>
+	<%_ if (field.fieldValidationRequired) { _%>
+		cy.getBySel('add<%= entityAngularName %>Form').getByName('<%= field.fieldName %>').type('<%= fieldValue %>').clear().blur()
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getBySel('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> is mandatory')
+	<%_ } _%>
+	<%_ if (field.fieldValidationMinLength) { _%>
+
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getByName('<%= field.fieldName %>')
+			.type(
+				'<%= getMinLengthText(field.fieldValidateRulesMinlength) %>'
+			)
+			.blur()
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getBySel('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters')
+	<%_ } _%>
+	<%_ if (field.fieldValidationMaxLength) { _%>
+
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getByName('<%= field.fieldName %>')
+			.type(
+				'<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>'
+			)
+			.blur()
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getBySel('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters')
+	<%_ } _%>
+<%_ 	} _%>
+	})
+
+<%_ } _%>
+	it('should navigate back to the <%= entityInstance %> list page', () => {
+		cy.getByName('cancelBtn').click()
+
+		cy.location('pathname')
+			.should('eq', '/entities/<%= entityFolderName %>')
+			.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+})

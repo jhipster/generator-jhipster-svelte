@@ -1,0 +1,49 @@
+<script>
+	import { onMount } from 'svelte'
+	import { goto } from '$app/navigation'
+	import { page } from '$app/stores'
+
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import <%= entityAngularName %>Form from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Form.svelte'
+
+	$: id = $page && $page.params && $page.params.id
+	onMount(() => {
+		fetch<%= entityAngularName %>Details()
+	})
+
+	let error
+	let <%= entityInstance %>
+
+	function fetch<%= entityAngularName %>Details() {
+		error = undefined
+		<%= entityInstance %>Service
+			.findById(id)
+			.then(res => (<%= entityInstance %> = res))
+			.catch(err => (error = err))
+	}
+
+	function cancelUpdate() {
+		goto(`/entities/<%= entityFolderName %>`)
+	}
+
+	function update<%= entityAngularName %>(event) {
+		<%= entityInstance %>Service
+			.update(event.detail)
+			.then(() => goto(`/entities/<%= entityFolderName %>`))
+			.catch(err => (error = err))
+	}
+</script>
+
+<svelte:head>
+	<title>Update <%= entityInstance %></title>
+	<meta name="Description" content="Update <%= entityInstance %>" />
+</svelte:head>
+<Page testId="<%= entityInstance %>">
+	<div class="text-left" slot="header">Update <%= entityInstance %></div>
+	<<%= entityAngularName %>Form
+		<%= entityInstance %>="{<%= entityInstance %>}"
+		on:cancel="{cancelUpdate}"
+		on:saveorupdate="{update<%= entityAngularName %>}"
+	/>
+</Page>

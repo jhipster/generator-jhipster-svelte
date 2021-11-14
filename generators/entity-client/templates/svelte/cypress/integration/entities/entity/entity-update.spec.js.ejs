@@ -1,0 +1,176 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const containsMandatoryField = fields.find(field => field.fieldValidationRequired);
+	const containsFieldValidation = containsMandatoryField || fields.find(field => (field.fieldValidationMinLength || field.fieldValidationMaxLength));
+	const placeHolderText = 'lorem ipsum';
+	const getMinLengthText = function(len) {
+		return placeHolderText.substr(0, len > 1 ? len-1 : 0);
+	}
+	const getMaxLengthText = function(len) {
+		let maxLengthText = placeHolderText;
+		while(maxLengthText.length < len) {
+			maxLengthText+= placeHolderText;
+		}
+		return maxLengthText;
+	}
+_%>
+describe('Update <%= entityInstance %> page', () => {
+	let dynamicId
+
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+
+<%_ if (containsBinaryField) { _%>
+		cy.fixture('integration-test.png')
+			.then($blob => {
+				return <% } %>cy.save('api/<%= entityApiUrl %>', {
+			<%_
+				for (field of fields.filter(field => !field.id)) {
+					const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+					if (fieldValue === undefined) {
+						warning(`Error generating a value for field ${field.fieldName}`);
+					}
+			_%>
+				<%_ if (field.fieldTypeBoolean) { _%>
+				<%= field.fieldName %>: true,
+				<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+				<%= field.fieldName %>: $blob,
+				<%= field.fieldName %>ContentType: 'image/png',
+				<%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>',
+				<%_ } else if (field.fieldTypeLocalDate) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>' ,
+				<%_ } else if (field.fieldTypeTimed) { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>:00.000Z' ,
+				<%_ } else if (field.fieldTypeDuration) { _%>
+				<%= field.fieldName %>: 'PT0.000052484S',
+				<%_ } else if (field.fieldTypeNumeric) { _%>
+				<%= field.fieldName %>: <%= fieldValue %>,
+				<%_ } else { _%>
+				<%= field.fieldName %>: '<%= fieldValue %>',
+				<%_ } _%>
+			<%_ } _%>
+<%_ if (containsBinaryField) { _%>
+			})
+<%_ } _%>
+		}).then(res => {
+			dynamicId = res.id
+			cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
+		})
+	})
+
+	afterEach(() => {
+		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
+	<%_ if (authenticationType === 'oauth2') { _%>
+		cy.logoutByApi()
+	<%_ } _%>
+	})
+
+	it('should greets with update <%= entityInstance %> title', () => {
+		cy.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', 'Update <%= entityInstance %>')
+	})
+
+	it('should be populated and have valid state', () => {
+		cy.getBySel('add<%= entityAngularName %>Form')
+		<%_
+			for (field of fields.filter(field => !field.id)) {
+				const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+		_%>
+			<%_ if (!field.fieldTypeTimed) { _%>
+			.getByName('<%= field.fieldName %>')
+			.should('have.value', '<%= fieldValue %>')
+			<%_ } _%>
+		<%_ } _%>
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.contains('Update <%= entityInstance %>')
+			.should('not.be.disabled')
+	})
+
+<%_ if (containsFieldValidation) { _%>
+	it('should validate field values', () => {
+<%_
+		for (field of fields.filter(field => !field.id)) {
+			const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+			if (fieldValue === undefined) {
+				warning(`Error generating a value for field ${field.fieldName}`);
+			}
+_%>
+	<%_ if (field.fieldValidationRequired) { _%>
+		cy.getBySel('add<%= entityAngularName %>Form').getByName('<%= field.fieldName %>').type('<%= fieldValue %>').clear().blur()
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getBySel('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> is mandatory')
+	<%_ } _%>
+	<%_ if (field.fieldValidationMinLength) { _%>
+
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getByName('<%= field.fieldName %>')
+			.type(
+				'<%= getMinLengthText(field.fieldValidateRulesMinlength) %>'
+			)
+			.blur()
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getBySel('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters')
+	<%_ } _%>
+	<%_ if (field.fieldValidationMaxLength) { _%>
+
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getByName('<%= field.fieldName %>')
+			.type(
+				'<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>'
+			)
+			.blur()
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.getBySel('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters')
+	<%_ } _%>
+<%_ 	} _%>
+	})
+
+<%_ } _%>
+
+	it('should navigate back to the <%= entityInstance %> list page', () => {
+		cy.getByName('cancelBtn').click()
+
+		cy.location('pathname')
+			.should('eq', '/entities/<%= entityFolderName %>')
+			.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+
+	it('should update <%= entityInstance %> details', () => {
+		cy.getBySel('add<%= entityAngularName %>Form')
+	<%_
+		for (field of fields.filter(field => !field.id)) {
+			const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+	_%>
+		.getByName('<%= field.fieldName %>').clear().type('<%= fieldValue %>')
+	<%_ } _%>
+		cy.getBySel('add<%= entityAngularName %>Form')
+			.contains('Update <%= entityInstance %>')
+			.should('not.be.disabled')
+			.click()
+
+		cy.getBySel('toast-success').contains(
+			'A <%= entityInstance %> is updated with identifier'
+		)
+
+		cy.location('pathname')
+			.should('eq', '/entities/<%= entityFolderName %>')
+			.getBySel('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+})

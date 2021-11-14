@@ -12,30 +12,30 @@ application {
     entities *
 }
 
-enum EntityStatus {
-    DUMMY, APP, SVELTE
-}
+// enum EntityStatus {
+//    DUMMY, APP, SVELTE
+// }
 
 entity SampleDomainEntity {
   stringData String required minlength(5) maxlength(50)
-  integerData Integer required min(2) max(1000)
-  longData Long required min(2) max(4000)
-  bigDecimalData BigDecimal required
-  floatData Float
-  doubleData Double
-  booleanData Boolean
-  localDateData	LocalDate
-  zonedDateTimeData ZonedDateTime
+//  integerData Integer required min(2) max(1000)
+//  longData Long required min(2) max(4000)
+//  bigDecimalData BigDecimal required
+//  floatData Float
+//  doubleData Double
+//  booleanData Boolean
+//  localDateData	LocalDate
+//  zonedDateTimeData ZonedDateTime
   instantData Instant
-  durationData Duration
+//  durationData Duration
   uuidData UUID
-  enumData EntityStatus
+//  enumData EntityStatus
 }
 
 entity SampleBlobEntity {
-  blobData Blob
-  anyBlobData AnyBlob
-  imageBlobData ImageBlob
+//  blobData Blob
+//  anyBlobData AnyBlob
+//  imageBlobData ImageBlob
   textBlobData TextBlob
 }
 
