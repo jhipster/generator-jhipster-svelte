@@ -42,12 +42,18 @@
 <Form testId="add<%= entityAngularName %>">
 
 <%_	for (field of fields.filter(field => !field.id)) { _%>
-<%_ if (field.fieldTypeString || field.fieldTypeUUID || field.fieldTypeInstant || (field.fieldTypeBinary && field.blobContentTypeText)) { _%>
+<%_ if (field.fieldTypeString
+		|| field.fieldTypeUUID
+		|| field.fieldTypeInstant
+		|| field.fieldTypeNumeric
+		|| (field.fieldTypeBinary && field.blobContentTypeText)) { _%>
 	<InputControl
 		<%_ if (field.fieldTypeInstant) { _%>
 		type="datetime-local"
 		<%_ } else if (field.fieldTypeBinary && field.blobContentTypeText) { _%>
 		type="textarea"
+		<%_ } else if (field.fieldTypeNumeric) { _%>
+		type="number"
 		<%_ } else { _%>
 		type="text"
 		<%_ } _%>
@@ -71,6 +77,26 @@
 				type: 'minlength',
 				minlength: <%= field.fieldValidateRulesMinlength %>,
 				message: '<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters',
+			},
+		<%_ } _%>
+		<%_ if (field.fieldTypeNumeric) { _%>
+			{
+				type: 'numeric',
+				message: '<%= field.fieldNameHumanized %> should be numeric',
+			},
+		<%_ } _%>
+		<%_ if (field.fieldTypeNumeric && field.fieldValidationMin) { _%>
+			{
+				type: 'min',
+				min: <%= field.fieldValidateRulesMin %>,
+				message: '<%= field.fieldNameHumanized %> should be at least <%= field.fieldValidateRulesMin %>',
+			},
+		<%_ } _%>
+		<%_ if (field.fieldTypeNumeric && field.fieldValidationMax) { _%>
+			{
+				type: 'max',
+				max: <%= field.fieldValidateRulesMax %>,
+				message: '<%= field.fieldNameHumanized %> cannot be more than <%= field.fieldValidateRulesMax %>',
 			},
 		<%_ } _%>
 		<%_ if (field.fieldValidationMaxLength) { _%>
