@@ -143,9 +143,9 @@ _%>
 
 		cy.getBySel('add<%= entityAngularName %>Form')
 			.getByName('<%= field.fieldName %>')
-			.type(
-				'-'
-			)
+			.type('1')
+			.clear()
+			.type('-')
 			.blur()
 		cy.getBySel('add<%= entityAngularName %>Form')
 			.getBySel('<%= field.fieldName %>-error')
