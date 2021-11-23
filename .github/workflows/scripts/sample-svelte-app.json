@@ -1,6 +1,6 @@
 {
 	"generator-jhipster": {
-		"jhipsterVersion": "7.3.1",
+		"jhipsterVersion": "7.4.0",
 		"applicationType": "monolith",
 		"baseName": "SvelteDemoApplication",
 		"packageName": "tech.jhipster.sample",
