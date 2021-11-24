@@ -1,3 +1,6 @@
+<%_
+	const containsBooleanField = fields.find(field => field.fieldTypeBoolean);
+_%>
 <script>
 	import { createEventDispatcher } from 'svelte'
 	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan.js'
@@ -6,10 +9,13 @@
 	import Button from '$lib/Button.svelte'
 	import Icon from '$lib/Icon.svelte'
 	import InputControl from '$lib/InputControl.svelte'
+<%_ if (containsBooleanField) _%>
+	import CheckboxControl from '$lib/CheckboxControl.svelte'
+<%_ } _%>
 	import Form from '$lib/page/Form.svelte'
 		import {
 		formatToDatetimeLocalInput,
-		parseFromDatetimeLocalInput,
+		parseFromDatetimeLocalInput
 	} from '$lib/utils/date'
 
 	export let <%= entityInstance %> = {
@@ -21,21 +27,23 @@
 
 	const dispatch = createEventDispatcher()
 
-	<%_	for (field of fields.filter(field => !field.id)) { _%>
+	<%_	for (field of fields.filter(field => !field.id || field.fieldTypeBoolean)) { _%>
 	let valid<%= field.fieldNameCapitalized %> = false
 	<%_ } _%>
 
 	<%_	for (field of fields.filter(field => !field.id)) { _%>
 	function update<%= field.fieldNameCapitalized %>(event) {
-		<%_ if (field.fieldTypeInstant) { _%>
+		<%_ if (field.fieldTypeInstant || field.fieldTypeZonedDateTime) { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = parseFromDatetimeLocalInput(event.target.value)
+		<%_ else if (field.fieldTypeBoolean) { _%>
+		<%= entityInstance %>.<%= field.fieldName %> = event.target.checked
 		<%_ } else { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.value
 		<%_ } _%>
 	}
 	<%_ } _%>
 
-	$: validForm = <% let isFirst=true; for (field of fields.filter(field => !field.id)) { %><% if(!isFirst) { %>
+	$: validForm = <% let isFirst=true; for (field of fields.filter(field => !field.id || field.fieldTypeBoolean)) { %><% if(!isFirst) { %>
 		&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%>
 </script>
 
@@ -44,22 +52,27 @@
 <%_	for (field of fields.filter(field => !field.id)) { _%>
 <%_ if (field.fieldTypeString
 		|| field.fieldTypeUUID
+		|| field.fieldTypeLocalDate
+		|| field.fieldTypeZonedDateTime
 		|| field.fieldTypeInstant
 		|| field.fieldTypeNumeric
+		|| field.fieldTypeDuration
 		|| (field.fieldTypeBinary && field.blobContentTypeText)) { _%>
 	<InputControl
-		<%_ if (field.fieldTypeInstant) { _%>
+		<%_ if (field.fieldTypeInstant || field.fieldTypeZonedDateTime) { _%>
 		type="datetime-local"
 		<%_ } else if (field.fieldTypeBinary && field.blobContentTypeText) { _%>
 		type="textarea"
 		<%_ } else if (field.fieldTypeNumeric) { _%>
 		type="number"
+		<%_ } else if (field.fieldTypeLocalDate) { _%>
+		type="date"
 		<%_ } else { _%>
 		type="text"
 		<%_ } _%>
-		label="<%= field.fieldNameCapitalized %>"
+		label="<%= field.fieldNameHumanized %>"
 		name="<%= field.fieldName %>"
-		<%_ if (field.fieldTypeInstant) { _%>
+		<%_ if (field.fieldTypeInstant || field.fieldTypeZonedDateTime) { _%>
 		value="{formatToDatetimeLocalInput(<%= entityInstance %>.<%= field.fieldName %>)}"
 		<%_ } else { _%>
 		value="{<%= entityInstance %>.<%= field.fieldName %>}"
@@ -111,6 +124,15 @@
 			valid<%= field.fieldNameCapitalized %> = event.detail.valid
 		}}"
 	/>
+<%_ } else if (field.fieldTypeBoolean) { _%>
+	<div class="mt-1 mb-2 ml-1">
+		<CheckboxControl
+			name="<%= field.fieldName %>"
+			checked="{<%= entityInstance %>.<%= field.fieldName %>}"
+			on:change="{event => update<%= field.fieldNameCapitalized %>(event)}"
+			><%= field.fieldNameHumanized %></CheckboxControl
+		>
+	</div>
 <%_ } _%>
 <%_ } _%>
 	<div class="w-full p-4 flex flex-row justify-center items-center">
