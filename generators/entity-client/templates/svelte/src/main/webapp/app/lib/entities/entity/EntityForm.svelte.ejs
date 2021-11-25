@@ -9,7 +9,7 @@ _%>
 	import Button from '$lib/Button.svelte'
 	import Icon from '$lib/Icon.svelte'
 	import InputControl from '$lib/InputControl.svelte'
-<%_ if (containsBooleanField) _%>
+<%_ if (containsBooleanField) { _%>
 	import CheckboxControl from '$lib/CheckboxControl.svelte'
 <%_ } _%>
 	import Form from '$lib/page/Form.svelte'
@@ -35,7 +35,7 @@ _%>
 	function update<%= field.fieldNameCapitalized %>(event) {
 		<%_ if (field.fieldTypeInstant || field.fieldTypeZonedDateTime) { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = parseFromDatetimeLocalInput(event.target.value)
-		<%_ else if (field.fieldTypeBoolean) { _%>
+		<%_ } else if (field.fieldTypeBoolean) { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.checked
 		<%_ } else { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.value
@@ -43,7 +43,7 @@ _%>
 	}
 	<%_ } _%>
 
-	$: validForm = <% let isFirst=true; for (field of fields.filter(field => !field.id || field.fieldTypeBoolean)) { %><% if(!isFirst) { %>
+	$: validForm = <% let isFirst=true; for (field of fields.filter(field => (!field.id || field.fieldTypeBoolean))) { %><% if(!isFirst) { %>
 		&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%>
 </script>
 
