@@ -27,7 +27,7 @@ _%>
 
 	const dispatch = createEventDispatcher()
 
-	<%_	for (field of fields.filter(field => !field.id || field.fieldTypeBoolean)) { _%>
+	<%_	for (field of fields.filter(field => (!field.id && field.fieldTypeBoolean))) { _%>
 	let valid<%= field.fieldNameCapitalized %> = false
 	<%_ } _%>
 
@@ -43,7 +43,7 @@ _%>
 	}
 	<%_ } _%>
 
-	$: validForm = <% let isFirst=true; for (field of fields.filter(field => (!field.id || field.fieldTypeBoolean))) { %><% if(!isFirst) { %>
+	$: validForm = <% let isFirst=true; for (field of fields.filter(field => (!field.id && field.fieldTypeBoolean))) { %><% if(!isFirst) { %>
 		&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%>
 </script>
 

@@ -90,7 +90,11 @@ describe('Update <%= entityInstance %> page', () => {
 			<%_ if (!field.fieldTypeTimed && !field.fieldTypeDuration) { _%>
 			.getByName('<%= field.fieldName %>')
 				<%_ if (field.fieldTypeBoolean) { _%>
-			.should('have.value', '<%= fieldValue === false ? "off" : "on" %>')
+					<%_ if (fieldValue === false) { _%>
+			.should('not.be.checked')
+					<%_ } else { _%>
+			.should('be.checked')
+					<%_ } _%>
 				<%_ } else { _%>
 			.should('have.value', '<%= fieldValue %>')
 				<%_ } _%>
