@@ -23,11 +23,11 @@ entity SampleDomainEntity {
   bigDecimalData BigDecimal required
   floatData Float
   doubleData Double
-//  booleanData Boolean
-//  localDateData	LocalDate
-//  zonedDateTimeData ZonedDateTime
+  booleanData Boolean
+  localDateData	LocalDate
+  zonedDateTimeData ZonedDateTime
   instantData Instant
-//  durationData Duration
+  durationData Duration
   uuidData UUID
 //  blobData Blob
 //  anyBlobData AnyBlob

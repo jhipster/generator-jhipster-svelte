@@ -41,7 +41,7 @@ describe('Update <%= entityInstance %> page', () => {
 					}
 			_%>
 				<%_ if (field.fieldTypeBoolean) { _%>
-				<%= field.fieldName %>: true,
+				<%= field.fieldName %>: <%= fieldValue %>,
 				<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
 				<%= field.fieldName %>: $blob,
 				<%= field.fieldName %>ContentType: 'image/png',
@@ -87,9 +87,17 @@ describe('Update <%= entityInstance %> page', () => {
 			for (field of fields.filter(field => !field.id)) {
 				const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
 		_%>
-			<%_ if (!field.fieldTypeTimed) { _%>
+			<%_ if (!field.fieldTypeTimed && !field.fieldTypeDuration) { _%>
 			.getByName('<%= field.fieldName %>')
+				<%_ if (field.fieldTypeBoolean) { _%>
+					<%_ if (fieldValue === false) { _%>
+			.should('not.be.checked')
+					<%_ } else { _%>
+			.should('be.checked')
+					<%_ } _%>
+				<%_ } else { _%>
 			.should('have.value', '<%= fieldValue %>')
+				<%_ } _%>
 			<%_ } _%>
 		<%_ } _%>
 		cy.getBySel('add<%= entityAngularName %>Form')
@@ -199,7 +207,17 @@ _%>
 		for (field of fields.filter(field => !field.id)) {
 			const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
 	_%>
+		<%_ if (!field.fieldTypeDuration) {_%>
+			<%_ if (field.fieldTypeBoolean) {_%>
+				<%_ if (fieldValue === true ) { _%>
+		.getByName('<%= field.fieldName %>').uncheck()
+				<%_ } else { _%>
+		.getByName('<%= field.fieldName %>').check()
+				<%_ } _%>
+			<%_ } else { _%>
 		.getByName('<%= field.fieldName %>').clear().type('<%= fieldValue %>')
+			<%_ } _%>
+		<%_ } _%>
 	<%_ } _%>
 		cy.getBySel('add<%= entityAngularName %>Form')
 			.contains('Update <%= entityInstance %>')
