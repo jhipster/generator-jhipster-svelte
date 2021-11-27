@@ -19,7 +19,7 @@
 		"eslint-plugin-testing-library": "5.0.0",
 		"fa-svelte": "3.1.0",
 		"husky": "7.0.2",
-		"jest": "26.6.3",
+		"jest": "27.3.1",
 		"jest-junit": "13.0.0",
 		"jest-sonar": "0.2.12",
 		"jest-svelte-resolver": "1.0.0",
