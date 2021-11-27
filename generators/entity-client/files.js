@@ -107,7 +107,7 @@ function addEnumerationFiles(generator) {
 			};
 			if (!generator.skipClient) {
 				const destinationFile = generator.destinationPath(
-					`${FRONTEND_COMPONENTS_DIR}entities/enums/${field.fieldType}.js`
+					`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType}.js`
 				);
 				generator.template(
 					`svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`,
