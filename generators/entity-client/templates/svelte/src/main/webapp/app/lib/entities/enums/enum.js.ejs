@@ -1,0 +1,9 @@
+const <%= enumName %> = {
+<%_ enumValues.forEach((enumValue, index) => { _%>
+	<%= enumValue.name %> : '<%= enumValue.value %>'<% if (index < enumValues.length - 1) { %>,<% } %>
+<%_ }); _%>
+}
+
+Object.freeze(<%= enumName %>)
+
+export default <%= enumName %>
