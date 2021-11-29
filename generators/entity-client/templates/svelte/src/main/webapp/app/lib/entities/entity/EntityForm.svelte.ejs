@@ -1,5 +1,6 @@
 <%_
 	const containsBooleanField = fields.find(field => field.fieldTypeBoolean);
+	const containsEnumField = fields.find(field => field.fieldIsEnum);
 _%>
 <script>
 	import { createEventDispatcher } from 'svelte'
@@ -12,8 +13,14 @@ _%>
 <%_ if (containsBooleanField) { _%>
 	import CheckboxControl from '$lib/CheckboxControl.svelte'
 <%_ } _%>
+<%_ if (containsEnumField) { _%>
+	import SelectControl from '$lib/SelectControl.svelte'
+<%_ } _%>
 	import Form from '$lib/page/Form.svelte'
-		import {
+	<%_	for (field of fields.filter(field => field.fieldIsEnum)) { _%>
+	import <%= field.fieldType %> from '$lib/entities/enums/<%= field.fieldType %>'
+	<%_ } _%>
+	import {
 		formatToDatetimeLocalInput,
 		parseFromDatetimeLocalInput
 	} from '$lib/utils/date'
@@ -37,6 +44,8 @@ _%>
 		<%= entityInstance %>.<%= field.fieldName %> = parseFromDatetimeLocalInput(event.target.value)
 		<%_ } else if (field.fieldTypeBoolean) { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.checked
+		<%_ } else if (field.fieldIsEnum) { _%>
+		<%= entityInstance %>.<%= field.fieldName %> = event.detail.value
 		<%_ } else { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.value
 		<%_ } _%>
@@ -133,6 +142,25 @@ _%>
 			><%= field.fieldNameHumanized %></CheckboxControl
 		>
 	</div>
+<%_ } else if (field.fieldIsEnum) { _%>
+	<SelectControl
+		name="<%= field.fieldName %>"
+		label="<%= field.fieldNameHumanized %>"
+		value="{<%= entityInstance %>.<%= field.fieldName %> ? [<%= entityInstance %>.<%= field.fieldName %>] : []}"
+		options="{Object.keys(<%= field.fieldType %>).map(<%= field.fieldName %> => ({
+			name: <%= field.fieldName %>,
+			value: <%= field.fieldName %>,
+		}))}"
+		on:validate="{event => {
+			valid<%= field.fieldNameCapitalized %> = event.detail.valid
+		}}"
+		validations="{[
+		<%_ if (field.fieldValidationRequired) { _%>
+			{ type: 'required', message: 'Select at least one <%= field.fieldNameHumanized %>' },
+		<%_ } _%>
+		]}"
+		on:select="{event => update<%= field.fieldNameCapitalized %>(event)}"
+	/>
 <%_ } _%>
 <%_ } _%>
 	<div class="w-full p-4 flex flex-row justify-center items-center">

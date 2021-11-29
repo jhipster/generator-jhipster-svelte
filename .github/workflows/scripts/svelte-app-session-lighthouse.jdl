@@ -12,9 +12,9 @@ application {
 	entities *
 }
 
-// enum EntityStatus {
-//    DUMMY, APP, SVELTE
-// }
+ enum EntityStatus {
+    DUMMY, APP, SVELTE
+ }
 
 entity SampleDomainEntity {
   stringData String required minlength(5) maxlength(50)
@@ -33,7 +33,7 @@ entity SampleDomainEntity {
 //  anyBlobData AnyBlob
 //  imageBlobData ImageBlob
   textBlobData TextBlob
-//  enumData EntityStatus
+  enumData EntityStatus
 }
 
 paginate SampleDomainEntity with pagination

@@ -1,4 +1,5 @@
 const constants = require('generator-jhipster/generators/generator-constants');
+const generatorUtils = require('generator-jhipster/generators/utils');
 const util = require('../util');
 
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
@@ -96,7 +97,32 @@ const svelteFiles = {
 	],
 };
 
+function addEnumerationFiles(generator) {
+	generator.fields.forEach(field => {
+		if (field.fieldIsEnum === true) {
+			const enumInfo = {
+				...generatorUtils.getEnumInfo(field, generator.clientRootFolder),
+				frontendAppName: generator.frontendAppName,
+				packageName: generator.packageName,
+			};
+			if (!generator.skipClient) {
+				const destinationFile = generator.destinationPath(
+					`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType}.js`
+				);
+				generator.template(
+					`svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`,
+					destinationFile,
+					generator,
+					{},
+					enumInfo
+				);
+			}
+		}
+	});
+}
+
 function writeFiles() {
+	addEnumerationFiles(this);
 	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
 
 	util.addEntityToMenu(this, this.entityFolderName, this.entityAngularName, this.entityAngularName);

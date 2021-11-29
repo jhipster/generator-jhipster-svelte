@@ -214,6 +214,16 @@ _%>
 				<%_ } else { _%>
 		.getByName('<%= field.fieldName %>').check()
 				<%_ } _%>
+			<%_ } else if (field.fieldIsEnum) { _%>
+		.getByName('<%= field.fieldName %>')
+		.click()
+		.getBySel('<%= field.fieldName %>-options')
+		.within(() => {
+			cy.root().get("input[type='checkbox']").eq(0).check()
+			cy.root().get("input[type='checkbox']").eq(1).check()
+		})
+		.getBySel('<%= field.fieldName %>-bg')
+		.click()
 			<%_ } else { _%>
 		.getByName('<%= field.fieldName %>').clear().type('<%= fieldValue %>')
 			<%_ } _%>

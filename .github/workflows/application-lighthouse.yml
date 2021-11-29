@@ -74,7 +74,7 @@ jobs:
               run: |
                   cd "$HOME/svelte-app"
                   npm install -g @lhci/cli@0.7.x
-                  npm install --save puppeteer
+                  npm install --save puppeteer@11.0.0
                   docker-compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
             - name: Run Lighthouse tests - Unauthenticated Pages
