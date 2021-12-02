@@ -37,10 +37,10 @@
 
 <svelte:head>
 	<title>Update <%= entityInstance %></title>
-	<meta name="Description" content="Update <%= entityInstance %>" />
+	<meta name="Description" content="Update <%= entityClassHumanized %>" />
 </svelte:head>
 <Page testId="<%= entityInstance %>">
-	<div class="text-left" slot="header">Update <%= entityInstance %></div>
+	<div class="text-left" slot="header">Update <%= entityClassHumanized %></div>
 	<<%= entityAngularName %>Form
 		<%= entityInstance %>="{<%= entityInstance %>}"
 		on:cancel="{cancelUpdate}"
