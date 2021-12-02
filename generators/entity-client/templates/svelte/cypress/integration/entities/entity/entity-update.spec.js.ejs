@@ -88,16 +88,21 @@ describe('Update <%= entityInstance %> page', () => {
 				const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
 		_%>
 			<%_ if (!field.fieldTypeTimed && !field.fieldTypeDuration) { _%>
+    		    <%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+			.getBySel('<%= field.fieldName %>View')
+			.should('contain', 'image/png')
+                <%_ } else { _%>
 			.getByName('<%= field.fieldName %>')
-				<%_ if (field.fieldTypeBoolean) { _%>
-					<%_ if (fieldValue === false) { _%>
+				    <%_ if (field.fieldTypeBoolean) { _%>
+					    <%_ if (fieldValue === false) { _%>
 			.should('not.be.checked')
-					<%_ } else { _%>
+					    <%_ } else { _%>
 			.should('be.checked')
-					<%_ } _%>
-				<%_ } else { _%>
+					    <%_ } _%>
+				    <%_ } else { _%>
 			.should('have.value', '<%= fieldValue %>')
-				<%_ } _%>
+                    <%_ } _%>
+                <%_ } _%>
 			<%_ } _%>
 		<%_ } _%>
 		cy.getBySel('add<%= entityAngularName %>Form')
@@ -224,6 +229,10 @@ _%>
 		})
 		.getBySel('<%= field.fieldName %>-bg')
 		.click()
+            <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+        .getByName('<%= field.fieldName %>ClearBtn')
+        .click()
+        .setFileInput('<%= field.fieldName %>', 'integration-test.png', 'image/png')
 			<%_ } else { _%>
 		.getByName('<%= field.fieldName %>').clear().type('<%= fieldValue %>')
 			<%_ } _%>

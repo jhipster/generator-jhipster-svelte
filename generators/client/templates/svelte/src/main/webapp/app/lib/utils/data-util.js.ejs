@@ -19,6 +19,31 @@ export function openFile(data, contentType) {
 	}
 }
 
+export function getBase64FileData(files, isImage) {
+	return new Promise((resolve, reject) => {
+		if (files && files[0]) {
+			const file = files[0]
+			if (isImage && !/^image\//.test(file.type)) {
+				reject('Invalid image file type')
+			}
+			const fileReader = new FileReader()
+			fileReader.readAsDataURL(file)
+			fileReader.onload = e => {
+				try {
+					const base64Data = e.target.result.substr(
+						e.target.result.indexOf('base64,') + 'base64,'.length
+					)
+					resolve(base64Data)
+				} catch (e) {
+					reject(e)
+				}
+			}
+		} else {
+			reject('File not found')
+		}
+	})
+}
+
 function endsWith(suffix, str) {
 	return str.includes(suffix, str.length - suffix.length)
 }

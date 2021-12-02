@@ -1,6 +1,8 @@
 <%_
 	const containsBooleanField = fields.find(field => field.fieldTypeBoolean);
 	const containsEnumField = fields.find(field => field.fieldIsEnum);
+	const containsBlobField = fields.find(field => field.fieldTypeBinary && !field.blobContentTypeText);
+	const containsInstantField = fields.find(field => (field.fieldTypeInstant || field.fieldTypeZonedDateTime));
 _%>
 <script>
 	import { createEventDispatcher } from 'svelte'
@@ -20,10 +22,15 @@ _%>
 	<%_	for (field of fields.filter(field => field.fieldIsEnum)) { _%>
 	import <%= field.fieldType %> from '$lib/entities/enums/<%= field.fieldType %>'
 	<%_ } _%>
+<%_ if (containsBlobField) { _%>
+    import { getBase64FileData } from '$lib/utils/data-util.js'
+<%_ } _%>
+<%_ if (containsInstantField) { _%>
 	import {
 		formatToDatetimeLocalInput,
 		parseFromDatetimeLocalInput
 	} from '$lib/utils/date'
+<%_ } _%>
 
 	export let <%= entityInstance %> = {
 		id: null,
@@ -46,6 +53,17 @@ _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.checked
 		<%_ } else if (field.fieldIsEnum) { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.detail.value
+        <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+        getBase64FileData(event.target.files)
+			.then(base64Data => {
+				<%= entityInstance %>.<%= field.fieldName %> = base64Data
+				<%= entityInstance %>.<%= field.fieldName %>ContentType =
+					event.target.files[0].type
+			})
+			.catch(err => {
+				<%= entityInstance %>.<%= field.fieldName %> = undefined
+				<%= entityInstance %>.<%= field.fieldName %>ContentType = undefined
+			})
 		<%_ } else { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.value
 		<%_ } _%>
@@ -66,12 +84,14 @@ _%>
 		|| field.fieldTypeInstant
 		|| field.fieldTypeNumeric
 		|| field.fieldTypeDuration
-		|| (field.fieldTypeBinary && field.blobContentTypeText)) { _%>
+		|| field.fieldTypeBinary) { _%>
 	<InputControl
 		<%_ if (field.fieldTypeInstant || field.fieldTypeZonedDateTime) { _%>
 		type="datetime-local"
 		<%_ } else if (field.fieldTypeBinary && field.blobContentTypeText) { _%>
 		type="textarea"
+		<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+		type="file"
 		<%_ } else if (field.fieldTypeNumeric) { _%>
 		type="number"
 		<%_ } else if (field.fieldTypeLocalDate) { _%>
@@ -86,7 +106,11 @@ _%>
 		<%_ } else { _%>
 		value="{<%= entityInstance %>.<%= field.fieldName %>}"
 		<%_ } _%>
+        <%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+        on:change="{event => update<%= field.fieldNameCapitalized %>(event)}"
+        <%_ } else { _%>
 		on:input="{event => update<%= field.fieldNameCapitalized %>(event)}"
+        <%_ } _%>
 		<%_ if (field.fieldValidationRequired) { _%>
 		required
 		<%_ } _%>
