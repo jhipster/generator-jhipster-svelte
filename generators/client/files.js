@@ -32,7 +32,11 @@ const svelteFiles = {
 	e2e: [
 		{
 			templates: [
-				'cypress/fixtures/integration-test.png',
+				{
+					file: generator => `${FRONTEND_SRC_DIR}static/img/${generator.hipster}_head-192.png`,
+					renameTo: () => `cypress/fixtures/integration-test.png`,
+					method: 'copy',
+				},
 				'cypress/integration/footer.spec.js',
 				'cypress/integration/home.spec.js',
 				'cypress/integration/navbar.spec.js',
