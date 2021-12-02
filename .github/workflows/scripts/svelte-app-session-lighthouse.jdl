@@ -29,9 +29,9 @@ entity SampleDomainEntity {
   instantData Instant
   durationData Duration
   uuidData UUID
-//  blobData Blob
-//  anyBlobData AnyBlob
-//  imageBlobData ImageBlob
+  blobData Blob
+  anyBlobData AnyBlob
+  imageBlobData ImageBlob
   textBlobData TextBlob
   enumData EntityStatus
 }

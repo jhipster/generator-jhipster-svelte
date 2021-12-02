@@ -33,9 +33,9 @@ entity SampleDomainEntity {
 }
 
 entity SampleBlobEntity {
-//  blobData Blob
-//  anyBlobData AnyBlob
-//  imageBlobData ImageBlob
+  blobData Blob
+  anyBlobData AnyBlob
+  imageBlobData ImageBlob
   textBlobData TextBlob
 }
 
