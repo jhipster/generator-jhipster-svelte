@@ -38,7 +38,7 @@
 			if (multiple) {
 				value = [...value, event.target.value]
 			} else {
-				value =  [event.target.value]
+				value = [event.target.value]
 			}
 		} else {
 			if (multiple) {
@@ -49,10 +49,13 @@
 		}
 
 		validateRequired()
-		const valueToDispatch = multiple ? value : (value.length > 0 ? value[0] : null)
-		console.log(valueToDispatch, value)
+		const valueToDispatch = multiple
+			? value
+			: value.length > 0
+			? value[0]
+			: null
 		dispatch('select', {
-			value: valueToDispatch
+			value: valueToDispatch,
 		})
 	}
 
@@ -70,8 +73,6 @@
 
 		dispatch('validate', { valid, message })
 	}
-
-	$: console.log(value)
 </script>
 
 <style>

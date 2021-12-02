@@ -1,9 +1,12 @@
 <script>
-	import { createEventDispatcher, afterUpdate } from 'svelte'
+	import { afterUpdate, createEventDispatcher } from 'svelte'
 	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle.js'
+	import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes.js'
 
 	import Icon from '$lib/Icon.svelte'
-	import { validate, createValidator } from '$lib/utils/validator.js'
+	import Button from '$lib/Button.svelte'
+	import { createValidator, validate } from '$lib/utils/validator.js'
+	import BinaryRecord from '$lib/page/BinaryRecord.svelte'
 
 	export let value = ''
 	export let type = 'text'
@@ -12,6 +15,7 @@
 	export let validations = []
 	export let id
 
+	let ref
 	let dirty = false
 	let valid = false
 	let message
@@ -19,7 +23,7 @@
 	const dispatch = createEventDispatcher()
 	const idVal = id ? id : name + Date.now()
 
-	$: focusedOrContainsValue = value !== '' || focused
+	$: focusedOrContainsValue = value !== '' || focused || type === 'file'
 	$: pristine = !focused && !dirty
 	$: pristineOrValid = pristine || valid
 	$: focusedAndValidOrPristine = focused && (!dirty || valid)
@@ -58,7 +62,7 @@
 <div class="mt-4 relative h-12">
 	<label
 		class="absolute left-0 px-1 ml-2 transition-all duration-200
-			pointer-events-none"
+			pointer-events-none z-10"
 		class:-mt-2="{focusedOrContainsValue}"
 		class:bg-white="{focusedOrContainsValue}"
 		class:dark:bg-gray-800="{focusedOrContainsValue}"
@@ -75,29 +79,7 @@
 		for="{idVal}"
 		>{label}<span class="ml-px">{isRequired ? '*' : ''}</span>
 	</label>
-	{#if type !== 'textarea'}
-		<input
-			class="px-3 py-3 w-full shadow-none bg-white dark:bg-gray-800 outline-none focus:ring-0 rounded z-10"
-			class:border="{!focused}"
-			class:border-2="{focused}"
-			class:border-gray-400="{pristineOrValid}"
-			class:dark:border-gray-700="{pristineOrValid}"
-			class:border-primary-600="{focusedAndValidOrPristine}"
-			class:dark:border-primary-500="{focusedAndValidOrPristine}"
-			class:border-red-600="{dirtyAndInvalid}"
-			class:dark:border-red-500="{dirtyAndInvalid}"
-			type="{type}"
-			name="{name}"
-			id="{idVal}"
-			value="{value}"
-			on:input
-			on:focus="{() => (focused = true)}"
-			on:blur="{() => (focused = false)}"
-			use:validate="{validations}"
-			on:validation="{handleValidationResponse}"
-			{...$$restProps}
-		/>
-	{:else}
+	{#if type === 'textarea'}
 		<textarea
 			class="px-3 py-3 w-full shadow-none bg-white dark:bg-gray-800 outline-none focus:ring-0 rounded z-10"
 			class:border="{!focused}"
@@ -118,6 +100,77 @@
 			use:validate="{validations}"
 			on:validation="{handleValidationResponse}"
 			{...$$restProps}></textarea>
+	{:else if type === 'file'}
+		<input
+			class:hidden="{value}"
+			bind:this="{ref}"
+			class="px-3 py-3 w-full shadow-none bg-white dark:bg-gray-800 outline-none focus:ring-0 rounded z-10"
+			class:border="{!focused}"
+			class:border-2="{focused}"
+			class:border-gray-400="{pristineOrValid}"
+			class:dark:border-gray-700="{pristineOrValid}"
+			class:border-primary-600="{focusedAndValidOrPristine}"
+			class:dark:border-primary-500="{focusedAndValidOrPristine}"
+			class:border-red-600="{dirtyAndInvalid}"
+			class:dark:border-red-500="{dirtyAndInvalid}"
+			type="{type}"
+			name="{name}"
+			id="{idVal}"
+			on:change
+			on:focus="{() => (focused = true)}"
+			on:blur="{() => (focused = false)}"
+			use:validate="{validations}"
+			on:validation="{handleValidationResponse}"
+			{...$$restProps}
+		/>
+		{#if value}
+			<div
+				data-test="{name}View"
+				class="absolute left-0 py-3 pl-3 text-xl w-full shadow-none bg-white dark:bg-gray-800 border-gray-400 dark:border-gray-700 border rounded z-1"
+			>
+				<BinaryRecord
+					field="{value}"
+					fieldContentType="image/png"
+					name="{name}"
+				/>
+			</div>
+		{/if}
+		{#if ref && (ref.value || value)}
+			<Button
+				name="{name}ClearBtn"
+				role="none"
+				classes="dark:text-white text-gray-800 dark:hover:bg-gray-700 hover:bg-gray-300 absolute right-0 pl-2 pr-0 pt-0 pb-1 mr-1 rounded-full"
+				on:click="{() => {
+					ref.value = ''
+					ref.dispatchEvent(new Event('change'))
+				}}"
+			>
+				<Icon classes="mr-2" icon="{faTimes}" />
+			</Button>
+		{/if}
+	{:else}
+		<input
+			class="px-3 py-3 w-full shadow-none bg-white dark:bg-gray-800 outline-none focus:ring-0 rounded z-10"
+			class:border="{!focused}"
+			class:border-2="{focused}"
+			class:border-gray-400="{pristineOrValid}"
+			class:dark:border-gray-700="{pristineOrValid}"
+			class:border-primary-600="{focusedAndValidOrPristine}"
+			class:dark:border-primary-500="{focusedAndValidOrPristine}"
+			class:border-red-600="{dirtyAndInvalid}"
+			class:dark:border-red-500="{dirtyAndInvalid}"
+			type="{type}"
+			name="{name}"
+			id="{idVal}"
+			value="{value}"
+			on:input
+			on:change
+			on:focus="{() => (focused = true)}"
+			on:blur="{() => (focused = false)}"
+			use:validate="{validations}"
+			on:validation="{handleValidationResponse}"
+			{...$$restProps}
+		/>
 	{/if}
 </div>
 <div class="flex flex-col mt-1 pr-3 text-xs text-red-600 dark:text-red-500">

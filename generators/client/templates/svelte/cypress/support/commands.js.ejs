@@ -278,3 +278,16 @@ Cypress.Commands.add('delete', (url, lenient = true) => {
 		})
 })
 <%_ } _%>
+
+Cypress.Commands.add('setFileInput', (fieldSelector, testFile, mimeType) => {
+	cy.fixture(testFile).then($blob => {
+		cy.getByName(fieldSelector).then($el => {
+			const blob = Cypress.Blob.base64StringToBlob($blob, mimeType)
+			const file = new File([blob], testFile, { type: mimeType })
+			const list = new DataTransfer()
+			list.items.add(file)
+			$el[0].files = list.files
+			$el[0].dispatchEvent(new Event('change'))
+		})
+	})
+})
