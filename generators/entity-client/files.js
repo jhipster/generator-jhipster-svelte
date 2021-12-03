@@ -125,5 +125,5 @@ function writeFiles() {
 	addEnumerationFiles(this);
 	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
 
-	util.addEntityToMenu(this, this.entityFolderName, this.entityAngularName, this.entityAngularName);
+	util.addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
 }

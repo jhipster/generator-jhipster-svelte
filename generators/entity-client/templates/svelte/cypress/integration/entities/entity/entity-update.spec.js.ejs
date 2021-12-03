@@ -78,7 +78,7 @@ describe('Update <%= entityInstance %> page', () => {
 	it('should greets with update <%= entityInstance %> title', () => {
 		cy.getBySel('<%= entityInstance %>Title')
 			.should('be.visible')
-			.should('contain', 'Update <%= entityInstance %>')
+			.should('contain', 'Update <%= entityClassHumanized %>')
 	})
 
 	it('should be populated and have valid state', () => {
@@ -106,7 +106,7 @@ describe('Update <%= entityInstance %> page', () => {
 			<%_ } _%>
 		<%_ } _%>
 		cy.getBySel('add<%= entityAngularName %>Form')
-			.contains('Update <%= entityInstance %>')
+			.contains('Update <%= entityClassHumanized %>')
 			.should('not.be.disabled')
 	})
 
@@ -239,7 +239,7 @@ _%>
 		<%_ } _%>
 	<%_ } _%>
 		cy.getBySel('add<%= entityAngularName %>Form')
-			.contains('Update <%= entityInstance %>')
+			.contains('Update <%= entityClassHumanized %>')
 			.should('not.be.disabled')
 			.click()
 

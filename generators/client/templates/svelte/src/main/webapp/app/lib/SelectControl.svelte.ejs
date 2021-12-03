@@ -22,6 +22,7 @@
 	let dirty = false
 	let valid = false
 	let message
+	let selectOptions
 
 	$: focusedOrContainsValue = value.length !== 0 || focused
 	$: pristine = !focused && !dirty
@@ -70,13 +71,60 @@
 		} else {
 			valid = true
 		}
-
 		dispatch('validate', { valid, message })
 	}
-</script>
 
-<style>
-</style>
+	function toggleOptions() {
+		isOpen = !isOpen
+	}
+
+	function navigateToFirstOption(event) {
+		switch(event.keyCode) {
+			case 40:
+				if (!isOpen) {
+					isOpen = true
+				}
+				if (selectOptions.firstChild) {
+					selectOptions.firstChild.querySelector('input').focus()
+				} else {
+					isOpen = false
+				}
+				break;
+			case 27:
+			case 9:
+				isOpen = false
+				break;
+		}
+	}
+
+	function navigateOptions(event) {
+		const parent = event.target.closest('div')
+		switch(event.keyCode) {
+			case 38:
+				if (parent.previousSibling) {
+					parent.previousSibling.querySelector('input').focus()
+				} else {
+					isOpen = false
+				}
+				break;
+			case 40:
+				if (parent.nextSibling) {
+					parent.nextSibling.querySelector('input').focus()
+				} else {
+					isOpen = false
+				}
+				break;
+			case 32:
+			case 13:
+				event.target.click()
+				break;
+			case 27:
+			case 9:
+				isOpen = false
+				break;
+		}
+	}
+</script>
 
 <div class="mt-4 relative h-12">
 	<label
@@ -123,8 +171,9 @@
 			id="{name + randomSuffix}"
 			value="{value && value.length ? value.join(', ') : null}"
 			autocomplete="off"
-			on:input="{() => (isOpen = !isOpen)}"
-			on:focus="{() => ((focused = true), (isOpen = !isOpen))}"
+			on:input="{() => toggleOptions()}"
+			on:keydown="{(event) => navigateToFirstOption(event)}"
+			on:focus="{() => ((focused = true), (toggleOptions()))}"
 			on:blur="{() => (focused = false)}"
 			{...$$restProps}
 		/>
@@ -134,7 +183,8 @@
 			tabindex="-1"
 			class:z-20="{isOpen}"
 			class="focus:outline-none focus:ring-0"
-			on:click|preventDefault="{() => (isOpen = !isOpen)}"
+            on:keydown="{(event) => navigateToFirstOption(event)}"
+			on:click|preventDefault="{() => toggleOptions()}"
 		>
 			<Icon
 				classes="{isOpen ? 'opacity-100' : 'opacity-70'}"
@@ -151,6 +201,8 @@
 		></button>
 	{/if}
 	<div
+		bind:this={selectOptions}
+		on:keydown|preventDefault="{(event) => navigateOptions(event)}"
 		data-test="{name}-options"
 		class:hidden="{!isOpen}"
 		class="absolute left-0 w-full py-2 bg-white dark:bg-gray-800 border-b-2 rounded shadow-md border-2 z-10 border-t-0 rounded-tl-none rounded-tr-none"
@@ -163,6 +215,7 @@
 				class="block px-3 py-1 rounded-none font-normal hover:text-white dark:hover:text-gray-800 text-gray-800 dark:text-gray-200 hover:bg-primary-600 dark:hover:bg-primary-500"
 			>
 				<CheckboxControl
+					tabindex="-1"
 					checked="{value.includes(option.value)}"
 					group="{value}"
 					value="{option.value}"

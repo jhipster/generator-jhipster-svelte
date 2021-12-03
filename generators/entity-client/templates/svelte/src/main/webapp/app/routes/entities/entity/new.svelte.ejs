@@ -22,9 +22,9 @@
 
 <svelte:head>
 	<title>Add <%= entityInstance %></title>
-	<meta name="Description" content="Add <%= entityInstance %>" />
+	<meta name="Description" content="Add <%= entityClassHumanized %>" />
 </svelte:head>
 <Page testId="<%= entityInstance %>">
-	<div class="text-left" slot="header">Create <%= entityInstance %></div>
+	<div class="text-left" slot="header">Create <%= entityClassHumanized %></div>
 	<<%= entityAngularName %>Form <%= entityInstance %>="{<%= entityInstance %>}" on:cancel="{cancelSave}" on:saveorupdate="{save<%= entityAngularName %>}" />
 </Page>

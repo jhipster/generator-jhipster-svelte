@@ -32,12 +32,12 @@ describe('Create <%= entityInstance %> page', () => {
 	it('should greets with Create <%= entityInstance %> title', () => {
 		cy.getBySel('<%= entityInstance %>Title')
 			.should('be.visible')
-			.should('contain', 'Create <%= entityInstance %>')
+			.should('contain', 'Create <%= entityClassHumanized %>')
 	})
 
 <%_ if (containsMandatoryField) { _%>
 	it('should require mandatory fields', () => {
-		cy.getBySel('add<%= entityAngularName %>Form').contains('Create <%= entityInstance %>').should('be.disabled')
+		cy.getBySel('add<%= entityAngularName %>Form').contains('Create <%= entityClassHumanized %>').should('be.disabled')
 	})
 
 <%_ } _%>
