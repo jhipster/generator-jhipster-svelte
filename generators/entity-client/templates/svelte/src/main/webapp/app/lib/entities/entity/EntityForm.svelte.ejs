@@ -3,6 +3,9 @@
 	const containsEnumField = fields.find(field => field.fieldIsEnum);
 	const containsBlobField = fields.find(field => field.fieldTypeBinary && !field.blobContentTypeText);
 	const containsInstantField = fields.find(field => (field.fieldTypeInstant || field.fieldTypeZonedDateTime));
+	const containsRelationshipField = relationships.filter(relationship => !(relationship.relationshipManyToOne
+					|| (relationship.relationshipManyToMany
+							&& relationship.ownerSide)));
 _%>
 <script>
 	import { createEventDispatcher } from 'svelte'
@@ -15,7 +18,7 @@ _%>
 <%_ if (containsBooleanField) { _%>
 	import CheckboxControl from '$lib/CheckboxControl.svelte'
 <%_ } _%>
-<%_ if (containsEnumField) { _%>
+<%_ if (containsEnumField || containsRelationshipField) { _%>
 	import SelectControl from '$lib/SelectControl.svelte'
 <%_ } _%>
 	import Form from '$lib/page/Form.svelte'
@@ -23,7 +26,7 @@ _%>
 	import <%= field.fieldType %> from '$lib/entities/enums/<%= field.fieldType %>'
 	<%_ } _%>
 <%_ if (containsBlobField) { _%>
-    import { getBase64FileData } from '$lib/utils/data-util.js'
+	import { getBase64FileData } from '$lib/utils/data-util.js'
 <%_ } _%>
 <%_ if (containsInstantField) { _%>
 	import {
@@ -37,13 +40,40 @@ _%>
 	<%_	for (field of fields.filter(field => !field.id)) { _%>
 		<%= field.fieldName %>: '',
 	<%_ } _%>
+<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+_%>
+		<%= relationship.relationshipName %>: null,
+<%_
+		}
 	}
+_%>
+	}
+<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+_%>
+	export let <%= relationship.relationshipNamePlural %> = []
+<%_
+		}
+	}
+_%>
 
 	const dispatch = createEventDispatcher()
 
 	<%_	for (field of fields.filter(field => (!field.id && !field.fieldTypeBoolean))) { _%>
 	let valid<%= field.fieldNameCapitalized %> = false
 	<%_ } _%>
+<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+_%>
+	let valid<%= relationship.relationshipNameCapitalized %> = false
+<%_
+		}
+	}
+_%>
 
 	<%_	for (field of fields.filter(field => !field.id)) { _%>
 	function update<%= field.fieldNameCapitalized %>(event) {
@@ -53,8 +83,8 @@ _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.checked
 		<%_ } else if (field.fieldIsEnum) { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.detail.value
-        <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
-        getBase64FileData(event.target.files)
+		<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+		getBase64FileData(event.target.files)
 			.then(base64Data => {
 				<%= entityInstance %>.<%= field.fieldName %> = base64Data
 				<%= entityInstance %>.<%= field.fieldName %>ContentType =
@@ -69,13 +99,29 @@ _%>
 		<%_ } _%>
 	}
 	<%_ } _%>
+<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+_%>
+	function update<%= relationship.relationshipNameCapitalized %>(event) {
+		<%= entityInstance %>.<%= relationship.relationshipName %> = event.detail.value
+	}
+<%_
+		}
+	}
+_%>
 
 	$: validForm = <% let isFirst=true; for (field of fields.filter(field => (!field.id && !field.fieldTypeBoolean))) { %><% if(!isFirst) { %>
-		&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%>
+		&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%><% for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+%>     && valid<%= relationship.relationshipNameCapitalized %><%
+		}
+	}
+%>
 </script>
 
 <Form testId="add<%= entityAngularName %>">
-
 <%_	for (field of fields.filter(field => !field.id)) { _%>
 <%_ if (field.fieldTypeString
 		|| field.fieldTypeUUID
@@ -106,11 +152,11 @@ _%>
 		<%_ } else { _%>
 		value="{<%= entityInstance %>.<%= field.fieldName %>}"
 		<%_ } _%>
-        <%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
-        on:change="{event => update<%= field.fieldNameCapitalized %>(event)}"
-        <%_ } else { _%>
+		<%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+		on:change="{event => update<%= field.fieldNameCapitalized %>(event)}"
+		<%_ } else { _%>
 		on:input="{event => update<%= field.fieldNameCapitalized %>(event)}"
-        <%_ } _%>
+		<%_ } _%>
 		<%_ if (field.fieldValidationRequired) { _%>
 		required
 		<%_ } _%>
@@ -187,6 +233,36 @@ _%>
 	/>
 <%_ } _%>
 <%_ } _%>
+<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+			|| (relationship.relationshipManyToMany && relationship.ownerSide)) { _%>
+	<SelectControl
+		name="<%= relationship.relationshipName %>"
+		label="<%= relationship.relationshipNameHumanized %>"
+		value="{<%= entityInstance %>.<%= relationship.relationshipName %> ? [<%= entityInstance %>.<%= relationship.relationshipName %>] : []}"
+		<%_ if (relationship.relationshipManyToMany) {_%>
+		multiple="true"
+		<%_ } _%>
+		options="{<%= relationship.relationshipNamePlural %>.map(<%= relationship.relationshipFieldName %> => ({
+			key: '<%= relationship.otherEntityField %>',
+			name: <%= relationship.relationshipFieldName %>.<%= relationship.otherEntityField %>,
+			value: <%= relationship.relationshipFieldName %>,
+		}))}"
+		on:validate="{event => {
+			valid<%= relationship.relationshipNameCapitalized %> = event.detail.valid
+		}}"
+		validations="{[
+		<%_ if (relationship.relationshipValidate
+				&& (relationship.relationshipManyToOne || relationship.ownerSide)
+				&& relationship.relationshipRequired) { _%>
+			{ type: 'required', message: 'Select at least one <%= relationship.relationshipFieldName %>' },
+		<%_ } _%>
+		]}"
+		on:select="{event => update<%= relationship.relationshipNameCapitalized %>(event)}"
+	/>
+	<%_ } _%>
+<%_ } _%>
+
 	<div class="w-full p-4 flex flex-row justify-center items-center">
 		<div class="mr-4">
 			<Button

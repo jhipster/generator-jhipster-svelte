@@ -121,9 +121,22 @@ function addEnumerationFiles(generator) {
 	});
 }
 
+function addUserServiceFile(generator) {
+	const containsUserRelationshipField = generator.relationships.filter(
+		relationship => relationship.otherEntityName === 'user'
+	);
+	if (containsUserRelationshipField) {
+		generator.template(
+			`svelte/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`,
+			generator.destinationPath(`${FRONTEND_COMPONENTS_DIR}user/user-service.js`),
+			generator
+		);
+	}
+}
+
 function writeFiles() {
 	addEnumerationFiles(this);
+	addUserServiceFile(this);
 	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
-
 	util.addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
 }

@@ -1,7 +1,7 @@
 <script>
-	import { createEventDispatcher, afterUpdate } from 'svelte'
-	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle.js'
-	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown.js'
+	import {afterUpdate, createEventDispatcher} from 'svelte'
+	import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons/faExclamationCircle.js'
+	import {faCaretDown} from '@fortawesome/free-solid-svg-icons/faCaretDown.js'
 
 	import Icon from '$lib/Icon.svelte'
 	import CheckboxControl from '$lib/CheckboxControl.svelte'
@@ -18,13 +18,31 @@
 
 	let focused = false
 	let isOpen = false
+	let displayName = []
 
 	let dirty = false
 	let valid = false
 	let message
 	let selectOptions
 
-	$: focusedOrContainsValue = value.length !== 0 || focused
+	$: normalizedValue = value && value.length ? (
+		options && options.length
+			? value.map(value => {
+				Object.keys(value).forEach(key => {
+					if (!Object.keys(options[0]['value']).includes(key)) {
+						delete value[key]
+					}
+				})
+				return value
+			})
+			: []
+	) : []
+	$: displayName = value && value.length ? (
+		options && options.length
+			? options[0]['key'] ? value.map(value => value[options[0]['key']]) : value
+			: []
+	) : []
+	$: focusedOrContainsValue = (normalizedValue && normalizedValue.length !== 0) || focused
 	$: pristine = !focused && !dirty
 	$: pristineOrValid = pristine || valid
 	$: focusedAndValidOrPristine = focused && (!dirty || valid)
@@ -35,15 +53,16 @@
 
 	function selectOption(event) {
 		dirty = true
+		const eventValue = typeof options[0]['value'] === 'object' ? JSON.parse(event.target.value) : event.target.value;
 		if (event.target.checked) {
 			if (multiple) {
-				value = [...value, event.target.value]
+				value = [...value, eventValue]
 			} else {
-				value = [event.target.value]
+				value = [ eventValue ]
 			}
 		} else {
 			if (multiple) {
-				value = value.filter(val => val !== event.target.value)
+				value = value.filter(val => val !== eventValue)
 			} else {
 				value = []
 			}
@@ -53,8 +72,8 @@
 		const valueToDispatch = multiple
 			? value
 			: value.length > 0
-			? value[0]
-			: null
+				? value[0]
+				: null
 		dispatch('select', {
 			value: valueToDispatch,
 		})
@@ -63,7 +82,7 @@
 	afterUpdate(() => validateRequired())
 
 	function validateRequired() {
-		if (isRequired && !value.length) {
+		if (isRequired && (normalizedValue && !normalizedValue.length)) {
 			valid = false
 			message = validations.find(
 				validation => validation.type === 'required'
@@ -144,7 +163,7 @@
 		class:text-red-600="{dirtyAndInvalid && (focused || isOpen)}"
 		class:dark:text-red-500="{dirtyAndInvalid && (focused || isOpen)}"
 		for="{name + randomSuffix}"
-		>{label}<span class="ml-px">{isRequired ? '*' : ''}</span>
+	>{label}<span class="ml-px">{isRequired ? '*' : ''}</span>
 	</label>
 	<div
 		class="w-full relative flex flex-row justify-center items-center rounded bg-white dark:bg-gray-800"
@@ -169,7 +188,7 @@
 			name="{name}"
 			readonly
 			id="{name + randomSuffix}"
-			value="{value && value.length ? value.join(', ') : null}"
+			value="{displayName && displayName.length ? displayName.join(', ') : null}"
 			autocomplete="off"
 			on:input="{() => toggleOptions()}"
 			on:keydown="{(event) => navigateToFirstOption(event)}"
@@ -183,7 +202,7 @@
 			tabindex="-1"
 			class:z-20="{isOpen}"
 			class="focus:outline-none focus:ring-0"
-            on:keydown="{(event) => navigateToFirstOption(event)}"
+			on:keydown="{(event) => navigateToFirstOption(event)}"
 			on:click|preventDefault="{() => toggleOptions()}"
 		>
 			<Icon
@@ -216,11 +235,10 @@
 			>
 				<CheckboxControl
 					tabindex="-1"
-					checked="{value.includes(option.value)}"
-					group="{value}"
-					value="{option.value}"
+					checked="{normalizedValue && (typeof option.value === 'object' ? JSON.stringify(normalizedValue).includes(JSON.stringify(option.value)) : normalizedValue.includes(option.value))}"
+					value="{typeof option.value === 'object' ? JSON.stringify(option.value) : option.value}"
 					on:change="{event => selectOption(event)}"
-					>{option.name}</CheckboxControl
+				>{option.name}</CheckboxControl
 				>
 			</div>
 		{/each}
