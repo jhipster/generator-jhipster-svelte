@@ -6,7 +6,7 @@
 		"@fortawesome/free-solid-svg-icons": "5.15.4",
 		"@sveltejs/adapter-static": "1.0.0-next.21",
 		"@sveltejs/kit": "1.0.0-next.201",
-		"@testing-library/jest-dom": "5.15.1",
+		"@testing-library/jest-dom": "5.16.0",
 		"@testing-library/svelte": "3.0.3",
 		"autoprefixer": "10.4.0",
 		"cypress": "9.1.0",
