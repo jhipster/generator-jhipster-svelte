@@ -22,7 +22,7 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 	<%_ if (relationship.otherEntityUser) { _%>
 	import userService from '$lib/entities/user/user-service.js'
 	<%_ } else { _%>
-	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityFolderName %>-service.js'
+	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityName %>-service.js'
 	<%_ } _%>
 	<%_
 	}
