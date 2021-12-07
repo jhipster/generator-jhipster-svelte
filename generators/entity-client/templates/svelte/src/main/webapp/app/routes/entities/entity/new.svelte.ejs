@@ -16,6 +16,7 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 	<%_ } _%>
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	<%_ if (relationship.otherEntityUser) { _%>
@@ -33,6 +34,7 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 	onMount(() => {
 		<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 		if (relationship.relationshipManyToOne
+                || (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 		_%>
 		fetch<%= relationship.relationshipNameCapitalizedPlural %>()
@@ -47,6 +49,7 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 	let <%= entityInstance %>
 			<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 			if (relationship.relationshipManyToOne
+                    || (relationship.relationshipOneToOne && relationship.ownerSide)
 					|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 			_%>
 		let <%= relationship.relationshipNamePlural %>
@@ -57,6 +60,7 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	function fetch<%= relationship.relationshipNameCapitalizedPlural %>() {
@@ -98,6 +102,7 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 	<%= entityInstance %>="{<%= entityInstance %>}"
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	<%= relationship.relationshipNamePlural %>="{<%= relationship.relationshipNamePlural %>}"

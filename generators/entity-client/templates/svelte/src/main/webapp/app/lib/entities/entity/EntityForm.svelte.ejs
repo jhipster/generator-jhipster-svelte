@@ -42,6 +42,7 @@ _%>
 		<%_ } _%>
 		<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 		if (relationship.relationshipManyToOne
+                || (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 		_%>
 		<%_ if (relationship.relationshipManyToMany) {_%>
@@ -56,6 +57,7 @@ _%>
 	}
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	export let <%= relationship.relationshipNamePlural %> = []
@@ -71,6 +73,7 @@ _%>
 	<%_ } _%>
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	let valid<%= relationship.relationshipNameCapitalized %> = false
@@ -105,6 +108,7 @@ _%>
 	<%_ } _%>
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	function update<%= relationship.relationshipNameCapitalized %>(event) {
@@ -122,6 +126,7 @@ _%>
 	$: validForm = <% let isFirst=true; for (field of fields.filter(field => (!field.id && !field.fieldTypeBoolean))) { %><% if(!isFirst) { %>
 	&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%><% for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	%>     && valid<%= relationship.relationshipNameCapitalized %><%
 	}
@@ -243,6 +248,7 @@ _%>
 	<%_ } _%>
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) { _%>
 	<SelectControl
 			<%_ if (relationship.relationshipManyToMany) {_%>

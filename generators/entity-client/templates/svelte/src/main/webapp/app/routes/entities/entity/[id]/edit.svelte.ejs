@@ -8,6 +8,7 @@
 	import <%= entityAngularName %>Form from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Form.svelte'
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	<%_ if (relationship.otherEntityUser) { _%>
@@ -25,6 +26,7 @@
 		fetch<%= entityAngularName %>Details()
 		<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 		if (relationship.relationshipManyToOne
+                || (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 		_%>
 		fetch<%= relationship.relationshipNameCapitalizedPlural %>()
@@ -38,6 +40,7 @@
 	let <%= entityInstance %>
 			<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 			if (relationship.relationshipManyToOne
+                    || (relationship.relationshipOneToOne && relationship.ownerSide)
 					|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 			_%>
 		let <%= relationship.relationshipNamePlural %>
@@ -55,6 +58,7 @@
 	}
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 
@@ -96,6 +100,7 @@
 	<<%= entityAngularName %>Form
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
+            || (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	<%= relationship.relationshipNamePlural %>="{<%= relationship.relationshipNamePlural %>}"
