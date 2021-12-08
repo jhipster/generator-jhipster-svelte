@@ -2,8 +2,7 @@
 const relationshipFields = relationships.filter(relationship => (
 	relationship.otherEntity.primaryKey
 		&& (relationship.relationshipManyToOne
-			|| (relationship.relationshipOneToOne && relationship.ownerSide)
-			|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+			|| (relationship.relationshipOneToOne && relationship.ownerSide))))
 const containsRelationshipField = relationshipFields && relationshipFields.length;
 _%>
 <script>
