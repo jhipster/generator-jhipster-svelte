@@ -163,10 +163,12 @@
 		label="Roles"
 		multiple="true"
 		value="{user.authorities}"
-		options="{authorities.map(authority => ({
-			name: authority,
-			value: authority,
-		}))}"
+		options="{{
+			data: authorities.map(authority => ({
+				name: authority,
+				value: authority,
+			}))
+		}}"
 		on:validate="{event => {
 			validAuthorities = event.detail.valid
 		}}"

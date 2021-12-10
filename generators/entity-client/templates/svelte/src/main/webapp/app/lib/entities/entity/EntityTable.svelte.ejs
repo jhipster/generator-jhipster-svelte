@@ -17,7 +17,7 @@ _%>
 	const bothTimedAndDuration = timedFieldType && durationFieldType;
 	const binaryFieldType = fields.find(field => ((field.fieldTypeBinary && field.blobContentTypeImage) || (field.fieldTypeBinary && field.blobContentTypeAny)));
 	if (timedFieldType || durationFieldType ) { _%>
-	import { <%_ if (timedFieldType) { _%>formatDate <%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } else { _%><%_ } _%><%_ if (durationFieldType) { _%> formatDurationType <%_ } _%> } from '$lib/utils/date'
+	import { <% if (timedFieldType) { %>formatDate <% } %><% if (bothTimedAndDuration) { %>, <% } else { %><% } %><% if (durationFieldType) { %> formatDurationType <% } %> } from '$lib/utils/date'
 	<%_ }
 	if (binaryFieldType) {
 	_%>
@@ -31,131 +31,130 @@ _%>
 
 <Table testId="<%= entityInstance %>">
 	<thead slot="head">
-	<TableRow classes="bg-gray-100 dark:bg-gray-700">
-		<TableHeader>
-			<span>ID</span>
-			<%_ if (!paginationNo) { _%>
-			<Sort
-					active="{sortPredicate === 'id'}"
-					sortPredicate="id"
-					hasRecords="{<%= entityInstancePlural %>.length}"
-					on:sortbypredicate
-			/>
+		<TableRow classes="bg-gray-100 dark:bg-gray-700">
+			<TableHeader>
+				<span>ID</span>
+				<%_ if (!paginationNo) { _%>
+				<Sort
+						active="{sortPredicate === 'id'}"
+						sortPredicate="id"
+						hasRecords="{<%= entityInstancePlural %>.length}"
+						on:sortbypredicate
+				/>
+				<%_ } _%>
+			</TableHeader>
+			<%_ for (field of fields.filter(field => !field.id)) { _%>
+			<TableHeader>
+				<span><%= field.fieldNameHumanized %></span>
+				<%_ if (!paginationNo) { _%>
+				<Sort
+						active="{sortPredicate === '<%= field.fieldName%>'}"
+						sortPredicate="<%= field.fieldName%>"
+						hasRecords="{<%= entityInstancePlural %>.length}"
+						on:sortbypredicate
+				/>
+				<%_ } _%>
+			</TableHeader>
 			<%_ } _%>
-		</TableHeader>
-		<%_ for (field of fields.filter(field => !field.id)) { _%>
-		<TableHeader>
-			<span><%= field.fieldNameHumanized %></span>
-			<%_ if (!paginationNo) { _%>
-			<Sort
-					active="{sortPredicate === '<%= field.fieldName%>'}"
-					sortPredicate="<%= field.fieldName%>"
-					hasRecords="{<%= entityInstancePlural %>.length}"
-					on:sortbypredicate
-			/>
+			<%_ for (relationship of relationshipFields) { _%>
+			<TableHeader>
+				<span><%= relationship.relationshipNameHumanized %></span>
+			</TableHeader>
 			<%_ } _%>
-		</TableHeader>
-		<%_ } _%>
-		<%_ for (relationship of relationshipFields) { _%>
-		<TableHeader>
-			<span><%= relationship.relationshipNameHumanized %></span>
-		</TableHeader>
-		<%_ } _%>
-	</TableRow>
+		</TableRow>
 	</thead>
 	<tbody>
-	{#each <%= entityInstancePlural %> as <%= entityInstance %> (<%= entityInstance %>.id)}
-	<TableRow let:showActions>
-		<TableData>{<%= entityInstance %>.id}</TableData>
-		<%_
-		// exclude id field in last field index calculation
-		const lastFieldIndex = fields.length - 1;
-		let fieldIndex = 1;
-				for (field of fields.filter(field => !field.id)) {
-		_%>
-		<TableData<% if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { %> classes="min-w-[130px] {showActions ? 'relative' : ''}"<%_ } _%>>
-			<%_ if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { _%>
-			<div class:opacity-20="{showActions}">
-				<%_ }_%>
-				<%_ if (field.fieldTypeBinary && field.blobContentTypeImage) { _%>
-				<BinaryRecord
-						field="{<%= entityInstance %>.<%= field.fieldName %>}"
-						fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
-						name="<%= field.fieldName %>"
-						fieldType="image"
-				/>
-				<%_ } else if (field.fieldTypeBinary && field.blobContentTypeAny) { _%>
-				<BinaryRecord
-						field="{<%= entityInstance %>.<%= field.fieldName %>}"
-						fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
-						name="<%= field.fieldName %>"
-				/>
-				<%_ } else if (field.fieldTypeTimed || field.fieldTypeLocalDate) { _%>
-				{formatDate(<%=entityInstance %>.<%= field.fieldName %>)}
-				<%_ } else if (field.fieldTypeDuration) { _%>
-				{formatDurationType(<%=entityInstance %>.<%= field.fieldName %>)}
-				<%_ } else { _%>
-				{<%=entityInstance %>.<%= field.fieldName %> ? <%=entityInstance %>.<%= field.fieldName %> : ''}
-				<%_ } _%>
-				<%_ if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { _%>
-			</div>
-			<div
-					class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
-			>
-				<<%= entityAngularName %>ListActions
-				<%= entityInstance %>="{<%= entityInstance %>}"
-				showActions="{showActions}"
-				on:view<%= entityInstance %>
-				on:update<%= entityInstance %>
-				on:delete<%= entityInstance %>
-				/>
-			</div>
-			<%_ }_%>
-		</TableData>
-		<%_
-			fieldIndex++;
-		}
-		_%>
-		<%_
-			let relationshipFieldIndex = 1;
-			for (const relationship of relationshipFields) {
-		_%>
-		<TableData<% if(relationshipFieldIndex === relationshipFields.length) { %> classes="min-w-[130px] {showActions ? 'relative' : ''}"<%_ } _%>>
-			<%_ if(relationshipFieldIndex === relationshipFields.length) { _%>
-			<div class:opacity-20="{showActions}">
-			<%_ }_%>
-				<%_ if (relationship.relationshipManyToMany) {_%>
-				{<%= entityInstance %>.<%= relationship.relationshipNamePlural %> ? <%= entityInstance %>.<%= relationship.relationshipNamePlural %>.map(el => el.<%= relationship.otherEntityField %>).join(', ') : '' }
-				<%_ } else { _%>
-				{<%=entityInstance %>.<%= relationship.relationshipName %> ? <%=entityInstance %>.<%= relationship.relationshipName %>.<%= relationship.otherEntityField %> : ''}
-				<%_ } _%>
-			<%_ if(relationshipFieldIndex === relationshipFields.length) { _%>
-			</div>
-			<div
-					class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
-			>
-				<<%= entityAngularName %>ListActions
-				<%= entityInstance %>="{<%= entityInstance %>}"
-				showActions="{showActions}"
-				on:view<%= entityInstance %>
-				on:update<%= entityInstance %>
-				on:delete<%= entityInstance %>
-				/>
-			</div>
-			<%_ }_%>
-		</TableData>
-		<%_
-				relationshipFieldIndex++;
-			}
-		_%>
-	</TableRow>
-	{:else}
-	<TableRow let:showActions>
-		<TableData colspan="3" classes="text-center py-8"
-		>No <%= entityClassPluralHumanized %> found</TableData
-		>
-	</TableRow>
-	{/each}
+		{#each <%= entityInstancePlural %> as <%= entityInstance %> (<%= entityInstance %>.id)}
+			<TableRow let:showActions>
+				<TableData>{<%= entityInstance %>.id}</TableData>
+				<%_
+				// exclude id field in last field index calculation
+				const lastFieldIndex = fields.length - 1;
+				let fieldIndex = 1;
+						for (field of fields.filter(field => !field.id)) {
+				_%>
+				<TableData<% if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { %> classes="min-w-[130px] {showActions ? 'relative' : ''}"<%_ } _%>>
+					<%_ if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { _%>
+					<div class:opacity-20="{showActions}">
+						<%_ }_%>
+						<%_ if (field.fieldTypeBinary && field.blobContentTypeImage) { _%>
+						<BinaryRecord
+								field="{<%= entityInstance %>.<%= field.fieldName %>}"
+								fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
+								name="<%= field.fieldName %>"
+								fieldType="image"
+						/>
+						<%_ } else if (field.fieldTypeBinary && field.blobContentTypeAny) { _%>
+						<BinaryRecord
+								field="{<%= entityInstance %>.<%= field.fieldName %>}"
+								fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
+								name="<%= field.fieldName %>"
+						/>
+						<%_ } else if (field.fieldTypeTimed || field.fieldTypeLocalDate) { _%>
+						{formatDate(<%=entityInstance %>.<%= field.fieldName %>)}
+						<%_ } else if (field.fieldTypeDuration) { _%>
+						{formatDurationType(<%=entityInstance %>.<%= field.fieldName %>)}
+						<%_ } else { _%>
+						{<%=entityInstance %>.<%= field.fieldName %> ? <%=entityInstance %>.<%= field.fieldName %> : ''}
+						<%_ } _%>
+						<%_ if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { _%>
+					</div>
+					<div
+							class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
+					>
+						<<%= entityAngularName %>ListActions
+							<%= entityInstance %>="{<%= entityInstance %>}"
+							showActions="{showActions}"
+							on:view<%= entityInstance %>
+							on:update<%= entityInstance %>
+							on:delete<%= entityInstance %>
+						/>
+					</div>
+					<%_ }_%>
+				</TableData>
+				<%_
+					fieldIndex++;
+				}
+				_%>
+				<%_
+					let relationshipFieldIndex = 1;
+					for (const relationship of relationshipFields) {
+				_%>
+				<TableData<% if(relationshipFieldIndex === relationshipFields.length) { %> classes="min-w-[130px] {showActions ? 'relative' : ''}"<%_ } _%>>
+					<%_ if(relationshipFieldIndex === relationshipFields.length) { _%>
+					<div class:opacity-20="{showActions}">
+					<%_ }_%>
+						<%_ if (relationship.relationshipManyToMany) {_%>
+						{<%= entityInstance %>.<%= relationship.relationshipNamePlural %> ? <%= entityInstance %>.<%= relationship.relationshipNamePlural %>.map(el => el.<%= relationship.otherEntityField %>).join(', ') : '' }
+						<%_ } else { _%>
+						{<%=entityInstance %>.<%= relationship.relationshipName %> ? <%=entityInstance %>.<%= relationship.relationshipName %>.<%= relationship.otherEntityField %> : ''}
+						<%_ } _%>
+					<%_ if(relationshipFieldIndex === relationshipFields.length) { _%>
+					</div>
+					<div
+							class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
+					>
+						<<%= entityAngularName %>ListActions
+						<%= entityInstance %>="{<%= entityInstance %>}"
+						showActions="{showActions}"
+						on:view<%= entityInstance %>
+						on:update<%= entityInstance %>
+						on:delete<%= entityInstance %>
+						/>
+					</div>
+					<%_ }_%>
+				</TableData>
+				<%_
+						relationshipFieldIndex++;
+					}
+				_%>
+			</TableRow>
+		{:else}
+			<TableRow let:showActions>
+				<TableData colspan="3" classes="text-center py-8"
+				>No <%= entityClassPluralHumanized %> found</TableData
+				>
+			</TableRow>
+		{/each}
 	</tbody>
-</Table>:x
-:
+</Table>

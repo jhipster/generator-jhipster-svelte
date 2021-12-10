@@ -171,8 +171,9 @@
 			on:delete<%= entityAngularName %>="{delete<%= entityAngularName %>}"
 		/>
 	{/if}
-	<div class="flex flex-row justify-between items-center text-base mt-4">
-	<%_ if (searchEngine) { _%>
+	<div
+		class="flex flex-row justify-between items-center text-base mt-4"
+	><%_ if (searchEngine) { _%>
 		<SearchForm testId="<%= entityInstance %>" name="<%= entityInstance %>" on:search="{search<%= entityClassPlural %>}" />
 	<%_ }
 		if (!paginationNo) { _%>

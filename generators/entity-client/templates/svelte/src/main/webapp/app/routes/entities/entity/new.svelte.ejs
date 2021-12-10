@@ -1,8 +1,11 @@
-<%
-const containsRelationshipField = relationships.filter(relationship => !(relationship.relationshipManyToOne
-		|| (relationship.relationshipManyToMany
-				&& relationship.ownerSide)));
-%>
+<%_
+const relationshipFields = relationships.filter(relationship => (
+	relationship.otherEntity.primaryKey
+		&& (relationship.relationshipManyToOne
+			|| (relationship.relationshipOneToOne && relationship.ownerSide)
+			|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+const containsRelationshipField = relationshipFields && relationshipFields.length;
+_%>
 <script>
 	import { goto } from '$app/navigation'
 
@@ -12,11 +15,11 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 	<%_
 	if(containsRelationshipField) {
 	_%>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	<%_ } _%>
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
-            || (relationship.relationshipOneToOne && relationship.ownerSide)
+			|| (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	<%_ if (relationship.otherEntityUser) { _%>
@@ -34,7 +37,7 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 	onMount(() => {
 		<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 		if (relationship.relationshipManyToOne
-                || (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 		_%>
 		fetch<%= relationship.relationshipNameCapitalizedPlural %>()
@@ -49,10 +52,10 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 	let <%= entityInstance %>
 			<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 			if (relationship.relationshipManyToOne
-                    || (relationship.relationshipOneToOne && relationship.ownerSide)
+					|| (relationship.relationshipOneToOne && relationship.ownerSide)
 					|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 			_%>
-		let <%= relationship.relationshipNamePlural %>
+	let <%= relationship.relationshipNamePlural %>
 	<%_
 	}
 	}
@@ -60,7 +63,7 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
-            || (relationship.relationshipOneToOne && relationship.ownerSide)
+			|| (relationship.relationshipOneToOne && relationship.ownerSide)
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	function fetch<%= relationship.relationshipNameCapitalizedPlural %>() {
@@ -99,17 +102,18 @@ const containsRelationshipField = relationships.filter(relationship => !(relatio
 <Page testId="<%= entityInstance %>">
 	<div class="text-left" slot="header">Create <%= entityClassHumanized %></div>
 	<<%= entityAngularName %>Form
-	<%= entityInstance %>="{<%= entityInstance %>}"
-	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
-	if (relationship.relationshipManyToOne
-            || (relationship.relationshipOneToOne && relationship.ownerSide)
-			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
-	_%>
-	<%= relationship.relationshipNamePlural %>="{<%= relationship.relationshipNamePlural %>}"
-	<%_
-	}
-	}
-	_%>
-	on:cancel="{cancelSave}"
-	on:saveorupdate="{save<%= entityAngularName %>}" />
+		<%= entityInstance %>="{<%= entityInstance %>}"
+		<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+		_%>
+		<%= relationship.relationshipNamePlural %>="{<%= relationship.relationshipNamePlural %>}"
+		<%_
+		}
+		}
+		_%>
+		on:cancel="{cancelSave}"
+		on:saveorupdate="{save<%= entityAngularName %>}"
+	/>
 </Page>
