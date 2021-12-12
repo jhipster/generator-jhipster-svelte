@@ -23,7 +23,12 @@
 	const dispatch = createEventDispatcher()
 	const idVal = id ? id : name + Date.now()
 
-	$: focusedOrContainsValue = value !== '' || focused || type === 'file' || type === 'datetime-local' || type === 'date'
+	$: focusedOrContainsValue =
+		value !== '' ||
+		focused ||
+		type === 'file' ||
+		type === 'datetime-local' ||
+		type === 'date'
 	$: pristine = !focused && !dirty
 	$: pristineOrValid = pristine || valid
 	$: focusedAndValidOrPristine = focused && (!dirty || valid)

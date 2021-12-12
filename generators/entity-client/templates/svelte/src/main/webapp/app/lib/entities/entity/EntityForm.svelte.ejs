@@ -1,8 +1,14 @@
 <%_
-	const containsBooleanField = fields.find(field => field.fieldTypeBoolean);
-	const containsEnumField = fields.find(field => field.fieldIsEnum);
-	const containsBlobField = fields.find(field => field.fieldTypeBinary && !field.blobContentTypeText);
-	const containsInstantField = fields.find(field => (field.fieldTypeInstant || field.fieldTypeZonedDateTime));
+const containsBooleanField = fields.find(field => field.fieldTypeBoolean);
+const containsEnumField = fields.find(field => field.fieldIsEnum);
+const containsBlobField = fields.find(field => field.fieldTypeBinary && !field.blobContentTypeText);
+const containsInstantField = fields.find(field => (field.fieldTypeInstant || field.fieldTypeZonedDateTime));
+const relationshipFields = relationships.filter(relationship => (
+	relationship.otherEntity.primaryKey
+		&& (relationship.relationshipManyToOne
+			|| (relationship.relationshipOneToOne && relationship.ownerSide)
+			|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+const containsRelationshipField = relationshipFields && relationshipFields.length;
 _%>
 <script>
 	import { createEventDispatcher } from 'svelte'
@@ -12,38 +18,60 @@ _%>
 	import Button from '$lib/Button.svelte'
 	import Icon from '$lib/Icon.svelte'
 	import InputControl from '$lib/InputControl.svelte'
-<%_ if (containsBooleanField) { _%>
+	<%_ if (containsBooleanField) { _%>
 	import CheckboxControl from '$lib/CheckboxControl.svelte'
-<%_ } _%>
-<%_ if (containsEnumField) { _%>
+	<%_ } _%>
+	<%_ if (containsEnumField || containsRelationshipField) { _%>
 	import SelectControl from '$lib/SelectControl.svelte'
-<%_ } _%>
+	<%_ } _%>
 	import Form from '$lib/page/Form.svelte'
 	<%_	for (field of fields.filter(field => field.fieldIsEnum)) { _%>
 	import <%= field.fieldType %> from '$lib/entities/enums/<%= field.fieldType %>'
 	<%_ } _%>
-<%_ if (containsBlobField) { _%>
-    import { getBase64FileData } from '$lib/utils/data-util.js'
-<%_ } _%>
-<%_ if (containsInstantField) { _%>
+	<%_ if (containsBlobField) { _%>
+	import { getBase64FileData } from '$lib/utils/data-util.js'
+	<%_ } _%>
+	<%_ if (containsInstantField) { _%>
 	import {
 		formatToDatetimeLocalInput,
-		parseFromDatetimeLocalInput
+		parseFromDatetimeLocalInput,
 	} from '$lib/utils/date'
-<%_ } _%>
+	<%_ } _%>
 
 	export let <%= entityInstance %> = {
 		id: null,
-	<%_	for (field of fields.filter(field => !field.id)) { _%>
+		<%_	for (field of fields.filter(field => !field.id)) { _%>
 		<%= field.fieldName %>: '',
-	<%_ } _%>
+		<%_ } _%>
+		<%_ for (const relationship of relationshipFields) {
+		_%>
+		<%_ if (relationship.relationshipManyToMany) {_%>
+		<%= relationship.relationshipNamePlural %>: [],
+		<%_} else { _%>
+		<%= relationship.relationshipName %>: null,
+		<%_ } _%>
+		<%_
+		}
+		_%>
 	}
+	<%_ for (const relationship of relationshipFields) {
+	_%>
+	export let <%= relationship.relationshipNamePlural %> = []
+	<%_
+	}
+	_%>
 
 	const dispatch = createEventDispatcher()
 
 	<%_	for (field of fields.filter(field => (!field.id && !field.fieldTypeBoolean))) { _%>
 	let valid<%= field.fieldNameCapitalized %> = false
 	<%_ } _%>
+	<%_ for (const relationship of relationshipFields) {
+	_%>
+	let valid<%= relationship.relationshipNameCapitalized %> = false
+	<%_
+	}
+	_%>
 
 	<%_	for (field of fields.filter(field => !field.id)) { _%>
 	function update<%= field.fieldNameCapitalized %>(event) {
@@ -53,12 +81,11 @@ _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.target.checked
 		<%_ } else if (field.fieldIsEnum) { _%>
 		<%= entityInstance %>.<%= field.fieldName %> = event.detail.value
-        <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
-        getBase64FileData(event.target.files)
+		<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+		getBase64FileData(event.target.files)
 			.then(base64Data => {
 				<%= entityInstance %>.<%= field.fieldName %> = base64Data
-				<%= entityInstance %>.<%= field.fieldName %>ContentType =
-					event.target.files[0].type
+				<%= entityInstance %>.<%= field.fieldName %>ContentType = event.target.files[0].type
 			})
 			.catch(err => {
 				<%= entityInstance %>.<%= field.fieldName %> = undefined
@@ -69,22 +96,36 @@ _%>
 		<%_ } _%>
 	}
 	<%_ } _%>
+	<%_ for (const relationship of relationshipFields) {
+	_%>
+	function update<%= relationship.relationshipNameCapitalized %>(event) {
+		<%_ if (relationship.relationshipManyToMany) { _%>
+		<%= entityInstance %>.<%= relationship.relationshipNamePlural %> = event.detail.value
+		<%_ } else { _%>
+		<%= entityInstance %>.<%= relationship.relationshipName %> = event.detail.value
+		<%_ } _%>
+	}
+	<%_
+	}
+	_%>
 
 	$: validForm = <% let isFirst=true; for (field of fields.filter(field => (!field.id && !field.fieldTypeBoolean))) { %><% if(!isFirst) { %>
-		&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%>
+	&& <% } %> valid<%= field.fieldNameCapitalized %><%_ isFirst = false } _%><% for (const relationship of relationshipFields) {
+	%>     && valid<%= relationship.relationshipNameCapitalized %><%
+	}
+	%>
 </script>
 
 <Form testId="add<%= entityAngularName %>">
-
-<%_	for (field of fields.filter(field => !field.id)) { _%>
-<%_ if (field.fieldTypeString
-		|| field.fieldTypeUUID
-		|| field.fieldTypeLocalDate
-		|| field.fieldTypeZonedDateTime
-		|| field.fieldTypeInstant
-		|| field.fieldTypeNumeric
-		|| field.fieldTypeDuration
-		|| field.fieldTypeBinary) { _%>
+	<%_	for (field of fields.filter(field => !field.id)) { _%>
+	<%_ if (field.fieldTypeString
+			|| field.fieldTypeUUID
+			|| field.fieldTypeLocalDate
+			|| field.fieldTypeZonedDateTime
+			|| field.fieldTypeInstant
+			|| field.fieldTypeNumeric
+			|| field.fieldTypeDuration
+			|| field.fieldTypeBinary) { _%>
 	<InputControl
 		<%_ if (field.fieldTypeInstant || field.fieldTypeZonedDateTime) { _%>
 		type="datetime-local"
@@ -106,11 +147,11 @@ _%>
 		<%_ } else { _%>
 		value="{<%= entityInstance %>.<%= field.fieldName %>}"
 		<%_ } _%>
-        <%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
-        on:change="{event => update<%= field.fieldNameCapitalized %>(event)}"
-        <%_ } else { _%>
+		<%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+		on:change="{event => update<%= field.fieldNameCapitalized %>(event)}"
+		<%_ } else { _%>
 		on:input="{event => update<%= field.fieldNameCapitalized %>(event)}"
-        <%_ } _%>
+		<%_ } _%>
 		<%_ if (field.fieldValidationRequired) { _%>
 		required
 		<%_ } _%>
@@ -157,24 +198,26 @@ _%>
 			valid<%= field.fieldNameCapitalized %> = event.detail.valid
 		}}"
 	/>
-<%_ } else if (field.fieldTypeBoolean) { _%>
+	<%_ } else if (field.fieldTypeBoolean) { _%>
 	<div class="mt-1 mb-2 ml-1">
 		<CheckboxControl
 			name="<%= field.fieldName %>"
 			checked="{<%= entityInstance %>.<%= field.fieldName %>}"
 			on:change="{event => update<%= field.fieldNameCapitalized %>(event)}"
-			><%= field.fieldNameHumanized %></CheckboxControl
+		><%= field.fieldNameHumanized %></CheckboxControl
 		>
 	</div>
-<%_ } else if (field.fieldIsEnum) { _%>
+	<%_ } else if (field.fieldIsEnum) { _%>
 	<SelectControl
 		name="<%= field.fieldName %>"
 		label="<%= field.fieldNameHumanized %>"
 		value="{<%= entityInstance %>.<%= field.fieldName %> ? [<%= entityInstance %>.<%= field.fieldName %>] : []}"
-		options="{Object.keys(<%= field.fieldType %>).map(<%= field.fieldName %> => ({
-			name: <%= field.fieldName %>,
-			value: <%= field.fieldName %>,
-		}))}"
+		options="{{
+			data: Object.keys(<%= field.fieldType %>).map(<%= field.fieldName %> => ({
+				name: <%= field.fieldName %>,
+				value: <%= field.fieldName %>,
+			}))
+		}}"
 		on:validate="{event => {
 			valid<%= field.fieldNameCapitalized %> = event.detail.valid
 		}}"
@@ -185,8 +228,44 @@ _%>
 		]}"
 		on:select="{event => update<%= field.fieldNameCapitalized %>(event)}"
 	/>
-<%_ } _%>
-<%_ } _%>
+	<%_ } _%>
+	<%_ } _%>
+	<%_ for (const relationship of relationshipFields) {
+	_%>
+	<SelectControl
+		<%_ if (relationship.relationshipManyToMany) {_%>
+		name="<%= relationship.relationshipNamePlural %>"
+		label="<%= relationship.relationshipNameCapitalizedPlural %>"
+		value="{<%= entityInstance %>.<%= relationship.relationshipNamePlural %>}"
+		<%_} else { _%>
+		name="<%= relationship.relationshipName %>"
+		label="<%= relationship.relationshipNameHumanized %>"
+		value="{<%= entityInstance %>.<%= relationship.relationshipName %> ? [<%= entityInstance %>.<%= relationship.relationshipName %>] : []}"
+		<%_ } _%>
+		<%_ if (relationship.relationshipManyToMany) {_%>
+		multiple="true"
+		<%_ } _%>
+		options="{{
+			nameField: '<%= relationship.otherEntityField %>',
+			idField: '<%= relationship.otherEntity.primaryKey.name %>',
+			data: <%= relationship.relationshipNamePlural %>.map(<%= relationship.relationshipFieldName %> => ({
+				value: <%= relationship.relationshipFieldName %>,
+			})),
+		}}"
+		on:validate="{event => {
+			valid<%= relationship.relationshipNameCapitalized %> = event.detail.valid
+		}}"
+		validations="{[
+		<%_ if (relationship.relationshipValidate
+					&& (relationship.relationshipManyToOne || relationship.ownerSide)
+					&& relationship.relationshipRequired) { _%>
+			{ type: 'required', message: 'Select at least one <%= relationship.relationshipFieldName %>' },
+		<%_ } _%>
+		]}"
+		on:select="{event => update<%= relationship.relationshipNameCapitalized %>(event)}"
+	/>
+	<%_ } _%>
+
 	<div class="w-full p-4 flex flex-row justify-center items-center">
 		<div class="mr-4">
 			<Button

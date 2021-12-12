@@ -1,5 +1,5 @@
 <script>
-	import { createEventDispatcher, afterUpdate } from 'svelte'
+	import { afterUpdate, createEventDispatcher } from 'svelte'
 	import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle.js'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown.js'
 
@@ -9,7 +9,7 @@
 	export let name = ''
 	export let value = []
 	export let label = ''
-	export let options = []
+	export let options = {}
 	export let validations = []
 	export let multiple = false
 
@@ -18,13 +18,20 @@
 
 	let focused = false
 	let isOpen = false
+	let displayName = []
 
 	let dirty = false
 	let valid = false
 	let message
 	let selectOptions
 
-	$: focusedOrContainsValue = value.length !== 0 || focused
+	$: displayName =
+		value && value.length
+			? options && options.nameField
+				? value.map(value => value[options.nameField])
+				: value
+			: []
+	$: focusedOrContainsValue = (value && value.length !== 0) || focused
 	$: pristine = !focused && !dirty
 	$: pristineOrValid = pristine || valid
 	$: focusedAndValidOrPristine = focused && (!dirty || valid)
@@ -34,36 +41,43 @@
 		undefined
 
 	function selectOption(event) {
+		let valueToDispatch
 		dirty = true
+		const eventValue =
+			typeof options.data[0]['value'] === 'object'
+				? JSON.parse(event.target.value)
+				: event.target.value
 		if (event.target.checked) {
 			if (multiple) {
-				value = [...value, event.target.value]
+				valueToDispatch = [...value, eventValue]
 			} else {
-				value = [event.target.value]
+				valueToDispatch = [eventValue]
 			}
 		} else {
 			if (multiple) {
-				value = value.filter(val => val !== event.target.value)
+				valueToDispatch = value.filter(val =>
+					typeof val === 'object'
+						? val[options.idField] !== eventValue[options.idField]
+						: val !== eventValue
+				)
 			} else {
-				value = []
+				valueToDispatch = []
 			}
 		}
-
 		validateRequired()
-		const valueToDispatch = multiple
-			? value
-			: value.length > 0
-			? value[0]
-			: null
 		dispatch('select', {
-			value: valueToDispatch,
+			value: multiple
+				? valueToDispatch
+				: valueToDispatch.length > 0
+				? valueToDispatch[0]
+				: null,
 		})
 	}
 
 	afterUpdate(() => validateRequired())
 
 	function validateRequired() {
-		if (isRequired && !value.length) {
+		if (isRequired && value && !value.length) {
 			valid = false
 			message = validations.find(
 				validation => validation.type === 'required'
@@ -79,7 +93,7 @@
 	}
 
 	function navigateToFirstOption(event) {
-		switch(event.keyCode) {
+		switch (event.keyCode) {
 			case 40:
 				if (!isOpen) {
 					isOpen = true
@@ -89,39 +103,39 @@
 				} else {
 					isOpen = false
 				}
-				break;
+				break
 			case 27:
 			case 9:
 				isOpen = false
-				break;
+				break
 		}
 	}
 
 	function navigateOptions(event) {
 		const parent = event.target.closest('div')
-		switch(event.keyCode) {
+		switch (event.keyCode) {
 			case 38:
 				if (parent.previousSibling) {
 					parent.previousSibling.querySelector('input').focus()
 				} else {
 					isOpen = false
 				}
-				break;
+				break
 			case 40:
 				if (parent.nextSibling) {
 					parent.nextSibling.querySelector('input').focus()
 				} else {
 					isOpen = false
 				}
-				break;
+				break
 			case 32:
 			case 13:
 				event.target.click()
-				break;
+				break
 			case 27:
 			case 9:
 				isOpen = false
-				break;
+				break
 		}
 	}
 </script>
@@ -169,11 +183,13 @@
 			name="{name}"
 			readonly
 			id="{name + randomSuffix}"
-			value="{value && value.length ? value.join(', ') : null}"
+			value="{displayName && displayName.length
+				? displayName.join(', ')
+				: null}"
 			autocomplete="off"
 			on:input="{() => toggleOptions()}"
-			on:keydown="{(event) => navigateToFirstOption(event)}"
-			on:focus="{() => ((focused = true), (toggleOptions()))}"
+			on:keydown="{event => navigateToFirstOption(event)}"
+			on:focus="{() => ((focused = true), toggleOptions())}"
 			on:blur="{() => (focused = false)}"
 			{...$$restProps}
 		/>
@@ -183,7 +199,7 @@
 			tabindex="-1"
 			class:z-20="{isOpen}"
 			class="focus:outline-none focus:ring-0"
-            on:keydown="{(event) => navigateToFirstOption(event)}"
+			on:keydown="{event => navigateToFirstOption(event)}"
 			on:click|preventDefault="{() => toggleOptions()}"
 		>
 			<Icon
@@ -201,26 +217,36 @@
 		></button>
 	{/if}
 	<div
-		bind:this={selectOptions}
-		on:keydown|preventDefault="{(event) => navigateOptions(event)}"
+		bind:this="{selectOptions}"
+		on:keydown|preventDefault="{event => navigateOptions(event)}"
 		data-test="{name}-options"
 		class:hidden="{!isOpen}"
-		class="absolute left-0 w-full py-2 bg-white dark:bg-gray-800 border-b-2 rounded shadow-md border-2 z-10 border-t-0 rounded-tl-none rounded-tr-none"
+		class="absolute left-0 w-full h-[250px] overflow-auto py-2 bg-white dark:bg-gray-800 border-b-2 rounded shadow-md border-2 z-30 border-t-0 rounded-tl-none rounded-tr-none"
 		class:border-primary-600="{focusedAndValidOrPristine ||
 			!dirtyAndInvalid}"
 		class:border-red-600="{dirtyAndInvalid}"
 	>
-		{#each options as option (option.name)}
+		{#each options.data as option (typeof option.value === 'object' ? option.value[options.idField] : option.value)}
 			<div
 				class="block px-3 py-1 rounded-none font-normal hover:text-white dark:hover:text-gray-800 text-gray-800 dark:text-gray-200 hover:bg-primary-600 dark:hover:bg-primary-500"
 			>
 				<CheckboxControl
 					tabindex="-1"
-					checked="{value.includes(option.value)}"
-					group="{value}"
-					value="{option.value}"
+					checked="{value &&
+						(typeof option.value === 'object'
+							? value.find(
+									val =>
+										val[options.idField] ===
+										option.value[options.idField]
+							  ) !== undefined
+							: value.includes(option.value))}"
+					value="{typeof option.value === 'object'
+						? JSON.stringify(option.value)
+						: option.value}"
 					on:change="{event => selectOption(event)}"
-					>{option.name}</CheckboxControl
+					>{typeof option.value === 'object'
+						? option.value[options.nameField]
+						: option.name}</CheckboxControl
 				>
 			</div>
 		{/each}
