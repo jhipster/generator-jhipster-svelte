@@ -30,6 +30,6 @@
 		"rimraf": "3.0.2",
 		"svelte": "3.44.3",
 		"svelte-jester": "1.8.2",
-		"tailwindcss": "2.2.19"
+		"tailwindcss": "3.0.5"
 	}
 }
