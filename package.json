@@ -37,7 +37,7 @@
 		"prepare": "husky install"
 	},
 	"dependencies": {
-		"chalk": "4.1.2",
+		"chalk": "5.0.0",
 		"generator-jhipster": "7.4.1"
 	},
 	"devDependencies": {
