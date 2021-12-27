@@ -5,7 +5,7 @@ _%>
 describe('<%= entityAngularName %> delete dialog page', () => {
 	let dynamicId
 
-	beforeEach(() => {
+	before(() => {
 		cy.unregisterServiceWorkers()
 		cy.loginByApi(
 			Cypress.env('adminUsername'),
@@ -48,34 +48,48 @@ _%>
 <%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
-			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
-			cy.visit('/entities/<%= entityFolderName %>')
-			cy.wait('@get<%= entityClassPlural %>')
-			// eslint-disable-next-line
-			cy.wait(100)
-			cy.getBySel('<%= entityInstance %>Table')
-				.get('td:nth-child(1)').each(($el, index, $list) => {
-					const text = $el.text();
-					if(text.includes(dynamicId)) {
-						cy.getBySel('<%= entityInstance %>Table')
-							.get('td:nth-child(1)')
-							.eq(index)
-							.parent()
-							.trigger('mouseenter')
-							.within($tr => {
-								cy.root().get('td').children().getByName('delete<%= entityAngularName %>Btn').click()
-							})
-					}
-			})
 		})
 	})
 
-	afterEach(() => {
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+        cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
+        cy.visit('/entities/<%= entityFolderName %>')
+        cy.wait('@get<%= entityClassPlural %>')
+        // eslint-disable-next-line
+        cy.wait(100)
+        cy.getBySel('<%= entityInstance %>Table')
+            .get('td:nth-child(1)').each(($el, index, $list) => {
+                const text = $el.text();
+                if(text.includes(dynamicId)) {
+                    cy.getBySel('<%= entityInstance %>Table')
+                        .get('td:nth-child(1)')
+                        .eq(index)
+                        .parent()
+                        .trigger('mouseenter')
+                        .within($tr => {
+                            cy.root().get('td').children().getByName('delete<%= entityAngularName %>Btn').click()
+                        })
+                }
+        })
+	})
+
+	after(() => {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`, true)
 	<%_ if (authenticationType === 'oauth2') { _%>
 		cy.logoutByApi()
 	<%_ } _%>
 	})
+
+    <%_ if (authenticationType === 'oauth2') { _%>
+    afterEach(() => {
+        cy.logoutByApi()
+    })
+    <%_ } _%>
 
 	it('should display delete <%= entityAngularName %> dialog', () => {
 		cy.getBySel('svlModal').within(() => {

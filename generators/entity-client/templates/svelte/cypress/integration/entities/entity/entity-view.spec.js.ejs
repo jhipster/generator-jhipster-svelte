@@ -5,7 +5,7 @@ _%>
 describe('<%= entityAngularName %> view details page', () => {
 	let dynamicId
 
-	beforeEach(() => {
+	before(() => {
 		cy.unregisterServiceWorkers()
 		cy.loginByApi(
 			Cypress.env('adminUsername'),
@@ -47,16 +47,30 @@ describe('<%= entityAngularName %> view details page', () => {
 <%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
-			cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
 		})
 	})
 
-	afterEach(() => {
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+        cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
+	})
+
+	after(() => {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
 	<%_ if (authenticationType === 'oauth2') { _%>
 		cy.logoutByApi()
 	<%_ } _%>
 	})
+
+    <%_ if (authenticationType === 'oauth2') { _%>
+    afterEach(() => {
+        cy.logoutByApi()
+    })
+    <%_ } _%>
 
 	it('should display <%= entityAngularName %> details', () => {
 		cy.getBySel('<%= entityInstance %>Title')

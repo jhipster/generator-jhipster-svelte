@@ -7,7 +7,7 @@ describe('<%= entityAngularName %> list page', () => {
 <%_ if (!paginationNo || searchEngine) { _%>
 	let dynamicId2
 <%_ } _%>
-	beforeEach(() => {
+	before(() => {
 		cy.unregisterServiceWorkers()
 		cy.loginByApi(
 			Cypress.env('adminUsername'),
@@ -88,15 +88,23 @@ describe('<%= entityAngularName %> list page', () => {
 <%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
-			cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
-			cy.visit('/entities/<%= entityFolderName %>')
-			cy.wait('@get<%= entityClassPlural %>')
-			// eslint-disable-next-line
-			cy.wait(100)
 		})
 	})
 
-	afterEach(() => {
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+        cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
+        cy.visit('/entities/<%= entityFolderName %>')
+        cy.wait('@get<%= entityClassPlural %>')
+        // eslint-disable-next-line
+        cy.wait(100)
+	})
+
+	after(() => {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
 	<%_ if (!paginationNo || searchEngine) { _%>
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId2}`)
@@ -105,6 +113,12 @@ describe('<%= entityAngularName %> list page', () => {
 		cy.logoutByApi()
 	<%_ } _%>
 	})
+
+    <%_ if (authenticationType === 'oauth2') { _%>
+    afterEach(() => {
+        cy.logoutByApi()
+    })
+    <%_ } _%>
 
 	it('should greets with <%= entityAngularName %> page title', () => {
 		cy.getBySel('<%= entityInstance %>Title')

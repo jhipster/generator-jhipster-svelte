@@ -22,7 +22,7 @@ _%>
 describe('Update <%= entityInstance %> page', () => {
 	let dynamicId
 
-	beforeEach(() => {
+	before(() => {
 		cy.unregisterServiceWorkers()
 		cy.loginByApi(
 			Cypress.env('adminUsername'),
@@ -64,16 +64,30 @@ describe('Update <%= entityInstance %> page', () => {
 <%_ } _%>
 		}).then(res => {
 			dynamicId = res.id
-			cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
 		})
 	})
 
-	afterEach(() => {
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+        cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
+	})
+
+	after(() => {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
 	<%_ if (authenticationType === 'oauth2') { _%>
 		cy.logoutByApi()
 	<%_ } _%>
 	})
+
+    <%_ if (authenticationType === 'oauth2') { _%>
+    afterEach(() => {
+        cy.logoutByApi()
+    })
+    <%_ } _%>
 
 	it('should greets with update <%= entityInstance %> title', () => {
 		cy.getBySel('<%= entityInstance %>Title')
