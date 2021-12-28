@@ -92,6 +92,10 @@ const svelteFiles = {
 					renameTo: generator =>
 						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-update.spec.js`,
 				},
+				{
+					file: 'cypress/support/entities/entity-util.js',
+					renameTo: generator => `cypress/support/entities/${generator.entityInstance}-util.js`,
+				},
 			],
 		},
 	],
