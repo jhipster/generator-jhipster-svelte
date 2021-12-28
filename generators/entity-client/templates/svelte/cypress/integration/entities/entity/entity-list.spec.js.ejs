@@ -1,14 +1,45 @@
 <%_
 	const entityFakeData = generateFakeData('cypress');
 	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
 _%>
 describe('<%= entityAngularName %> list page', () => {
 	let dynamicId
 <%_ if (!paginationNo || searchEngine) { _%>
 	let dynamicId2
 <%_ } _%>
+	<%_ if (containsRelationshipField) { _%>
 	before(() => {
-		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+	<%_		for (const relationship of relationshipFields) {
+				if (relationship.otherEntityUser) {
+	_%>
+		cy.getById('api/users')
+			.its('0.id')
+			.as('userId')
+	<%_
+				} else {
+	_%>
+	<%_
+				}
+	_%>
+	<%_
+			}
+	_%>
+	})
+	<%_
+		}
+	_%>
+
+	before(function() {
 		cy.loginByApi(
 			Cypress.env('adminUsername'),
 			Cypress.env('adminPassword')
@@ -45,6 +76,14 @@ describe('<%= entityAngularName %> list page', () => {
 				<%= field.fieldName %>: '<%= fieldValue %>',
 				<%_ } _%>
 			<%_ } _%>
+	<%_		for (const relationship of relationshipFields) {
+				if (relationship.otherEntityUser) {
+	_%>
+				user: { id: this.userId },
+	<%_
+				}
+			}
+	_%>
 <%_ if (containsBinaryField) { _%>
 			})
 <%_ } _%>
@@ -83,6 +122,14 @@ describe('<%= entityAngularName %> list page', () => {
 				<%= field.fieldName %>: '<%= fieldValue %>',
 				<%_ } _%>
 			<%_ } _%>
+	<%_		for (const relationship of relationshipFields) {
+				if (relationship.otherEntityUser) {
+	_%>
+				user: { id: this.userId },
+	<%_
+				}
+			}
+	_%>
 <%_ if (containsBinaryField) { _%>
 			})
 <%_ } _%>
