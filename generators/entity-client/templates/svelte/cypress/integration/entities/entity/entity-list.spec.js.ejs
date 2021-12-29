@@ -8,6 +8,7 @@
 				|| (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
+	const oneToOneRelationship = relationshipFields.filter(relationship => relationship.relationshipOneToOne);
 _%>
 import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %><% if (!paginationNo || searchEngine) { %>, add<%= entityAngularName %>2<% } %> } from "../../../support/entities/<%= entityInstance %>-util.js";
 
@@ -20,7 +21,7 @@ describe('<%= entityAngularName %> list page', () => {
 	if (containsRelationshipField || containsBinaryField ) {
 _%>
 	before(() => {
-		prepare<%= entityAngularName %>PrerequisiteData()
+		prepare<%= entityAngularName %>PrerequisiteData(<%= !!(!paginationNo || searchEngine) %>)
 	})
 <%_
 		}
@@ -44,7 +45,7 @@ _%>,<%_} _%><%_
 			if (relationship.otherEntityUser) {
 _%>this.userId<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			} else {
-_%>this.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+_%>this.<%= relationship.relationshipName %>Id<%_ if (relationship.relationshipOneToOne) { _%>2<%_ } _%><%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			}
 			fieldIndex++;
 		}
@@ -107,7 +108,12 @@ _%>
 				if (!relationship.otherEntityUser) {
 	_%>
 		cy.delete(`api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
-	<%_
+<%_
+					if (relationship.relationshipOneToOne && (!paginationNo || searchEngine)) {
+_%>
+		cy.delete(`api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id2}`, true)
+<%_
+					}
 				}
 			}
 	_%>

@@ -8,9 +8,11 @@
 				|| (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
+
+	const oneToOneRelationship = relationshipFields.find(relationship => relationship.relationshipOneToOne);
 _%>
 
-export function prepare<%= entityAngularName %>PrerequisiteData() {
+export function prepare<%= entityAngularName %>PrerequisiteData(listPage = false) {
 <%_ if (containsBinaryField) { _%>
 	cy.fixture('integration-test.png').as('binaryData')
 <%_ } _%>
@@ -63,10 +65,44 @@ _%>
 	}).its('id').as('<%= relationship.relationshipName %>Id')
 	<%_
 			}
-	_%>
-	<%_
 		}
+		if (oneToOneRelationship) {
 	_%>
+	if (listPage) {
+		cy.save('api/<%= oneToOneRelationship.otherEntity.entityApiUrl %>', {
+	<%_
+		for (const relationshipField of oneToOneRelationship.otherEntity.fields.filter(field => !field.id)) {
+			const fieldValue = relationshipField.generateFakeData('cypress');
+			if (fieldValue === undefined) {
+				warning(`Error generating a value for field ${relationshipField.fieldName}`);
+			}
+	_%>
+			<%_ if (relationshipField.fieldTypeBoolean) { _%>
+			<%= relationshipField.fieldName %>: true,
+			<%_ } else if (relationshipField.fieldTypeBinary && !relationshipField.blobContentTypeText) { _%>
+			// <%= relationshipField.fieldName %>: this.binaryData,
+			<%= relationshipField.fieldName %>ContentType: 'image/png',
+			<%_ } else if (relationshipField.fieldTypeString || relationshipField.fieldTypeUUID) { _%>
+			<%= relationshipField.fieldName %>: '<%= fieldValue %>',
+			<%_ } else if (relationshipField.fieldTypeLocalDate) { _%>
+			<%= relationshipField.fieldName %>: '<%= fieldValue %>' ,
+			<%_ } else if (relationshipField.fieldTypeTimed) { _%>
+			<%= relationshipField.fieldName %>: '<%= fieldValue %>:00.000Z' ,
+			<%_ } else if (relationshipField.fieldTypeDuration) { _%>
+			<%= relationshipField.fieldName %>: 'PT0.000052484S',
+			<%_ } else if (relationshipField.fieldTypeNumeric) { _%>
+			<%= relationshipField.fieldName %>: <%= fieldValue %>,
+			<%_ } else { _%>
+			<%= relationshipField.fieldName %>: '<%= fieldValue %>',
+			<%_ } _%>
+		<%_
+			}
+		_%>
+		}).its('id').as('<%= oneToOneRelationship.relationshipName %>Id2')
+	}
+<%_
+		}
+_%>
 }
 
 export function add<%= entityAngularName %>(<%_

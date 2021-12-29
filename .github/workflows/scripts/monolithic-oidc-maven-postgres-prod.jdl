@@ -51,7 +51,7 @@ entity SampleEntity {
 }
 
 relationship OneToOne {
-  SampleBlobEntity{user(login)} to SampleEntity
+  SampleBlobEntity{sampleEntity(name)} to SampleEntity
 }
 
 relationship OneToMany {
