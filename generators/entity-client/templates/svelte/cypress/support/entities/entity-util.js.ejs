@@ -3,6 +3,7 @@
 	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
 	const relationshipFields = relationships.filter(relationship => (
 		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
 			&& (relationship.relationshipManyToOne
 				|| (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))

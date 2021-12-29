@@ -20,6 +20,7 @@
 	}
 	const relationshipFields = relationships.filter(relationship => (
 		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
 			&& (relationship.relationshipManyToOne
 				|| (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
@@ -146,6 +147,7 @@ _%>
 
 		cy.getBySel('add<%= entityAngularName %>Form')
 			.getByName('<%= field.fieldName %>')
+			.clear()
 			.type(
 				'<%= getMinLengthText(field.fieldValidateRulesMinlength) %>'
 			)
@@ -159,6 +161,7 @@ _%>
 
 		cy.getBySel('add<%= entityAngularName %>Form')
 			.getByName('<%= field.fieldName %>')
+			.clear()
 			.type(
 				'<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>'
 			)
@@ -243,8 +246,7 @@ _%>
 			cy.root().get("input[type='checkbox']").eq(0).check()
 			cy.root().get("input[type='checkbox']").eq(1).check()
 		})
-		.getBySel('<%= field.fieldName %>-bg')
-		.click()
+		.type('{esc}')
             <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
         .getByName('<%= field.fieldName %>ClearBtn')
         .click()

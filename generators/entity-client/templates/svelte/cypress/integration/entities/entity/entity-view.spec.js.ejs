@@ -3,6 +3,12 @@
 	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
 	const relationshipFields = relationships.filter(relationship => (
 		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const relationshipFieldsWithSelfReferential = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
 			&& (relationship.relationshipManyToOne
 				|| (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
@@ -90,7 +96,7 @@ _%>)
 		cy.get('div.table').within(() => {
 			cy.root()
 				.get('.table-cell')
-				.should('have.length', <%= (fields.length - 1) * 2 + (relationshipFields.length * 2) %>)
+				.should('have.length', <%= (fields.length - 1) * 2 + (relationshipFieldsWithSelfReferential.length * 2) %>)
 		})
 	})
 
