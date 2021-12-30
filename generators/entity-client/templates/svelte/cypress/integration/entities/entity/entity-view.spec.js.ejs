@@ -1,9 +1,61 @@
 <%_
 	const entityFakeData = generateFakeData('cypress');
 	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const relationshipFieldsWithSelfReferential = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
 _%>
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "../../../support/entities/<%= entityInstance %>-util.js";
+
 describe('<%= entityAngularName %> view details page', () => {
 	let dynamicId
+
+<%_
+	if (containsRelationshipField || containsBinaryField ) {
+_%>
+
+	before(() => {
+		prepare<%= entityAngularName %>PrerequisiteData()
+	})
+<%_
+		}
+_%>
+
+	before(function() {
+		cy.loginByApi(
+			Cypress.env('adminUsername'),
+			Cypress.env('adminPassword')
+		)
+
+		add<%= entityAngularName %>(<%_
+	if (containsBinaryField) {
+_%>this.binaryData<%_} _%><%_
+	if (containsBinaryField && containsRelationshipField) {
+_%>,<%_} _%><%_
+		let fieldIndex = 0;
+		const fieldLength = relationshipFields.length;
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>this.userId<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			} else {
+_%>this.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			}
+			fieldIndex++;
+		}
+_%>)
+		.then(res => {
+			dynamicId = res.id
+		})
+	})
 
 	beforeEach(() => {
 		cy.unregisterServiceWorkers()
@@ -11,52 +63,30 @@ describe('<%= entityAngularName %> view details page', () => {
 			Cypress.env('adminUsername'),
 			Cypress.env('adminPassword')
 		)
-
-<%_ if (containsBinaryField) { _%>
-		cy.fixture('integration-test.png')
-			.then($blob => {
-				return <% } %>cy.save('api/<%= entityApiUrl %>', {
-			<%_
-				for (field of fields.filter(field => !field.id)) {
-					const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
-					if (fieldValue === undefined) {
-						warning(`Error generating a value for field ${field.fieldName}`);
-					}
-			_%>
-				<%_ if (field.fieldTypeBoolean) { _%>
-				<%= field.fieldName %>: true,
-				<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
-				<%= field.fieldName %>: $blob,
-				<%= field.fieldName %>ContentType: 'image/png',
-				<%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
-				<%= field.fieldName %>: '<%= fieldValue %>',
-				<%_ } else if (field.fieldTypeLocalDate) { _%>
-				<%= field.fieldName %>: '<%= fieldValue %>' ,
-				<%_ } else if (field.fieldTypeTimed) { _%>
-				<%= field.fieldName %>: '<%= fieldValue %>:00.000Z' ,
-				<%_ } else if (field.fieldTypeDuration) { _%>
-				<%= field.fieldName %>: 'PT0.000052484S',
-				<%_ } else if (field.fieldTypeNumeric) { _%>
-				<%= field.fieldName %>: <%= fieldValue %>,
-				<%_ } else { _%>
-				<%= field.fieldName %>: '<%= fieldValue %>',
-				<%_ } _%>
-			<%_ } _%>
-<%_ if (containsBinaryField) { _%>
-			})
-<%_ } _%>
-		}).then(res => {
-			dynamicId = res.id
-			cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
-		})
+        cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
 	})
 
-	afterEach(() => {
+	after(function () {
 		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
 	<%_ if (authenticationType === 'oauth2') { _%>
 		cy.logoutByApi()
 	<%_ } _%>
+	<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+	_%>
+		cy.delete(`api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
+	<%_
+				}
+			}
+	_%>
 	})
+
+    <%_ if (authenticationType === 'oauth2') { _%>
+    afterEach(() => {
+        cy.logoutByApi()
+    })
+    <%_ } _%>
 
 	it('should display <%= entityAngularName %> details', () => {
 		cy.getBySel('<%= entityInstance %>Title')
@@ -66,7 +96,7 @@ describe('<%= entityAngularName %> view details page', () => {
 		cy.get('div.table').within(() => {
 			cy.root()
 				.get('.table-cell')
-				.should('have.length', <%= (fields.length - 1) * 2 %>)
+				.should('have.length', <%= (fields.length - 1) * 2 + (relationshipFieldsWithSelfReferential.length * 2) %>)
 		})
 	})
 

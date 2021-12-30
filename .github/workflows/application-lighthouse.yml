@@ -21,7 +21,7 @@ jobs:
             matrix:
                 apps: ['svelte-app-session-lighthouse.jdl']
                 os: [ubuntu-latest]
-                node_version: [14.x]
+                node_version: [16.x]
         steps:
             - uses: actions/checkout@v2
               with:
@@ -43,14 +43,14 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.3.0
+                  key: ${{ runner.os }}-maven-7.4.1
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/8.6.0
+                      ~/.cache/Cypress/9.2.0
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-8.6.0
+                  key: ${{ runner.os }}-cypress-9.2.0
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .

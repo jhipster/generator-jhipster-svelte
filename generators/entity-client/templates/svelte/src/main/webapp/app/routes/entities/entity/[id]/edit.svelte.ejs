@@ -1,0 +1,115 @@
+<script>
+	import { onMount } from 'svelte'
+	import { goto } from '$app/navigation'
+	import { page } from '$app/stores'
+
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
+	import Page from '$lib/page/Page.svelte'
+	import <%= entityAngularName %>Form from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Form.svelte'
+	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+	if (relationship.relationshipManyToOne
+			|| (relationship.relationshipOneToOne && relationship.ownerSide)
+			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+	_%>
+	<%_ if (relationship.otherEntityUser) { _%>
+	import userService from '$lib/entities/user/user-service.js'
+	<%_ } else { _%>
+	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityName %>-service.js'
+	<%_ } _%>
+	<%_
+	}
+	}
+	_%>
+
+	$: id = $page && $page.params && $page.params.id
+	onMount(() => {
+		fetch<%= entityAngularName %>Details()
+		<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+		_%>
+		fetch<%= relationship.relationshipNameCapitalizedPlural %>()
+		<%_
+		}
+		}
+		_%>
+	})
+
+	let error
+	let <%= entityInstance %>
+			<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+			if (relationship.relationshipManyToOne
+					|| (relationship.relationshipOneToOne && relationship.ownerSide)
+					|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+			_%>
+	let <%= relationship.relationshipNamePlural %>
+	<%_
+	}
+	}
+	_%>
+
+	function fetch<%= entityAngularName %>Details() {
+		error = undefined
+		<%= entityInstance %>Service
+			.findById(id)
+			.then(res => (<%= entityInstance %> = res))
+			.catch(err => (error = err))
+	}
+	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+	if (relationship.relationshipManyToOne
+			|| (relationship.relationshipOneToOne && relationship.ownerSide)
+			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+	_%>
+
+	function fetch<%= relationship.relationshipNameCapitalizedPlural %>() {
+		<%= relationship.relationshipName %>Service
+			.findAll()
+			.then(res => {
+				if (res.data) {
+					<%= relationship.relationshipNamePlural %> = res.data
+				} else {
+					<%= relationship.relationshipNamePlural %> = res
+				}
+			})
+			.catch(err => (error = err))
+	}
+	<%_
+	}
+	}
+	_%>
+
+	function cancelUpdate() {
+		goto(`/entities/<%= entityFolderName %>`)
+	}
+
+	function update<%= entityAngularName %>(event) {
+		<%= entityInstance %>Service
+			.update(event.detail)
+			.then(() => goto(`/entities/<%= entityFolderName %>`))
+			.catch(err => (error = err))
+	}
+</script>
+
+<svelte:head>
+	<title>Update <%= entityInstance %></title>
+	<meta name="Description" content="Update <%= entityClassHumanized %>" />
+</svelte:head>
+<Page testId="<%= entityInstance %>">
+	<div class="text-left" slot="header">Update <%= entityClassHumanized %></div>
+	<<%= entityAngularName %>Form
+	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
+		if (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
+		_%>
+		<%= relationship.relationshipNamePlural %>="{<%= relationship.relationshipNamePlural %>}"
+		<%_
+		}
+	}
+	_%>
+		<%= entityInstance %>="{<%= entityInstance %>}"
+		on:cancel="{cancelUpdate}"
+		on:saveorupdate="{update<%= entityAngularName %>}"
+	/>
+</Page>

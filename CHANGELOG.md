@@ -2,6 +2,21 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
+## Current
+
+### Added
+
+-   ✅ JHipster entity `JDL` supporting `Create`, `Update` pages along with `Cypress` e2e tests [#786](https://github.com/jhipster/generator-jhipster-svelte/pull/786), [#792](https://github.com/jhipster/generator-jhipster-svelte/pull/792), [#804](https://github.com/jhipster/generator-jhipster-svelte/pull/804), [#812](https://github.com/jhipster/generator-jhipster-svelte/pull/812), [#822](https://github.com/jhipster/generator-jhipster-svelte/pull/822), [#823](https://github.com/jhipster/generator-jhipster-svelte/pull/823)
+-   ✅ JHipster relationship `JDL` supporting `one-to-one`, `one-to-many`, `many-to-one`, and `many-to-many` relationships along with `Cypress` e2e tests [#824](https://github.com/jhipster/generator-jhipster-svelte/pull/824), [#866](https://github.com/jhipster/generator-jhipster-svelte/pull/866)
+-   ✅ Use `cypress` session API to improve e2e tests performance [#753](https://github.com/jhipster/generator-jhipster-svelte/pull/753)
+
+### Changed
+
+-   ✅ Bump `JHipster` dependency to support `7.4.1` release [#800](https://github.com/jhipster/generator-jhipster-svelte/pull/800), [#852](https://github.com/jhipster/generator-jhipster-svelte/pull/852)
+-   ✅ Bump `Tailwind` dependency to support `3.0.x` release [#852](https://github.com/jhipster/generator-jhipster-svelte/pull/852)
+-   ✅ Bump `Jest` dependency to support `27.x` release and enable `ECMAScript Modules` [#873](https://github.com/jhipster/generator-jhipster-svelte/pull/873)
+-   ✅ Regular maintenance to bump `Cypress`, `svelte`, `svelte/kit`, `eslint` etc dependencies
+
 ## [0.6.0] - 2021-10-15
 
 ### Added

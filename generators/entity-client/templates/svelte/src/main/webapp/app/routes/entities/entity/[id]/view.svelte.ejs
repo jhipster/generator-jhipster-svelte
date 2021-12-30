@@ -1,3 +1,10 @@
+<%_
+const relationshipFields = relationships.filter(relationship => (
+	relationship.otherEntity.primaryKey
+		&& (relationship.relationshipManyToOne
+			|| (relationship.relationshipOneToOne && relationship.ownerSide)
+			|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+_%>
 <script>
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
@@ -73,6 +80,20 @@ _%>
 			</Record>
 <%_
 		isFirstRecord = false
+	}
+_%>
+<%_
+	for (relationship of relationshipFields) {
+_%>
+			<Record>
+				<span slot="label"><%= relationship.relationshipNameHumanized %></span>
+			<%_ if (relationship.relationshipManyToMany) {_%>
+				<span>{<%= entityInstance %>.<%= relationship.relationshipNamePlural %> ? <%= entityInstance %>.<%= relationship.relationshipNamePlural %>.map(el => el.<%= relationship.otherEntityField %>).join(', ') : '' }</span>
+			<%_ } else { _%>
+				<span>{<%=entityInstance %>.<%= relationship.relationshipName %> ? <%=entityInstance %>.<%= relationship.relationshipName %>.<%= relationship.otherEntityField %> : ''}</span>
+			<%_ } _%>
+			</Record>
+<%_
 	}
 _%>
 		</div>

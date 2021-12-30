@@ -70,14 +70,7 @@
 			</Record>
 			<Record>
 				<span slot="label">Roles</span>
-				{#each user.authorities as authority, authIndex (authority)}
-					<span class="uppercase"
-						>{authority}
-						{authIndex !== user.authorities.length - 1
-							? ', '
-							: ''}</span
-					>
-				{/each}
+                <span class="uppercase">{user.authorities ? user.authorities.join(', ') : ''}</span>
 			</Record>
 		</div>
 	{/if}

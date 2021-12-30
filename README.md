@@ -26,7 +26,7 @@ Following integrations are supported:
     ✅ Cypress integration for end to end tests
     ✅ Jest and Testing Library integration for unit tests
     ✅ JHipster application JDL
-    ✅ JHipster entity JDL (simple data type, no relation)
+    ✅ JHipster entity JDL
     ✅ JHipster elasticsearch integration
 
 Following functional flows are covered with end to end tests:
@@ -43,7 +43,7 @@ Following functional flows are covered with end to end tests:
         ✅ User Management (List, Create, Update, View, Delete)
         ✅ Loggers
     ✅ Entities
-        ✅ Entity (List, View, Delete, Search, Pagination)
+        ✅ Entity (List, Create, Update, View, Delete, Search, Pagination)
 
 For more details, you can check out the source code of [sample application](https://github.com/jhipster/jhipster-sample-app-svelte)
 
@@ -108,10 +108,19 @@ npm update -g generator-jhipster-svelte
         name String required minlength(3)
     }
 
+    relationship ManyToOne {
+        Blog{user(login)} to User
+        Post{blog(name)} to Blog
+    }
+
+    relationship ManyToMany {
+        Post{tag(name)} to Tag{entry}
+    }
+
     paginate Tag with pagination
     ```
 
-    Refer to [JDL entity fields](https://www.jhipster.tech/jdl/entities-fields) documentation for all supported entity data types and constraints.
+    Refer to [JDL entity fields](https://www.jhipster.tech/jdl/entities-fields) documentation for all supported entity data types and constraints. Refer to [JDL relationships](https://www.jhipster.tech/managing-relationships/) documentation for supported relationships and syntax.
 
     Pass `import-jdl` option along the file path to `shipster` cli to generate new application:
 
@@ -132,7 +141,8 @@ npm update -g generator-jhipster-svelte
 | `6.10.5`   | `0.1` - `0.2.1`  |
 | `7.0.x`    | `0.3` - `0.4`    |
 | `7.1.x`    | `0.5`            |
-| `7.3.x`    | >= `0.6`         |
+| `7.3.x`    | `0.6`            |
+| `7.4.x`    | >= `0.7`         |
 
 ## Docker development
 

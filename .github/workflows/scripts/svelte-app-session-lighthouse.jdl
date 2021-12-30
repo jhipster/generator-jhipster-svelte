@@ -12,9 +12,9 @@ application {
 	entities *
 }
 
-enum EntityStatus {
+ enum EntityStatus {
     DUMMY, APP, SVELTE
-}
+ }
 
 entity SampleDomainEntity {
   stringData String required minlength(5) maxlength(50)

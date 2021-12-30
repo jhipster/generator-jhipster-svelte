@@ -5,7 +5,8 @@
 			"assertions": {
 				"apple-touch-icon": "off",
 				"tap-targets": "off",
-				"non-composited-animations": "off"
+				"non-composited-animations": "off",
+				"content-width": "off"
 			}
 		},
 		"collect": {

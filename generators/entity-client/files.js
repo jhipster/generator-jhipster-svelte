@@ -1,4 +1,5 @@
 const constants = require('generator-jhipster/generators/generator-constants');
+const generatorUtils = require('generator-jhipster/generators/utils');
 const util = require('../util');
 
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
@@ -20,8 +21,16 @@ const svelteFiles = {
 					renameTo: generator => `${generator.entityFolderName}/index.svelte`,
 				},
 				{
+					file: 'entity/new.svelte',
+					renameTo: generator => `${generator.entityFolderName}/new.svelte`,
+				},
+				{
 					file: 'entity/[id]/view.svelte',
 					renameTo: generator => `${generator.entityFolderName}/[id]/view.svelte`,
+				},
+				{
+					file: 'entity/[id]/edit.svelte',
+					renameTo: generator => `${generator.entityFolderName}/[id]/edit.svelte`,
 				},
 			],
 		},
@@ -43,6 +52,10 @@ const svelteFiles = {
 				{
 					file: 'entity/EntityTable.svelte',
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityAngularName}Table.svelte`,
+				},
+				{
+					file: 'entity/EntityForm.svelte',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityAngularName}Form.svelte`,
 				},
 				{
 					file: 'entity/entity-service.js',
@@ -69,13 +82,65 @@ const svelteFiles = {
 					renameTo: generator =>
 						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-view.spec.js`,
 				},
+				{
+					file: 'cypress/integration/entities/entity/entity-create.spec.js',
+					renameTo: generator =>
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-create.spec.js`,
+				},
+				{
+					file: 'cypress/integration/entities/entity/entity-update.spec.js',
+					renameTo: generator =>
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-update.spec.js`,
+				},
+				{
+					file: 'cypress/support/entities/entity-util.js',
+					renameTo: generator => `cypress/support/entities/${generator.entityInstance}-util.js`,
+				},
 			],
 		},
 	],
 };
 
-function writeFiles() {
-	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
+function addEnumerationFiles(generator) {
+	generator.fields.forEach(field => {
+		if (field.fieldIsEnum === true) {
+			const enumInfo = {
+				...generatorUtils.getEnumInfo(field, generator.clientRootFolder),
+				frontendAppName: generator.frontendAppName,
+				packageName: generator.packageName,
+			};
+			if (!generator.skipClient) {
+				const destinationFile = generator.destinationPath(
+					`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType}.js`
+				);
+				generator.template(
+					`svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`,
+					destinationFile,
+					generator,
+					{},
+					enumInfo
+				);
+			}
+		}
+	});
+}
 
-	util.addEntityToMenu(this, this.entityFolderName, this.entityAngularName, this.entityAngularName);
+function addUserServiceFile(generator) {
+	const containsUserRelationshipField = generator.relationships.filter(
+		relationship => relationship.otherEntityName === 'user'
+	);
+	if (containsUserRelationshipField) {
+		generator.template(
+			`svelte/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`,
+			generator.destinationPath(`${FRONTEND_COMPONENTS_DIR}user/user-service.js`),
+			generator
+		);
+	}
+}
+
+function writeFiles() {
+	addEnumerationFiles(this);
+	addUserServiceFile(this);
+	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
+	util.addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
 }

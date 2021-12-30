@@ -10,7 +10,7 @@ export default {
 			'Content-Type': 'application/json',
 		}),
 <%_ } _%>
-	findAll: (<% if (!paginationNo) { %>page, size, sortPredicate, sortOrder<% } %>) => {
+	findAll: (<% if (!paginationNo) { %>page = 1, size = 15, sortPredicate = 'id', sortOrder = 'asc'<% } %>) => {
 	<%_ if (!paginationNo) { _%>
 		const defaultSort = sortPredicate !== 'id' ? '&sort=id,asc' : ''
 		const queryString = `page=${
@@ -33,7 +33,7 @@ export default {
 	},
 <%_ if (!readOnly) { _%>
 	update: entity =>
-		request(`${serverUrl}<%= baseApi + entityApiUrl %>`, 'PUT', JSON.stringify(entity), {
+		request(`${serverUrl}<%= baseApi + entityApiUrl %>/${entity.id}`, 'PUT', JSON.stringify(entity), {
 			'Content-Type': 'application/json',
 		}),
 	delete: id => request(`${serverUrl}<%= baseApi + entityApiUrl %>/${id}`, 'DELETE'),
