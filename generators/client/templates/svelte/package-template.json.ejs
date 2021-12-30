@@ -12,7 +12,7 @@
 		"cleanup": "rimraf <%= DIST_DIR %>",
 		"start": "svelte-kit dev --port 9000 --open true",
 		"preview": "svelte-kit preview",
-		"test": "jest <%= CLIENT_MAIN_SRC_DIR %>",
+		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest <%= CLIENT_MAIN_SRC_DIR %>",
 		"test:watch": "npm run test -- --watch",
 		"e2e": "npm run e2e:ci -- --headed",
 		"e2e:ci": "cypress run --browser chrome",

@@ -14,6 +14,7 @@
 
 -   ✅ Bump `JHipster` dependency to support `7.4.1` release [#800](https://github.com/jhipster/generator-jhipster-svelte/pull/800), [#852](https://github.com/jhipster/generator-jhipster-svelte/pull/852)
 -   ✅ Bump `Tailwind` dependency to support `3.0.x` release [#852](https://github.com/jhipster/generator-jhipster-svelte/pull/852)
+-   ✅ Bump `Jest` dependency to support `27.x` release and enable `ECMAScript Modules` [#873](https://github.com/jhipster/generator-jhipster-svelte/pull/873)
 -   ✅ Regular maintenance to bump `Cypress`, `svelte`, `svelte/kit`, `eslint` etc dependencies
 
 ## [0.6.0] - 2021-10-15
