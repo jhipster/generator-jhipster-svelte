@@ -60,9 +60,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/9.1.1
+                      ~/.cache/Cypress/9.2.0
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-9.1.1
+                  key: ${{ runner.os }}-cypress-9.2.0
             - name: Create Svelte Hipster docker image
               run: |
                   docker build -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
