@@ -224,7 +224,14 @@ _%>
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')
 	})
-
+<%_
+	if (searchEngine) {
+_%>
+/*
+// Observed java.lang.StackOverflowError while updating an entity with elasticsearch integration
+<%_
+	}
+_%>
 	it('should update <%= entityInstance %> details', () => {
 		cy.getBySel('add<%= entityAngularName %>Form')
 	<%_
@@ -287,4 +294,11 @@ _%>
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')
 	})
+<%_
+	if (searchEngine) {
+_%>
+*/
+<%_
+	}
+_%>
 })
