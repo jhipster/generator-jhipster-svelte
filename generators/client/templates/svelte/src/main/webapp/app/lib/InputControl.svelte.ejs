@@ -64,7 +64,7 @@
 	}
 </style>
 
-<div class="mt-4 relative h-12">
+<div class="mt-4 relative {type === 'textarea' ? 'sm:h-auto' : 'h-12' }">
 	<label
 		class="absolute left-0 px-1 ml-2 transition-all duration-200
 			pointer-events-none z-10"
@@ -86,7 +86,8 @@
 	</label>
 	{#if type === 'textarea'}
 		<textarea
-			class="px-3 py-3 w-full shadow-none bg-white dark:bg-gray-800 outline-none focus:ring-0 rounded z-10"
+			rows="2"
+			class="px-3 py-3 w-full min-h-[50px] h-12 shadow-none bg-white dark:bg-gray-800 outline-none focus:ring-0 rounded z-10"
 			class:border="{!focused}"
 			class:border-2="{focused}"
 			class:border-gray-400="{pristineOrValid}"
@@ -95,7 +96,6 @@
 			class:dark:border-primary-500="{focusedAndValidOrPristine}"
 			class:border-red-600="{dirtyAndInvalid}"
 			class:dark:border-red-500="{dirtyAndInvalid}"
-			type="{type}"
 			name="{name}"
 			id="{idVal}"
 			value="{value}"

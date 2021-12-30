@@ -221,7 +221,7 @@
 		on:keydown|preventDefault="{event => navigateOptions(event)}"
 		data-test="{name}-options"
 		class:hidden="{!isOpen}"
-		class="absolute left-0 w-full h-[250px] overflow-auto py-2 bg-white dark:bg-gray-800 border-b-2 rounded shadow-md border-2 z-30 border-t-0 rounded-tl-none rounded-tr-none"
+		class="absolute left-0 w-full max-h-60 overflow-auto py-2 bg-white dark:bg-gray-800 border-b-2 rounded shadow-md border-2 z-30 border-t-0 rounded-tl-none rounded-tr-none"
 		class:border-primary-600="{focusedAndValidOrPristine ||
 			!dirtyAndInvalid}"
 		class:border-red-600="{dirtyAndInvalid}"
