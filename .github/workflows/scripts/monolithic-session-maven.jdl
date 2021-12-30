@@ -11,22 +11,29 @@ application {
     entities *
 }
 
+
  enum EntityStatus {
     DUMMY, APP, SVELTE
  }
 
 entity SampleDomainEntity {
+  localDateData	LocalDate
+  zonedDateTimeData ZonedDateTime
+  instantData Instant
+  durationData Duration
+}
+
+entity SampleDomainEntityTwo {
   stringData String required minlength(5) maxlength(50)
   integerData Integer required min(2) max(1000)
   longData Long required min(2) max(4000)
   bigDecimalData BigDecimal required
   floatData Float
+}
+
+entity SampleDomainEntityThree {
   doubleData Double
   booleanData Boolean
-  localDateData	LocalDate
-  zonedDateTimeData ZonedDateTime
-  instantData Instant
-  durationData Duration
   uuidData UUID
   enumData EntityStatus
 }
@@ -36,6 +43,24 @@ entity SampleBlobEntity {
   anyBlobData AnyBlob
   imageBlobData ImageBlob
   textBlobData TextBlob
+}
+
+entity SampleEntity {
+  name String
+}
+
+relationship OneToOne {
+  SampleBlobEntity{sampleEntity(name)} to SampleEntity
+}
+
+relationship OneToMany {
+  SampleBlobEntity{domainEntity} to SampleDomainEntityTwo{blobEntity(textBlobData)},
+}
+relationship ManyToOne {
+  SampleDomainEntityThree{user(login)} to User
+}
+relationship ManyToMany {
+  SampleDomainEntity{sampleEntity(name)} to SampleEntity{sampleDomainEntity}
 }
 
 paginate SampleDomainEntity with pagination

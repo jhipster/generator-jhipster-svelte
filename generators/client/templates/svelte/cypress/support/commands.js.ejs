@@ -24,7 +24,7 @@ Cypress.Commands.add('getByName', selector => {
 })
 <%_ if (authenticationType === 'session') { _%>
 Cypress.Commands.add('loginByApi', (username, password) => {
-	cy.session([username, password],
+	cy.session([username],
 		() => {
 			cy.request({ url: `api/authenticate` })
 				.then(res => {
@@ -40,8 +40,8 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 							'X-XSRF-TOKEN': csrfCookie,
 						},
 						body: {
-							username: username,
-							password: password,
+							username,
+							password,
 							'remember-me': true,
 						},
 					})
@@ -63,14 +63,14 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 })
 <%_ } else if (authenticationType === 'jwt') { _%>
 Cypress.Commands.add('loginByApi', (username, password) => {
-	cy.session([username, password],
+	cy.session([username],
 		() => {
 			cy.request({
 					method: 'POST',
 					url: `api/authenticate`,
 					body: {
-						username: username,
-						password: password,
+						username,
+						password,
 						'remember-me': false,
 					},
 				})
@@ -138,10 +138,23 @@ Cypress.Commands.add('delete', (url, lenient = true) => {
 		}
 	})
 })
+
+Cypress.Commands.add('getById', (url, status = 200) => {
+	cy.request({
+		method: 'GET',
+		url: url,
+		headers: {
+			Authorization: `Bearer ${localStorage.getItem('authToken') || sessionStorage.getItem('authToken')}`,
+		},
+	}).then(res => {
+		expect(res.status).to.eq(status)
+		return cy.wrap(res.body)
+	})
+})
 <%_ } else { _%>
 
 Cypress.Commands.add('loginByApi', (username, password) => {
-	cy.session([username, password],
+	cy.session([username],
 		() => {
 			cy.request({
 				url: '/oauth2/authorization/oidc',
@@ -188,8 +201,8 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 									followRedirect: false,
 									form: true,
 									body: {
-										username: username,
-										password: password,
+										username,
+										password,
 									},
 								})
 							})
@@ -277,6 +290,24 @@ Cypress.Commands.add('delete', (url, lenient = true) => {
 			}
 		})
 })
+
+Cypress.Commands.add('getById', (url, status = 200) => {
+	cy.getCookie('XSRF-TOKEN')
+		.then(csrfCookie => {
+			return cy.request({
+				method: 'GET',
+				url: url,
+				headers: {
+					'X-XSRF-TOKEN': csrfCookie.value,
+				},
+			})
+		})
+		.then(res => {
+			expect(res.status).to.eq(status)
+			return cy.wrap(res.body)
+		})
+})
+
 <%_ } _%>
 
 Cypress.Commands.add('setFileInput', (fieldSelector, testFile, mimeType) => {
