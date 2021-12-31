@@ -3,18 +3,18 @@
 	import { goto } from '$app/navigation'
 	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus.js'
 
-	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
-	import Page from '$lib/page/Page.svelte'
-	import Button from '$lib/Button.svelte'
-	import Icon from '$lib/Icon.svelte'
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service.js'
+	import Page from '$lib/page/page.svelte'
+	import Button from '$lib/button.svelte'
+	import Icon from '$lib/icon.svelte'
 <%_ if (!paginationNo) { _%>
-	import Pagination from '$lib/table/Pagination.svelte'
+	import Pagination from '$lib/table/pagination.svelte'
 <%_ } _%>
 <%_ if (searchEngine) { _%>
-	import SearchForm from '$lib/page/SearchForm.svelte'
+	import SearchForm from '$lib/page/search-form.svelte'
 <%_ } _%>
-	import <%= entityAngularName %>Table from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Table.svelte'
-	import <%= entityAngularName %>DeleteModal from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>DeleteModal.svelte'
+	import <%= entityAngularName %>Table from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-table.svelte'
+	import <%= entityAngularName %>DeleteModal from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-delete-modal.svelte'
 
 	let error
 	let <%= entityInstancePlural %> = []

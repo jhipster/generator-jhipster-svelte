@@ -3,8 +3,8 @@
 	import { page } from '$app/stores'
 
 	import accountService from '$lib/account/account-service'
-	import Alert from '$lib/Alert.svelte'
-	import Page from '$lib/page/Page.svelte'
+	import Alert from '$lib/alert.svelte'
+	import Page from '$lib/page/page.svelte'
 
 	let error
 	let accountActivated = false

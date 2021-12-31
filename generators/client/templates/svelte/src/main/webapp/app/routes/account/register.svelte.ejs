@@ -2,9 +2,9 @@
 	import accountService from '$lib/account/account-service'
 	import { problemBaseUrl } from '$lib/utils/env'
 
-	import Alert from '$lib/Alert.svelte'
-	import Page from '$lib/page/Page.svelte'
-	import RegisterUserForm from '$lib/account/RegisterUserForm.svelte'
+	import Alert from '$lib/alert.svelte'
+	import Page from '$lib/page/page.svelte'
+	import RegisterUserForm from '$lib/account/register-user-form.svelte'
 
 	let username
 	let email

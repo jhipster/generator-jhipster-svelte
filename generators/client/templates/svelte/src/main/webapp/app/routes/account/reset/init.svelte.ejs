@@ -1,9 +1,9 @@
 <script>
 	import accountService from '$lib/account/account-service'
 
-	import Alert from '$lib/Alert.svelte'
-	import Page from '$lib/page/Page.svelte'
-	import ForgotPasswordForm from '$lib/account/ForgotPasswordForm.svelte'
+	import Alert from '$lib/alert.svelte'
+	import Page from '$lib/page/page.svelte'
+	import ForgotPasswordForm from '$lib/account/forgot-password-form.svelte'
 
 	let error
 	let email

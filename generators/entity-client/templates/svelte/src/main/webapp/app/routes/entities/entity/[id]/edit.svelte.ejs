@@ -3,9 +3,9 @@
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
 
-	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
-	import Page from '$lib/page/Page.svelte'
-	import <%= entityAngularName %>Form from '$lib/entities/<%= entityFolderName %>/<%= entityAngularName %>Form.svelte'
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service.js'
+	import Page from '$lib/page/page.svelte'
+	import <%= entityAngularName %>Form from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-form.svelte'
 	<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
 	if (relationship.relationshipManyToOne
 			|| (relationship.relationshipOneToOne && relationship.ownerSide)
@@ -14,7 +14,7 @@
 	<%_ if (relationship.otherEntityUser) { _%>
 	import userService from '$lib/entities/user/user-service.js'
 	<%_ } else { _%>
-	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityName %>-service.js'
+	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityFileName %>-service.js'
 	<%_ } _%>
 	<%_
 	}

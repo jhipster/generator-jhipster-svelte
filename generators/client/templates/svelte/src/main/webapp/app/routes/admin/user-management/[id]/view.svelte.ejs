@@ -5,11 +5,11 @@
 	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft.js'
 
 	import userService from '$lib/admin/user-management/user-service.js'
-	import Page from '$lib/page/Page.svelte'
-	import Record from '$lib/page/Record.svelte'
-	import Button from '$lib/Button.svelte'
-	import Icon from '$lib/Icon.svelte'
-	import { formatDate } from '$lib/utils/date'
+	import Page from '$lib/page/page.svelte'
+	import Record from '$lib/page/record.svelte'
+	import Button from '$lib/button.svelte'
+	import Icon from '$lib/icon.svelte'
+	import { formatDate } from '$lib/utils/date-util'
 
 	$: id = $page && $page.params && $page.params.id
 	onMount(() => fetchUserDetails())

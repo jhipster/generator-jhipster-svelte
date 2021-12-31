@@ -11,21 +11,21 @@ _%>
 	import { goto } from '$app/navigation'
 	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft.js'
 
-	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityInstance %>-service.js'
-	import Page from '$lib/page/Page.svelte'
-	import Record from '$lib/page/Record.svelte'
-	import Button from '$lib/Button.svelte'
-	import Icon from '$lib/Icon.svelte'
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service.js'
+	import Page from '$lib/page/page.svelte'
+	import Record from '$lib/page/record.svelte'
+	import Button from '$lib/button.svelte'
+	import Icon from '$lib/icon.svelte'
 <%_ const timedFieldType = fields.find(field => (field.fieldTypeTimed || field.fieldTypeLocalDate));
 	const durationFieldType = fields.find(field => field.fieldTypeDuration);
 	const bothTimedAndDuration = timedFieldType && durationFieldType;
 	const binaryFieldType = fields.find(field => ((field.fieldTypeBinary && field.blobContentTypeImage) || (field.fieldTypeBinary && field.blobContentTypeAny)));
 	if (timedFieldType || durationFieldType ) { _%>
-	import { <%_ if (timedFieldType) { _%> formatDate<%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } else { _%> <%_ } _%><%_ if (durationFieldType) { _%> formatDurationType <%_ } _%> } from '$lib/utils/date'
+	import { <%_ if (timedFieldType) { _%> formatDate<%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } else { _%> <%_ } _%><%_ if (durationFieldType) { _%> formatDurationType <%_ } _%> } from '$lib/utils/date-util'
 <%_ }
 	if (binaryFieldType) {
 _%>
-	import BinaryRecord from '$lib/page/BinaryRecord.svelte'
+	import BinaryRecord from '$lib/page/binary-record.svelte'
 <%_ } _%>
 
 	$: id = $page && $page.params && $page.params.id
