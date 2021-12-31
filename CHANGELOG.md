@@ -2,7 +2,7 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
-## Current
+## [0.7.0] - 2022-01-01
 
 ### Added
 
