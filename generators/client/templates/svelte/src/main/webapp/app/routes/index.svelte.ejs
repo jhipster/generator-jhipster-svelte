@@ -1,6 +1,6 @@
 <script>
 	import auth from '$lib/auth/auth-store.js'
-	import appAvatar from '$lib/svg/appAvatar.svg'
+	import appAvatar from '$lib/svg/app-avatar.svg'
 </script>
 
 <svelte:head>

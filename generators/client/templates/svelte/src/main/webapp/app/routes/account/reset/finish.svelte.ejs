@@ -2,9 +2,9 @@
 	import { page } from '$app/stores'
 	import accountService from '$lib/account/account-service'
 
-	import Alert from '$lib/Alert.svelte'
-	import Page from '$lib/page/Page.svelte'
-	import ResetPasswordForm from '$lib/account/ResetPasswordForm.svelte'
+	import Alert from '$lib/alert.svelte'
+	import Page from '$lib/page/page.svelte'
+	import ResetPasswordForm from '$lib/account/reset-password-form.svelte'
 
 	let error
 	let password

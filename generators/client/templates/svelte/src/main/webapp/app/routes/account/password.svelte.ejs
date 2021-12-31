@@ -1,8 +1,8 @@
 <script>
 	import accountService from '$lib/account/account-service'
-	import Alert from '$lib/Alert.svelte'
-	import Page from '$lib/page/Page.svelte'
-	import ChangePasswordForm from '$lib/account/ChangePasswordForm.svelte'
+	import Alert from '$lib/alert.svelte'
+	import Page from '$lib/page/page.svelte'
+	import ChangePasswordForm from '$lib/account/change-password-form.svelte'
 
 	let error
 	let currentPassword

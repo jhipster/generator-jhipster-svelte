@@ -1,11 +1,11 @@
 <script>
 	import { goto } from '$app/navigation'
 
-	import appLogo from '$lib/svg/appLogo.svg'
-	import Alert from '$lib/Alert.svelte'
-	import Button from '$lib/Button.svelte'
-	import InputControl from '$lib/InputControl.svelte'
-	import CheckboxControl from '$lib/CheckboxControl.svelte'
+	import appLogo from '$lib/svg/app-logo.svg'
+	import Alert from '$lib/alert.svelte'
+	import Button from '$lib/button.svelte'
+	import InputControl from '$lib/input-control.svelte'
+	import CheckboxControl from '$lib/checkbox-control.svelte'
 	import auth from '$lib/auth/auth-store.js'
 	import authService from '$lib/auth/auth-service.js'
 

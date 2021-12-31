@@ -5,12 +5,12 @@
 
 	import auth from '$lib/auth/auth-store.js'
 	import userService from '$lib/admin/user-management/user-service.js'
-	import Page from '$lib/page/Page.svelte'
-	import Button from '$lib/Button.svelte'
-	import Icon from '$lib/Icon.svelte'
-	import PaginatedTable from '$lib/table/PaginatedTable.svelte'
-	import UserTable from '$lib/admin/user-management/UserTable.svelte'
-	import UserDeleteModal from '$lib/admin/user-management/UserDeleteModal.svelte'
+	import Page from '$lib/page/page.svelte'
+	import Button from '$lib/button.svelte'
+	import Icon from '$lib/icon.svelte'
+	import PaginatedTable from '$lib/table/paginated-table.svelte'
+	import UserTable from '$lib/admin/user-management/user-table.svelte'
+	import UserDeleteModal from '$lib/admin/user-management/user-delete-modal.svelte'
 
 	let error
 	let users = []

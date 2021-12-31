@@ -1,11 +1,11 @@
 <script>
 	import { onMount } from 'svelte'
 
-	import Page from '$lib/page/Page.svelte'
+	import Page from '$lib/page/page.svelte'
 	import loggerService from '$lib/admin/logger/logger-service'
-	import LoggerTable from '$lib/admin/logger/LoggerTable.svelte'
-	import PaginatedTable from '$lib/table/PaginatedTable.svelte'
-	import SearchForm from '$lib/page/SearchForm.svelte'
+	import LoggerTable from '$lib/admin/logger/logger-table.svelte'
+	import PaginatedTable from '$lib/table/paginated-table.svelte'
+	import SearchForm from '$lib/page/search-form.svelte'
 
 	let error
 	let filterCriteria

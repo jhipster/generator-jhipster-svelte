@@ -40,26 +40,26 @@ const svelteFiles = {
 			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
 				{
-					file: 'entity/EntityDeleteModal.svelte',
+					file: 'entity/entity-delete-modal.svelte',
 					renameTo: generator =>
-						`${generator.entityFolderName}/${generator.entityAngularName}DeleteModal.svelte`,
+						`${generator.entityFolderName}/${generator.entityFileName}-delete-modal.svelte`,
 				},
 				{
-					file: 'entity/EntityListActions.svelte',
+					file: 'entity/entity-list-actions.svelte',
 					renameTo: generator =>
-						`${generator.entityFolderName}/${generator.entityAngularName}ListActions.svelte`,
+						`${generator.entityFolderName}/${generator.entityFileName}-list-actions.svelte`,
 				},
 				{
-					file: 'entity/EntityTable.svelte',
-					renameTo: generator => `${generator.entityFolderName}/${generator.entityAngularName}Table.svelte`,
+					file: 'entity/entity-table.svelte',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-table.svelte`,
 				},
 				{
-					file: 'entity/EntityForm.svelte',
-					renameTo: generator => `${generator.entityFolderName}/${generator.entityAngularName}Form.svelte`,
+					file: 'entity/entity-form.svelte',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-form.svelte`,
 				},
 				{
 					file: 'entity/entity-service.js',
-					renameTo: generator => `${generator.entityFolderName}/${generator.entityInstance}-service.js`,
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-service.js`,
 				},
 			],
 		},
@@ -70,31 +70,31 @@ const svelteFiles = {
 				{
 					file: 'cypress/integration/entities/entity/entity-delete.spec.js',
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-delete.spec.js`,
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-delete.spec.js`,
 				},
 				{
 					file: 'cypress/integration/entities/entity/entity-list.spec.js',
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-list.spec.js`,
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-list.spec.js`,
 				},
 				{
 					file: 'cypress/integration/entities/entity/entity-view.spec.js',
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-view.spec.js`,
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-view.spec.js`,
 				},
 				{
 					file: 'cypress/integration/entities/entity/entity-create.spec.js',
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-create.spec.js`,
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-create.spec.js`,
 				},
 				{
 					file: 'cypress/integration/entities/entity/entity-update.spec.js',
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityInstance}-update.spec.js`,
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-update.spec.js`,
 				},
 				{
 					file: 'cypress/support/entities/entity-util.js',
-					renameTo: generator => `cypress/support/entities/${generator.entityInstance}-util.js`,
+					renameTo: generator => `cypress/support/entities/${generator.entityFileName}-util.js`,
 				},
 			],
 		},
@@ -111,7 +111,7 @@ function addEnumerationFiles(generator) {
 			};
 			if (!generator.skipClient) {
 				const destinationFile = generator.destinationPath(
-					`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType}.js`
+					`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType.toLowerCase()}.js`
 				);
 				generator.template(
 					`svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`,

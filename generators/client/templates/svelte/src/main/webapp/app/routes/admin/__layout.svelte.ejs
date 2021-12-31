@@ -1,5 +1,5 @@
 <script>
-	import RoleGuard from '$lib/auth/RoleGuard.svelte'
+	import RoleGuard from '$lib/auth/role-guard.svelte'
 </script>
 
 <RoleGuard role="ADMIN" showAccessDeniedMessage="true">

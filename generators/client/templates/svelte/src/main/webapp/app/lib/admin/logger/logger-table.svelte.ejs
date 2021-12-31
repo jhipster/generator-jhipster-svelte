@@ -1,0 +1,75 @@
+<script>
+	import { createEventDispatcher } from 'svelte'
+
+	import Table from '$lib/table/table.svelte'
+	import TableRow from '$lib/table/table-row.svelte'
+	import TableHeader from '$lib/table/table-header.svelte'
+	import TableData from '$lib/table/table-data.svelte'
+	import Button from '$lib/button.svelte'
+
+	export let levels = []
+	export let loggers = []
+	const dispatch = createEventDispatcher()
+
+	function changeLogLevel(name, level) {
+		dispatch('changeloglevel', {
+			name: name,
+			level: level,
+		})
+	}
+</script>
+
+<Table testId="loggers">
+	<thead slot="head">
+		<TableRow classes="bg-gray-100 dark:bg-gray-700">
+			<TableHeader>
+				<span>Name</span>
+			</TableHeader>
+		</TableRow>
+	</thead>
+	<tbody>
+		{#each loggers as logger (logger.name)}
+			<TableRow let:showActions>
+				<TableData>
+					<div
+						class="flex flex-row flex-nowrap items-center justify-between my-2"
+					>
+						<div class="break-words overflow-ellipsis">
+							{logger.name}
+						</div>
+						<div
+							class="absolute flex flex-row flex-nowrap right-2 bg-white dark:bg-gray-800"
+							class:hover:bg-gray-50="{showActions}"
+							class:dark:hover:bg-gray-800="{showActions}"
+						>
+							{#each levels as level (level)}
+								<Button
+									role="{logger.level === level
+										? 'primary'
+										: 'outline'}"
+									disabled="{logger.level === level}"
+									on:click="{changeLogLevel(
+										logger.name,
+										level
+									)}"
+									title="Click to change log level to {level}"
+									data-test="{level.toLowerCase()}LogLevelBtn"
+									classes="mr-2 py-1 my-2 {!showActions &&
+									logger.level !== level
+										? 'hidden'
+										: ''}">{level}</Button
+								>
+							{/each}
+						</div>
+					</div>
+				</TableData>
+			</TableRow>
+		{:else}
+			<TableRow let:showActions>
+				<TableData classes="text-center py-8"
+					>No loggers available</TableData
+				>
+			</TableRow>
+		{/each}
+	</tbody>
+</Table>
