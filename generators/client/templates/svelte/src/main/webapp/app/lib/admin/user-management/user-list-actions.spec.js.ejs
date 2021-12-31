@@ -3,7 +3,7 @@ import { jest } from '@jest/globals'
 import { render, fireEvent } from '@testing-library/svelte'
 import { screen } from '@testing-library/dom'
 
-import UserListActions from './UserListActions.svelte'
+import UserListActions from './user-list-actions.svelte'
 
 test('should allow triggering state change when the logged-in user is different than the rendered user account', () => {
 	render(UserListActions, {
