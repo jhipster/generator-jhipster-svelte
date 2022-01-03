@@ -10,7 +10,7 @@
 	let password
 	let passwordReset = false
 
-	$: passwordResetKey = $page && $page.query && $page.query.key
+	$: passwordResetKey = $page && $page.url && $page.url.searchParams.get('key')
 
 	function resetPassword() {
 		error = undefined
