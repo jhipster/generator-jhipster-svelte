@@ -2,11 +2,12 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
-## Current
+## [0.7.1] - 2022-01-03
 
 ### Changed
 
 -   ✅ Bump `JHipster` dependency to support `7.5.0` release
+-   ✅ Bump `Svelte/Kit` dependency to support latest patch release
 
 ## [0.7.0] - 2022-01-01
 
