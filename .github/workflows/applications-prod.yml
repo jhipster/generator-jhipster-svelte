@@ -99,7 +99,7 @@ jobs:
             - name: Frontend - Unit tests
               run: |
                   cd "$HOME/svelte-app"
-                  npm run test -- --coverage
+                  ./npmw run test -- --coverage
             - name: Maven - Package application
               if: contains(matrix.apps , 'maven')
               run: |
