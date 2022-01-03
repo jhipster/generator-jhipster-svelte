@@ -9,7 +9,7 @@
 	let error
 	let accountActivated = false
 
-	$: activationKey = $page && $page.query && $page.query.key
+	$: activationKey = $page && $page.url && $page.url.searchParams.get('key')
 
 	onMount(() => activateUserAccount())
 

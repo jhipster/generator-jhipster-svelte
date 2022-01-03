@@ -17,7 +17,7 @@
 	}
 <%_ if (authenticationType !== 'oauth2') { _%>
 
-	$: isLoginRouteActivated = $page && $page.path && $page.path === '/login'
+	$: isLoginRouteActivated = $page && $page.url && $page.url.pathname === '/login'
 <%_ } _%>
 </script>
 

@@ -8,7 +8,7 @@
 	export let route
 
 	$: textClass =
-		$page && $page.path && $page.path === route
+		$page && $page.url && $page.url.pathname === route
 			? 'text-white'
 			: 'text-gray-400'
 </script>
