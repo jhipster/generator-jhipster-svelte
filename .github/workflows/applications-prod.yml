@@ -99,7 +99,7 @@ jobs:
             - name: Frontend - Unit tests
               run: |
                   cd "$HOME/svelte-app"
-                  npm run test -- --coverage
+                  ./npmw run test -- --coverage
             - name: Maven - Package application
               if: contains(matrix.apps , 'maven')
               run: |
@@ -126,4 +126,4 @@ jobs:
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
                   docker-compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  npm run e2e:ci
+                  ./npmw run e2e:ci
