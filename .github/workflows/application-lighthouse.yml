@@ -43,7 +43,7 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.4.1
+                  key: ${{ runner.os }}-maven-7.5.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
