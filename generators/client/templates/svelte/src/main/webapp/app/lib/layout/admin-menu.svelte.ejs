@@ -3,6 +3,7 @@
 	import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers.js'
 	import { faTasks } from '@fortawesome/free-solid-svg-icons/faTasks.js'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown.js'
+	import { faBook } from '@fortawesome/free-solid-svg-icons/faBook.js'
 
 	import MenuItem from '$lib/layout/menu-item.svelte'
 	import Icon from '$lib/icon.svelte'
@@ -58,6 +59,14 @@
 		>
 			<Icon classes="sm:mr-1" icon="{faTasks}" />
 			Loggers
+		</MenuItem>
+		<MenuItem
+			testId="svlDocsLink"
+			link="/admin/docs"
+			on:click="{() => (isOpen = false)}"
+		>
+			<Icon classes="sm:mr-1" icon="{faBook}" />
+			API
 		</MenuItem>
 	</div>
 </div>

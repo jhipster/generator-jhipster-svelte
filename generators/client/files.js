@@ -70,6 +70,12 @@ const svelteFiles = {
 			],
 		},
 	],
+	swagger: [
+		{
+			path: FRONTEND_SRC_DIR,
+			templates: ['swagger-ui/index.html'],
+		},
+	],
 	static: [
 		{
 			path: FRONTEND_SRC_DIR,
@@ -115,6 +121,7 @@ const svelteFiles = {
 				'index.svelte',
 				'admin/__layout.svelte',
 				'admin/logger.svelte',
+				'admin/docs.svelte',
 			],
 		},
 	],
