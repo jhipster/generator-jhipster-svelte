@@ -2,6 +2,12 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
+## Current
+
+### Added
+
+-   ✅ Integrate `Swagger UI` under `Administration` > `API` menu. Allows to interactively consume REST APIs [#900](https://github.com/jhipster/generator-jhipster-svelte/pull/900)
+
 ## [0.7.1] - 2022-01-03
 
 ### Changed
