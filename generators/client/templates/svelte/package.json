@@ -9,7 +9,7 @@
 		"@sveltejs/kit": "1.0.0-next.216",
 		"@testing-library/jest-dom": "5.16.1",
 		"@testing-library/svelte": "3.0.3",
-		"autoprefixer": "10.4.1",
+		"autoprefixer": "10.4.2",
 		"cross-env": "7.0.3",
 		"cypress": "9.2.0",
 		"esbuild": "0.14.10",
