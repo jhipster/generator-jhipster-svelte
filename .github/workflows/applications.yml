@@ -10,25 +10,25 @@ env:
     TEST_SCRIPTS_PATH: ${{ github.workspace }}/.github/workflows/scripts
 jobs:
     svelte-image:
-        - name: Prepare Svelte Image
-          runs-on: ubuntu-latest
-          concurrency:
-              group: apps-dev-${{ matrix.apps }}-${{ github.head_ref || github.sha }}
-              cancel-in-progress: true
-          timeout-minutes: 5
-          steps:
-              - uses: actions/checkout@v2
-              - name: Create Svelte Hipster docker image
-                run: |
-                    docker build -t jhipster/svelte-hipster:$GITHUB_SHA --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
-                    mkdir -p svelte-artifacts/images
-                    docker save jhipster/svelte-hipster:$GITHUB_SHA > svelte-artifacts/images/svelte-image.tar
-              - name: Save Svelte Docker image
-                uses: actions/upload-artifact@v2
-                with:
-                    name: docker-artifact
-                    path: svelte-artifacts/images
-                    retention-days: 1
+        name: Prepare Svelte Image
+        runs-on: ubuntu-latest
+        concurrency:
+            group: apps-dev-${{ matrix.apps }}-${{ github.head_ref || github.sha }}
+            cancel-in-progress: true
+        timeout-minutes: 5
+        steps:
+            - uses: actions/checkout@v2
+            - name: Create Svelte Hipster docker image
+              run: |
+                  docker build -t jhipster/svelte-hipster:$GITHUB_SHA --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
+                  mkdir -p svelte-artifacts/images
+                  docker save jhipster/svelte-hipster:$GITHUB_SHA > svelte-artifacts/images/svelte-image.tar
+            - name: Save Svelte Docker image
+              uses: actions/upload-artifact@v2
+              with:
+                  name: docker-artifact
+                  path: svelte-artifacts/images
+                  retention-days: 1
     build:
         needs: svelte-image
         name: ${{ matrix.apps }}
