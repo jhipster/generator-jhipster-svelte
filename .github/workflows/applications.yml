@@ -89,7 +89,7 @@ jobs:
             - name: Docker load
               run: |
                   cd svelte-artifacts/images
-                  docker load < docker-image.tar
+                  docker load < svelte-image.tar
             - name: Prepare environment
               run: |
                   mkdir -p "$HOME/svelte-app"
