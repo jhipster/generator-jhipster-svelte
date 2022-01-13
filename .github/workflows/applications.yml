@@ -165,8 +165,8 @@ jobs:
                         'monolithic-session-maven-postgres-prod.jdl',
                         'monolithic-oidc-maven-postgres-prod.jdl',
                     ]
-            os: [ubuntu-latest]
-            node_version: [16.x]
+                os: [ubuntu-latest]
+                node_version: [16.x]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
