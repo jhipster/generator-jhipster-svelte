@@ -8,6 +8,10 @@
 
 -   ✅ Integrate `Swagger UI` under `Administration` > `API` menu. Allows to interactively consume REST APIs [#900](https://github.com/jhipster/generator-jhipster-svelte/pull/900)
 
+### Changed
+
+-   ✅ Improved GitHub Action Workflows to test generated applications [#919](https://github.com/jhipster/generator-jhipster-svelte/pull/919)
+
 ## [0.7.1] - 2022-01-03
 
 ### Changed
