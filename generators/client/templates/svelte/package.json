@@ -32,6 +32,6 @@
 		"rollup-plugin-copy": "3.4.0",
 		"svelte": "3.46.3",
 		"svelte-jester": "2.1.5",
-		"tailwindcss": "3.0.17"
+		"tailwindcss": "3.0.18"
 	}
 }
