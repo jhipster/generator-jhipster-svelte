@@ -11,6 +11,7 @@
 ### Changed
 
 -   ✅ Improved GitHub Action Workflows to test generated applications [#919](https://github.com/jhipster/generator-jhipster-svelte/pull/919)
+-   ✅ Upgrade `Cypress`, `svelte`, `svelte/kit`, `eslint` etc dependencies
 
 ## [0.7.1] - 2022-01-03
 
