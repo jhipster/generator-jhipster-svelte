@@ -9,7 +9,7 @@ _%>
 <script>
 	import { goto } from '$app/navigation'
 
-	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service.js'
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
 	import Page from '$lib/page/page.svelte'
 	import <%= entityAngularName %>Form from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-form.svelte'
 	<%_
@@ -23,9 +23,9 @@ _%>
 			|| (relationship.relationshipManyToMany && relationship.ownerSide)) {
 	_%>
 	<%_ if (relationship.otherEntityUser) { _%>
-	import userService from '$lib/entities/user/user-service.js'
+	import userService from '$lib/entities/user/user-service'
 	<%_ } else { _%>
-	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityFileName %>-service.js'
+	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityFileName %>-service'
 	<%_ } _%>
 	<%_
 	}

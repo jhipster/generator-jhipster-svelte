@@ -1,9 +1,9 @@
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
-	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus.js'
+	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
-	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service.js'
+	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
 	import Page from '$lib/page/page.svelte'
 	import Button from '$lib/button.svelte'
 	import Icon from '$lib/icon.svelte'

@@ -12,8 +12,8 @@ const containsRelationshipField = relationshipFields && relationshipFields.lengt
 _%>
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan.js'
-	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave.js'
+	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
+	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave'
 
 	import Button from '$lib/button.svelte'
 	import Icon from '$lib/icon.svelte'
@@ -29,7 +29,7 @@ _%>
 	import <%= field.fieldType %> from '$lib/entities/enums/<%= field.fieldType.toLowerCase() %>'
 	<%_ } _%>
 	<%_ if (containsBlobField) { _%>
-	import { getBase64FileData } from '$lib/utils/data-util.js'
+	import { getBase64FileData } from '$lib/utils/data-util'
 	<%_ } _%>
 	<%_ if (containsInstantField) { _%>
 	import {
