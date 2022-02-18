@@ -3,19 +3,19 @@
 <%_ if (authenticationType === 'oauth2') { _%>
 	import { browser } from '$app/env'
 <%_ } _%>
-	import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt.js'
+	import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
-	import { faLock } from '@fortawesome/free-solid-svg-icons/faLock.js'
-	import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench.js'
+	import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
+	import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 <%_ } _%>
-	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown.js'
-	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser.js'
+	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
+	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 
 	import MenuItem from '$lib/layout/menu-item.svelte'
 	import Icon from '$lib/icon.svelte'
-	import auth from '$lib/auth/auth-store.js'
+	import auth from '$lib/auth/auth-store'
 <%_ if (authenticationType === 'session' || authenticationType === 'oauth2') { _%>
-	import authService from '$lib/auth/auth-service.js'
+	import authService from '$lib/auth/auth-service'
 <%_ } _%>
 
 	let isOpen = false

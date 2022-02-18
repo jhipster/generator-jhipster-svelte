@@ -1,10 +1,10 @@
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
-	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus.js'
+	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
-	import auth from '$lib/auth/auth-store.js'
-	import userService from '$lib/admin/user-management/user-service.js'
+	import auth from '$lib/auth/auth-store'
+	import userService from '$lib/admin/user-management/user-service'
 	import Page from '$lib/page/page.svelte'
 	import Button from '$lib/button.svelte'
 	import Icon from '$lib/icon.svelte'

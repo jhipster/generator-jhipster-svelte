@@ -1,5 +1,5 @@
 <script>
-	import auth from '$lib/auth/auth-store.js'
+	import auth from '$lib/auth/auth-store'
 	import appAvatar from '$lib/svg/app-avatar.svg'
 </script>
 

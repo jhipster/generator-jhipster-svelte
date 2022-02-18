@@ -5,7 +5,7 @@
 <%_ } _%>
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
-	import auth from '$lib/auth/auth-store.js'
+	import auth from '$lib/auth/auth-store'
 
 <%_ if (authenticationType === 'oauth2') { _%>
 	const allowedUnAuthenticatedRoutes = []

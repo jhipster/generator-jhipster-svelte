@@ -1,13 +1,13 @@
 <script>
-	import { faBars } from '@fortawesome/free-solid-svg-icons/faBars.js'
-	import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt.js'
+	import { faBars } from '@fortawesome/free-solid-svg-icons/faBars'
+	import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
-	import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus.js'
+	import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
 <%_ } _%>
 
 	import Icon from '$lib/icon.svelte'
 	import NavItem from '$lib/layout/nav-item.svelte'
-	import auth from '$lib/auth/auth-store.js'
+	import auth from '$lib/auth/auth-store'
 	import AccountMenu from '$lib/layout/account-menu.svelte'
 	import AdminMenu from '$lib/layout/admin-menu.svelte'
 	import EntityMenu from '$lib/layout/entity-menu.svelte'

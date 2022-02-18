@@ -1,5 +1,5 @@
 <script>
-	import auth from '$lib/auth/auth-store.js'
+	import auth from '$lib/auth/auth-store'
 
 	export let role = 'USER'
 	export let showAccessDeniedMessage = false
