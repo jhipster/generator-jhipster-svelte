@@ -1,7 +1,7 @@
 <script>
 	import accountService from '$lib/account/account-service'
-	import Alert from '$lib/alert.svelte'
-	import Page from '$lib/page/page.svelte'
+	import Alert from 'jhipster-svelte-library/alert.svelte'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
 	import ChangePasswordForm from '$lib/account/change-password-form.svelte'
 
 	let error
@@ -34,7 +34,7 @@
 		>
 		<Alert
 			data-test="errorMsg"
-			type="danger"
+			contextualColor="danger"
 			show="{error}"
 			closeable="{false}"
 			>An error has occurred! The password could not be changed.</Alert

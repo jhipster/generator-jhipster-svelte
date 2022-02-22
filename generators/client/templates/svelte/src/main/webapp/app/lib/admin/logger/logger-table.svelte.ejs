@@ -1,11 +1,10 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-
-	import Table from '$lib/table/table.svelte'
-	import TableRow from '$lib/table/table-row.svelte'
-	import TableHeader from '$lib/table/table-header.svelte'
-	import TableData from '$lib/table/table-data.svelte'
-	import Button from '$lib/button.svelte'
+	import Table from 'jhipster-svelte-library/table/table.svelte'
+	import TableRow from 'jhipster-svelte-library/table/table-row.svelte'
+	import TableHeader from 'jhipster-svelte-library/table/table-header.svelte'
+	import TableData from 'jhipster-svelte-library/table/table-data.svelte'
+	import Button from 'jhipster-svelte-library/button.svelte'
 
 	export let levels = []
 	export let loggers = []
@@ -44,9 +43,10 @@
 						>
 							{#each levels as level (level)}
 								<Button
-									role="{logger.level === level
+									contextualColor="{logger.level === level
 										? 'primary'
-										: 'outline'}"
+										: 'light'}"
+									outline="{logger.level !== level}"
 									disabled="{logger.level === level}"
 									on:click="{changeLogLevel(
 										logger.name,

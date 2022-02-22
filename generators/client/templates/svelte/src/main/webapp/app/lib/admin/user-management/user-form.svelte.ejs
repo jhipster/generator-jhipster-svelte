@@ -2,13 +2,12 @@
 	import { createEventDispatcher } from 'svelte'
 	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave'
-
-	import Button from '$lib/button.svelte'
-	import Icon from '$lib/icon.svelte'
-	import InputControl from '$lib/input-control.svelte'
-	import SelectControl from '$lib/select-control.svelte'
-	import CheckboxControl from '$lib/checkbox-control.svelte'
-	import Form from '$lib/page/form.svelte'
+	import Button from 'jhipster-svelte-library/button.svelte'
+	import Icon from 'jhipster-svelte-library/icon.svelte'
+	import InputControl from 'jhipster-svelte-library/input-control.svelte'
+	import SelectControl from 'jhipster-svelte-library/select-control.svelte'
+	import CheckboxControl from 'jhipster-svelte-library/checkbox-control.svelte'
+	import Form from 'jhipster-svelte-library/page/form.svelte'
 
 	export let user = {
 		id: null,
@@ -182,7 +181,7 @@
 		<div class="mr-4">
 			<Button
 				name="cancelBtn"
-				role="neutral"
+				contextualColor="secondary"
 				on:click="{() => dispatch('cancel')}"
 			>
 				<Icon classes="mr-2" icon="{faBan}" />Cancel

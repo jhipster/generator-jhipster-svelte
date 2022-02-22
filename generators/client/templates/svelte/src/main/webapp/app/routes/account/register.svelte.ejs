@@ -2,8 +2,8 @@
 	import accountService from '$lib/account/account-service'
 	import { problemBaseUrl } from '$lib/utils/env'
 
-	import Alert from '$lib/alert.svelte'
-	import Page from '$lib/page/page.svelte'
+	import Alert from 'jhipster-svelte-library/alert.svelte'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
 	import RegisterUserForm from '$lib/account/register-user-form.svelte'
 
 	let username
@@ -55,7 +55,7 @@
 			User account successfully created. Please check your email for
 			confirmation.
 		</Alert>
-		<Alert data-test="errorMsg" type="danger" show="{!!error}">
+		<Alert data-test="errorMsg" contextualColor="danger" show="{!!error}">
 			{#if error === 'duplicateEmail'}
 				Email is already in use. Please choose another one.
 			{:else if error === 'duplicateLogin'}

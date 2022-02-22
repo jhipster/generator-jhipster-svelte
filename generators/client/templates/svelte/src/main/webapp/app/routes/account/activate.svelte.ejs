@@ -3,8 +3,8 @@
 	import { page } from '$app/stores'
 
 	import accountService from '$lib/account/account-service'
-	import Alert from '$lib/alert.svelte'
-	import Page from '$lib/page/page.svelte'
+	import Alert from 'jhipster-svelte-library/alert.svelte'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
 
 	let error
 	let accountActivated = false
@@ -35,7 +35,7 @@
 			<span>Your user account has been activated. Please </span>
 			<a class="font-semibold underline" href="/login">Sign in</a>.
 		</Alert>
-		<Alert type="danger" show="{!!error}" closeable="{false}">
+		<Alert contextualColor="danger" show="{!!error}" closeable="{false}">
 			Your user could not be activated. Please use the registration form
 			to <a class="font-semibold underline" href="/account/register"
 				>Sign up</a

@@ -7,11 +7,11 @@ const containsRelationshipField = relationshipFields && relationshipFields.lengt
 _%>
 <script>
 	import <%= entityAngularName %>ListActions from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-list-actions.svelte'
-	import Sort from '$lib/table/sort.svelte'
-	import Table from '$lib/table/table.svelte'
-	import TableData from '$lib/table/table-data.svelte'
-	import TableHeader from '$lib/table/table-header.svelte'
-	import TableRow from '$lib/table/table-row.svelte'
+	import Sort from 'jhipster-svelte-library/table/sort.svelte'
+	import Table from 'jhipster-svelte-library/table/table.svelte'
+	import TableData from 'jhipster-svelte-library/table/table-data.svelte'
+	import TableHeader from 'jhipster-svelte-library/table/table-header.svelte'
+	import TableRow from 'jhipster-svelte-library/table/table-row.svelte'
 	<%_ const timedFieldType = fields.find(field => (field.fieldTypeTimed || field.fieldTypeLocalDate));
 	const durationFieldType = fields.find(field => field.fieldTypeDuration);
 	const bothTimedAndDuration = timedFieldType && durationFieldType;
@@ -21,7 +21,7 @@ _%>
 	<%_ }
 	if (binaryFieldType) {
 	_%>
-	import BinaryRecord from '$lib/page/binary-record.svelte'
+	import BinaryRecord from 'jhipster-svelte-library/page/binary-record.svelte'
 	<%_ } _%>
 	export let <%= entityInstancePlural %> = []
 	<%_ if (!paginationNo) { _%>

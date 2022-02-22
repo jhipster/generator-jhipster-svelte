@@ -1,8 +1,8 @@
 <script>
-	import Button from '$lib/button.svelte'
+	import Button from 'jhipster-svelte-library/button.svelte'
+	import InputControl from 'jhipster-svelte-library/input-control.svelte'
+	import Form from 'jhipster-svelte-library/page/form.svelte'
 
-	import InputControl from '$lib/input-control.svelte'
-	import Form from '$lib/page/form.svelte'
 	import PasswordConfirm from '$lib/account/password-confirm.svelte'
 
 	export let username = ''
