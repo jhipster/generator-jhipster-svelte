@@ -17,7 +17,7 @@ _%>
 	const bothTimedAndDuration = timedFieldType && durationFieldType;
 	const binaryFieldType = fields.find(field => ((field.fieldTypeBinary && field.blobContentTypeImage) || (field.fieldTypeBinary && field.blobContentTypeAny)));
 	if (timedFieldType || durationFieldType ) { _%>
-	import { <% if (timedFieldType) { %>formatDate <% } %><% if (bothTimedAndDuration) { %>, <% } else { %><% } %><% if (durationFieldType) { %> formatDurationType <% } %> } from '$lib/utils/date-util'
+	import { <% if (timedFieldType) { %>formatDate <% } %><% if (bothTimedAndDuration) { %>, <% } else { %><% } %><% if (durationFieldType) { %> formatDurationType <% } %> } from 'jhipster-svelte-library/utils/date-util'
 	<%_ }
 	if (binaryFieldType) {
 	_%>
