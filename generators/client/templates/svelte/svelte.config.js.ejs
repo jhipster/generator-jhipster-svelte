@@ -19,13 +19,6 @@ const config = {
 			template: '<%= CLIENT_MAIN_SRC_DIR %>app/app.html'
 		},
 		vite: () => ({
-			build: {
-				rollupOptions: {
-					output: {
-						manualChunks: undefined,
-					},
-				},
-			},
 			server: {
 				proxy: {
 					'/api': {
