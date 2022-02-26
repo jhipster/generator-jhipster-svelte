@@ -6,7 +6,8 @@
 				"apple-touch-icon": "off",
 				"tap-targets": "off",
 				"non-composited-animations": "off",
-				"content-width": "off"
+				"content-width": "off",
+				"unused-javascript": "off"
 			}
 		},
 		"collect": {
