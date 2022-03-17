@@ -25,7 +25,7 @@
 		"jest-sonar": "0.2.12",
 		"jest-svelte-resolver": "1.0.0",
 		"jhipster-svelte-library": "0.3.0",
-		"postcss": "8.4.7",
+		"postcss": "8.4.12",
 		"prettier": "2.5.1",
 		"prettier-plugin-svelte": "2.6.0",
 		"pretty-quick": "3.1.3",
