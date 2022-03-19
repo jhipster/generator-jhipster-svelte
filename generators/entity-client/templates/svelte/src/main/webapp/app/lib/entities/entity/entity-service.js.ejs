@@ -2,6 +2,8 @@ import { serverUrl } from '$lib/utils/env'
 import { request } from '$lib/utils/request'
 <%_
 const baseApi = (applicationTypeGateway && locals.microserviceName) ? 'services/' + microserviceName.toLowerCase() + '/api/' : 'api/';
+const eagerLoadRelationships = relationships.some(relationship => relationship.relationshipEagerLoad);
+
 _%>
 export default {
 <%_ if (!readOnly) { _%>
@@ -15,7 +17,7 @@ export default {
 		const defaultSort = sortPredicate !== 'id' ? '&sort=id,asc' : ''
 		const queryString = `page=${
 			page - 1
-		}&size=${size}&sort=${sortPredicate},${sortOrder}${defaultSort}`
+		}&size=${size}&sort=${sortPredicate},${sortOrder}${defaultSort}<%= eagerLoadRelationships ? '&eagerload=false' : '' %>`
 	<%_ } _%>
 		return request(`${serverUrl}<%= baseApi + entityApiUrl %><% if (!paginationNo) { %>?${queryString}<% } %>`)
 	},
