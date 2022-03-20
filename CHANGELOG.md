@@ -4,12 +4,17 @@
 
 ## Current
 
+### BREAKING CHANGES
+
+-   ✅ Reusable svelte components and functions are extracted into a separate npm library [JHipster Svelte Library](https://github.com/vishal423/jhipster-svelte-library) as part of [#1008](https://github.com/jhipster/generator-jhipster-svelte/pull/1008)
+
 ### Added
 
 -   ✅ Integrate `Swagger UI` under `Administration` > `API` menu. Allows to interactively consume REST APIs [#900](https://github.com/jhipster/generator-jhipster-svelte/pull/900)
 
 ### Changed
 
+-   ✅ Bump `JHipster` dependency to support `v7.7.0` release [#1048](https://github.com/jhipster/generator-jhipster-svelte/pull/1048)
 -   ✅ Improved GitHub Action Workflows to test generated applications [#919](https://github.com/jhipster/generator-jhipster-svelte/pull/919)
 -   ✅ Upgrade `Cypress`, `svelte`, `svelte/kit`, `eslint` etc dependencies
 
