@@ -1,7 +1,7 @@
 {
 	"dependencies": {
 		"date-fns": "2.28.0",
-		"swagger-ui-dist": "4.6.2"
+		"swagger-ui-dist": "4.8.1"
 	},
 	"devDependencies": {
 		"@fortawesome/free-solid-svg-icons": "6.1.0",
