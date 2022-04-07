@@ -67,20 +67,20 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.7.0
+                  key: ${{ runner.os }}-gradle-7.8.1
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.7.0
+                  key: ${{ runner.os }}-maven-7.8.1
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/9.5.2
+                      ~/.cache/Cypress/9.5.3
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-9.5.2
+                  key: ${{ runner.os }}-cypress-9.5.3
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -188,20 +188,20 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.7.0
+                  key: ${{ runner.os }}-gradle-7.8.1
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.7.0
+                  key: ${{ runner.os }}-maven-7.8.1
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/9.5.2
+                      ~/.cache/Cypress/9.5.3
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-9.5.2
+                  key: ${{ runner.os }}-cypress-9.5.3
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -307,14 +307,14 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.7.0
+                  key: ${{ runner.os }}-maven-7.8.1
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/9.5.2
+                      ~/.cache/Cypress/9.5.3
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-9.5.2
+                  key: ${{ runner.os }}-cypress-9.5.3
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:

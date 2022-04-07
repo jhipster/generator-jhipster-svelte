@@ -14,7 +14,7 @@
 
 ### Changed
 
--   ✅ Bump `JHipster` dependency to support `v7.7.0` release [#1048](https://github.com/jhipster/generator-jhipster-svelte/pull/1048)
+-   ✅ Bump `JHipster` dependency to support `v7.8.1` release
 -   ✅ Improved GitHub Action Workflows to test generated applications [#919](https://github.com/jhipster/generator-jhipster-svelte/pull/919)
 -   ✅ Upgrade `Cypress`, `svelte`, `svelte/kit`, `eslint` etc dependencies
 
