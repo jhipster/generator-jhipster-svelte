@@ -1,5 +1,6 @@
 import adapter from '@sveltejs/adapter-static';
 import copy from 'rollup-plugin-copy'
+import { splitVendorChunkPlugin } from 'vite'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -51,6 +52,7 @@ const config = {
 						},
 					],
 				}),
+				splitVendorChunkPlugin(),
 			],
 			ssr: {
 				noExternal: ['jhipster-svelte-library']
