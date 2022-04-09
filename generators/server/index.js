@@ -18,6 +18,7 @@ module.exports = class extends ServerGenerator {
 		}
 
 		this.blueprintjs = blueprintPackageJson;
+		this.skipServer = this.config.get('skipServer') || false;
 	}
 
 	get initializing() {
@@ -58,6 +59,9 @@ module.exports = class extends ServerGenerator {
 	// eslint-disable-next-line class-methods-use-this
 	get writing() {
 		const phaseFromJHipster = super._writing();
+		if (this.skipServer) {
+			return {};
+		}
 		return {
 			...phaseFromJHipster,
 			writeAdditionalFile() {

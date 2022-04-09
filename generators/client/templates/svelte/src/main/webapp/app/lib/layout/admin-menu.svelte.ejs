@@ -60,7 +60,9 @@
 			<Icon classes="sm:mr-1" icon="{faTasks}" />
 			Loggers
 		</MenuItem>
-		<MenuItem
+        <%_
+        if (!skipServer) { _%>
+        <MenuItem
 			testId="svlDocsLink"
 			link="/admin/docs"
 			on:click="{() => (isOpen = false)}"
@@ -68,5 +70,6 @@
 			<Icon classes="sm:mr-1" icon="{faBook}" />
 			API
 		</MenuItem>
+        <%_ } _%>
 	</div>
 </div>

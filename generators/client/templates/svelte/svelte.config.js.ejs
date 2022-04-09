@@ -1,5 +1,8 @@
 import adapter from '@sveltejs/adapter-static';
+<%_
+    if(!this.skipServer) { _%>
 import copy from 'rollup-plugin-copy'
+<%_ } _%>
 import { splitVendorChunkPlugin } from 'vite'
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -39,6 +42,8 @@ const config = {
 				}
 			},
 			plugins: [
+            <%_
+                if(!this.skipServer) { _%>
 				copy({
 					targets: [
 						{
@@ -52,6 +57,7 @@ const config = {
 						},
 					],
 				}),
+            <%_ } _%>
 				splitVendorChunkPlugin(),
 			],
 			ssr: {
