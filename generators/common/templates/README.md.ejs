@@ -26,13 +26,11 @@ let clientPackageMngrAddDev = 'install --save-dev --save-exact';
 let DOCUMENTATION_ARCHIVE_URL = `${DOCUMENTATION_URL + DOCUMENTATION_ARCHIVE_PATH}v${jhipsterVersion}`;
 _%>
 This application was generated using `Svelte Hipster` v`<%= this.blueprintjs.version %>` and `JHipster` v`<%= jhipsterVersion %>`, you can find documentation and help at [<%= DOCUMENTATION_ARCHIVE_URL %>](<%= DOCUMENTATION_ARCHIVE_URL %>).
-<%_ if (applicationType === 'gateway' || applicationType === 'microservice' || applicationType === 'uaa') { _%>
+<%_ if (applicationType === 'gateway' || applicationType === 'microservice') { _%>
 
 This is a "<%= applicationType %>" application intended to be part of a microservice architecture, please refer to the [Doing microservices with JHipster][] page of the documentation for more information.
-<% if (applicationType === 'uaa') { %>
-This is also a JHipster User Account and Authentication (UAA) Server, refer to [Using UAA for Microservice Security][] for details on how to secure JHipster microservices with OAuth2.<% } %>
 <%_ } _%>
-<%_ if (applicationType === 'gateway' || applicationType === 'microservice' || applicationType === 'uaa') { _%>
+<%_ if (applicationType === 'gateway' || applicationType === 'microservice') { _%>
 This application is configured for Service Discovery and Configuration with <% if (serviceDiscoveryType === 'eureka') { %>the JHipster-Registry<% } %><% if (serviceDiscoveryType === 'consul') { %>Consul<% } %>. On launch, it will refuse to start if it is not able to connect to <% if (serviceDiscoveryType === 'eureka') { %>the JHipster-Registry at [http://localhost:8761](http://localhost:8761)<% } %><% if (serviceDiscoveryType === 'consul') { %>Consul at [http://localhost:8500](http://localhost:8500)<% } %>.<% if (serviceDiscoveryType === 'eureka') { %> For more information, read our documentation on [Service Discovery and Configuration with the JHipster-Registry][].<% } %><% if (serviceDiscoveryType === 'consul') { %> For more information, read our documentation on [Service Discovery and Configuration with Consul][].<% } %>
 <%_ } _%>
 
@@ -94,7 +92,7 @@ specifying a newer version in [package.json](package.json). You can also run `<%
 Add the `help` flag on any command to see how you can use it. For example, `<%= clientPackageManager %> help update`.
 
 The `<%= clientPackageManager %> run` command will list all the scripts available to run for this project.
-<%_ if (authenticationType === 'oauth2') { _%>
+<%_ if (authenticationType === 'oauth2' && !skipServer) { _%>
 
 ## OAuth 2.0 / OpenID Connect
 
@@ -180,7 +178,7 @@ Because of that, it's essential that the bundler doesn't treat the package as an
 <%_ } _%>
 For further instructions on how to develop with JHipster and SvelteKit, have a look at [Using JHipster in development][] and [kit.svelte.dev](https://kit.svelte.dev/).
 
-<%_ if (enableSwaggerCodegen) { _%>
+<%_ if (enableSwaggerCodegen && !skipServer) { _%>
 ### Doing API-First development using openapi-generator
 
 [OpenAPI-Generator]() is configured for this application. You can generate API code from the `src/main/resources/swagger/api.yml` definition file by running:
@@ -201,6 +199,7 @@ To edit the `api.yml` definition file, you can use a tool such as [Swagger-Edito
 Refer to [Doing API-First development][] for more details.
 <%_ } _%>
 
+<%_ if (!skipServer) { _%>
 ## Building for production
 
 ### Packaging as jar
@@ -224,7 +223,9 @@ To package your application as a war in order to deploy it to an application ser
     ./mvnw -Pprod,war clean verify<% } %><% if (buildTool === 'gradle') { %>
     ./gradlew -Pprod -Pwar clean bootWar<% } %>
 
+<%_ } _%>
 ## Testing
+<%_ if (!skipServer) { _%>
 
 To launch your application's tests, run:
 
@@ -236,6 +237,7 @@ To launch your application's tests, run:
 <%_ } _%>
 ```
 
+<%_ } _%>
 ### Client tests
 
 Unit tests are run by [Jest][]. They're located alongside components and can be run with:
@@ -254,6 +256,7 @@ To use those tests, you must install Gatling from [https://gatling.io/](https://
 <%_ } _%>
 
 For more information, refer to the [Running tests page][].
+<%_ if (!skipServer) { _%>
 
 ### Code quality
 
@@ -301,6 +304,7 @@ For more information refer to [Using Docker and Docker-Compose][], this page als
 
 To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
 
+<%_ } _%>
 [JHipster Homepage and latest documentation]: <%= DOCUMENTATION_URL %>
 [JHipster <%= jhipsterVersion %> archive]: <%= DOCUMENTATION_ARCHIVE_URL %>
 <% if (applicationType === 'gateway' || applicationType === 'microservice' || applicationType === 'uaa') { %>[Doing microservices with JHipster]: <%= DOCUMENTATION_ARCHIVE_URL %>/microservices-architecture/<% } %>

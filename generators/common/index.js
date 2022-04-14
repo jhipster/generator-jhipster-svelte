@@ -33,6 +33,7 @@ module.exports = class extends CommonGenerator {
 		}
 
 		this.blueprintjs = blueprintPackageJson;
+		this.skipServer = this.config.get('skipServer') || false;
 	}
 
 	get initializing() {

@@ -72,6 +72,7 @@ const svelteFiles = {
 	],
 	swagger: [
 		{
+			condition: generator => !generator.skipServer,
 			path: FRONTEND_SRC_DIR,
 			templates: ['swagger-ui/index.html'],
 		},
@@ -121,8 +122,14 @@ const svelteFiles = {
 				'index.svelte',
 				'admin/__layout.svelte',
 				'admin/logger.svelte',
-				'admin/docs.svelte',
 			],
+		},
+	],
+	swaggerRoute: [
+		{
+			condition: generator => !generator.skipServer,
+			path: FRONTEND_ROUTES_DIR,
+			templates: ['admin/docs.svelte'],
 		},
 	],
 	loginRoutes: [

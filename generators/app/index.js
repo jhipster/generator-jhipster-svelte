@@ -9,10 +9,11 @@ module.exports = class extends AppGenerator {
 		super(args, { ...opts, fromBlueprint: true, skipClient: false });
 
 		this.blueprintjs = blueprintPackageJson;
+		this.skipServer = this.config.get('skipServer') || false;
 	}
 
 	get initializing() {
-		const initPhaseFromJHipster = this._initializing();
+		const initPhaseFromJHipster = super._initializing();
 
 		return {
 			...initPhaseFromJHipster,

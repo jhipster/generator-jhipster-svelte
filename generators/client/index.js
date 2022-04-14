@@ -16,6 +16,7 @@ module.exports = class extends ClientGenerator {
 		}
 
 		this.blueprintjs = blueprintPackageJson;
+		this.skipServer = this.config.get('skipServer') || false;
 	}
 
 	get initializing() {
@@ -78,6 +79,12 @@ module.exports = class extends ClientGenerator {
 			updatePackageJson() {
 				const packageTemplate = this.fs.read(this.templatePath('svelte/package.json'));
 				this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(packageTemplate));
+
+				if (!this.skipServer) {
+					// include swagger dependency
+					const swaggerPackageTemplate = this.fs.read(this.templatePath('svelte/swagger-package.json'));
+					this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(swaggerPackageTemplate));
+				}
 			},
 		};
 	}
