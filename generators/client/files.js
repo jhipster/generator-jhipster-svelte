@@ -72,7 +72,7 @@ const svelteFiles = {
 	],
 	swagger: [
 		{
-			condition: generator => !generator.skipServer,
+			condition: generator => generator.blueprintConfig.swaggerUi,
 			path: FRONTEND_SRC_DIR,
 			templates: ['swagger-ui/index.html'],
 		},
@@ -127,7 +127,7 @@ const svelteFiles = {
 	],
 	swaggerRoute: [
 		{
-			condition: generator => !generator.skipServer,
+			condition: generator => generator.blueprintConfig.swaggerUi,
 			path: FRONTEND_ROUTES_DIR,
 			templates: ['admin/docs.svelte'],
 		},

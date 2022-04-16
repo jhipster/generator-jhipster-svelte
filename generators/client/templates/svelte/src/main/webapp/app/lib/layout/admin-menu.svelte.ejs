@@ -61,7 +61,7 @@
 			Loggers
 		</MenuItem>
         <%_
-        if (!skipServer) { _%>
+        if (this.blueprintConfig.swaggerUi) { _%>
         <MenuItem
 			testId="svlDocsLink"
 			link="/admin/docs"

@@ -1,6 +1,6 @@
 import adapter from '@sveltejs/adapter-static';
 <%_
-    if(!this.skipServer) { _%>
+    if(this.blueprintConfig.swaggerUi) { _%>
 import copy from 'rollup-plugin-copy'
 <%_ } _%>
 import { splitVendorChunkPlugin } from 'vite'
@@ -43,7 +43,7 @@ const config = {
 			},
 			plugins: [
             <%_
-                if(!this.skipServer) { _%>
+                if(this.blueprintConfig.swaggerUi) { _%>
 				copy({
 					targets: [
 						{

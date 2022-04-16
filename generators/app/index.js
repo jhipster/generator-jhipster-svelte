@@ -10,6 +10,21 @@ module.exports = class extends AppGenerator {
 
 		this.blueprintjs = blueprintPackageJson;
 		this.skipServer = this.config.get('skipServer') || false;
+
+		this.option('swagger-ui', {
+			desc: 'Generate Swagger UI',
+			type: Boolean,
+			defaults: false,
+		});
+
+		if (this.options.swaggerUi) {
+			this.blueprintConfig.swaggerUi = this.options.swaggerUi;
+		} else {
+			if (!this.blueprintConfig) {
+				this.blueprintConfig = {};
+			}
+			this.blueprintConfig.swaggerUi = false;
+		}
 	}
 
 	get initializing() {
