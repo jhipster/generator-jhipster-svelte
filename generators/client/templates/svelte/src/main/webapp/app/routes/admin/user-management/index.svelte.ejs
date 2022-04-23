@@ -1,14 +1,14 @@
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
-	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus.js'
+	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
-	import auth from '$lib/auth/auth-store.js'
-	import userService from '$lib/admin/user-management/user-service.js'
-	import Page from '$lib/page/page.svelte'
-	import Button from '$lib/button.svelte'
-	import Icon from '$lib/icon.svelte'
-	import PaginatedTable from '$lib/table/paginated-table.svelte'
+	import auth from '$lib/auth/auth-store'
+	import userService from '$lib/admin/user-management/user-service'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
+	import Button from 'jhipster-svelte-library/button.svelte'
+	import Icon from 'jhipster-svelte-library/icon.svelte'
+	import PaginatedTable from 'jhipster-svelte-library/table/paginated-table.svelte'
 	import UserTable from '$lib/admin/user-management/user-table.svelte'
 	import UserDeleteModal from '$lib/admin/user-management/user-delete-modal.svelte'
 

@@ -9,10 +9,26 @@ module.exports = class extends AppGenerator {
 		super(args, { ...opts, fromBlueprint: true, skipClient: false });
 
 		this.blueprintjs = blueprintPackageJson;
+		this.skipServer = this.config.get('skipServer') || false;
+
+		this.option('swagger-ui', {
+			desc: 'Generate Swagger UI',
+			type: Boolean,
+			defaults: false,
+		});
+
+		if (this.options.swaggerUi) {
+			this.blueprintConfig.swaggerUi = this.options.swaggerUi;
+		} else {
+			if (!this.blueprintConfig) {
+				this.blueprintConfig = {};
+			}
+			this.blueprintConfig.swaggerUi = false;
+		}
 	}
 
 	get initializing() {
-		const initPhaseFromJHipster = this._initializing();
+		const initPhaseFromJHipster = super._initializing();
 
 		return {
 			...initPhaseFromJHipster,
@@ -21,34 +37,34 @@ module.exports = class extends AppGenerator {
 
 				this.log('\n');
 				this.log(
-					`${chalk.green('        ██╗ ██╗   ██╗ ████████╗ ███████╗ ')}${chalk.keyword('orange')(
-						'  ██████╗ '
-					)}${chalk.green('████████╗ ████████╗ ███████╗')}`
+					`  ${chalk.keyword('orange')('  ██████╗')}${chalk.green(
+						' ██╗   ██╗ ████████╗ ███████╗   ██████╗ ████████╗ ████████╗ ███████╗'
+					)}`
 				);
 				this.log(
-					`${chalk.green('        ██║ ██║   ██║ ╚══██╔══╝ ██╔═══██╗')}${chalk.keyword('orange')(
-						' ██╔════╝ '
-					)}${chalk.green('╚══██╔══╝ ██╔═════╝ ██╔═══██╗')}`
+					`  ${chalk.keyword('orange')(' ██╔════╝')}${chalk.green(
+						' ██║   ██║ ╚══██╔══╝ ██╔═══██╗ ██╔════╝ ╚══██╔══╝ ██╔═════╝ ██╔═══██╗'
+					)}`
 				);
 				this.log(
-					`${chalk.green('        ██║ ████████║    ██║    ███████╔╝')}${chalk.keyword('orange')(
-						' ╚█████╗  '
-					)}${chalk.green('   ██║    ██████╗   ███████╔╝')}`
+					`  ${chalk.keyword('orange')(' ╚█████╗ ')}${chalk.green(
+						' ████████║    ██║    ███████╔╝ ╚█████╗     ██║    ██████╗   ███████╔╝'
+					)}`
 				);
 				this.log(
-					`${chalk.green('  ██╗   ██║ ██╔═══██║    ██║    ██╔════╝ ')}${chalk.keyword('orange')(
-						'  ╚═══██╗ '
-					)}${chalk.green('   ██║    ██╔═══╝   ██╔══██║')}`
+					`  ${chalk.keyword('orange')('  ╚═══██╗')}${chalk.green(
+						' ██╔═══██║    ██║    ██╔════╝   ╚═══██╗    ██║    ██╔═══╝   ██╔══██║'
+					)}`
 				);
 				this.log(
-					`${chalk.green('  ╚██████╔╝ ██║   ██║ ████████╗ ██║      ')}${chalk.keyword('orange')(
-						' ██████╔╝ '
-					)}${chalk.green('   ██║    ████████╗ ██║  ╚██╗')}`
+					`  ${chalk.keyword('orange')(' ██████╔╝')}${chalk.green(
+						' ██║   ██║ ████████╗ ██║       ██████╔╝    ██║    ████████╗ ██║  ╚██╗'
+					)}`
 				);
 				this.log(
-					`${chalk.green('   ╚═════╝  ╚═╝   ╚═╝ ╚═══════╝ ╚═╝      ')}${chalk.keyword('orange')(
-						' ╚═════╝  '
-					)}${chalk.green('   ╚═╝    ╚═══════╝ ╚═╝   ╚═╝')}\n`
+					`  ${chalk.keyword('orange')(' ╚═════╝ ')}${chalk.green(
+						' ╚═╝   ╚═╝ ╚═══════╝ ╚═╝       ╚═════╝     ╚═╝    ╚═══════╝ ╚═╝   ╚═╝'
+					)}\n`
 				);
 				this.log(chalk.white.bold('                            https://www.jhipster.tech\n'));
 				this.log(chalk.white('Welcome to Svelte Hipster ') + chalk.yellow(`v${this.blueprintjs.version}`));

@@ -2,6 +2,22 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
+## Current
+
+### BREAKING CHANGES
+
+-   ✅ Reusable svelte components and functions are extracted into a separate npm library [JHipster Svelte Library](https://github.com/vishal423/jhipster-svelte-library) as part of [#1008](https://github.com/jhipster/generator-jhipster-svelte/pull/1008)
+
+### Added
+
+-   ✅ Integrate `Swagger UI` under `Administration` > `API` menu. Allows to interactively Try backend REST APIs. By default, the Swagger UI generation is disabled. Use `--swagger-ui` command line option to generate the Swagger UI. [#900](https://github.com/jhipster/generator-jhipster-svelte/pull/900), [#1105](https://github.com/jhipster/generator-jhipster-svelte/pull/1105)
+
+### Changed
+
+-   ✅ Bump `JHipster` dependency to support `v7.8.1` release
+-   ✅ Improved GitHub Action Workflows to test generated applications [#919](https://github.com/jhipster/generator-jhipster-svelte/pull/919)
+-   ✅ Upgrade `Cypress`, `svelte`, `svelte/kit`, `eslint` etc dependencies
+
 ## [0.7.1] - 2022-01-03
 
 ### Changed

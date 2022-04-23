@@ -1,8 +1,8 @@
 <script>
 	import accountService from '$lib/account/account-service'
 
-	import Alert from '$lib/alert.svelte'
-	import Page from '$lib/page/page.svelte'
+	import Alert from 'jhipster-svelte-library/alert.svelte'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
 	import ForgotPasswordForm from '$lib/account/forgot-password-form.svelte'
 
 	let error
@@ -32,7 +32,7 @@
 		>
 		<Alert
 			data-test="warningMsg"
-			type="warning"
+			contextualColor="warning"
 			show="{!passwordReset}"
 			closeable="{false}"
 			>Enter your user account's verified email address.</Alert

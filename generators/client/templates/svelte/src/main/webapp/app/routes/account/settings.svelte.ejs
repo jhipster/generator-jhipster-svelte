@@ -1,9 +1,9 @@
 <script>
 	import { onMount } from 'svelte'
-	import auth from '$lib/auth/auth-store.js'
+	import auth from '$lib/auth/auth-store'
 	import accountService from '$lib/account/account-service'
-	import Alert from '$lib/alert.svelte'
-	import Page from '$lib/page/page.svelte'
+	import Alert from 'jhipster-svelte-library/alert.svelte'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
 	import UserSettingsForm from '$lib/account/user-settings-form.svelte'
 
 	let error
@@ -49,7 +49,7 @@
 		>
 		<Alert
 			data-test="errorMsg"
-			type="danger"
+			contextualColor="danger"
 			show="{error}"
 			closeable="{false}"
 			>An error has occurred! The user settings could not be saved.</Alert

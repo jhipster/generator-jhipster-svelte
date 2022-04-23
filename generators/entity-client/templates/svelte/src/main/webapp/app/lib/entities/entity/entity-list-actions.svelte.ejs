@@ -1,11 +1,10 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import { faEye } from '@fortawesome/free-solid-svg-icons/faEye.js'
-	import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt.js'
-	import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt.js'
-
-	import Button from '$lib/button.svelte'
-	import Icon from '$lib/icon.svelte'
+	import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+	import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+	import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
+	import Button from 'jhipster-svelte-library/button.svelte'
+	import Icon from 'jhipster-svelte-library/icon.svelte'
 
 	export let <%= entityInstance %>
 	export let showActions = false
@@ -19,7 +18,8 @@
 >
 	<Button
 		name="view<%= entityAngularName %>Btn"
-		role="action"
+		contextualColor="light"
+		size="small"
 		classes="sm:my-0"
 		title="View"
 		aria-label="view"
@@ -32,7 +32,8 @@
 	</Button>
 	<Button
 		name="edit<%= entityAngularName %>Btn"
-		role="action"
+		contextualColor="light"
+		size="small"
 		classes="sm:my-0"
 		title="Edit"
 		aria-label="edit"
@@ -45,7 +46,8 @@
 	</Button>
 	<Button
 		name="delete<%= entityAngularName %>Btn"
-		role="action"
+		contextualColor="light"
+		size="small"
 		classes="sm:my-0"
 		title="Delete"
 		aria-label="delete"

@@ -1,4 +1,9 @@
 import adapter from '@sveltejs/adapter-static';
+<%_
+    if(this.blueprintConfig.swaggerUi) { _%>
+import copy from 'rollup-plugin-copy'
+<%_ } _%>
+import { splitVendorChunkPlugin } from 'vite'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,7 +13,6 @@ const config = {
 			assets: '<%= DIST_DIR %>',
 			fallback: 'index.html'
 		}),
-		target: '#svelte',
 		appDir: '_app',
 		files: {
 			assets: '<%= CLIENT_MAIN_SRC_DIR %>static',
@@ -36,6 +40,28 @@ const config = {
 					},
 				<%_ } _%>
 				}
+			},
+			plugins: [
+            <%_
+                if(this.blueprintConfig.swaggerUi) { _%>
+				copy({
+					targets: [
+						{
+							src: [
+								'node_modules/swagger-ui-dist/*.{js,css,html,png}',
+								'!node_modules/swagger-ui-dist/**/index.html',
+								'node_modules/axios/dist/axios.min.js',
+								'src/main/webapp/swagger-ui/index.html',
+							],
+							dest: '.svelte-kit/output/client/swagger-ui',
+						},
+					],
+				}),
+            <%_ } _%>
+				splitVendorChunkPlugin(),
+			],
+			ssr: {
+				noExternal: ['jhipster-svelte-library']
 			},
 		}),
 	}

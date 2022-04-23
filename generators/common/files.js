@@ -1,5 +1,5 @@
 /**
- * Copyright 2020-2021 the original author or authors from the JHipster project.
+ * Copyright 2020-2022 the original author or authors from the JHipster project.
  *
  * This file is part of the JHipster project, see https://www.jhipster.tech/
  * for more information.
@@ -28,13 +28,13 @@ const prettierConfigFiles = {
 const commonFiles = {
 	global: [
 		{
-			templates: [
-				'.editorconfig',
-				'.gitignore',
-				'README.md',
-				'src/main/resources/banner.txt',
-				'sonar-project.properties',
-			],
+			templates: ['.editorconfig', '.gitignore', 'README.md', 'sonar-project.properties'],
+		},
+	],
+	serverFiles: [
+		{
+			condition: generator => !generator.skipServer,
+			templates: ['src/main/resources/banner.txt'],
 		},
 	],
 	commitHooks: [

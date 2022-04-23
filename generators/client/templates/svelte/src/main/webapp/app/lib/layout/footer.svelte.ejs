@@ -1,7 +1,6 @@
 <script>
-	import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart.js'
-
-	import Icon from '$lib/icon.svelte'
+	import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+	import Icon from 'jhipster-svelte-library/icon.svelte'
 </script>
 
 <footer
@@ -9,7 +8,7 @@
 >
 	<div class="text-sm">
 		<p data-test="copyrightMsg">
-			Copyright &copy; 2021 JHipster. All Rights Reserved
+			Copyright &copy; 2022 JHipster. All Rights Reserved
 		</p>
 	</div>
 	<div class="text-base mt-1">

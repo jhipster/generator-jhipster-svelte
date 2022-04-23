@@ -1,0 +1,21 @@
+<script>
+	import Page from 'jhipster-svelte-library/page/page.svelte'
+
+</script>
+
+<svelte:head>
+	<title>API</title>
+	<meta name="Description" content="Swagger API" />
+</svelte:head>
+<Page testId="api" width="full">
+	<iframe
+	  src="/swagger-ui/index.html"
+	  width="100%"
+	  height="900"
+	  seamless
+	  target="_top"
+	  title="Swagger UI"
+	  class="border-0"
+	  data-cy="swagger-frame"
+	></iframe>
+</Page>

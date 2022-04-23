@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
 
-	import userService from '$lib/admin/user-management/user-service.js'
-	import Page from '$lib/page/page.svelte'
+	import userService from '$lib/admin/user-management/user-service'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
 	import UserForm from '$lib/admin/user-management/user-form.svelte'
 
 	onMount(() => {

@@ -1,11 +1,11 @@
 <script>
 	import UserListActions from '$lib/admin/user-management/user-list-actions.svelte'
-	import Sort from '$lib/table/sort.svelte'
-	import Table from '$lib/table/table.svelte'
-	import TableData from '$lib/table/table-data.svelte'
-	import TableHeader from '$lib/table/table-header.svelte'
-	import TableRow from '$lib/table/table-row.svelte'
-	import { formatDistance } from '$lib/utils/date-util'
+	import Sort from 'jhipster-svelte-library/table/sort.svelte'
+	import Table from 'jhipster-svelte-library/table/table.svelte'
+	import TableData from 'jhipster-svelte-library/table/table-data.svelte'
+	import TableHeader from 'jhipster-svelte-library/table/table-header.svelte'
+	import TableRow from 'jhipster-svelte-library/table/table-row.svelte'
+	import { formatDistance } from 'jhipster-svelte-library/utils/date-util'
 
 	export let users = []
 	export let currentUser = null

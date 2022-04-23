@@ -4,7 +4,7 @@ module.exports = {
 		'^.+\\.svelte$': 'svelte-jester',
 	},
 	testMatch: ['<rootDir>/(<%= CLIENT_MAIN_SRC_DIR %>**/*.spec.js)'],
-	transformIgnorePatterns: ['node_modules/(?!fa-svelte)'],
+	transformIgnorePatterns: ['node_modules/(?!(fa-svelte|jhipster-svelte-library))'],
 	moduleFileExtensions: ['js', 'svelte'],
 	extensionsToTreatAsEsm: [".svelte"],
 	moduleNameMapper: {

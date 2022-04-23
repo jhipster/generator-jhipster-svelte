@@ -13,3 +13,5 @@ docs
 .DS_Store
 .jhipster
 client_id
+/generators/client/templates/svelte/node_modules/
+/generators/client/templates/svelte/package-lock.json

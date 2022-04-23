@@ -1,13 +1,13 @@
 <script>
 	import { goto } from '$app/navigation'
-
 	import appLogo from '$lib/svg/app-logo.svg'
-	import Alert from '$lib/alert.svelte'
-	import Button from '$lib/button.svelte'
-	import InputControl from '$lib/input-control.svelte'
-	import CheckboxControl from '$lib/checkbox-control.svelte'
-	import auth from '$lib/auth/auth-store.js'
-	import authService from '$lib/auth/auth-service.js'
+	import Alert from 'jhipster-svelte-library/alert.svelte'
+	import Button from 'jhipster-svelte-library/button.svelte'
+	import InputControl from 'jhipster-svelte-library/input-control.svelte'
+	import CheckboxControl from 'jhipster-svelte-library/checkbox-control.svelte'
+
+	import auth from '$lib/auth/auth-store'
+	import authService from '$lib/auth/auth-service'
 
 	let username
 	let password
@@ -65,7 +65,7 @@
 		>
 			Sign in to <%= baseName  %>
 		</div>
-		<Alert data-test="errorMsg" type="danger" show="{!!authError}">
+		<Alert data-test="errorMsg" contextualColor="danger" show="{!!authError}">
 			Incorrect username or password.
 		</Alert>
 		<form

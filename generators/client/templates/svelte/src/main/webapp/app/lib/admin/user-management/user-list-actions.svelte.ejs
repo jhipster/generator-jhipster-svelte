@@ -1,13 +1,12 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import { faEye } from '@fortawesome/free-solid-svg-icons/faEye.js'
-	import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt.js'
-	import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt.js'
-	import { faToggleOn } from '@fortawesome/free-solid-svg-icons/faToggleOn.js'
-	import { faToggleOff } from '@fortawesome/free-solid-svg-icons/faToggleOff.js'
-
-	import Button from '$lib/button.svelte'
-	import Icon from '$lib/icon.svelte'
+	import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+	import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+	import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
+	import { faToggleOn } from '@fortawesome/free-solid-svg-icons/faToggleOn'
+	import { faToggleOff } from '@fortawesome/free-solid-svg-icons/faToggleOff'
+	import Button from 'jhipster-svelte-library/button.svelte'
+	import Icon from 'jhipster-svelte-library/icon.svelte'
 
 	export let user
 	export let currentUser
@@ -28,7 +27,8 @@
 >
 	<Button
 		name="toggleUserAcctBtn"
-		role="action"
+		contextualColor="light"
+		size="small"
 		classes="sm:my-0"
 		title="{activationIconTitle}"
 		disabled="{isUserSameAsCurrentUser}"
@@ -44,7 +44,8 @@
 	</Button>
 	<Button
 		name="viewUserBtn"
-		role="action"
+		contextualColor="light"
+		size="small"
 		classes="sm:my-0"
 		title="View"
 		aria-label="view"
@@ -57,7 +58,8 @@
 	</Button>
 	<Button
 		name="editUserBtn"
-		role="action"
+		contextualColor="light"
+		size="small"
 		classes="sm:my-0"
 		title="Edit"
 		disabled="{isUserSameAsCurrentUser}"
@@ -71,7 +73,8 @@
 	</Button>
 	<Button
 		name="deleteUserBtn"
-		role="action"
+		contextualColor="light"
+		size="small"
 		classes="sm:my-0"
 		title="Delete"
 		disabled="{isUserSameAsCurrentUser}"

@@ -1,11 +1,11 @@
 <script>
 	import { onMount } from 'svelte'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
+	import PaginatedTable from 'jhipster-svelte-library/table/paginated-table.svelte'
+	import SearchForm from 'jhipster-svelte-library/page/search-form.svelte'
 
-	import Page from '$lib/page/page.svelte'
 	import loggerService from '$lib/admin/logger/logger-service'
 	import LoggerTable from '$lib/admin/logger/logger-table.svelte'
-	import PaginatedTable from '$lib/table/paginated-table.svelte'
-	import SearchForm from '$lib/page/search-form.svelte'
 
 	let error
 	let filterCriteria

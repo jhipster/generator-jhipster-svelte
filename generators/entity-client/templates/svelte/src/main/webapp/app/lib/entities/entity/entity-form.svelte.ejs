@@ -12,30 +12,30 @@ const containsRelationshipField = relationshipFields && relationshipFields.lengt
 _%>
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan.js'
-	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave.js'
+	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
+	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave'
 
-	import Button from '$lib/button.svelte'
-	import Icon from '$lib/icon.svelte'
-	import InputControl from '$lib/input-control.svelte'
+	import Button from 'jhipster-svelte-library/button.svelte'
+	import Icon from 'jhipster-svelte-library/icon.svelte'
+	import InputControl from 'jhipster-svelte-library/input-control.svelte'
 	<%_ if (containsBooleanField) { _%>
-	import CheckboxControl from '$lib/checkbox-control.svelte'
+	import CheckboxControl from 'jhipster-svelte-library/checkbox-control.svelte'
 	<%_ } _%>
 	<%_ if (containsEnumField || containsRelationshipField) { _%>
-	import SelectControl from '$lib/select-control.svelte'
+	import SelectControl from 'jhipster-svelte-library/select-control.svelte'
 	<%_ } _%>
-	import Form from '$lib/page/form.svelte'
+	import Form from 'jhipster-svelte-library/page/form.svelte'
 	<%_	for (field of fields.filter(field => field.fieldIsEnum)) { _%>
 	import <%= field.fieldType %> from '$lib/entities/enums/<%= field.fieldType.toLowerCase() %>'
 	<%_ } _%>
 	<%_ if (containsBlobField) { _%>
-	import { getBase64FileData } from '$lib/utils/data-util.js'
+	import { getBase64FileData } from 'jhipster-svelte-library/utils/data-util'
 	<%_ } _%>
 	<%_ if (containsInstantField) { _%>
 	import {
 		formatToDatetimeLocalInput,
 		parseFromDatetimeLocalInput,
-	} from '$lib/utils/date-util'
+	} from 'jhipster-svelte-library/utils/date-util'
 	<%_ } _%>
 
 	export let <%= entityInstance %> = {
@@ -270,7 +270,7 @@ _%>
 		<div class="mr-4">
 			<Button
 				name="cancelBtn"
-				role="neutral"
+				contextualColor="secondary"
 				on:click="{() => dispatch('cancel')}"
 			>
 				<Icon classes="mr-2" icon="{faBan}" />Cancel
