@@ -10,7 +10,7 @@
 
 ### Added
 
--   ✅ Integrate `Swagger UI` under `Administration` > `API` menu. Allows to interactively consume REST APIs [#900](https://github.com/jhipster/generator-jhipster-svelte/pull/900)
+-   ✅ Integrate `Swagger UI` under `Administration` > `API` menu. Allows to interactively Try backend REST APIs. By default, the Swagger UI generation is disabled. Use `--swagger-ui` command line option to generate the Swagger UI. [#900](https://github.com/jhipster/generator-jhipster-svelte/pull/900), [#1105](https://github.com/jhipster/generator-jhipster-svelte/pull/1105)
 
 ### Changed
 

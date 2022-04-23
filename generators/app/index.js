@@ -37,34 +37,34 @@ module.exports = class extends AppGenerator {
 
 				this.log('\n');
 				this.log(
-					`${chalk.green('        ██╗ ██╗   ██╗ ████████╗ ███████╗ ')}${chalk.keyword('orange')(
-						'  ██████╗ '
-					)}${chalk.green('████████╗ ████████╗ ███████╗')}`
+					`  ${chalk.keyword('orange')('  ██████╗')}${chalk.green(
+						' ██╗   ██╗ ████████╗ ███████╗   ██████╗ ████████╗ ████████╗ ███████╗'
+					)}`
 				);
 				this.log(
-					`${chalk.green('        ██║ ██║   ██║ ╚══██╔══╝ ██╔═══██╗')}${chalk.keyword('orange')(
-						' ██╔════╝ '
-					)}${chalk.green('╚══██╔══╝ ██╔═════╝ ██╔═══██╗')}`
+					`  ${chalk.keyword('orange')(' ██╔════╝')}${chalk.green(
+						' ██║   ██║ ╚══██╔══╝ ██╔═══██╗ ██╔════╝ ╚══██╔══╝ ██╔═════╝ ██╔═══██╗'
+					)}`
 				);
 				this.log(
-					`${chalk.green('        ██║ ████████║    ██║    ███████╔╝')}${chalk.keyword('orange')(
-						' ╚█████╗  '
-					)}${chalk.green('   ██║    ██████╗   ███████╔╝')}`
+					`  ${chalk.keyword('orange')(' ╚█████╗ ')}${chalk.green(
+						' ████████║    ██║    ███████╔╝ ╚█████╗     ██║    ██████╗   ███████╔╝'
+					)}`
 				);
 				this.log(
-					`${chalk.green('  ██╗   ██║ ██╔═══██║    ██║    ██╔════╝ ')}${chalk.keyword('orange')(
-						'  ╚═══██╗ '
-					)}${chalk.green('   ██║    ██╔═══╝   ██╔══██║')}`
+					`  ${chalk.keyword('orange')('  ╚═══██╗')}${chalk.green(
+						' ██╔═══██║    ██║    ██╔════╝   ╚═══██╗    ██║    ██╔═══╝   ██╔══██║'
+					)}`
 				);
 				this.log(
-					`${chalk.green('  ╚██████╔╝ ██║   ██║ ████████╗ ██║      ')}${chalk.keyword('orange')(
-						' ██████╔╝ '
-					)}${chalk.green('   ██║    ████████╗ ██║  ╚██╗')}`
+					`  ${chalk.keyword('orange')(' ██████╔╝')}${chalk.green(
+						' ██║   ██║ ████████╗ ██║       ██████╔╝    ██║    ████████╗ ██║  ╚██╗'
+					)}`
 				);
 				this.log(
-					`${chalk.green('   ╚═════╝  ╚═╝   ╚═╝ ╚═══════╝ ╚═╝      ')}${chalk.keyword('orange')(
-						' ╚═════╝  '
-					)}${chalk.green('   ╚═╝    ╚═══════╝ ╚═╝   ╚═╝')}\n`
+					`  ${chalk.keyword('orange')(' ╚═════╝ ')}${chalk.green(
+						' ╚═╝   ╚═╝ ╚═══════╝ ╚═╝       ╚═════╝     ╚═╝    ╚═══════╝ ╚═╝   ╚═╝'
+					)}\n`
 				);
 				this.log(chalk.white.bold('                            https://www.jhipster.tech\n'));
 				this.log(chalk.white('Welcome to Svelte Hipster ') + chalk.yellow(`v${this.blueprintjs.version}`));
