@@ -28,6 +28,7 @@ Following integrations are supported:
     ✅ JHipster application JDL
     ✅ JHipster entity JDL
     ✅ JHipster elasticsearch integration
+    ✅ Swagger UI
 
 Following functional flows are covered with end to end tests:
 
@@ -42,6 +43,7 @@ Following functional flows are covered with end to end tests:
     ✅ Administration
         ✅ User Management (List, Create, Update, View, Delete)
         ✅ Loggers
+        ✅ Docs (Swagger UI)
     ✅ Entities
         ✅ Entity (List, Create, Update, View, Delete, Search, Pagination)
 
@@ -128,6 +130,12 @@ npm update -g generator-jhipster-svelte
     shipster import-jdl app.jdl
     ```
 
+    To generate Swagger UI, pass `--swagger-ui` option:
+
+-   ```bash
+      shipster import-jdl app.jdl --swagger-ui
+    ```
+
 -   If you have already setup [JHipster](https://www.jhipster.tech/installation/) on your workstation, then, run the below command (it overrides to use the global `JHipster` version). Be cautious to use compatible `Svelte Hipster` and `JHipster` versions.
 
     ```bash
@@ -142,7 +150,8 @@ npm update -g generator-jhipster-svelte
 | `7.0.x`    | `0.3` - `0.4`    |
 | `7.1.x`    | `0.5`            |
 | `7.3.x`    | `0.6`            |
-| `7.4.x`    | >= `0.7`         |
+| `7.4.x`    | `0.7` - `0.7.1`  |
+| `7.8.x`    | >= `0.8`         |
 
 ## Docker development
 
