@@ -4,6 +4,8 @@
 
 ## Current
 
+## [0.8.0] - 2022-04-24
+
 ### BREAKING CHANGES
 
 -   ✅ Reusable svelte components and functions are extracted into a separate npm library [JHipster Svelte Library](https://github.com/vishal423/jhipster-svelte-library) as part of [#1008](https://github.com/jhipster/generator-jhipster-svelte/pull/1008)
