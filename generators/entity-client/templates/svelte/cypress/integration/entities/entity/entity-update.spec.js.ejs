@@ -274,8 +274,8 @@ _%>
 	_%>
 		.getByName('<%= relationshipFieldKey %>')
 		.click()
-		.getBySel('<%= relationshipFieldKey %>-options')
-		.type('{esc}')
+		.getBySel('<%= relationshipFieldKey %>-bg')
+		.type('{esc}', {force: true})
 	<%_
 		}
 	_%>
