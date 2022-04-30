@@ -30,7 +30,7 @@ Following integrations are supported:
     ✅ JHipster elasticsearch integration
     ✅ Swagger UI
 
-Following functional flows are covered with end to end tests:
+Following functional flows are covered with end-to-end tests:
 
     ✅ Sign in
     ✅ Sign up
@@ -104,6 +104,12 @@ npm update -g generator-jhipster-svelte
     entity Blog {
         name String required minlength(3)
         handle String required minlength(2)
+    }
+
+    entity Post {
+        title String required
+        content TextBlob required
+        date Instant required
     }
 
     entity Tag {
