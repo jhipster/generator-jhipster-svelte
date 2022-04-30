@@ -42,7 +42,7 @@ describe('Navbar', () => {
 	describe('authenticated user', () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()
-			cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
+			cy.loginByApi(Cypress.env('ADMIN_USERNAME'), Cypress.env('ADMIN_PASSWORD'))
 			cy.visit('/')
 		})
 
@@ -137,7 +137,7 @@ describe('Navbar', () => {
 	describe(`authenticated 'ROLE_USER' ROLE user`, () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()
-			cy.loginByApi(Cypress.env('userUsername'), Cypress.env('userPassword'))
+			cy.loginByApi(Cypress.env('USER_USERNAME'), Cypress.env('USER_PASSWORD'))
 			cy.visit('/')
 		})
 
@@ -157,7 +157,7 @@ describe('Navbar', () => {
 	describe('Logout authenticated user', () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()
-			cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
+			cy.loginByApi(Cypress.env('ADMIN_USERNAME'), Cypress.env('ADMIN_PASSWORD'))
 			cy.visit('/')
 		})
 
