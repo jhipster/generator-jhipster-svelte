@@ -18,8 +18,8 @@ export function prepare<%= entityAngularName %>PrerequisiteData(listPage = false
 <%_ } _%>
 <%_ if (containsRelationshipField) { _%>
 	cy.loginByApi(
-		Cypress.env('adminUsername'),
-		Cypress.env('adminPassword')
+		Cypress.env('ADMIN_USERNAME'),
+		Cypress.env('ADMIN_PASSWORD')
 	)
 <%_ } _%>
 <%_

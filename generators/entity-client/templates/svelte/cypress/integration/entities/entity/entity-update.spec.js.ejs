@@ -43,8 +43,8 @@ _%>
 
 	before(function() {
 		cy.loginByApi(
-			Cypress.env('adminUsername'),
-			Cypress.env('adminPassword')
+			Cypress.env('ADMIN_USERNAME'),
+			Cypress.env('ADMIN_PASSWORD')
 		)
 
 		add<%= entityAngularName %>(<%_
@@ -71,8 +71,8 @@ _%>)
 	beforeEach(() => {
 		cy.unregisterServiceWorkers()
 		cy.loginByApi(
-			Cypress.env('adminUsername'),
-			Cypress.env('adminPassword')
+			Cypress.env('ADMIN_USERNAME'),
+			Cypress.env('ADMIN_PASSWORD')
 		)
         cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
 	})

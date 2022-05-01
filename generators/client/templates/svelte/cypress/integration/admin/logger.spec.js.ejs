@@ -1,7 +1,7 @@
 describe('Loggers page', () => {
 	beforeEach(() => {
 		cy.unregisterServiceWorkers()
-		cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
+		cy.loginByApi(Cypress.env('ADMIN_USERNAME'), Cypress.env('ADMIN_PASSWORD'))
 		cy.visit('/admin/logger')
 	})
 <%_ if (authenticationType === 'oauth2') { _%>
