@@ -46,6 +46,7 @@ jobs:
                         'monolithic-session-gradle.json',
                         'monolithic-jwt-maven-skip-user.jdl',
                         'monolithic-jwt-gradle.json',
+                        'monolithic-session-maven-reactive.jdl',
                     ]
                 os: [ubuntu-latest]
                 node_version: [16.x]

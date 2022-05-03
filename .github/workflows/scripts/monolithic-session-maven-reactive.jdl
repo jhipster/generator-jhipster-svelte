@@ -1,0 +1,24 @@
+application {
+    config {
+        baseName SampleBlogApp,
+        applicationType monolith,
+        authenticationType session,
+        reactive true,
+        packageName tech.jhipster.samples.blog,
+        prodDatabaseType postgresql,
+        buildTool maven
+    }
+  entities *
+}
+
+entity Blog {
+  name String required minlength(3)
+  handle String required minlength(2)
+}
+
+relationship ManyToOne {
+  Blog{user(login)} to User
+}
+
+paginate Blog with pagination
+
