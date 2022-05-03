@@ -19,10 +19,8 @@ module.exports = class extends AppGenerator {
 
 		if (this.options.swaggerUi) {
 			this.blueprintConfig.swaggerUi = this.options.swaggerUi;
-		} else {
-			if (!this.blueprintConfig) {
-				this.blueprintConfig = {};
-			}
+		} else if (!this.blueprintConfig) {
+			this.blueprintConfig = {};
 			this.blueprintConfig.swaggerUi = false;
 		}
 	}
