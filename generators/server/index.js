@@ -31,12 +31,10 @@ module.exports = class extends ServerGenerator {
 			initializeBlueprintOptions() {
 				if (this.options.swaggerUi) {
 					this.swaggerUi = this.options.swaggerUi;
+				} else if (this.blueprintConfig) {
+					this.swaggerUi = this.blueprintConfig.swaggerUi;
 				} else {
-					if (this.blueprintConfig) {
-						this.swaggerUi = this.blueprintConfig.swaggerUi;
-					} else {
-						this.swaggerUi = false;
-					}
+					this.swaggerUi = false;
 				}
 			},
 		};
