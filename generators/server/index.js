@@ -28,6 +28,17 @@ module.exports = class extends ServerGenerator {
 			displayLogo() {
 				// don't overwrite logo
 			},
+			initializeBlueprintOptions() {
+				if (this.options.swaggerUi) {
+					this.swaggerUi = this.options.swaggerUi;
+				} else {
+					if (this.blueprintConfig) {
+						this.swaggerUi = this.blueprintConfig.swaggerUi;
+					} else {
+						this.swaggerUi = false;
+					}
+				}
+			},
 		};
 	}
 
