@@ -126,11 +126,13 @@ _%>)
 		cy.getBySel('svlModal').within(() =>
 			cy.getByName('delete<%= entityAngularName %>Btn').click()
 		)
+<%_ if (!reactive) { _%>
 
 		cy.getBySel('toast-success').contains(
 			'A <%= entityInstance %> is deleted with identifier'
 		)
 
+<%_ } _%>
 		cy.getBySel('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')
