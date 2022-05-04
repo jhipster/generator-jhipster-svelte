@@ -1,0 +1,37 @@
+<script>
+	import Table from 'jhipster-svelte-library/table/table.svelte'
+	import TableRow from 'jhipster-svelte-library/table/table-row.svelte'
+	import TableHeader from 'jhipster-svelte-library/table/table-header.svelte'
+	import TableData from 'jhipster-svelte-library/table/table-data.svelte'
+
+	import ServiceInstanceTable from './service-instance-table.svelte'
+
+	export let routes = []
+</script>
+
+<Table testId="gateway">
+	<thead slot="head">
+		<TableRow classes="bg-gray-100 dark:bg-gray-700">
+			<TableHeader>Service</TableHeader>
+			<TableHeader>Route</TableHeader>
+			<TableHeader>Service Instances</TableHeader>
+		</TableRow>
+	</thead>
+	<tbody>
+		{#each routes as route (route.path)}
+			<TableRow>
+				<TableData>{route.serviceId}</TableData>
+				<TableData>{route.path}</TableData>
+				<TableData>
+					<ServiceInstanceTable serviceInstances="{route.serviceInstances}" />
+				</TableData>
+			</TableRow>
+		{:else}
+			<TableRow>
+				<TableData colspan="3" classes="text-center py-8"
+					>No service routes available</TableData
+				>
+			</TableRow>
+		{/each}
+	</tbody>
+</Table>

@@ -48,6 +48,12 @@ const svelteFiles = {
 			],
 		},
 	],
+	e2eGateway: [
+		{
+			condition: generator => generator.applicationType === 'gateway',
+			templates: ['cypress/integration/admin/gateway.spec.js'],
+		},
+	],
 	e2eLogin: [
 		{
 			condition: generator => generator.authenticationType !== 'oauth2',
@@ -132,6 +138,13 @@ const svelteFiles = {
 			templates: ['admin/docs.svelte'],
 		},
 	],
+	gatewayRoute: [
+		{
+			condition: generator => generator.applicationType === 'gateway',
+			path: FRONTEND_ROUTES_DIR,
+			templates: ['admin/gateway.svelte'],
+		},
+	],
 	loginRoutes: [
 		{
 			condition: generator => generator.authenticationType !== 'oauth2',
@@ -175,6 +188,17 @@ const svelteFiles = {
 				'layout/navbar.svelte',
 				'utils/env.js',
 				'utils/request.js',
+			],
+		},
+	],
+	libGateway: [
+		{
+			path: FRONTEND_COMPONENTS_DIR,
+			condition: generator => generator.applicationType === 'gateway',
+			templates: [
+				'admin/gateway/gateway-service.js',
+				'admin/gateway/gateway-table.svelte',
+				'admin/gateway/service-instance-table.svelte',
 			],
 		},
 	],

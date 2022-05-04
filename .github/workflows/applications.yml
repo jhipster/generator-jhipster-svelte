@@ -165,6 +165,7 @@ jobs:
                         'monolithic-jwt-maven-mongodb-prod.jdl',
                         'monolithic-session-maven-postgres-prod.jdl',
                         'monolithic-oidc-maven-postgres-prod.jdl',
+                        'gateway-jwt-maven-postgres-prod.jdl',
                     ]
                 os: [ubuntu-latest]
                 node_version: [16.x]

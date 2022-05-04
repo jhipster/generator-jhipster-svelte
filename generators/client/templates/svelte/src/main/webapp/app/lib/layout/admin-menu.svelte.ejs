@@ -1,9 +1,19 @@
 <script>
 	import { faUsersCog } from '@fortawesome/free-solid-svg-icons/faUsersCog'
+<%_
+    if (!skipUserManagement) { _%>
 	import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
+<%_ } _%>
 	import { faTasks } from '@fortawesome/free-solid-svg-icons/faTasks'
 	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
+<%_
+if (this.blueprintConfig.swaggerUi) { _%>
 	import { faBook } from '@fortawesome/free-solid-svg-icons/faBook'
+<%_ } _%>
+<%_
+    if (applicationType === 'gateway') { _%>
+	import { faRoad } from '@fortawesome/free-solid-svg-icons/faRoad'
+<%_ } _%>
 	import MenuItem from 'jhipster-svelte-library/layout/menu-item.svelte'
 
 	import Icon from 'jhipster-svelte-library/icon.svelte'
@@ -41,6 +51,17 @@
 		class:hidden="{!isOpen}"
 		class="sm:absolute sm:right-0 sm:mt-10 sm:w-48 py-2 sm:bg-white sm:dark:bg-gray-700 rounded sm:rounded-lg sm:shadow-lg"
 	>
+        <%_
+        if (applicationType === 'gateway') { _%>
+		<MenuItem
+			testId="svlGatewayLink"
+			link="/admin/gateway"
+			on:click="{() => (isOpen = false)}"
+		>
+			<Icon classes="sm:mr-1" icon="{faRoad}" />
+			Gateway
+		</MenuItem>
+        <%_ } _%>
 		<%_
 		if (!skipUserManagement) { _%>
 		<MenuItem

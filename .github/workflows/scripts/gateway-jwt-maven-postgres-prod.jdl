@@ -1,0 +1,11 @@
+application {
+    config {
+        baseName SampleBlogApp,
+        applicationType gateway,
+        authenticationType jwt,
+        packageName tech.jhipster.samples.blog,
+        prodDatabaseType postgresql,
+        serviceDiscoveryType eureka,
+        buildTool maven
+    }
+}
