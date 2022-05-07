@@ -9,6 +9,7 @@
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
 	const oneToOneRelationship = relationshipFields.filter(relationship => relationship.relationshipOneToOne);
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
 _%>
 import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %><% if (!paginationNo || searchEngine) { %>, add<%= entityAngularName %>2<% } %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
 
@@ -43,7 +44,7 @@ _%>,<%_} _%><%_
 		const fieldLength = relationshipFields.length;
 		for (const relationship of relationshipFields) {
 			if (relationship.otherEntityUser) {
-_%>this.userId<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+_%>this.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			} else {
 _%>this.<%= relationship.relationshipName %>Id<%_ if (relationship.relationshipOneToOne) { _%>2<%_ } _%><%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			}
@@ -64,7 +65,7 @@ _%>,<%_} _%><%_
 		const fieldLength = relationshipFields.length;
 		for (const relationship of relationshipFields) {
 			if (relationship.otherEntityUser) {
-_%>this.userId<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+_%>this.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			} else {
 _%>this.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			}
@@ -90,11 +91,11 @@ _%>)
 	})
 
 	after(function() {
-		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
+		cy.delete(`<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`)
 <%_
 	if (!paginationNo || searchEngine) {
 _%>
-		cy.delete(`api/<%= entityApiUrl %>/${dynamicId2}`)
+		cy.delete(`<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId2}`)
 <%_
 	}
 	if (authenticationType === 'oauth2') {
@@ -107,11 +108,11 @@ _%>
 			for (const relationship of relationshipFields) {
 				if (!relationship.otherEntityUser) {
 	_%>
-		cy.delete(`api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
+		cy.delete(`<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
 <%_
 					if (relationship.relationshipOneToOne && (!paginationNo || searchEngine)) {
 _%>
-		cy.delete(`api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id2}`, true)
+		cy.delete(`<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id2}`, true)
 <%_
 					}
 				}
