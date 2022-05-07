@@ -1,7 +1,7 @@
 application {
   config {
     baseName gateway
-    packageName com.okta.developer.gateway
+    packageName tech.jhipster.samples.gateway
     applicationType gateway
     authenticationType oauth2
     prodDatabaseType postgresql
@@ -15,10 +15,10 @@ application {
 application {
   config {
     baseName blog
-    packageName com.okta.developer.blog
+    packageName tech.jhipster.samples.blog
     applicationType microservice
     authenticationType oauth2
-    prodDatabaseType postgresql
+    prodDatabaseType mysql
     serverPort 8081
     serviceDiscoveryType eureka
   }
