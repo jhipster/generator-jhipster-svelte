@@ -28,8 +28,8 @@ export function prepare<%= entityAngularName %>PrerequisiteData(listPage = false
 			if (relationship.otherEntityUser) {
 _%>
 	cy.getById('api/users')
-		.its('0.id')
-		.as('userId')
+		.its('0')
+		.as('user')
 	<%_
 			} else {
 	_%>
@@ -115,7 +115,7 @@ _%>,<%_} _%><%_
 		const fieldLength = relationshipFields.length;
 		for (const relationship of relationshipFields) {
 			if (relationship.otherEntityUser) {
-_%>userId<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+_%>user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			} else {
 _%><%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			}
@@ -152,7 +152,7 @@ _%>
 <%_		for (const relationship of relationshipFields) {
 			if (relationship.otherEntityUser) {
 _%>
-		user: { id: userId },
+		user: user,
 <%_
 			} else {
 				if (relationship.relationshipManyToMany) {
@@ -181,7 +181,7 @@ _%>,<%_} _%><%_
 		const fieldLength = relationshipFields.length;
 		for (const relationship of relationshipFields) {
 			if (relationship.otherEntityUser) {
-_%>userId<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+_%>user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			} else {
 _%><%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			}
@@ -218,7 +218,7 @@ _%>
 <%_		for (const relationship of relationshipFields) {
 			if (relationship.otherEntityUser) {
 _%>
-		user: { id: userId },
+		user: user,
 <%_
 			} else {
 				if (relationship.relationshipManyToMany) {
