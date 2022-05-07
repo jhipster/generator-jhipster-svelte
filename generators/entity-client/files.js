@@ -109,18 +109,16 @@ function addEnumerationFiles(generator) {
 				frontendAppName: generator.frontendAppName,
 				packageName: generator.packageName,
 			};
-			if (!generator.skipClient) {
-				const destinationFile = generator.destinationPath(
-					`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType.toLowerCase()}.js`
-				);
-				generator.template(
-					`svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`,
-					destinationFile,
-					generator,
-					{},
-					enumInfo
-				);
-			}
+			const destinationFile = generator.destinationPath(
+				`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType.toLowerCase()}.js`
+			);
+			generator.template(
+				`svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`,
+				destinationFile,
+				generator,
+				{},
+				enumInfo
+			);
 		}
 	});
 }
@@ -139,6 +137,9 @@ function addUserServiceFile(generator) {
 }
 
 function writeFiles() {
+	if (this.skipClient) {
+		return;
+	}
 	addEnumerationFiles(this);
 	addUserServiceFile(this);
 	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);

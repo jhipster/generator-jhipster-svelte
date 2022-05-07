@@ -10,6 +10,7 @@
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
 
 	const oneToOneRelationship = relationshipFields.find(relationship => relationship.relationshipOneToOne);
+	const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
 _%>
 
 export function prepare<%= entityAngularName %>PrerequisiteData(listPage = false) {
@@ -33,7 +34,7 @@ _%>
 			} else {
 	_%>
 
-	cy.save('api/<%= relationship.otherEntity.entityApiUrl %>', {
+	cy.save('<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>', {
 	<%_
 		for (const relationshipField of relationship.otherEntity.fields.filter(field => !field.id)) {
 			const fieldValue = relationshipField.generateFakeData('cypress');
@@ -69,7 +70,7 @@ _%>
 		if (oneToOneRelationship) {
 	_%>
 	if (listPage) {
-		cy.save('api/<%= oneToOneRelationship.otherEntity.entityApiUrl %>', {
+		cy.save('<%= servicesApiPrefix %>api/<%= oneToOneRelationship.otherEntity.entityApiUrl %>', {
 	<%_
 		for (const relationshipField of oneToOneRelationship.otherEntity.fields.filter(field => !field.id)) {
 			const fieldValue = relationshipField.generateFakeData('cypress');
@@ -121,7 +122,7 @@ _%><%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1
 			fieldIndex++;
 		}
 _%>) {
-	return cy.save('api/<%= entityApiUrl %>', {
+	return cy.save('<%= servicesApiPrefix %>api/<%= entityApiUrl %>', {
 <%_
 	for (field of fields.filter(field => !field.id)) {
 		const fieldValue = field.generateFakeData('cypress');
@@ -187,7 +188,7 @@ _%><%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1
 			fieldIndex++;
 		}
 _%>) {
-	return cy.save('api/<%= entityApiUrl %>', {
+	return cy.save('<%= servicesApiPrefix %>api/<%= entityApiUrl %>', {
 <%_
 	for (field of fields.filter(field => !field.id)) {
 		const fieldValue = field.generateFakeData('cypress');

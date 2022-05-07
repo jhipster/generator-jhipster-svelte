@@ -16,6 +16,8 @@ module.exports = class extends EntityClientGenerator {
 		}
 
 		this.blueprintjs = blueprintPackageJson;
+		this.skipServer = this.config.get('skipServer') || false;
+		this.skipClient = this.config.get('skipClient') || false;
 	}
 
 	get initializing() {
