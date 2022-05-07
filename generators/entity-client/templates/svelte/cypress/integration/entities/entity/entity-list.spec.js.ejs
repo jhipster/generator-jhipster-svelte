@@ -10,7 +10,7 @@
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
 	const oneToOneRelationship = relationshipFields.filter(relationship => relationship.relationshipOneToOne);
 _%>
-import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %><% if (!paginationNo || searchEngine) { %>, add<%= entityAngularName %>2<% } %> } from "../../../support/entities/<%= entityFileName %>-util.js";
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %><% if (!paginationNo || searchEngine) { %>, add<%= entityAngularName %>2<% } %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
 
 describe('<%= entityAngularName %> list page', () => {
 	let dynamicId

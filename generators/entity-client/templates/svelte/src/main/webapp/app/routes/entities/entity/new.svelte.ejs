@@ -25,7 +25,7 @@ _%>
 	<%_ if (relationship.otherEntityUser) { _%>
 	import userService from '$lib/entities/user/user-service'
 	<%_ } else { _%>
-	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityFileName %>-service'
+	import <%= relationship.relationshipName %>Service from '$lib/entities/<%= clientRootFolder !== '' ? clientRootFolder + '/' : '' %><%= relationship.otherEntityFolderName %>/<%= relationship.otherEntityFileName %>-service'
 	<%_ } _%>
 	<%_
 	}

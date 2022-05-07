@@ -9,7 +9,7 @@
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
 _%>
-import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "../../../support/entities/<%= entityFileName %>-util.js";
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
 
 describe('<%= entityAngularName %> delete dialog page', () => {
 	let dynamicId

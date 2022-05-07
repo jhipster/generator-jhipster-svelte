@@ -6,7 +6,7 @@ const blueprintPackageJson = require('../../package.json');
 
 module.exports = class extends AppGenerator {
 	constructor(args, opts) {
-		super(args, { ...opts, fromBlueprint: true, skipClient: false });
+		super(args, { ...opts, fromBlueprint: true });
 
 		this.blueprintjs = blueprintPackageJson;
 		this.skipServer = this.config.get('skipServer') || false;
