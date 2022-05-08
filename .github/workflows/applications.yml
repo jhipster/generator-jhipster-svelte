@@ -416,12 +416,12 @@ jobs:
             - name: Run Cypress tests
               run: |
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
-                  sudo echo "127.0.0.1 jhipster-registry" | sudo tee -a /etc/hosts
                   cd "$HOME/svelte-ms/gateway"
+                  sed -i 's/localhost-config/docker-config/g' src/main/docker/app.yml
                   docker-compose -f src/main/docker/app.yml up -d
-                  cd "$HOME/svelte-ms/blog"
-                  docker-compose -f src/main/docker/app.yml up -d --scale jhipster-registry=0
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
+                  cd "$HOME/svelte-ms/blog"
+                  docker-compose -f src/main/docker/app.yml up blog-app blog-mysql
                   cd "$HOME/svelte-ms/gateway"
                   npm run e2e:ci
     lighthouse-job:
