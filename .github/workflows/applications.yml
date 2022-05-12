@@ -274,6 +274,157 @@ jobs:
                   docker-compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e:ci
+    microservices-production-profile-builds:
+        needs: svelte-image
+        name: ${{ matrix.apps }}
+        concurrency:
+            group: ms-apps-prod-${{ matrix.apps }}-${{ github.head_ref || github.sha }}
+            cancel-in-progress: true
+        if: github.event.action != 'closed'
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 25
+        strategy:
+            fail-fast: false
+            matrix:
+                apps: ['microservices-oidc-maven-prod.jdl']
+                os: [ubuntu-latest]
+                node_version: [16.x]
+        steps:
+            - uses: actions/checkout@v2
+            - name: Download latest chrome binary
+              if: contains(matrix.os , 'ubuntu-latest')
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install google-chrome-stable -y
+                  sudo apt-get install xvfb
+            - uses: actions/setup-java@v1
+              with:
+                  java-version: '11'
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node_version }}
+            - name: Gradle - Configure cache
+              uses: actions/cache@v2
+              if: contains(matrix.apps, 'gradle')
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-7.8.1
+            - name: Maven - Configure cache
+              uses: actions/cache@v2
+              if: contains(matrix.apps, 'maven')
+              with:
+                  path: ~/.m2/repository
+                  key: ${{ runner.os }}-maven-7.8.1
+            - name: Configure cypress cache
+              uses: actions/cache@v2
+              with:
+                  path: |
+                      ~/.cache/Cypress/9.6.x
+                      ~/.cache/Cypress/cy
+                  key: ${{ runner.os }}-cypress-9.6.x
+            - name: Retrieve saved Svelte Docker Image
+              uses: actions/download-artifact@v2
+              with:
+                  name: docker-artifact
+                  path: svelte-artifacts/images
+            - name: Docker load
+              run: |
+                  cd svelte-artifacts/images
+                  docker load < svelte-image.tar
+            - name: Prepare environment
+              run: |
+                  mkdir -p "$HOME/svelte-ms"
+                  mkdir -p "$HOME/.m2"
+                  mkdir -p "$HOME/.gradle"
+                  mkdir -p "$HOME/.cache"
+            - name: Generate application
+              if: contains(matrix.apps, '.jdl')
+              run: |
+                  cd "$HOME/svelte-ms"
+                  cp $TEST_SCRIPTS_PATH/${{ matrix.apps }} app.jdl
+                  docker run --rm -v $PWD:/app -v $HOME/.cache:/home/shipster/.cache  jhipster/svelte-hipster:$GITHUB_SHA import-jdl app.jdl --no-insight --force
+            - name: Maven - Unit tests - Gateway
+              if: contains(matrix.apps , 'maven')
+              run: |
+                  cd "$HOME/svelte-ms/gateway"
+                  rm -rf node_modules/generator-jhipster-svelte
+                  ./mvnw -ntp test
+            - name: Maven - Unit tests - Microservice
+              if: contains(matrix.apps , 'maven')
+              run: |
+                  cd "$HOME/svelte-ms/blog"
+                  rm -rf node_modules/generator-jhipster-svelte
+                  ./mvnw -ntp test
+            - name: Gradle - Unit tests - Gateway
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-ms/gateway"
+                  rm -rf node_modules/generator-jhipster-svelte
+                  ./gradlew test --no-daemon
+            - name: Gradle - Unit tests - Microservice
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-ms/blog"
+                  rm -rf node_modules/generator-jhipster-svelte
+                  ./gradlew test --no-daemon
+            - name: Frontend - Unit tests
+              run: |
+                  cd "$HOME/svelte-ms/gateway"
+                  ./npmw run test -- --coverage
+            - name: Maven - Package application - Gateway
+              if: contains(matrix.apps , 'maven')
+              run: |
+                  cd "$HOME/svelte-ms/gateway"
+                  ./mvnw -ntp -Pprod verify
+            - name: Maven - Package application - Microservice
+              if: contains(matrix.apps , 'maven')
+              run: |
+                  cd "$HOME/svelte-ms/blog"
+                  ./mvnw -ntp -Pprod verify
+            - name: Gradle - Package application - Gateway
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-ms/gateway"
+                  ./gradlew -Pprod bootJar --no-daemon
+            - name: Gradle - Package application - Microservice
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-ms/blog"
+                  ./gradlew -Pprod bootJar --no-daemon
+            - name: Maven - Build application docker image - Gateway
+              if: contains(matrix.apps, 'maven')
+              run: |
+                  cd "$HOME/svelte-ms/gateway"
+                  ./mvnw -ntp -Pprod compile jib:dockerBuild
+            - name: Maven - Build application docker image - Microservice
+              if: contains(matrix.apps, 'maven')
+              run: |
+                  cd "$HOME/svelte-ms/blog"
+                  ./mvnw -ntp -Pprod compile jib:dockerBuild
+            - name: Gradle - Build application docker image - Gateway
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-ms/gateway"
+                  ./gradlew -Pprod jibDockerBuild
+            - name: Gradle - Build application docker image - Microservice
+              if: contains(matrix.apps, 'gradle')
+              run: |
+                  cd "$HOME/svelte-ms/blog"
+                  ./gradlew -Pprod jibDockerBuild
+            - name: Run Cypress tests
+              run: |
+                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+                  cd "$HOME/svelte-ms/gateway"
+                  sed -i 's/localhost-config/docker-config/g' src/main/docker/app.yml
+                  docker-compose -f src/main/docker/app.yml up -d
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
+                  cd "$HOME/svelte-ms/blog"
+                  docker-compose -f src/main/docker/app.yml up -d blog-app blog-mysql
+                  timeout 180 bash -c 'while [[ "$(docker container logs docker_blog-app_1 | grep 'Local:' | wc -l)" =~ "0" ]]; do sleep 5; done' || false
+                  cd "$HOME/svelte-ms/gateway"
+                  npm run e2e:ci
     lighthouse-job:
         needs: svelte-image
         name: ${{ matrix.apps }}

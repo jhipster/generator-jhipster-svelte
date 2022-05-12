@@ -8,8 +8,9 @@
 				|| (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
 _%>
-import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "../../../support/entities/<%= entityFileName %>-util.js";
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
 
 describe('<%= entityAngularName %> delete dialog page', () => {
 	let dynamicId
@@ -38,7 +39,7 @@ _%>,<%_} _%><%_
 		const fieldLength = relationshipFields.length;
 		for (const relationship of relationshipFields) {
 			if (relationship.otherEntityUser) {
-_%>this.userId<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+_%>this.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			} else {
 _%>this.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			}
@@ -78,7 +79,7 @@ _%>)
 	})
 
 	after(function () {
-		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`, true)
+		cy.delete(`<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`, true)
 	<%_ if (authenticationType === 'oauth2') { _%>
 		cy.logoutByApi()
 	<%_ } _%>
@@ -86,7 +87,7 @@ _%>)
 			for (const relationship of relationshipFields) {
 				if (!relationship.otherEntityUser) {
 	_%>
-		cy.delete(`api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
+		cy.delete(`<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
 	<%_
 				}
 			}
@@ -129,7 +130,7 @@ _%>)
 <%_ if (!reactive) { _%>
 
 		cy.getBySel('toast-success').contains(
-			'A <%= entityInstance %> is deleted with identifier'
+			'is deleted with identifier'
 		)
 
 <%_ } _%>
