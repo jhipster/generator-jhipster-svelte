@@ -35,6 +35,7 @@
 		) {
 			goto('/')
 		} else if (!routeAccessAllowed) {
+			auth.saveRoute($page.url.pathname)
 <%_ if (authenticationType !== 'oauth2') { _%>
 			goto('/login')
 <%_ } else { _%>
@@ -42,6 +43,13 @@
 				window.location.href = `${window.location.origin}/oauth2/authorization/oidc`
 			}
 <%_ } _%>
+		} else {
+			if ($auth && $auth.login && $page && $page.url && $page.url.pathname === '/') {
+				const savedRoute = auth.getSavedRoute();
+				if (savedRoute) {
+					goto(savedRoute)
+				}
+			}
 		}
 	}
 	onMount(() => checkIfCurrentRouteAccessNotAllowed())
