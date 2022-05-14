@@ -52,3 +52,8 @@ relationship ManyToMany {
 paginate Post, Tag with pagination
 
 microservice Blog, Post, Tag with blog
+
+deployment {
+  deploymentType docker-compose
+  appsFolders [gateway, blog]
+}
