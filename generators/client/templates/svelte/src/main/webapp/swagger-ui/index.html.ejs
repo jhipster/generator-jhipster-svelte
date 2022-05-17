@@ -49,6 +49,48 @@
 
         const baseUrl = '/v3/api-docs';
         let urls;
+<%_ if (applicationTypeGateway) { _%>
+
+		try {
+			const response = await fetch('/management/health/discoveryComposite', fetchConfig);
+			const jsonResponse = await response.json();
+			const services = jsonResponse.components.discoveryClient.details.services.filter(service => service !== 'jhipster-registry');
+			console.log(`Services`, services);
+
+			if (services && services.length > 0) {
+				urls = (
+					await Promise.allSettled(
+						services.map(async service => {
+							return fetch(`/services/${service}/management/jhiopenapigroups`, fetchConfig)
+								.then(async response => {
+									const jsonServiceResponse = await response.json()
+									if (Array.isArray(jsonServiceResponse)) {
+										return jsonServiceResponse.map(({group, description}) => ({
+											name: description,
+											url: `/services/${service}${baseUrl}/${group}`,
+										}));
+									}
+									return undefined;
+								})
+								.catch(() => {
+									return fetch(`/services/${service}${baseUrl}`, fetchConfig)
+										.then(() => [{
+											url: `/services/${service}${baseUrl}`,
+											name: `${service} (default)`
+										}]);
+								});
+						})
+					)
+				)
+					.filter(settled => settled.status === 'fulfilled')
+					.map(settled => settled.value)
+					.filter(Array.isArray)
+					.flat();
+			}
+		} catch (error) {
+			console.log(error);
+		}
+<%_ } _%>
 
 		if (!urls || urls.length === 0) {
 			const response = await fetch('/management/jhiopenapigroups', fetchConfig);

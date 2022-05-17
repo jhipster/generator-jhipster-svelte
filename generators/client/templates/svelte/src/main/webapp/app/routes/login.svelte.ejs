@@ -25,7 +25,13 @@
 		authService
 			.login(username, password, rememberMe)
 			.then(() => auth.loadUser())
-			.then(() => goto('/'))
+			.then(() => {
+				const savedRoute = auth.getSavedRoute();
+				if (savedRoute) {
+					goto(savedRoute)
+				} else
+					goto('/')
+			})
 			.catch(() => ((password = ''), (authError = true)))
 	}
 <%_ } else if (authenticationType === 'jwt') { _%>
@@ -36,7 +42,13 @@
 			.login(username, password, rememberMe)
 			.then(response => auth.storeToken(response.id_token, rememberMe))
 			.then(() => auth.loadUser())
-			.then(() => goto('/'))
+			.then(() => {
+				const savedRoute = auth.getSavedRoute();
+				if (savedRoute) {
+					goto(savedRoute)
+				} else
+					goto('/')
+			})
 			.catch(() => ((password = ''), (authError = true)))
 	}
 <%_ } _%>
