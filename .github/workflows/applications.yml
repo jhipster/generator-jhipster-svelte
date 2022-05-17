@@ -415,10 +415,10 @@ jobs:
                   ./gradlew -Pprod jibDockerBuild
             - name: Run Cypress tests
               run: |
-                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
                   cd "$HOME/svelte-ms/docker-compose"
                   docker-compose up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
+                  sudo docker container inspect docker-compose_keycloak_1 | jq -r '.[0].NetworkSettings.Networks."docker-compose_default".IPAddress' | echo "`cat -` keycloak" | sudo tee -a /etc/hosts
                   cd "$HOME/svelte-ms/gateway"
                   npm run e2e:ci
     lighthouse-job:
