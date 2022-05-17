@@ -1,6 +1,6 @@
 # Svelte Hipster
 
-[![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![code style: prettier][prettier-image]][prettier-url] [![Generated applications build status][github-actions-generated-applications]][github-actions-url]
+[![NPM version][npm-image]][npm-url] [![code style: prettier][prettier-image]][prettier-url] [![Generated applications build status][github-actions-generated-applications]][github-actions-url]
 
 > Generate cybernetically enhanced JHipster Svelte web applications
 
@@ -18,7 +18,9 @@ Refer to the [changelog](./CHANGELOG.md) to gain more insights into each release
 
 Following integrations are supported:
 
-    ✅ Session, JWT, OIDC authentication
+    ✅ Monolithic, Micro-services architecture applications
+    ✅ Spring WebFlux based reactive applications
+    ✅ Session, JWT, OIDC (Keycloak, Okta, Auth0 out of box integration) authentication types
     ✅ Dark Mode support
     ✅ SvelteKit, Vite integration
     ✅ Tailwind CSS
@@ -30,7 +32,7 @@ Following integrations are supported:
     ✅ JHipster elasticsearch integration
     ✅ Swagger UI
 
-Following functional flows are covered with end to end tests:
+Following functional flows are covered with end-to-end tests:
 
     ✅ Sign in
     ✅ Sign up
@@ -44,6 +46,7 @@ Following functional flows are covered with end to end tests:
         ✅ User Management (List, Create, Update, View, Delete)
         ✅ Loggers
         ✅ Docs (Swagger UI)
+        ✅ Gateway (micro-services routes)
     ✅ Entities
         ✅ Entity (List, Create, Update, View, Delete, Search, Pagination)
 
@@ -106,6 +109,12 @@ npm update -g generator-jhipster-svelte
         handle String required minlength(2)
     }
 
+    entity Post {
+        title String required
+        content TextBlob required
+        date Instant required
+    }
+
     entity Tag {
         name String required minlength(3)
     }
@@ -122,7 +131,71 @@ npm update -g generator-jhipster-svelte
     paginate Tag with pagination
     ```
 
-    Refer to [JDL entity fields](https://www.jhipster.tech/jdl/entities-fields) documentation for all supported entity data types and constraints. Refer to [JDL relationships](https://www.jhipster.tech/managing-relationships/) documentation for supported relationships and syntax.
+    Or, To generate a `micro-services` architecture application, use JDL like below and save it in a file (`app.jdl` in this example):
+
+    ```
+    application {
+      config {
+    	baseName gateway
+    	packageName tech.jhipster.samples.gateway
+    	applicationType gateway
+    	authenticationType oauth2
+    	prodDatabaseType postgresql
+    	serviceDiscoveryType eureka
+    	testFrameworks [cypress]
+    	reactive true
+      }
+      entities Blog, Post, Tag
+    }
+
+    application {
+      config {
+    	baseName blog
+    	packageName tech.jhipster.samples.blog
+    	applicationType microservice
+    	authenticationType oauth2
+    	prodDatabaseType mysql
+    	serverPort 8081
+    	serviceDiscoveryType eureka
+      }
+      entities Blog, Post, Tag
+    }
+
+    entity Blog {
+      name String required minlength(3)
+      handle String required minlength(2)
+    }
+
+    entity Post {
+      title String required
+      content TextBlob required
+      date Instant required
+    }
+
+    entity Tag {
+      name String required minlength(2)
+    }
+
+    relationship ManyToOne {
+      Blog{user(login)} to User,
+      Post{blog(name)} to Blog
+    }
+
+    relationship ManyToMany {
+      Post{tag(name)} to Tag{post}
+    }
+
+    paginate Post, Tag with pagination
+
+    microservice Blog, Post, Tag with blog
+
+    deployment {
+      deploymentType docker-compose
+      appsFolders [gateway, blog]
+    }
+    ```
+
+    Refer to [JDL entity fields](https://www.jhipster.tech/jdl/entities-fields) documentation for all supported entity data types and constraints. Refer to [JDL relationships](https://www.jhipster.tech/managing-relationships/) documentation for supported relationships and syntax. Refer [JHipster micro-services](https://www.jhipster.tech/microservices-architecture/) documentation for all supported components.
 
     Pass `import-jdl` option along the file path to `shipster` cli to generate new application:
 
@@ -242,8 +315,6 @@ Apache-2.0 © [Vishal Mahajan](https://twitter.com/vishal423)
 
 [npm-image]: https://img.shields.io/npm/v/generator-jhipster-svelte.svg
 [npm-url]: https://npmjs.org/package/generator-jhipster-svelte
-[daviddm-image]: https://david-dm.org/jhipster/generator-jhipster-svelte.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/jhipster/generator-jhipster-svelte
 [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [prettier-url]: https://github.com/prettier/prettier
 [github-actions-generated-applications]: https://github.com/jhipster/generator-jhipster-svelte/workflows/Svelte%20Generated%20Applications/badge.svg

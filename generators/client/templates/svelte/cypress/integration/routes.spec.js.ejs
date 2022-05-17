@@ -48,7 +48,7 @@ describe('Routes', () => {
 	describe('authenticated user', () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()
-			cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
+			cy.loginByApi(Cypress.env('ADMIN_USERNAME'), Cypress.env('ADMIN_PASSWORD'))
 		})
 
 <%_ if (authenticationType === 'oauth2') { _%>
@@ -87,4 +87,31 @@ describe('Routes', () => {
 				.and('contain', 'Welcome, Svelte Hipster!')
 		})
 	})
+<%_ if (authenticationType !== 'oauth2') { _%>
+
+	describe('navigation context', () => {
+
+		beforeEach(() => {
+			cy.visit('/admin/logger')
+			cy.location('pathname').should('eq', '/login')
+		})
+
+		it('should navigate to saved context', () => {
+			cy.getBySel('loginForm').within(() => {
+				cy.root()
+					.get("input[type='checkbox']")
+					.eq(0)
+					.check()
+					.getByName('username')
+					.type(Cypress.env('ADMIN_USERNAME'))
+					.getByName('password')
+					.type(Cypress.env('ADMIN_PASSWORD') + '{enter}', { log: false })
+			})
+			cy.location('pathname').should('eq', '/admin/logger')
+			cy.getBySel('loggersTitle')
+				.should('be.visible')
+				.should('contain', 'Loggers')
+		})
+	})
+<%_ } _%>
 })

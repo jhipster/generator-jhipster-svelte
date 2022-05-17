@@ -25,8 +25,9 @@
 				|| (relationship.relationshipOneToOne && relationship.ownerSide)
 				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
 _%>
-import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "../../../support/entities/<%= entityFileName %>-util.js";
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
 
 describe('Update <%= entityInstance %> page', () => {
 	let dynamicId
@@ -43,8 +44,8 @@ _%>
 
 	before(function() {
 		cy.loginByApi(
-			Cypress.env('adminUsername'),
-			Cypress.env('adminPassword')
+			Cypress.env('ADMIN_USERNAME'),
+			Cypress.env('ADMIN_PASSWORD')
 		)
 
 		add<%= entityAngularName %>(<%_
@@ -56,7 +57,7 @@ _%>,<%_} _%><%_
 		const fieldLength = relationshipFields.length;
 		for (const relationship of relationshipFields) {
 			if (relationship.otherEntityUser) {
-_%>this.userId<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+_%>this.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			} else {
 _%>this.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
 			}
@@ -71,14 +72,14 @@ _%>)
 	beforeEach(() => {
 		cy.unregisterServiceWorkers()
 		cy.loginByApi(
-			Cypress.env('adminUsername'),
-			Cypress.env('adminPassword')
+			Cypress.env('ADMIN_USERNAME'),
+			Cypress.env('ADMIN_PASSWORD')
 		)
         cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
 	})
 
 	after(function () {
-		cy.delete(`api/<%= entityApiUrl %>/${dynamicId}`)
+		cy.delete(`<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`)
 	<%_ if (authenticationType === 'oauth2') { _%>
 		cy.logoutByApi()
 	<%_ } _%>
@@ -86,7 +87,7 @@ _%>)
 			for (const relationship of relationshipFields) {
 				if (!relationship.otherEntityUser) {
 	_%>
-		cy.delete(`api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
+		cy.delete(`<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
 	<%_
 				}
 			}
@@ -275,7 +276,7 @@ _%>
 		.getByName('<%= relationshipFieldKey %>')
 		.click()
 		.getBySel('<%= relationshipFieldKey %>-bg')
-		.click()
+		.type('{esc}', {force: true})
 	<%_
 		}
 	_%>
@@ -285,7 +286,7 @@ _%>
 			.click()
 
 		cy.getBySel('toast-success').contains(
-			'A <%= entityInstance %> is updated with identifier'
+			'is updated with identifier'
 		)
 
 		cy.location('pathname')

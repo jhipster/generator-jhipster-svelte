@@ -13,14 +13,14 @@ async function askForApplicationType() {
 			value: 'monolith',
 			name: 'Monolithic application (recommended for simple projects)',
 		},
-		// {
-		// 	value: 'microservice',
-		// 	name: 'Microservice application',
-		// },
-		// {
-		// 	value: 'gateway',
-		// 	name: 'Microservice gateway',
-		// },
+		{
+			value: 'microservice',
+			name: 'Microservice application',
+		},
+		{
+			value: 'gateway',
+			name: 'Gateway application',
+		},
 	];
 
 	const answers = await this.prompt([
@@ -49,7 +49,7 @@ async function askForTestOpts() {
 	const PROMPT = {
 		type: 'checkbox',
 		name: 'testFrameworks',
-		message: 'Besides Junit, which testing frameworks would you like to use??',
+		message: 'Besides Junit, which testing frameworks would you like to use?',
 		choices,
 		default: defaultChoice,
 	};

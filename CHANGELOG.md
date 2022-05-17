@@ -4,6 +4,24 @@
 
 ## Current
 
+## [0.9.0] - 2022-05-18
+
+### BREAKING CHANGES
+
+-   ✅ Svelte blueprint configures the [JHipster Prettier Java](https://github.com/jhipster/prettier-java) plugin as default to style Java code.
+
+### Added
+
+-   ✅ Support generation of JHipster `microservice` and `gateway` application types. A `Gateway` application is bundled with a UI page to view configured micro-services routes. With this change, you can now generate `micro-services` architecture applications using `Svelte` as a frontend technical stack. [#1146](https://github.com/jhipster/generator-jhipster-svelte/pull/1146), [#1147](https://github.com/jhipster/generator-jhipster-svelte/pull/1147), [#1150](https://github.com/jhipster/generator-jhipster-svelte/pull/1150), [#1163](https://github.com/jhipster/generator-jhipster-svelte/pull/1163)
+-   ✅ Support `Auth0` OIDC provider in Cypress end-to-end tests [#1121](https://github.com/jhipster/generator-jhipster-svelte/pull/1121)
+-   ✅ Support `Spring WebFlux` based reactive backend applications [#1146](https://github.com/jhipster/generator-jhipster-svelte/pull/1146)
+-   ✅ Remember navigation context before login and redirect after successful authentication [#1164](https://github.com/jhipster/generator-jhipster-svelte/pull/1164)
+
+### Changed
+
+-   ✅ Cypress environment variables externalizing username and password have been renamed to `USER_USERNAME`, `USER_PASSWORD`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD` [#1140](https://github.com/jhipster/generator-jhipster-svelte/pull/1140)
+-   ✅ Upgrade `Cypress`, `Svelte`, `Svelte/Kit`, `Eslint`, `Husky` etc dependencies.
+
 ## [0.8.0] - 2022-04-24
 
 ### BREAKING CHANGES

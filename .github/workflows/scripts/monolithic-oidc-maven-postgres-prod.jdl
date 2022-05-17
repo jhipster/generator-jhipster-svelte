@@ -1,67 +1,39 @@
 application {
-    config {
-        baseName SampleBlogApp,
-        applicationType monolith,
-        authenticationType oauth2,
-        packageName tech.jhipster.samples.blog,
-        searchEngine elasticsearch
-        prodDatabaseType postgresql,
-        cacheProvider caffeine,
-        buildTool maven
-    }
-    entities *
+  config {
+    baseName SampleBlogApp,
+    applicationType monolith
+    authenticationType oauth2
+    packageName tech.jhipster.sample.blog
+    searchEngine elasticsearch
+    prodDatabaseType postgresql
+    cacheProvider ehcache
+    buildTool maven
+  }
+  entities *
 }
 
-
- enum EntityStatus {
-    DUMMY, APP, SVELTE
- }
-
-entity SampleDomainEntity {
-  localDateData	LocalDate
-  zonedDateTimeData ZonedDateTime
-  instantData Instant
-  durationData Duration
+entity Blog {
+  name String required minlength(3)
+  handle String required minlength(2)
 }
 
-entity SampleDomainEntityTwo {
-  stringData String required minlength(5) maxlength(50)
-  integerData Integer required min(2) max(1000)
-  longData Long required min(2) max(4000)
-  bigDecimalData BigDecimal required
-  floatData Float
+entity Post {
+  title String required
+  content TextBlob required
+  date Instant required
 }
 
-entity SampleDomainEntityThree {
-  doubleData Double
-  booleanData Boolean
-  uuidData UUID
-  enumData EntityStatus
+entity Tag {
+  name String required minlength(2)
 }
 
-entity SampleBlobEntity {
-  blobData Blob
-  anyBlobData AnyBlob
-  imageBlobData ImageBlob
-  textBlobData TextBlob
-}
-
-entity SampleEntity {
-  name String
-}
-
-relationship OneToOne {
-  SampleBlobEntity{sampleEntity(name)} to SampleEntity
-}
-
-relationship OneToMany {
-  SampleBlobEntity{domainEntity} to SampleDomainEntityTwo{blobEntity(textBlobData)},
-}
 relationship ManyToOne {
-  SampleDomainEntityThree{user(login)} to User
-}
-relationship ManyToMany {
-  SampleDomainEntity{sampleEntity(name)} to SampleEntity{sampleDomainEntity}
+  Blog{user(login)} to User
+  Post{blog(name)} to Blog
 }
 
-paginate SampleDomainEntity with pagination
+relationship ManyToMany {
+  Post{tag(name)} to Tag{entry}
+}
+
+paginate Post, Tag with pagination

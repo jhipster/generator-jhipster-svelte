@@ -1,7 +1,7 @@
 describe('Loggers page', () => {
 	beforeEach(() => {
 		cy.unregisterServiceWorkers()
-		cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
+		cy.loginByApi(Cypress.env('ADMIN_USERNAME'), Cypress.env('ADMIN_PASSWORD'))
 		cy.visit('/admin/logger')
 	})
 <%_ if (authenticationType === 'oauth2') { _%>
@@ -35,14 +35,14 @@ describe('Loggers page', () => {
 	it('should display logger name and the default enabled logger level in the table', () => {
 
 <%_	if (databaseTypeSql) { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.Version')
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
 		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
 <%_ } _%>
 
 		cy.getBySel('loggersTable')
 <%_	if (databaseTypeSql) { _%>
-			.contains('td', 'org.hibernate.Version')
+			.contains('td', 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
 			.contains('td', 'org.mongodb.driver')
 <%_ } _%>
@@ -76,7 +76,7 @@ describe('Loggers page', () => {
 
 	it('should display actions available on the current selected logger', () => {
 <%_	if (databaseTypeSql) { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.Version')
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
 		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
 <%_ } _%>
@@ -84,7 +84,7 @@ describe('Loggers page', () => {
 		cy.getBySel('loggersTable')
 <%_
 	if (databaseTypeSql) { _%>
-			.contains('td', 'org.hibernate.Version')
+			.contains('td', 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
 			.contains('td', 'org.mongodb.driver')
 <%_ } _%>
@@ -119,7 +119,7 @@ describe('Loggers page', () => {
 
 	it('should change logger level from WARN -> INFO, INFO -> WARN', () => {
 <%_	if (databaseTypeSql) { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.Version')
+		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
 		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
 <%_ } _%>
@@ -129,7 +129,7 @@ describe('Loggers page', () => {
 		cy.getBySel('loggersTable')
 <%_
 	if (databaseTypeSql) { _%>
-			.contains('td', 'org.hibernate.Version')
+			.contains('td', 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
 			.contains('td', 'org.mongodb.driver')
 <%_ } _%>
@@ -150,7 +150,7 @@ describe('Loggers page', () => {
 		cy.getBySel('loggersTable')
 <%_
 	if (databaseTypeSql) { _%>
-			.contains('td', 'org.hibernate.Version')
+			.contains('td', 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
 			.contains('td', 'org.mongodb.driver')
 <%_ } _%>

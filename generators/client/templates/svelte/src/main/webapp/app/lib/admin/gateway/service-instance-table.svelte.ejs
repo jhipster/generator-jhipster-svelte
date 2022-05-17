@@ -1,0 +1,34 @@
+<script>
+	import Table from 'jhipster-svelte-library/table/table.svelte'
+	import TableRow from 'jhipster-svelte-library/table/table-row.svelte'
+	import TableData from 'jhipster-svelte-library/table/table-data.svelte'
+
+	export let serviceInstances = []
+</script>
+
+<Table classes="mt-0">
+	{#each serviceInstances as serviceInstance (serviceInstance.uri)}
+		<TableRow class="">
+			<TableData class="flex flex-row items-center">
+				<a href="{ serviceInstance.uri }" target="_blank">{ serviceInstance.uri }</a>
+				{#if serviceInstance.instanceInfo}
+					<span class="py-1 px-2 rounded ml-4 text-white { serviceInstance.instanceInfo.status === 'UP' ? 'bg-green-600' : 'bg-red-600' }">
+						{ serviceInstance.instanceInfo.status }
+					</span>
+				{:else}
+					<span class="py-1 px-2 rounded ml-4 bg-gray-500">UNKNOWN</span>
+				{/if}
+			</TableData>
+			<TableData class="w-2/3">
+				<Table class="text-sm">
+					{#each Object.entries(serviceInstance.metadata) as [key, value] (key)}
+						<TableRow classes="border-x-0 first:border-y-0 last:border-y-0">
+							<TableData class="px-1 py-1" >{ key }</TableData>
+							<TableData class="px-1 py-1  pl-4 border-l border-gray-200 dark:border-gray-700 ">{ value }</TableData>
+						</TableRow>
+					{/each}
+				</Table>
+			</TableData>
+		</TableRow>
+	{/each}
+</Table>

@@ -34,7 +34,7 @@ describe('Home page', () => {
 	describe('authenticated user', () => {
 		beforeEach(() => {
 			cy.unregisterServiceWorkers()
-			cy.loginByApi(Cypress.env('adminUsername'), Cypress.env('adminPassword'))
+			cy.loginByApi(Cypress.env('ADMIN_USERNAME'), Cypress.env('ADMIN_PASSWORD'))
 			cy.visit('/')
 		})
 <%_ if (authenticationType === 'oauth2') { _%>
@@ -47,7 +47,7 @@ describe('Home page', () => {
 		it('should greets logged in user', () => {
 			cy.getBySel('greetMsg')
 				.should('be.visible')
-				.and('contain', `You are logged in as user "${Cypress.env('adminUsername')}".`)
+				.and('contain', `You are logged in as user "${Cypress.env('ADMIN_USERNAME')}".`)
 		})
 	})
 })

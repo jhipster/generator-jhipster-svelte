@@ -5,6 +5,12 @@ const userStore = writable(undefined)
 
 export default {
 	subscribe: userStore.subscribe,
+	saveRoute: (route) => sessionStorage.setItem('savedRoute', route),
+	getSavedRoute: () => {
+		const savedRoute = sessionStorage.getItem('savedRoute')
+		sessionStorage.removeItem('savedRoute')
+		return savedRoute
+	},
 <%_ if (authenticationType === 'jwt') { _%>
 	storeToken: (authToken, rememberMe) => {
 		if (rememberMe) {
@@ -47,6 +53,7 @@ export default {
 	},
 	logout: () => {
 		userStore.set(undefined)
+        sessionStorage.removeItem('savedRoute')
 <%_ if (authenticationType === 'jwt') { _%>
 		localStorage.removeItem('authToken')
 		sessionStorage.removeItem('authToken')

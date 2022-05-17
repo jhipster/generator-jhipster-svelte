@@ -1,0 +1,42 @@
+<script>
+	import { onMount } from 'svelte'
+	import Page from 'jhipster-svelte-library/page/page.svelte'
+
+	import gatewayService from '$lib/admin/gateway/gateway-service'
+	import GatewayTable from '$lib/admin/gateway/gateway-table.svelte'
+
+	let error
+	let page
+	let loading = true
+	let routes = []
+
+	onMount(() => fetchRoutes())
+
+	function fetchRoutes() {
+		loading = true
+		error = undefined
+		gatewayService
+			.fetchRoutes()
+			.then(res => routes = res)
+			.catch(err => (error = err))
+			.finally(() => (loading = false))
+	}
+</script>
+
+<svelte:head>
+	<title>Gateway Routes</title>
+	<meta name="Description" content="Gateway routes" />
+</svelte:head>
+<Page testId="gateway" width="full">
+	<div
+		class="text-left flex flex-row justify-between items-center"
+		slot="header"
+	>
+		<span>Gateway routes</span>
+	</div>
+	{#if !loading}
+		<GatewayTable
+			routes="{routes}"
+		/>
+	{/if}
+</Page>

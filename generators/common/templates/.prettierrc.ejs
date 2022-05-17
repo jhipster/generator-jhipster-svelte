@@ -2,6 +2,8 @@
 	"printWidth": 80,
 	"tabWidth": 4,
 	"useTabs": true,
+<%_
+if (!skipClient) { _%>
 	"semi": false,
 	"singleQuote": true,
 	"arrowParens": "avoid",
@@ -9,12 +11,20 @@
 	"svelteStrictMode": true,
 	"svelteBracketNewLine": true,
 	"svelteAllowShorthand": true,
+<%_ } _%>
 	"overrides": [
 		{
 			"files": "src/test/resources/**/*.html",
 			"options": {
 				"printWidth": 140
 			}
-		}
+		}<% if (!skipServer) { %>,
+		{
+			"files": "*.java",
+			"options": {
+				"useTabs": false,
+				"printWidth": 140
+			}
+		}<% } %>
 	]
 }

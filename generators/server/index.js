@@ -28,6 +28,15 @@ module.exports = class extends ServerGenerator {
 			displayLogo() {
 				// don't overwrite logo
 			},
+			initializeBlueprintOptions() {
+				if (this.options.swaggerUi) {
+					this.swaggerUi = this.options.swaggerUi;
+				} else if (this.blueprintConfig) {
+					this.swaggerUi = this.blueprintConfig.swaggerUi;
+				} else {
+					this.swaggerUi = false;
+				}
+			},
 		};
 	}
 
@@ -67,13 +76,24 @@ module.exports = class extends ServerGenerator {
 			writeAdditionalFile() {
 				writeFiles.call(this);
 			},
+			updatePackageJson() {
+				const packageTemplate = this.fs.read(this.templatePath('package.json'));
+				this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(packageTemplate));
+			},
 		};
 	}
 
 	// eslint-disable-next-line class-methods-use-this
 	get postWriting() {
 		// override to not include package scripts
-		return {};
+		return {
+			packageJsonScripts() {
+				const packageJsonConfigStorage = this.packageJson.createStorage('config').createProxy();
+				packageJsonConfigStorage.backend_port = this.gatewayServerPort || this.serverPort;
+				packageJsonConfigStorage.packaging = this.defaultPackaging;
+				packageJsonConfigStorage.default_environment = this.defaultEnvironment;
+			},
+		};
 	}
 
 	get end() {
