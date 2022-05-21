@@ -10,7 +10,7 @@ module.exports = {
 function addEntityToMenu(generator, entityRoute, entityName, entityClass) {
 	jhipsterUtils.rewriteFile(
 		{
-			file: `${CLIENT_MAIN_SRC_DIR}/app/lib/layout/entity-menu.svelte`,
+			file: `${CLIENT_MAIN_SRC_DIR}/app/lib/entities/entity-menu.svelte`,
 			needle: 'jhipster-needle-add-entity-to-menu',
 			splicable: [
 				// prettier-ignore
