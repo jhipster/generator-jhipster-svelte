@@ -54,6 +54,10 @@ const svelteFiles = {
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-table.svelte`,
 				},
 				{
+					file: 'entity/entity-table.spec.js',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-table.spec.js`,
+				},
+				{
 					file: 'entity/entity-form.svelte',
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-form.svelte`,
 				},

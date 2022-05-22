@@ -7,7 +7,9 @@ const containsRelationshipField = relationshipFields && relationshipFields.lengt
 _%>
 <script>
 	import <%= entityAngularName %>ListActions from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-list-actions.svelte'
+<%_ if (!paginationNo) { _%>
 	import Sort from 'jhipster-svelte-library/table/sort.svelte'
+<%_ } _%>
 	import Table from 'jhipster-svelte-library/table/table.svelte'
 	import TableData from 'jhipster-svelte-library/table/table-data.svelte'
 	import TableHeader from 'jhipster-svelte-library/table/table-header.svelte'
