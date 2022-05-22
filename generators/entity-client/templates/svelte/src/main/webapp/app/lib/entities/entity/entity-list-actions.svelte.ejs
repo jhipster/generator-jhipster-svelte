@@ -20,7 +20,7 @@
 		name="view<%= entityAngularName %>Btn"
 		contextualColor="light"
 		size="small"
-		classes="sm:my-0"
+		classes="sm:my-0 {showActions ? '' : 'hidden'}"
 		title="View"
 		aria-label="view"
 		on:click="{() =>
@@ -34,7 +34,7 @@
 		name="edit<%= entityAngularName %>Btn"
 		contextualColor="light"
 		size="small"
-		classes="sm:my-0"
+		classes="sm:my-0 {showActions ? '' : 'hidden'}"
 		title="Edit"
 		aria-label="edit"
 		on:click="{() =>
@@ -48,7 +48,7 @@
 		name="delete<%= entityAngularName %>Btn"
 		contextualColor="light"
 		size="small"
-		classes="sm:my-0"
+		classes="sm:my-0 {showActions ? '' : 'hidden'}"
 		title="Delete"
 		aria-label="delete"
 		on:click="{() =>

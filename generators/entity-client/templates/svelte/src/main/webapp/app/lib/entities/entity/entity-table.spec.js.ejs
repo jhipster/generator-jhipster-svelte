@@ -1,0 +1,231 @@
+<%_
+const relationshipFields = relationships.filter(relationship => (
+        relationship.otherEntity.primaryKey
+        && (relationship.relationshipManyToOne
+                || (relationship.relationshipOneToOne && relationship.ownerSide))))
+const containsRelationshipField = relationshipFields && relationshipFields.length;
+const entityFakeData = generateFakeData('cypress');
+const testId = new Date().getTime()
+_%>
+import '@testing-library/jest-dom/extend-expect'
+import {fireEvent, render} from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import <%= entityAngularName %>Table from './<%= entityFileName %>-table.svelte'
+
+it('should display no <%= entityClassPluralHumanized.toLowerCase() %> found message for an empty table', () => {
+	render(<%= entityAngularName %>Table, {})
+
+	expect(screen.getByRole('table')).toBeInTheDocument()
+	expect(screen.queryAllByRole('cell').length).toEqual(1)
+	expect(screen.getByText(/no <%= entityClassPluralHumanized.toLowerCase() %> found/i)).toBeInTheDocument()
+})
+
+it('should display column headers', () => {
+	render(<%= entityAngularName %>Table, {
+		<%= entityInstancePlural %>: [],
+	})
+
+	expect(screen.getByRole('table')).toBeInTheDocument()
+	expect(screen.getAllByRole('columnheader')).toHaveLength(<%= entity.fields.length + relationshipFields.length %>)
+	expect(
+		screen.getByRole('columnheader', { name: /^id$/i })
+	).toBeInTheDocument()
+<%_ for (field of fields.filter(field => !field.id)) { _%>
+	expect(
+		screen.getByRole('columnheader', { name: /^<%= field.fieldNameHumanized.toLowerCase() %>$/i })
+	).toBeInTheDocument()
+<%_ } _%>
+<%_ for (relationship of relationshipFields) { _%>
+	expect(
+		screen.getByRole('columnheader', { name: /^<%= relationship.relationshipNameHumanized.toLowerCase() %>$/i })
+	).toBeInTheDocument()
+<%_ } _%>
+})
+
+it('should display <%= entityClassPluralHumanized.toLowerCase() %> data', () => {
+	render(<%= entityAngularName %>Table, {
+		<%= entityInstancePlural %>: [
+			{
+                id: <%= testId %>,
+<%_
+    for (field of fields.filter(field => !field.id)) {
+    const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+    if (fieldValue === undefined) {
+        warning(`Error generating a value for field ${field.fieldName}`);
+    }
+_%>
+            <%_ if (field.fieldTypeBoolean) { _%>
+                <%= field.fieldName %>: true,
+            <%_ } else if (field.fieldTypeBinary && field.blobContentTypeText) { _%>
+                <%= field.fieldName %>: 'some text data',
+            <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+                <%= field.fieldName %>ContentType: 'image/png',
+            <%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+                <%= field.fieldName %>: '<%= fieldValue %>',
+            <%_ } else if (field.fieldTypeLocalDate) { _%>
+                <%= field.fieldName %>: '2022-03-10T10:08',
+            <%_ } else if (field.fieldTypeZonedDateTime) { _%>
+                <%= field.fieldName %>: '2022-04-10T10:08:00.000Z',
+            <%_ } else if (field.fieldTypeTimed) { _%>
+                <%= field.fieldName %>: '2022-05-10T10:08:00.000Z',
+            <%_ } else if (field.fieldTypeDuration) { _%>
+                <%= field.fieldName %>: 'PT0.000052484S',
+            <%_ } else if (field.fieldTypeNumeric) { _%>
+                <%= field.fieldName %>: <%= fieldValue %>,
+            <%_ } else { _%>
+                <%= field.fieldName %>: '<%= fieldValue %>',
+            <%_ } _%>
+<%_ } _%>
+<%_
+        for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>
+		        user: {
+					login: 'admin',
+				}
+<%_
+			} else {
+				if (relationship.relationshipManyToMany) {
+_%>
+	<%_
+				} else {
+	_%>
+                <%= relationship.relationshipName %> : {
+                    <%= relationship.otherEntityField %> : '<%= testId + 2000 %>'
+                }
+	<%_
+				}
+			}
+		}
+_%>
+			},
+            {
+                id: <%= testId + 1000 %>,
+            },
+		],
+	})
+
+expect(screen.getAllByRole('cell')).toHaveLength(<%= (entity.fields.length + relationshipFields.length) *2 %>)
+<%_
+    for (field of fields.filter(field => !field.id)) {
+    const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+    if (fieldValue === undefined) {
+        warning(`Error generating a value for field ${field.fieldName}`);
+    }
+_%>
+<%_ if (field.fieldTypeBoolean) { _%>
+    expect(screen.getByRole('cell', { name: /true/i })).toBeInTheDocument()
+<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+<%_ } else if (field.fieldTypeBinary && field.blobContentTypeText) { _%>
+    expect(screen.getByRole('cell', { name: /some text data/i })).toBeInTheDocument()
+<%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+    expect(screen.getByRole('cell', { name: /<%= fieldValue.toLowerCase() %>/i })).toBeInTheDocument()
+<%_ } else  if (field.fieldTypeLocalDate) { _%>
+    expect(screen.getByRole('cell', { name: /03\/10\/2022/i })).toBeInTheDocument()
+<%_ } else  if (field.fieldTypeZonedDateTime) { _%>
+    expect(screen.getByRole('cell', { name: /04\/10\/2022/i })).toBeInTheDocument()
+<%_ } else  if (field.fieldTypeInstant) { _%>
+    expect(screen.getByRole('cell', { name: /05\/10\/2022/i })).toBeInTheDocument()
+<%_ } else if (field.fieldTypeDuration) { _%>
+<%_ } else if (field.fieldTypeNumeric) { _%>
+    expect(screen.getByRole('cell', { name: /<%= fieldValue %>/i })).toBeInTheDocument()
+<%_ } else { _%>
+    expect(screen.getByRole('cell', { name: /<%= fieldValue.toLowerCase() %>/i })).toBeInTheDocument()
+<%_ } _%><%_ } _%>
+
+<%_
+        for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>
+    expect(screen.getByRole('cell', { name: /admin/i })).toBeInTheDocument()
+<%_
+			} else {
+				if (relationship.relationshipManyToMany) {
+_%>
+	<%_
+				} else {
+	_%>
+    expect(screen.getByRole('cell', { name: /<%= testId + 2000 %>/i })).toBeInTheDocument()
+	<%_
+				}
+			}
+		}
+_%>
+
+	expect(screen.getByRole('row', { name: /<%= testId %>/i })).toBeInTheDocument()
+    expect(screen.getByRole('row', { name: /<%= testId + 1000 %>/i })).toBeInTheDocument()
+})
+
+it('should display inline action buttons', async () => {
+	render(<%= entityAngularName %>Table, {
+		<%= entityInstancePlural %>: [
+			{
+                id: <%= testId %>,
+<%_
+    for (field of fields.filter(field => !field.id)) {
+    const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+    if (fieldValue === undefined) {
+        warning(`Error generating a value for field ${field.fieldName}`);
+    }
+_%>
+            <%_ if (field.fieldTypeBoolean) { _%>
+                <%= field.fieldName %>: true,
+            <%_ } else if (field.fieldTypeBinary && field.blobContentTypeText) { _%>
+                <%= field.fieldName %>: 'some text data',
+            <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+                <%= field.fieldName %>ContentType: 'image/png',
+            <%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+                <%= field.fieldName %>: '<%= fieldValue %>',
+            <%_ } else if (field.fieldTypeLocalDate) { _%>
+                <%= field.fieldName %>: '2022-03-10T10:08',
+            <%_ } else if (field.fieldTypeZonedDateTime) { _%>
+                <%= field.fieldName %>: '2022-04-10T10:08:00.000Z',
+            <%_ } else if (field.fieldTypeTimed) { _%>
+                <%= field.fieldName %>: '2022-05-10T10:08:00.000Z',
+            <%_ } else if (field.fieldTypeDuration) { _%>
+                <%= field.fieldName %>: 'PT0.000052484S',
+            <%_ } else if (field.fieldTypeNumeric) { _%>
+                <%= field.fieldName %>: <%= fieldValue %>,
+            <%_ } else { _%>
+                <%= field.fieldName %>: '<%= fieldValue %>',
+            <%_ } _%>
+<%_ } _%>
+<%_
+        for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>
+		        user: {
+					login: 'admin',
+				}
+<%_
+			} else {
+				if (relationship.relationshipManyToMany) {
+_%>
+	<%_
+				} else {
+	_%>
+                <%= relationship.relationshipName %> : {
+                    <%= relationship.otherEntityField %> : '<%= testId + 2000 %>'
+                }
+	<%_
+				}
+			}
+		}
+_%>
+			},
+        ],
+	})
+
+	expect(screen.getByRole('button', { name: /view/i })).toBeEnabled()
+	expect(screen.getByRole('button', { name: /view/i })).toHaveClass('hidden')
+	expect(screen.getByRole('button', { name: /edit/i })).toBeEnabled()
+	expect(screen.getByRole('button', { name: /edit/i })).toHaveClass('hidden')
+
+	const button = screen.getByRole('button', { name: /delete/i })
+	expect(button).toBeEnabled()
+	expect(button).toHaveClass('hidden')
+
+	await fireEvent.mouseEnter(screen.getByRole('row', { name: /<%= testId %>/i }))
+	expect(button).not.toHaveClass('hidden')
+})
