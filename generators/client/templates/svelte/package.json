@@ -12,7 +12,7 @@
 		"cross-env": "7.0.3",
 		"cypress": "9.6.1",
 		"esbuild": "0.14.39",
-		"eslint": "8.15.0",
+		"eslint": "8.16.0",
 		"eslint-plugin-cypress": "2.12.1",
 		"eslint-plugin-jest-dom": "4.0.1",
 		"eslint-plugin-svelte3": "4.0.0",
