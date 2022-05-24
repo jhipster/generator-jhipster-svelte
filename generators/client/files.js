@@ -187,7 +187,6 @@ const svelteFiles = {
 				'layout/footer.svelte',
 				'layout/navbar.svelte',
 				'utils/env.js',
-				'utils/request.js',
 			],
 		},
 	],

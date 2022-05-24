@@ -1,5 +1,6 @@
+import { request } from 'jhipster-svelte-library/utils/request'
+
 import { serverUrl } from '$lib/utils/env'
-import { request } from '$lib/utils/request'
 
 export default {
 	fetchRoutes: () => request(`${serverUrl}api/gateway/routes/`)
