@@ -72,7 +72,7 @@ _%>)
                         .parent()
                         .trigger('mouseenter')
                         .within($tr => {
-                            cy.root().get('td').children().getByName('delete<%= entityAngularName %>Btn').click()
+                            cy.root().get('td').children().getByName('deleteBtn').click()
                         })
                 }
         })

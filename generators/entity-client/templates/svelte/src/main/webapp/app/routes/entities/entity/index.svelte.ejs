@@ -193,9 +193,9 @@
 			sortPredicate="{sortPredicate}"
 			on:sortbypredicate="{sortByPredicate}"
 		<%_ } _%>
-			on:update<%= entityInstance %>="{update<%= entityAngularName %>}"
-			on:view<%= entityInstance %>="{view<%= entityAngularName %>}"
-			on:delete<%= entityInstance %>="{showDelete<%= entityAngularName %>Modal}"
+			on:update="{update<%= entityAngularName %>}"
+			on:view="{view<%= entityAngularName %>}"
+			on:delete="{showDelete<%= entityAngularName %>Modal}"
 		/>
 	{/if}
 <%_ if (!paginationNo) { _%>

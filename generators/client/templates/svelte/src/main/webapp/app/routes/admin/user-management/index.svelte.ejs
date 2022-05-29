@@ -118,15 +118,15 @@
 			props="{{ users: users, currentUser: $auth }}"
 			events="{[
 				'toggleuseraccount',
-				'viewuseraccount',
-				'updateuseraccount',
-				'deleteuseraccount',
+				'view',
+				'update',
+				'delete',
 			]}"
 			on:fetch="{handleFetch}"
 			on:toggleuseraccount="{toggleUserAccount}"
-			on:updateuseraccount="{updateUserAccount}"
-			on:viewuseraccount="{viewUserAccount}"
-			on:deleteuseraccount="{showDeleteUserModal}"
+			on:update="{updateUserAccount}"
+			on:view="{viewUserAccount}"
+			on:delete="{showDeleteUserModal}"
 		/>
 	{/if}
 </Page>

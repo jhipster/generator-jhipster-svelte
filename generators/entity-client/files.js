@@ -45,11 +45,6 @@ const svelteFiles = {
 						`${generator.entityFolderName}/${generator.entityFileName}-delete-modal.svelte`,
 				},
 				{
-					file: 'entity/entity-list-actions.svelte',
-					renameTo: generator =>
-						`${generator.entityFolderName}/${generator.entityFileName}-list-actions.svelte`,
-				},
-				{
 					file: 'entity/entity-table.svelte',
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-table.svelte`,
 				},

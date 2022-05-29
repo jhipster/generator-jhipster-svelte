@@ -6,7 +6,7 @@ const relationshipFields = relationships.filter(relationship => (
 const containsRelationshipField = relationshipFields && relationshipFields.length;
 _%>
 <script>
-	import <%= entityAngularName %>ListActions from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-list-actions.svelte'
+	import TableRowActions from 'jhipster-svelte-library/table/table-row-actions.svelte'
 <%_ if (!paginationNo) { _%>
 	import Sort from 'jhipster-svelte-library/table/sort.svelte'
 <%_ } _%>
@@ -104,12 +104,12 @@ _%>
 					<div
 							class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
 					>
-						<<%= entityAngularName %>ListActions
-							<%= entityInstance %>="{<%= entityInstance %>}"
-							showActions="{showActions}"
-							on:view<%= entityInstance %>
-							on:update<%= entityInstance %>
-							on:delete<%= entityInstance %>
+						<TableRowActions
+							id="{ <%= entityInstance %>.id }"
+							visible="{ showActions }"
+							on:view
+							on:update
+							on:delete
 						/>
 					</div>
 					<%_ }_%>
@@ -136,12 +136,12 @@ _%>
 					<div
 							class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
 					>
-						<<%= entityAngularName %>ListActions
-						<%= entityInstance %>="{<%= entityInstance %>}"
-						showActions="{showActions}"
-						on:view<%= entityInstance %>
-						on:update<%= entityInstance %>
-						on:delete<%= entityInstance %>
+						<TableRowActions
+						id="{ <%= entityInstance %>.id }"
+						visible="{ showActions }"
+						on:view
+						on:update
+						on:delete
 						/>
 					</div>
 					<%_ }_%>
