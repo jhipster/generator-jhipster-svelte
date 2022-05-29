@@ -116,12 +116,7 @@
 			sortPredicate="{sortPredicate}"
 			totalCount="{totalCount}"
 			props="{{ users: users, currentUser: $auth }}"
-			events="{[
-				'toggleuseraccount',
-				'view',
-				'update',
-				'delete',
-			]}"
+			events="{['toggleuseraccount', 'view', 'update', 'delete']}"
 			on:fetch="{handleFetch}"
 			on:toggleuseraccount="{toggleUserAccount}"
 			on:update="{updateUserAccount}"
