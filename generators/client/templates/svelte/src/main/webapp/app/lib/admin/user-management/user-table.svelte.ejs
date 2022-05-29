@@ -74,9 +74,9 @@
 						user="{user}"
 						showActions="{showActions}"
 						on:toggleuseraccount
-						on:viewuseraccount
-						on:updateuseraccount
-						on:deleteuseraccount
+						on:view
+						on:update
+						on:delete
 					/>
 				</TableData>
 			</TableRow>

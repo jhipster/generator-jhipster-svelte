@@ -93,7 +93,7 @@ test('should dispatch the toggleuseraccount event', async () => {
 	})
 })
 
-test('should dispatch the viewuseraccount event', async () => {
+test('should dispatch the view event', async () => {
 	const { component } = render(UserListActions, {
 		props: {
 			user: { activated: false, login: 'testA' },
@@ -104,49 +104,7 @@ test('should dispatch the viewuseraccount event', async () => {
 	const button = screen.getByRole('button', { name: /view/i })
 
 	const mockHandler = jest.fn()
-	component.$on('viewuseraccount', mockHandler)
-
-	await fireEvent.click(button)
-
-	expect(mockHandler).toHaveBeenCalled()
-	expect(mockHandler.mock.calls[0][0].detail).toStrictEqual({
-		id: 'testA',
-	})
-})
-
-test('should dispatch the updateuseraccount event', async () => {
-	const { component } = render(UserListActions, {
-		props: {
-			user: { activated: false, login: 'testA' },
-			currentUser: 'testB',
-			showActions: true,
-		},
-	})
-	const button = screen.getByRole('button', { name: /edit/i })
-
-	const mockHandler = jest.fn()
-	component.$on('updateuseraccount', mockHandler)
-
-	await fireEvent.click(button)
-
-	expect(mockHandler).toHaveBeenCalled()
-	expect(mockHandler.mock.calls[0][0].detail).toStrictEqual({
-		id: 'testA',
-	})
-})
-
-test('should dispatch the deleteuseraccount event', async () => {
-	const { component } = render(UserListActions, {
-		props: {
-			user: { activated: false, login: 'testA' },
-			currentUser: 'testB',
-			showActions: true,
-		},
-	})
-	const button = screen.getByRole('button', { name: /delete/i })
-
-	const mockHandler = jest.fn()
-	component.$on('deleteuseraccount', mockHandler)
+	component.$on('view', mockHandler)
 
 	await fireEvent.click(button)
 
