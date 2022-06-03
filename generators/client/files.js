@@ -214,7 +214,6 @@ const svelteFiles = {
 				'account/register-user-form.svelte',
 				'account/reset-password-form.svelte',
 				'account/user-settings-form.svelte',
-				'admin/user-management/user-delete-modal.svelte',
 				'admin/user-management/user-form.svelte',
 				'admin/user-management/user-list-actions.spec.js',
 				'admin/user-management/user-list-actions.svelte',

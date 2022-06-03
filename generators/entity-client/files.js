@@ -40,11 +40,6 @@ const svelteFiles = {
 			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
 				{
-					file: 'entity/entity-delete-modal.svelte',
-					renameTo: generator =>
-						`${generator.entityFolderName}/${generator.entityFileName}-delete-modal.svelte`,
-				},
-				{
 					file: 'entity/entity-table.svelte',
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-table.svelte`,
 				},
