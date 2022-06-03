@@ -43,7 +43,7 @@ describe('User delete dialog page', () => {
 				.get('p')
 				.should('be.visible')
 				.should('contain', 'Are you sure you want to delete the user?')
-				.getByName('deleteUserBtn')
+				.getByName('confirmDeleteBtn')
 				.should('not.be.disabled')
 				.getByName('cancelBtn')
 				.should('not.be.disabled')
@@ -59,7 +59,7 @@ describe('User delete dialog page', () => {
 
 	it('should delete the user', () => {
 		cy.getBySel('svlModal').within(() =>
-			cy.getByName('deleteUserBtn').click()
+			cy.getByName('confirmDeleteBtn').click()
 		)
 
 		cy.getBySel('toast-success').contains(

@@ -109,7 +109,7 @@ _%>)
 				.get('p')
 				.should('be.visible')
 				.should('contain', 'Are you sure you want to delete the <%= entityClassHumanized %>?')
-				.getByName('delete<%= entityAngularName %>Btn')
+				.getByName('confirmDeleteBtn')
 				.should('not.be.disabled')
 				.getByName('cancelBtn')
 				.should('not.be.disabled')
@@ -125,7 +125,7 @@ _%>)
 
 	it('should delete the <%= entityAngularName %>', () => {
 		cy.getBySel('svlModal').within(() =>
-			cy.getByName('delete<%= entityAngularName %>Btn').click()
+			cy.getByName('confirmDeleteBtn').click()
 		)
 <%_ if (!reactive) { _%>
 
