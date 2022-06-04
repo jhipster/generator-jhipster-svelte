@@ -12,6 +12,7 @@ if (!skipClient) { _%>
 	"svelteBracketNewLine": true,
 	"svelteAllowShorthand": true,
 <%_ } _%>
+	"plugins": [<%_ if (!skipClient) { _%>"prettier-plugin-svelte"<%_ } if(!skipServer) { _%><%_ if (!skipClient) { _%>, <%_ } _%>"prettier-plugin-java"<%_ } _%>],
 	"overrides": [
 		{
 			"files": "src/test/resources/**/*.html",
