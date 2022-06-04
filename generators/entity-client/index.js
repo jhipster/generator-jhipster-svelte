@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const EntityClientGenerator = require('generator-jhipster/generators/entity-client');
+const constants = require('generator-jhipster/generators/generator-constants');
 const writeFiles = require('./files').writeFiles;
 const blueprintPackageJson = require('../../package.json');
 
@@ -51,6 +52,14 @@ module.exports = class extends EntityClientGenerator {
 	// eslint-disable-next-line class-methods-use-this
 	get writing() {
 		return {
+			cleanup() {
+				this.removeFile(
+					`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-delete-modal.svelte`
+				);
+				this.removeFile(
+					`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-list-actions.svelte`
+				);
+			},
 			writeAdditionalFile() {
 				writeFiles.call(this);
 			},
