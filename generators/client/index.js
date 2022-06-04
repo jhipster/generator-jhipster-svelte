@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const ClientGenerator = require('generator-jhipster/generators/client');
+const constants = require('generator-jhipster/generators/generator-constants');
 const writeFiles = require('./files').writeFiles;
 const blueprintPackageJson = require('../../package.json');
 
@@ -73,6 +74,9 @@ module.exports = class extends ClientGenerator {
 	// eslint-disable-next-line class-methods-use-this
 	get writing() {
 		return {
+			cleanup() {
+				this.removeFile(`${constants.ANGULAR_DIR}/lib/admin/user-management/user-delete-modal.svelte`);
+			},
 			writeAdditionalFile() {
 				writeFiles.call(this);
 			},
