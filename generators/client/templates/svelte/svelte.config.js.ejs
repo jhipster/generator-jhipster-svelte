@@ -3,7 +3,6 @@ import adapter from '@sveltejs/adapter-static';
     if(this.blueprintConfig.swaggerUi) { _%>
 import copy from 'rollup-plugin-copy'
 <%_ } _%>
-import { splitVendorChunkPlugin } from 'vite'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -58,7 +57,6 @@ const config = {
 					],
 				}),
             <%_ } _%>
-				splitVendorChunkPlugin(),
 			],
 			ssr: {
 				noExternal: ['jhipster-svelte-library']
