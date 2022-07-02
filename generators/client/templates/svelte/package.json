@@ -20,7 +20,7 @@
 		"husky": "7.0.4",
 		"jest": "28.1.2",
 		"jest-environment-jsdom": "28.1.2",
-		"jest-junit": "13.2.0",
+		"jest-junit": "14.0.0",
 		"jest-sonar": "0.2.12",
 		"jest-svelte-resolver": "1.0.0",
 		"jhipster-svelte-library": "0.7.1",
