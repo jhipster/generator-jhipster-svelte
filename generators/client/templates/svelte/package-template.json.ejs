@@ -16,7 +16,7 @@
 		"test:watch": "npm run test -- --watch",
 		"e2e": "npm run e2e:ci -- --headed",
 		"e2e:ci": "cypress run --browser chrome",
-		"cy:open": "cypress open",
+        "cy:open": "cypress open --e2e --browser chrome",
 		"build": "svelte-kit build",
 		"webapp:build": "npm run build",
 		"webapp:prod": "npm run build",

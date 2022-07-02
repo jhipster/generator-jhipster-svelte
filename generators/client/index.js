@@ -76,6 +76,7 @@ module.exports = class extends ClientGenerator {
 		return {
 			cleanup() {
 				this.removeFile(`${constants.ANGULAR_DIR}/lib/admin/user-management/user-delete-modal.svelte`);
+				this.removeFile(`cypress.json`);
 			},
 			writeAdditionalFile() {
 				writeFiles.call(this);
