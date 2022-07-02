@@ -16,7 +16,7 @@ const svelteFiles = {
 			templates: [
 				'.eslintignore',
 				'.eslintrc.json',
-				'cypress.json',
+				'cypress.config.cjs',
 				{
 					file: generator => `package-template.json`,
 					renameTo: () => `package.json`,
