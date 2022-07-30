@@ -1,7 +1,9 @@
 {
+	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
+			"$lib": ["<%= CLIENT_MAIN_SRC_DIR %>app/lib"],
 			"$lib/*": ["<%= CLIENT_MAIN_SRC_DIR %>app/lib/*"]
 		}
 	},

@@ -26,6 +26,7 @@ const svelteFiles = {
 				'postcss.config.cjs',
 				'svelte.config.js',
 				'tailwind.config.cjs',
+				'vite.config.js',
 			],
 		},
 	],
