@@ -1,7 +1,7 @@
 <script>
 	import Button from 'jhipster-svelte-library/button.svelte'
 	import Form from 'jhipster-svelte-library/page/form.svelte'
-	import PasswordConfirm from '$lib/account/password-confirm.svelte'
+	import PasswordConfirm from 'jhipster-svelte-library/password-confirm.svelte'
 
 	export let password = ''
 	let validPassword = false

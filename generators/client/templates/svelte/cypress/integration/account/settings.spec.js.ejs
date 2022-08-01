@@ -6,26 +6,26 @@ describe('User Settings', () => {
 	})
 
 	it('should greets with User Settings title', () => {
-		cy.getBySel('settingsTitle').should(
+		cy.getByTestId('settingsTitle').should(
 			'have.text',
 			`User settings for [${Cypress.env('ADMIN_USERNAME')}]`
 		)
 	})
 
 	it('should display current settings', () => {
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('firstName')
 			.invoke('val')
 			.then(val => {
 				expect(val).to.include(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ }_%>)
 			})
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('lastName')
 			.invoke('val')
 			.then(val => {
 				expect(val).to.include('Admin')
 			})
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('email')
 			.invoke('val')
 			.then(val => {
@@ -34,70 +34,70 @@ describe('User Settings', () => {
 	})
 
 	it('should display form control validation messages', () => {
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('firstName')
 			.type(
 				'AveryLongFirstNameThatExceedsTheMaximumLengthLimitToCheckValidation'
 			)
 			.blur()
-		cy.getBySel('settingsForm')
-			.getBySel('firstName-error')
+		cy.getByTestId('settingsForm')
+			.getByTestId('firstName-error')
 			.should('be.visible')
 			.and('contain', 'First name cannot be longer than 50 characters')
 
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('lastName')
 			.type(
 				'AveryLongLastNameThatExceedsTheMaximumLengthLimitToCheckValidation'
 			)
 			.blur()
-		cy.getBySel('settingsForm')
-			.getBySel('lastName-error')
+		cy.getByTestId('settingsForm')
+			.getByTestId('lastName-error')
 			.should('be.visible')
 			.and('contain', 'Last name cannot be longer than 50 characters')
 
-		cy.getBySel('settingsForm').getByName('email').clear().blur()
-		cy.getBySel('settingsForm')
-			.getBySel('email-error')
+		cy.getByTestId('settingsForm').getByName('email').clear().blur()
+		cy.getByTestId('settingsForm')
+			.getByTestId('email-error')
 			.should('be.visible')
 			.and('contain', 'Email is mandatory')
 
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('email')
 			.type('admin@localhost')
 			.blur()
-		cy.getBySel('settingsForm')
-			.getBySel('email-error')
+		cy.getByTestId('settingsForm')
+			.getByTestId('email-error')
 			.should('be.visible')
 			.and('contain', 'Email address is not valid')
 
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.contains('Update Settings')
 			.should('be.disabled')
 	})
 
 	it('should update user settings', () => {
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('firstName')
 			.clear()
 			.type(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ }_%>)
 			.blur()
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('lastName')
 			.clear()
 			.type('Admin')
 			.blur()
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.getByName('email')
 			.clear()
 			.type('admin@localhost.org')
 			.blur()
 
-		cy.getBySel('settingsForm')
+		cy.getByTestId('settingsForm')
 			.contains('Update Settings')
 			.should('not.be.disabled')
 			.click()
 
-		cy.getBySel('successMsg').contains('Settings changed!')
+		cy.getByTestId('successMsg').contains('Settings changed!')
 	})
 })

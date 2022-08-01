@@ -53,7 +53,7 @@
 										level
 									)}"
 									title="Click to change log level to {level}"
-									data-test="{level.toLowerCase()}LogLevelBtn"
+									data-testid="{level.toLowerCase()}LogLevelBtn"
 									classes="mr-2 py-1 my-2 {!showActions &&
 									logger.level !== level
 										? 'hidden'

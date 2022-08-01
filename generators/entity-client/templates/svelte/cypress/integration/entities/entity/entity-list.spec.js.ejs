@@ -127,13 +127,13 @@ _%>
     <%_ } _%>
 
 	it('should greets with <%= entityAngularName %> page title', () => {
-		cy.getBySel('<%= entityInstance %>Title')
+		cy.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')
 	})
 
 	it('should display <%= entityAngularName %> table', () => {
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.should('be.visible')
 			.get('tr')
 			.eq(0)
@@ -150,7 +150,7 @@ _%>
 	})
 
 	it('should display <%= entityAngularName %> record in the table', () => {
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tbody tr')
 			.eq(0)
 			.within($tr => {
@@ -167,17 +167,17 @@ _%>
 
 <%_ if (!paginationNo) { _%>
 	it('should validate the pagination controls', () => {
-		cy.getBySel('pageCtrl')
+		cy.getByTestId('pageCtrl')
 			.eq(0)
 			.contains('div', /1-\d+ of \d+/)
 			.next()
 			.within($div => {
 				cy.root()
-					.getBySel('prevPageCtrl')
+					.getByTestId('prevPageCtrl')
 					.should('be.disabled')
 					.get('div')
 					.should('have.text', '1')
-					.getBySel('nextPageCtrl')
+					.getByTestId('nextPageCtrl')
 					.should('be.disabled')
 			})
 	})
@@ -185,7 +185,7 @@ _%>
 	it('should sort the records by Id field', () => {
 		let valueBeforeSort
 
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tbody>tr')
 			.eq(0)
 			.within($tr => {
@@ -198,7 +198,7 @@ _%>
 
 		cy.intercept('**/api/<%= entityApiUrl %>?*').as('get<%= entityClassPlural %>')
 
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tr')
 			.eq(0)
 			.within($tr => {
@@ -215,7 +215,7 @@ _%>
 		// eslint-disable-next-line
 		cy.wait(100)
 
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tbody>tr')
 			.eq(0)
 			.within($tr => {
@@ -233,23 +233,23 @@ _%>
 <%_ if (searchEngine) { _%>
 	it('should search the records by valid Id field', () => {
 		let countBeforeSearch
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
 
 		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPlural %>')
 
-		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`${dynamicId}{enter}`)
+		cy.getByTestId('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`${dynamicId}{enter}`)
 
 		cy.wait('@search<%= entityClassPlural %>')
 		// eslint-disable-next-line
 		cy.wait(100)
 
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tr')
 			.then($tr => expect($tr.length).not.eq(countBeforeSearch))
 
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tbody>tr')
 			.eq(0)
 			.within($tr => {
@@ -265,23 +265,23 @@ _%>
 
 	it('should search the records by invalid Id', () => {
 		let countBeforeSearch
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tr')
 			.then($tr => (countBeforeSearch = $tr.length))
 
 		cy.intercept('**/api/_search/<%= entityApiUrl %>?*').as('search<%= entityClassPlural %>')
 
-		cy.getBySel('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`99999999{enter}`)
+		cy.getByTestId('<%= entityInstance %>SearchForm').getByName('<%= entityInstance %>').type(`99999999{enter}`)
 
 		cy.wait('@search<%= entityClassPlural %>')
 		// eslint-disable-next-line
 		cy.wait(100)
 
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tr')
 			.then($tr => expect($tr.length).not.eq(countBeforeSearch))
 
-		cy.getBySel('<%= entityInstance %>Table')
+		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tbody>tr')
 			.eq(0)
 			.within($tr => {
