@@ -1,8 +1,8 @@
 <script>
 	import Button from 'jhipster-svelte-library/button.svelte'
 	import Form from 'jhipster-svelte-library/page/form.svelte'
-	import Password from '$lib/account/password.svelte'
-	import PasswordConfirm from '$lib/account/password-confirm.svelte'
+	import Password from 'jhipster-svelte-library/password.svelte'
+	import PasswordConfirm from 'jhipster-svelte-library/password-confirm.svelte'
 
 	export let currentPassword = ''
 	export let newPassword = ''

@@ -210,8 +210,6 @@ const svelteFiles = {
 				'account/account-service.js',
 				'account/change-password-form.svelte',
 				'account/forgot-password-form.svelte',
-				'account/password.svelte',
-				'account/password-confirm.svelte',
 				'account/register-user-form.svelte',
 				'account/reset-password-form.svelte',
 				'account/user-settings-form.svelte',
