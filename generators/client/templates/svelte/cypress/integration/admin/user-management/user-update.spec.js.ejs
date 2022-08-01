@@ -23,13 +23,13 @@ describe('Update user page', () => {
 	})
 
 	it('should greets with update user title', () => {
-		cy.getBySel('userMgmtTitle')
+		cy.getByTestId('userMgmtTitle')
 			.should('be.visible')
 			.should('contain', 'Update user account')
 	})
 
 	it('should be populated and have valid state', () => {
-		cy.getBySel('addUserForm')
+		cy.getByTestId('addUserForm')
 			.getByName('username')
 			.should('have.value', `${randomUser}`)
 			.getByName('firstName')
@@ -42,40 +42,40 @@ describe('Update user page', () => {
 			.should('be.checked')
 			.getByName('roles')
 			.should('have.value', 'ROLE_USER')
-		cy.getBySel('addUserForm')
+		cy.getByTestId('addUserForm')
 			.contains('Update user account')
 			.should('not.be.disabled')
 	})
 
 	it('should require username', () => {
-		cy.getBySel('addUserForm').getByName('username').clear().blur()
-		cy.getBySel('addUserForm')
-			.getBySel('username-error')
+		cy.getByTestId('addUserForm').getByName('username').clear().blur()
+		cy.getByTestId('addUserForm')
+			.getByTestId('username-error')
 			.should('be.visible')
 			.and('contain', 'Username is mandatory')
 	})
 
 	it('should require email', () => {
-		cy.getBySel('addUserForm').getByName('email').clear().blur()
-		cy.getBySel('addUserForm')
-			.getBySel('email-error')
+		cy.getByTestId('addUserForm').getByName('email').clear().blur()
+		cy.getByTestId('addUserForm')
+			.getByTestId('email-error')
 			.should('be.visible')
 			.and('contain', 'Email is mandatory')
 	})
 
 	it('should require roles', () => {
-		cy.getBySel('addUserForm')
+		cy.getByTestId('addUserForm')
 			.getByName('roles')
 			.click()
-			.getBySel('roles-options')
+			.getByTestId('roles-options')
 			.within(() => {
 				cy.root().get("input[type='checkbox']").eq(0).uncheck()
 				cy.root().get("input[type='checkbox']").eq(1).uncheck()
 			})
-			.getBySel('roles-bg')
+			.getByTestId('roles-bg')
 			.click()
-		cy.getBySel('addUserForm')
-			.getBySel('roles-error')
+		cy.getByTestId('addUserForm')
+			.getByTestId('roles-error')
 			.should('be.visible')
 			.and('contain', 'Select at least one role')
 	})
@@ -85,13 +85,13 @@ describe('Update user page', () => {
 
 		cy.location('pathname')
 			.should('eq', '/admin/user-management')
-			.getBySel('userMgmtTitle')
+			.getByTestId('userMgmtTitle')
 			.should('be.visible')
 			.should('contain', 'Users')
 	})
 
 	it('should update user account details', () => {
-		cy.getBySel('addUserForm')
+		cy.getByTestId('addUserForm')
 			.getByName('firstName')
 			.type('update')
 			.getByName('lastName')
@@ -101,26 +101,26 @@ describe('Update user page', () => {
 			.type(`${randomUser}-update@localhost.org`)
 			.getByName('roles')
 			.click()
-			.getBySel('roles-options')
+			.getByTestId('roles-options')
 			.within(() => {
 				cy.root().get("input[type='checkbox']").eq(0).check()
 				cy.root().get("input[type='checkbox']").eq(1).check()
 			})
-			.getBySel('roles-bg')
+			.getByTestId('roles-bg')
 			.click()
 
-		cy.getBySel('addUserForm')
+		cy.getByTestId('addUserForm')
 			.contains('Update user account')
 			.should('not.be.disabled')
 			.click()
 
-		cy.getBySel('toast-success').contains(
+		cy.getByTestId('toast-success').contains(
 			'A user is updated with identifier'
 		)
 
 		cy.location('pathname')
 			.should('eq', '/admin/user-management')
-			.getBySel('userMgmtTitle')
+			.getByTestId('userMgmtTitle')
 			.should('be.visible')
 			.should('contain', 'Users')
 	})

@@ -43,12 +43,12 @@
 	<span slot="header">User settings for [{user ? user.login : ''}]</span>
 	<svelte:fragment slot="alerts">
 		<Alert
-			data-test="successMsg"
+			data-testid="successMsg"
 			show="{settingsUpdated}"
 			closeable="{false}">Settings changed!</Alert
 		>
 		<Alert
-			data-test="errorMsg"
+			data-testid="errorMsg"
 			contextualColor="danger"
 			show="{error}"
 			closeable="{false}"

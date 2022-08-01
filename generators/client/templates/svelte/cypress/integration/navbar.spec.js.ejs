@@ -6,33 +6,33 @@ describe('Navbar', () => {
 
 	describe('unauthenticated user', () => {
 		it('should display application name', () => {
-			cy.getBySel('svlAppName')
+			cy.getByTestId('svlAppName')
 				.should('be.visible')
 				.should('contain', '<%= baseName %>')
 		})
 
 		it('should display application version', () => {
-			cy.getBySel('svlAppVersion')
+			cy.getByTestId('svlAppVersion')
 				.should('be.visible')
 				.should('contain', 'DEV')
 		})
 
 		it('should not display navigation toggle button', () => {
-			cy.getBySel('svlNavBtn').should('not.be.visible')
+			cy.getByTestId('svlNavBtn').should('not.be.visible')
 		})
 
 		it('should not display account menu', () => {
-			cy.getBySel('svlAcctMenu').should('not.exist')
+			cy.getByTestId('svlAcctMenu').should('not.exist')
 		})
 
 		it('should display sign in link', () => {
-			cy.getBySel('svlLoginLink')
+			cy.getByTestId('svlLoginLink')
 				.should('be.visible')
 				.and('contain', 'Sign in')
 		})
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 		it('should display register link', () => {
-			cy.getBySel('svlRegisterLink')
+			cy.getByTestId('svlRegisterLink')
 				.should('be.visible')
 				.and('contain', 'Sign up')
 		})
@@ -54,52 +54,52 @@ describe('Navbar', () => {
 
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 		it('should not display register link', () => {
-			cy.getBySel('svlRegisterLink').should('not.exist')
+			cy.getByTestId('svlRegisterLink').should('not.exist')
 		})
 <%_ } _%>
 
 		it('should not display sign in link', () => {
-			cy.getBySel('svlLoginLink').should('not.exist')
+			cy.getByTestId('svlLoginLink').should('not.exist')
 		})
 
 		it('should display account menu', () => {
-			cy.getBySel('svlAcctMenu')
+			cy.getByTestId('svlAcctMenu')
 				.should('be.visible')
-				.getBySel('svlAccountLink')
+				.getByTestId('svlAccountLink')
 				.should('not.be.disabled')
 				.click()
 
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
-			cy.getBySel('svlChgPwdLink')
+			cy.getByTestId('svlChgPwdLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/account/password')
 				.and('contain', 'Change Password')
 
-			cy.getBySel('svlSettingsLink')
+			cy.getByTestId('svlSettingsLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/account/settings')
 				.and('contain', 'Settings')
 <%_ } _%>
 
-			cy.getBySel('svlSignoutLink')
+			cy.getByTestId('svlSignoutLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/')
 				.and('contain', 'Sign out')
 		})
 
 		it('should display administrator menu', () => {
-			cy.getBySel('svlAdminMenu')
+			cy.getByTestId('svlAdminMenu')
 				.should('be.visible')
-				.getBySel('svlAdminLink')
+				.getByTestId('svlAdminLink')
 				.should('not.be.disabled')
 				.click()
 
-			cy.getBySel('svlLoggerLink')
+			cy.getByTestId('svlLoggerLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/admin/logger')
 				.and('contain', 'Loggers')
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
-			cy.getBySel('svlUserMgmtLink')
+			cy.getByTestId('svlUserMgmtLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/admin/user-management')
 				.and('contain', 'User Management')
@@ -108,26 +108,26 @@ describe('Navbar', () => {
 
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 		it('should navigate to change password page', () => {
-			cy.getBySel('svlAcctMenu').getBySel('svlAccountLink').click()
-			cy.getBySel('svlChgPwdLink').should('be.visible').click()
+			cy.getByTestId('svlAcctMenu').getByTestId('svlAccountLink').click()
+			cy.getByTestId('svlChgPwdLink').should('be.visible').click()
 
 			cy.location('pathname').should('eq', '/account/password')
 		})
 
 		it('should navigate to settings page', () => {
-			cy.getBySel('svlAcctMenu').getBySel('svlAccountLink').click()
-			cy.getBySel('svlSettingsLink').should('be.visible').click()
+			cy.getByTestId('svlAcctMenu').getByTestId('svlAccountLink').click()
+			cy.getByTestId('svlSettingsLink').should('be.visible').click()
 
 			cy.location('pathname').should('eq', '/account/settings')
 		})
 <%_ } _%>
 <%_ if (authenticationType !== 'oauth2') { _%>
 		it('should logout user', () => {
-			cy.getBySel('svlAcctMenu').getBySel('svlAccountLink').click()
-			cy.getBySel('svlSignoutLink').should('be.visible').click()
+			cy.getByTestId('svlAcctMenu').getByTestId('svlAccountLink').click()
+			cy.getByTestId('svlSignoutLink').should('be.visible').click()
 
 			cy.location('pathname').should('eq', '/')
-			cy.getBySel('svlLoginLink')
+			cy.getByTestId('svlLoginLink')
 				.should('be.visible')
 				.and('contain', 'Sign in')
 		})
@@ -148,7 +148,7 @@ describe('Navbar', () => {
 <%_ } _%>
 
 		it('should not display administrator menu', () => {
-			cy.getBySel('svlAdminMenu').should('not.exist')
+			cy.getByTestId('svlAdminMenu').should('not.exist')
 		})
 	})
 <%_ } _%>
@@ -162,11 +162,11 @@ describe('Navbar', () => {
 		})
 
 		it('should logout user', () => {
-			cy.getBySel('svlAcctMenu').getBySel('svlAccountLink').click()
-			cy.getBySel('svlSignoutLink').should('be.visible').click()
+			cy.getByTestId('svlAcctMenu').getByTestId('svlAccountLink').click()
+			cy.getByTestId('svlSignoutLink').should('be.visible').click()
 
 			cy.location('pathname').should('eq', '/')
-			cy.getBySel('svlLoginLink')
+			cy.getByTestId('svlLoginLink')
 				.should('be.visible')
 				.and('contain', 'Sign in')
 		})

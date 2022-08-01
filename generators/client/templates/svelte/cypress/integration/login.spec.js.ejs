@@ -5,66 +5,66 @@ describe('User login', () => {
 	})
 
 	it('should greets with Sign in', () => {
-		cy.getBySel('signInTitle')
+		cy.getByTestId('signInTitle')
 			.should('be.visible')
 			.should('contain', 'Sign in to <%= baseName  %>')
 	})
 <%_
 	if (!skipUserManagement) { _%>
 	it('should display link to register', () => {
-		cy.getBySel('registerLink')
+		cy.getByTestId('registerLink')
 			.should('have.text', 'Create an account')
 			.should('have.attr', 'href', '/account/register')
 	})
 
 	it('should display link to forgot password', () => {
-		cy.getBySel('forgotPwdLink')
+		cy.getByTestId('forgotPwdLink')
 			.should('have.text', 'Forgot password?')
 			.should('have.attr', 'href', '/account/reset/init')
 	})
 <%_ } _%>
 	it('should require username and password', () => {
-		cy.getBySel('loginForm').contains('Sign in').should('be.disabled')
+		cy.getByTestId('loginForm').contains('Sign in').should('be.disabled')
 	})
 
 	it('should require username', () => {
-		cy.getBySel('loginForm')
+		cy.getByTestId('loginForm')
 			.getByName('username')
 			.type('admin')
 			.clear()
 			.blur()
-		cy.getBySel('loginForm')
-			.getBySel('username-error')
+		cy.getByTestId('loginForm')
+			.getByTestId('username-error')
 			.should('be.visible')
 			.and('contain', 'Username is mandatory')
 	})
 
 	it('should require password', () => {
-		cy.getBySel('loginForm')
+		cy.getByTestId('loginForm')
 			.getByName('password')
 			.type('admin', {log: false})
 			.clear()
 			.blur()
-		cy.getBySel('loginForm')
-			.getBySel('password-error')
+		cy.getByTestId('loginForm')
+			.getByTestId('password-error')
 			.should('be.visible')
 			.and('contain', 'Password is mandatory')
 	})
 
 	it('should require a valid username and password', () => {
-		cy.getBySel('loginForm')
+		cy.getByTestId('loginForm')
 			.getByName('username')
 			.type('admin')
 			.getByName('password')
 			.type('invalid{enter}', {log: false})
-		cy.getBySel('errorMsg').should(
+		cy.getByTestId('errorMsg').should(
 			'contain',
 			'Incorrect username or password.'
 		)
 	})
 
 	it('should navigate to / on successful login', () => {
-		cy.getBySel('loginForm').within(() => {
+		cy.getByTestId('loginForm').within(() => {
 			cy.root()
 				.get("input[type='checkbox']")
 				.eq(0)

@@ -27,11 +27,11 @@
 <Page testId="forgotPwd">
 	<span slot="header">Reset your password</span>
 	<svelte:fragment slot="alerts">
-		<Alert data-test="successMsg" show="{passwordReset}" closeable="{false}"
+		<Alert data-testid="successMsg" show="{passwordReset}" closeable="{false}"
 			>Check your email for details on how to reset your password.</Alert
 		>
 		<Alert
-			data-test="warningMsg"
+			data-testid="warningMsg"
 			contextualColor="warning"
 			show="{!passwordReset}"
 			closeable="{false}"

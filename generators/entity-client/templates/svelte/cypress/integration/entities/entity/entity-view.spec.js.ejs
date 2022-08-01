@@ -90,7 +90,7 @@ _%>)
     <%_ } _%>
 
 	it('should display <%= entityAngularName %> details', () => {
-		cy.getBySel('<%= entityInstance %>Title')
+		cy.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.and('contain', `<%= entityClassHumanized %> Details`)
 
@@ -103,7 +103,7 @@ _%>)
 
 	it('should navigate back to the <%= entityAngularName %> list page', () => {
 		cy.getByName('backBtn').click()
-		cy.getBySel('<%= entityInstance %>Title')
+		cy.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')
 	})

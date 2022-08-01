@@ -48,14 +48,14 @@
 	<span slot="header">Create user account</span>
 	<svelte:fragment slot="alerts">
 		<Alert
-			data-test="successMsg"
+			data-testid="successMsg"
 			show="{accountCreated}"
 			closeable="{false}"
 		>
 			User account successfully created. Please check your email for
 			confirmation.
 		</Alert>
-		<Alert data-test="errorMsg" contextualColor="danger" show="{!!error}">
+		<Alert data-testid="errorMsg" contextualColor="danger" show="{!!error}">
 			{#if error === 'duplicateEmail'}
 				Email is already in use. Please choose another one.
 			{:else if error === 'duplicateLogin'}

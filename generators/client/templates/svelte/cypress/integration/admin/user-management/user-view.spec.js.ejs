@@ -23,7 +23,7 @@ describe('User view details page', () => {
 	})
 
 	it('should display user account details', () => {
-		cy.getBySel('userMgmtTitle')
+		cy.getByTestId('userMgmtTitle')
 			.should('be.visible')
 			.and('contain', `User Details [ ${randomUser} ]`)
 
@@ -59,7 +59,7 @@ describe('User view details page', () => {
 
 	it('should navigate back to the user list page', () => {
 		cy.getByName('backBtn').click()
-		cy.getBySel('userMgmtTitle')
+		cy.getByTestId('userMgmtTitle')
 			.should('be.visible')
 			.should('contain', 'Users')
 	})

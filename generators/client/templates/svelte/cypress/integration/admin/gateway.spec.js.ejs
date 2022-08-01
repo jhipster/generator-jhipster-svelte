@@ -9,13 +9,13 @@ describe('Gateway page', () => {
 	})
 
 	it('should greets with Gateway page title', () => {
-		cy.getBySel('gatewayTitle')
+		cy.getByTestId('gatewayTitle')
 			.should('be.visible')
 			.should('contain', 'Gateway routes')
 	})
 
 	it('should display Gateway routes table', () => {
-		cy.getBySel('gatewayTable')
+		cy.getByTestId('gatewayTable')
 			.should('be.visible')
 			.get('tr')
 			.eq(0)

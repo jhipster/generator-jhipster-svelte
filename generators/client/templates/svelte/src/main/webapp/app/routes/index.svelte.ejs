@@ -22,7 +22,7 @@
 		</div>
 
 		<div class="sm:flex-grow sm:px-4">
-			<h1 data-test="welcomeTitle" class="text-5xl">
+			<h1 data-testid="welcomeTitle" class="text-5xl">
 				Welcome, Svelte Hipster!
 			</h1>
 
@@ -31,14 +31,14 @@
 			<div class="mt-4">
 				{#if $auth}
 					<div
-						data-test="greetMsg"
+						data-testid="greetMsg"
 						class="px-5 py-3 bg-green-100 dark:bg-green-800 text-green-900 dark:text-green-100 transition-colors duration-200 rounded"
 					>
 						<span>You are logged in as user "{$auth.login}".</span>
 					</div>
 				{:else}
 					<div
-						data-test="loginInstructions"
+						data-testid="loginInstructions"
 						class="px-5 py-3 bg-yellow-100 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 rounded transition-colors duration-200"
 					>
 						<span>If you want to </span>
@@ -63,7 +63,7 @@
 					>
 						<span>You don't have an account yet?</span>&nbsp;
 						<a
-							data-test="svlRegisterHomeLink"
+							data-testid="svlRegisterHomeLink"
 							class="font-semibold"
 							href="/account/register">Register a new account</a
 						>

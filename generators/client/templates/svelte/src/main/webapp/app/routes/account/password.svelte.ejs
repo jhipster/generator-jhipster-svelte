@@ -28,12 +28,12 @@
 	<span slot="header">Change password</span>
 	<svelte:fragment slot="alerts">
 		<Alert
-			data-test="successMsg"
+			data-testid="successMsg"
 			show="{passwordChanged}"
 			closeable="{false}">Password changed!</Alert
 		>
 		<Alert
-			data-test="errorMsg"
+			data-testid="errorMsg"
 			contextualColor="danger"
 			show="{error}"
 			closeable="{false}"
