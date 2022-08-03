@@ -99,7 +99,7 @@ const svelteFiles = {
 					method: 'copy',
 				},
 				{ file: 'static/favicon.ico', method: 'copy' },
-				'static/manifest.json',
+				'static/web-manifest.json',
 				{
 					file: generator => `static/img/${generator.hipster}.svg`,
 					renameTo: () => `app/lib/svg/app-avatar.svg`,
