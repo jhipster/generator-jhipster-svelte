@@ -77,6 +77,88 @@ module.exports = class extends ClientGenerator {
 			cleanup() {
 				this.removeFile(`${constants.ANGULAR_DIR}/lib/admin/user-management/user-delete-modal.svelte`);
 				this.removeFile(`cypress.json`);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/__error.svelte`,
+					`${constants.ANGULAR_DIR}/routes/+error.svelte`
+				);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/__layout.svelte`,
+					`${constants.ANGULAR_DIR}/routes/+layout.svelte`
+				);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/index.svelte`,
+					`${constants.ANGULAR_DIR}/routes/+page.svelte`
+				);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/admin/__layout.svelte`,
+					`${constants.ANGULAR_DIR}/routes/admin/+layout.svelte`
+				);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/admin/logger.svelte`,
+					`${constants.ANGULAR_DIR}/routes/admin/logger/+page.svelte`
+				);
+
+				if (this.blueprintConfig.swaggerUi) {
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/admin/docs.svelte`,
+						`${constants.ANGULAR_DIR}/routes/admin/docs/+page.svelte`
+					);
+				}
+				if (this.applicationType === 'gateway') {
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/admin/gateway.svelte`,
+						`${constants.ANGULAR_DIR}/routes/admin/gateway/+page.svelte`
+					);
+				}
+				if (this.authenticationType !== 'oauth2') {
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/login.svelte`,
+						`${constants.ANGULAR_DIR}/routes/login/+page.svelte`
+					);
+				}
+				if (!this.skipUserManagement && this.authenticationType !== 'oauth2') {
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/account/activate.svelte`,
+						`${constants.ANGULAR_DIR}/routes/account/activate/+page.svelte`
+					);
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/account/password.svelte`,
+						`${constants.ANGULAR_DIR}/routes/account/password/+page.svelte`
+					);
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/account/register.svelte`,
+						`${constants.ANGULAR_DIR}/routes/account/register/+page.svelte`
+					);
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/account/settings.svelte`,
+						`${constants.ANGULAR_DIR}/routes/account/settings/+page.svelte`
+					);
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/account/reset/finish.svelte`,
+						`${constants.ANGULAR_DIR}/routes/account/reset/finish/+page.svelte`
+					);
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/account/reset/init.svelte`,
+						`${constants.ANGULAR_DIR}/routes/account/reset/init/+page.svelte`
+					);
+
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/admin/user-management/index.svelte`,
+						`${constants.ANGULAR_DIR}/routes/admin/user-management/+page.svelte`
+					);
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/admin/user-management/new.svelte`,
+						`${constants.ANGULAR_DIR}/routes/admin/user-management/new/+page.svelte`
+					);
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/admin/user-management/[id]/edit.svelte`,
+						`${constants.ANGULAR_DIR}/routes/admin/user-management/[id]/edit/+page.svelte`
+					);
+					this.gitMove(
+						`${constants.ANGULAR_DIR}/routes/admin/user-management/[id]/view.svelte`,
+						`${constants.ANGULAR_DIR}/routes/admin/user-management/[id]/view/+page.svelte`
+					);
+				}
 			},
 			writeAdditionalFile() {
 				writeFiles.call(this);

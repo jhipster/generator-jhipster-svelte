@@ -59,6 +59,22 @@ module.exports = class extends EntityClientGenerator {
 				this.removeFile(
 					`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-list-actions.svelte`
 				);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/index.svelte`,
+					`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/+page.svelte`
+				);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new.svelte`,
+					`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new/+page.svelte`
+				);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view.svelte`,
+					`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view/+page.svelte`
+				);
+				this.gitMove(
+					`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit.svelte`,
+					`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit/+page.svelte`
+				);
 			},
 			writeAdditionalFile() {
 				writeFiles.call(this);

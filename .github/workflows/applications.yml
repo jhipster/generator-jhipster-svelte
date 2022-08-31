@@ -58,7 +58,7 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
-            - uses: actions/setup-node@v1
+            - uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node_version }}
             - name: Gradle - Configure cache
@@ -79,9 +79,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/10.6.x
+                      ~/.cache/Cypress/10.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-10.6.x
+                  key: ${{ runner.os }}-cypress-10.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -168,7 +168,7 @@ jobs:
                         'gateway-jwt-maven-postgres-prod.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [16.16]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
@@ -201,9 +201,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/10.6.x
+                      ~/.cache/Cypress/10.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-10.6.x
+                  key: ${{ runner.os }}-cypress-10.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -321,9 +321,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/10.6.x
+                      ~/.cache/Cypress/10.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-10.6.x
+                  key: ${{ runner.os }}-cypress-10.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -461,9 +461,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/10.6.x
+                      ~/.cache/Cypress/10.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-10.6.x
+                  key: ${{ runner.os }}-cypress-10.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
