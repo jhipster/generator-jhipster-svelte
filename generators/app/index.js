@@ -93,7 +93,6 @@ module.exports = class extends AppGenerator {
 
 	get prompting() {
 		const defaultPhaseFromJHipster = super._prompting();
-		this.log('app prompt priority ' + this.oldVersion);
 
 		return {
 			...defaultPhaseFromJHipster,
