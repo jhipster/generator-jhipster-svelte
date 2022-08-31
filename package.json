@@ -1,6 +1,6 @@
 {
 	"name": "generator-jhipster-svelte",
-	"version": "0.9.0",
+	"version": "0.10.0",
 	"description": "A svelte.js blueprint to generate cybernetically enhanced web applications.",
 	"keywords": [
 		"yeoman-generator",
@@ -52,6 +52,7 @@
 		"prettier": "2.7.1",
 		"prettier-plugin-svelte": "2.7.0",
 		"pretty-quick": "3.1.3",
+		"semver": "7.3.7",
 		"yeoman-assert": "3.1.1",
 		"yeoman-test": "6.3.0"
 	}

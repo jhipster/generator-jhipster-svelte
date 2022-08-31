@@ -17,10 +17,13 @@ module.exports = class extends AppGenerator {
 			defaults: false,
 		});
 
+		if (!this.blueprintConfig) {
+			this.blueprintConfig = {};
+		}
+
 		if (this.options.swaggerUi) {
 			this.blueprintConfig.swaggerUi = this.options.swaggerUi;
-		} else if (!this.blueprintConfig) {
-			this.blueprintConfig = {};
+		} else {
 			this.blueprintConfig.swaggerUi = false;
 		}
 	}
@@ -90,6 +93,8 @@ module.exports = class extends AppGenerator {
 
 	get prompting() {
 		const defaultPhaseFromJHipster = super._prompting();
+		this.log('app prompt priority ' + this.oldVersion);
+
 		return {
 			...defaultPhaseFromJHipster,
 			askForApplicationType: prompts.askForApplicationType,
@@ -97,7 +102,13 @@ module.exports = class extends AppGenerator {
 	}
 
 	get configuring() {
-		return super._configuring();
+		return {
+			...super._configuring(),
+			config() {
+				this.jhipsterContext.configOptions.oldSvelteBlueprintVersion = this.blueprintConfig.version;
+				this.blueprintConfig.version = this.blueprintjs.version;
+			},
+		};
 	}
 
 	get composing() {
