@@ -18,19 +18,19 @@ const svelteFiles = {
 			templates: [
 				{
 					file: 'entity/index.svelte',
-					renameTo: generator => `${generator.entityFolderName}/index.svelte`,
+					renameTo: generator => `${generator.entityFolderName}/+page.svelte`,
 				},
 				{
 					file: 'entity/new.svelte',
-					renameTo: generator => `${generator.entityFolderName}/new.svelte`,
+					renameTo: generator => `${generator.entityFolderName}/new/+page.svelte`,
 				},
 				{
 					file: 'entity/[id]/view.svelte',
-					renameTo: generator => `${generator.entityFolderName}/[id]/view.svelte`,
+					renameTo: generator => `${generator.entityFolderName}/[id]/view/+page.svelte`,
 				},
 				{
 					file: 'entity/[id]/edit.svelte',
-					renameTo: generator => `${generator.entityFolderName}/[id]/edit.svelte`,
+					renameTo: generator => `${generator.entityFolderName}/[id]/edit/+page.svelte`,
 				},
 			],
 		},

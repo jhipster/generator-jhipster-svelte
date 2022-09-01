@@ -1,7 +1,7 @@
 <script>
 	import { goto } from '$app/navigation'
 <%_ if (authenticationType === 'oauth2') { _%>
-	import { browser } from '$app/env'
+	import { browser } from '$app/environment'
 <%_ } _%>
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
@@ -23,14 +23,16 @@
 
 	$: routeAccessAllowed =
 		($auth && $auth.login) ||
-		($page && $page.url &&
+		($page &&
+			$page.url &&
 			[...allowedUnAuthenticatedRoutes, '/'].includes($page.url.pathname))
 
 	function checkIfCurrentRouteAccessNotAllowed() {
 		if (
 			$auth &&
 			$auth.login &&
-			$page && $page.url &&
+			$page &&
+			$page.url &&
 			allowedUnAuthenticatedRoutes.includes($page.url.pathname)
 		) {
 			goto('/')
@@ -44,7 +46,13 @@
 			}
 <%_ } _%>
 		} else {
-			if ($auth && $auth.login && $page && $page.url && $page.url.pathname === '/') {
+			if (
+				$auth &&
+				$auth.login &&
+				$page &&
+				$page.url &&
+				$page.url.pathname === '/'
+			) {
 				const savedRoute = auth.getSavedRoute();
 				if (savedRoute) {
 					goto(savedRoute)

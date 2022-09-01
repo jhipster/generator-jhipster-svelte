@@ -3,6 +3,7 @@ const EntityClientGenerator = require('generator-jhipster/generators/entity-clie
 const constants = require('generator-jhipster/generators/generator-constants');
 const writeFiles = require('./files').writeFiles;
 const blueprintPackageJson = require('../../package.json');
+const util = require('../util');
 
 module.exports = class extends EntityClientGenerator {
 	constructor(args, opts) {
@@ -53,12 +54,34 @@ module.exports = class extends EntityClientGenerator {
 	get writing() {
 		return {
 			cleanup() {
-				this.removeFile(
-					`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-delete-modal.svelte`
-				);
-				this.removeFile(
-					`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-list-actions.svelte`
-				);
+				if (util.isVersionLessThan(this, '0.10.0')) {
+					this.removeFile(
+						`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-delete-modal.svelte`
+					);
+					this.removeFile(
+						`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-list-actions.svelte`
+					);
+					util.moveFile(
+						this,
+						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/index.svelte`,
+						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/+page.svelte`
+					);
+					util.moveFile(
+						this,
+						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new.svelte`,
+						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new/+page.svelte`
+					);
+					util.moveFile(
+						this,
+						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view.svelte`,
+						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view/+page.svelte`
+					);
+					util.moveFile(
+						this,
+						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit.svelte`,
+						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit/+page.svelte`
+					);
+				}
 			},
 			writeAdditionalFile() {
 				writeFiles.call(this);
