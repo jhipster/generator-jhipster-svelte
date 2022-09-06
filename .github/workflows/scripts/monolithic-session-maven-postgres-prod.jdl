@@ -5,7 +5,8 @@ application {
         authenticationType session,
         packageName tech.jhipster.samples.blog,
         prodDatabaseType postgresql,
-        searchEngine elasticsearch
+		devDatabaseType h2Disk,
+        searchEngine elasticsearch,
         cacheProvider caffeine,
         buildTool maven
     }

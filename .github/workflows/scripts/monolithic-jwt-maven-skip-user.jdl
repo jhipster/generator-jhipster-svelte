@@ -4,6 +4,7 @@ application {
         applicationType monolith,
         authenticationType jwt,
         packageName tech.jhipster.samples.blog,
+		devDatabaseType h2Disk,
         prodDatabaseType mysql,
         cacheProvider ehcache,
         buildTool maven,

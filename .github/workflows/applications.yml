@@ -68,13 +68,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -190,13 +190,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -310,13 +310,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -456,7 +456,7 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
