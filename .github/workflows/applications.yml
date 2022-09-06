@@ -127,12 +127,12 @@ jobs:
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster:$GITHUB_SHA -ntp -Pprod verify
+                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster:$GITHUB_SHA -ntp verify
             - name: Gradle - Package application
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster:$GITHUB_SHA -Pprod bootJar --no-daemon
+                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster:$GITHUB_SHA bootJar --no-daemon
             - name: Maven - Cypress tests
               if: contains(matrix.apps , 'maven')
               run: |
