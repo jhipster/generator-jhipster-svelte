@@ -267,6 +267,13 @@ jobs:
               run: |
                   cd "$HOME/svelte-app"
                   ./gradlew -Pprod jibDockerBuild
+            - name: Start Keycloak container
+              if: contains(matrix.apps, 'oidc')
+              run: |
+                  cd "$HOME/svelte-app"
+                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+                  docker-compose -f src/main/docker/keycloak.yml up -d
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   cd "$HOME/svelte-app"
@@ -413,6 +420,13 @@ jobs:
               run: |
                   cd "$HOME/svelte-ms/blog"
                   ./gradlew -Pprod jibDockerBuild
+            - name: Start Keycloak container
+              if: contains(matrix.apps, 'oidc')
+              run: |
+                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+                  cd "$HOME/svelte-ms/docker-compose"
+                  docker-compose up -d keycloak
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
