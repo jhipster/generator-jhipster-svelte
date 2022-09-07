@@ -6,6 +6,7 @@ application {
         reactive true,
         packageName tech.jhipster.samples.blog,
         prodDatabaseType postgresql,
+		devDatabaseType h2Disk,
         buildTool maven
     }
   entities *

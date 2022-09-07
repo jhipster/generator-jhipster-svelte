@@ -6,6 +6,7 @@ application {
         packageName tech.jhipster.samples.blog,
         searchEngine elasticsearch
         prodDatabaseType postgresql,
+		devDatabaseType h2Disk,
         cacheProvider caffeine,
         buildTool maven
     }

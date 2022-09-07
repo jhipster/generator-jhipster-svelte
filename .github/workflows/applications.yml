@@ -68,13 +68,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -127,12 +127,12 @@ jobs:
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster:$GITHUB_SHA -ntp -Pprod verify
+                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster:$GITHUB_SHA -ntp verify
             - name: Gradle - Package application
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster:$GITHUB_SHA -Pprod bootJar --no-daemon
+                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster:$GITHUB_SHA bootJar --no-daemon
             - name: Maven - Cypress tests
               if: contains(matrix.apps , 'maven')
               run: |
@@ -190,13 +190,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -267,6 +267,13 @@ jobs:
               run: |
                   cd "$HOME/svelte-app"
                   ./gradlew -Pprod jibDockerBuild
+            - name: Start Keycloak container
+              if: contains(matrix.apps, 'oidc')
+              run: |
+                  cd "$HOME/svelte-app"
+                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+                  docker-compose -f src/main/docker/keycloak.yml up -d
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   cd "$HOME/svelte-app"
@@ -310,13 +317,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -413,6 +420,13 @@ jobs:
               run: |
                   cd "$HOME/svelte-ms/blog"
                   ./gradlew -Pprod jibDockerBuild
+            - name: Start Keycloak container
+              if: contains(matrix.apps, 'oidc')
+              run: |
+                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+                  cd "$HOME/svelte-ms/docker-compose"
+                  docker-compose up -d keycloak
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
@@ -456,7 +470,7 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
