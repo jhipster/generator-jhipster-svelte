@@ -1,4 +1,8 @@
 import { sveltekit } from '@sveltejs/kit/vite'
+<%_
+if(this.blueprintConfig.swaggerUi) { _%>
+import copy from 'rollup-plugin-copy'
+<%_ } _%>
 
 /** @type {import('vite').UserConfig} */
 const config = {

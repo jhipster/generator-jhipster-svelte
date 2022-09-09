@@ -1,8 +1,4 @@
 import adapter from '@sveltejs/adapter-static';
-<%_
-    if(this.blueprintConfig.swaggerUi) { _%>
-import copy from 'rollup-plugin-copy'
-<%_ } _%>
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
