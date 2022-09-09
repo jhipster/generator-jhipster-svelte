@@ -219,7 +219,10 @@ module.exports = class extends ClientGenerator {
 					writeFiles.call(this);
 				}
 			},
-
+			configurePrettier() {
+				this.javaPrettier = true;
+				this.prettier = true;
+			},
 			updatePackageJson() {
 				if (!this.skipClient) {
 					const packageTemplate = this.fs.read(
@@ -229,9 +232,21 @@ module.exports = class extends ClientGenerator {
 
 					if (this.blueprintConfig.swaggerUi) {
 						const swaggerPackageTemplate = this.fs.read(
-							this.templatePath(pathFromSvelteBlueprint('client/templates/svelte/swagger-package.json'))
+							this.templatePath(pathFromSvelteBlueprint('client/templates/svelte/swagger/package.json'))
 						);
 						this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(swaggerPackageTemplate));
+					}
+
+					if (this.javaPrettier) {
+						const javaPrettierPackageTemplate = this.fs.read(
+							this.templatePath(
+								pathFromSvelteBlueprint('client/templates/svelte/java-prettier/package.json')
+							)
+						);
+						this.fs.extendJSON(
+							this.destinationPath('package.json'),
+							JSON.parse(javaPrettierPackageTemplate)
+						);
 					}
 				}
 			},
