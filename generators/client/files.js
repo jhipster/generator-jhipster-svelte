@@ -1,14 +1,11 @@
 const constants = require('generator-jhipster/generators/generator-constants');
+const { pathFromSvelteBlueprint } = require('../util');
 
 const FRONTEND_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
 const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/`;
 const CLIENT_TEMPLATES_DIR = 'svelte';
-
-module.exports = {
-	writeFiles,
-};
 
 const svelteFiles = {
 	base: [
@@ -237,5 +234,14 @@ const svelteFiles = {
 };
 
 function writeFiles() {
-	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
+	this.writeFilesToDisk(
+		svelteFiles,
+		this,
+		false,
+		pathFromSvelteBlueprint(`client/templates/${CLIENT_TEMPLATES_DIR}`)
+	);
 }
+
+module.exports = {
+	writeFiles,
+};

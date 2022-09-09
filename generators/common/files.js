@@ -17,6 +17,9 @@
  * limitations under the License.
  */
 
+const path = require('path');
+const { pathFromSvelteBlueprint } = require('../util');
+
 const prettierConfigFiles = {
 	global: [
 		{
@@ -31,12 +34,12 @@ const commonFiles = {
 			templates: ['.editorconfig', '.gitignore', 'README.md', 'sonar-project.properties'],
 		},
 	],
-	serverFiles: [
-		{
-			condition: generator => !generator.skipServer,
-			templates: ['src/main/resources/banner.txt'],
-		},
-	],
+	// serverFiles: [
+	// 	{
+	// 		condition: generator => !generator.skipServer,
+	// 		templates: ['src/main/resources/banner.txt'],
+	// 	},
+	// ],
 	commitHooks: [
 		{
 			condition: generator => !generator.skipCommitHook,
@@ -65,7 +68,7 @@ const sharedFiles = {
 };
 
 function writeFiles() {
-	this.writeFilesToDisk(commonFiles, this, false);
+	this.writeFilesToDisk(commonFiles, this, false, pathFromSvelteBlueprint(`common/templates`));
 }
 
 function writeMainGeneratorFiles() {

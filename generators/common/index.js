@@ -20,6 +20,7 @@ const chalk = require('chalk');
 const CommonGenerator = require('generator-jhipster/generators/common');
 const { writeFiles, writeMainGeneratorFiles, prettierConfigFiles } = require('./files');
 const blueprintPackageJson = require('../../package.json');
+const { pathFromSvelteBlueprint } = require('../util');
 
 module.exports = class extends CommonGenerator {
 	constructor(args, opts) {
@@ -34,13 +35,18 @@ module.exports = class extends CommonGenerator {
 
 		this.blueprintjs = blueprintPackageJson;
 		this.skipServer = this.config.get('skipServer') || false;
+		this.javaPrettier = false;
 	}
 
-	get initializing() {
+	_initializing() {
 		return super._initializing();
 	}
 
-	get loading() {
+	get initializing() {
+		return this._initializing();
+	}
+
+	_loading() {
 		const defaultPhaseFromJHipster = super._loading();
 		return {
 			...defaultPhaseFromJHipster,
@@ -50,25 +56,52 @@ module.exports = class extends CommonGenerator {
 		};
 	}
 
-	get preparing() {
+	get loading() {
+		return this._loading();
+	}
+
+	_preparing() {
 		return super._preparing();
 	}
 
-	get default() {
+	get preparing() {
+		return this._preparing();
+	}
+
+	_default() {
 		return super._default();
 	}
 
+	get default() {
+		return this._default();
+	}
+
 	// eslint-disable-next-line class-methods-use-this
-	get writing() {
+	_writing() {
 		return {
+			configurePrettier() {
+				this.javaPrettier = true;
+				this.prettier = true;
+			},
 			writePrettierConfig() {
-				// Prettier configuration needs to be the first written files - all subgenerators considered - for prettier transform to work
-				this.writeFilesToDisk(prettierConfigFiles, this, false);
+				if (this.prettier) {
+					// Prettier configuration needs to be the first written files - all subgenerators considered - for prettier transform to work
+					this.writeFilesToDisk(
+						prettierConfigFiles,
+						this,
+						false,
+						pathFromSvelteBlueprint(`common/templates`)
+					);
+				}
 			},
 			writeAdditionalFile() {
 				writeMainGeneratorFiles.call(this);
 				writeFiles.call(this);
 			},
 		};
+	}
+
+	get writing() {
+		return this._writing();
 	}
 };
