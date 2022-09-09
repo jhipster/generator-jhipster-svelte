@@ -3,13 +3,7 @@
 <%_ if (authenticationType === 'oauth2') { _%>
 	import { browser } from '$app/environment'
 <%_ } _%>
-	import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
-<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
-	import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
-	import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
-<%_ } _%>
-	import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown'
-	import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
+	import { faSignOutAlt<% if (authenticationType !== 'oauth2' && !skipUserManagement) { %>, faLock, faWrench<% } %>, faCaretDown, faUser } from '@fortawesome/free-solid-svg-icons'
 	import MenuItem from 'jhipster-svelte-library/layout/menu-item.svelte'
 	import Icon from 'jhipster-svelte-library/icon.svelte'
 
