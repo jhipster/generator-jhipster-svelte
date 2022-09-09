@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 const chalk = require('chalk');
 const EntityClientGenerator = require('generator-jhipster/generators/entity-client');
 const constants = require('generator-jhipster/generators/generator-constants');
@@ -78,7 +80,6 @@ module.exports = class extends EntityClientGenerator {
 		return this._default();
 	}
 
-	// eslint-disable-next-line class-methods-use-this
 	_writing() {
 		return {
 			cleanup() {

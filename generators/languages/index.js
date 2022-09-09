@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const chalk = require('chalk');
 const LanguagesGenerator = require('generator-jhipster/generators/languages');
 

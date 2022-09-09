@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-const path = require('path');
 const { pathFromSvelteBlueprint } = require('../util');
 
 const prettierConfigFiles = {

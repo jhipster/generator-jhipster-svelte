@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const chalk = require('chalk');
 const os = require('os');
 const ServerGenerator = require('generator-jhipster/generators/server');
@@ -110,7 +111,6 @@ module.exports = class extends ServerGenerator {
 		};
 	}
 
-	// eslint-disable-next-line class-methods-use-this
 	get writing() {
 		return this._writing();
 	}
