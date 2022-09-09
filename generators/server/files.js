@@ -1,7 +1,3 @@
-const constants = require('generator-jhipster/generators/generator-constants');
-
-const SERVER_MAIN_SRC_DIR = constants.SERVER_MAIN_SRC_DIR;
-
 const commonFiles = {
 	packageJson: [
 		{
