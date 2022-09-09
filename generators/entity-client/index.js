@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 const chalk = require('chalk');
 const EntityClientGenerator = require('generator-jhipster/generators/entity-client');
 const constants = require('generator-jhipster/generators/generator-constants');
@@ -22,80 +24,121 @@ module.exports = class extends EntityClientGenerator {
 		this.skipClient = this.config.get('skipClient') || false;
 	}
 
-	get initializing() {
+	_initializing() {
 		return super._initializing();
 	}
 
-	get prompting() {
+	get initializing() {
+		return this._initializing();
+	}
+
+	_prompting() {
 		return super._prompting();
 	}
 
-	get configuring() {
+	get prompting() {
+		return this._prompting();
+	}
+
+	_configuring() {
 		return super._configuring();
 	}
 
-	get composing() {
+	get configuring() {
+		return this._configuring();
+	}
+
+	_composing() {
 		return super._composing();
 	}
 
-	get loading() {
+	get composing() {
+		return this._composing();
+	}
+
+	_loading() {
 		return super._loading();
 	}
 
-	get preparing() {
+	get loading() {
+		return this._loading();
+	}
+
+	_preparing() {
 		return super._preparing();
 	}
 
-	get default() {
+	get preparing() {
+		return this._preparing();
+	}
+
+	_default() {
 		return super._default();
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	get writing() {
+	get default() {
+		return this._default();
+	}
+
+	_writing() {
 		return {
 			cleanup() {
-				if (util.isVersionLessThan(this, '0.10.0')) {
-					this.removeFile(
-						`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-delete-modal.svelte`
-					);
-					this.removeFile(
-						`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-list-actions.svelte`
-					);
-					util.moveFile(
-						this,
-						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/index.svelte`,
-						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/+page.svelte`
-					);
-					util.moveFile(
-						this,
-						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new.svelte`,
-						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new/+page.svelte`
-					);
-					util.moveFile(
-						this,
-						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view.svelte`,
-						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view/+page.svelte`
-					);
-					util.moveFile(
-						this,
-						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit.svelte`,
-						`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit/+page.svelte`
-					);
+				if (!this.skipClient) {
+					if (util.isVersionLessThan(this, '0.10.0')) {
+						this.removeFile(
+							`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-delete-modal.svelte`
+						);
+						this.removeFile(
+							`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-list-actions.svelte`
+						);
+						util.moveFile(
+							this,
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/index.svelte`,
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/+page.svelte`
+						);
+						util.moveFile(
+							this,
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new.svelte`,
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new/+page.svelte`
+						);
+						util.moveFile(
+							this,
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view.svelte`,
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view/+page.svelte`
+						);
+						util.moveFile(
+							this,
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit.svelte`,
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit/+page.svelte`
+						);
+					}
 				}
 			},
 			writeAdditionalFile() {
-				writeFiles.call(this);
+				if (!this.skipClient) {
+					writeFiles.call(this);
+				}
 			},
 		};
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	get postWriting() {
-		// TODO: add menu option changes
+	get writing() {
+		return this._writing();
+	}
+
+	_postWriting() {
 		return {};
 	}
 
-	get end() {
+	get postWriting() {
+		return this._postWriting();
+	}
+
+	_end() {
 		return super._end();
+	}
+
+	get end() {
+		return this._end();
 	}
 };

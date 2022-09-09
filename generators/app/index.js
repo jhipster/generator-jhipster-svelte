@@ -28,7 +28,7 @@ module.exports = class extends AppGenerator {
 		}
 	}
 
-	get initializing() {
+	_initializing() {
 		const initPhaseFromJHipster = super._initializing();
 
 		return {
@@ -91,16 +91,23 @@ module.exports = class extends AppGenerator {
 		};
 	}
 
-	get prompting() {
-		const defaultPhaseFromJHipster = super._prompting();
+	get initializing() {
+		return this._initializing();
+	}
 
+	_prompting() {
+		const defaultPhaseFromJHipster = super._prompting();
 		return {
 			...defaultPhaseFromJHipster,
 			askForApplicationType: prompts.askForApplicationType,
 		};
 	}
 
-	get configuring() {
+	get prompting() {
+		return this._prompting();
+	}
+
+	_configuring() {
 		return {
 			...super._configuring(),
 			config() {
@@ -110,7 +117,11 @@ module.exports = class extends AppGenerator {
 		};
 	}
 
-	get composing() {
+	get configuring() {
+		return this._configuring();
+	}
+
+	_composing() {
 		const jhipsterDefault = super._composing();
 		return {
 			...jhipsterDefault,
@@ -118,19 +129,39 @@ module.exports = class extends AppGenerator {
 		};
 	}
 
-	get default() {
+	get composing() {
+		return this._composing();
+	}
+
+	_default() {
 		return super._default();
 	}
 
-	get writing() {
+	get default() {
+		return this._default();
+	}
+
+	_writing() {
 		return super._writing();
 	}
 
-	get install() {
+	get writing() {
+		return this._writing();
+	}
+
+	_install() {
 		return super._install();
 	}
 
-	get end() {
+	get install() {
+		return this._install();
+	}
+
+	_end() {
 		return super._end();
+	}
+
+	get end() {
+		return this._end();
 	}
 };

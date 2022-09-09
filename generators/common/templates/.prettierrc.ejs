@@ -18,7 +18,7 @@ if (!skipClient) { _%>
 			"options": {
 				"printWidth": 140
 			}
-		}<% if (!skipServer) { %>,
+		}<% if (!skipServer && javaPrettier) { %>,
 		{
 			"files": "*.java",
 			"options": {

@@ -12,3 +12,17 @@ updates:
           interval: 'daily'
       open-pull-requests-limit: 10
       versioning-strategy: increase
+
+    - package-ecosystem: 'npm'
+      directory: '/generators/client/templates/svelte/swagger/'
+      schedule:
+          interval: 'daily'
+      open-pull-requests-limit: 10
+      versioning-strategy: increase
+
+    - package-ecosystem: 'npm'
+      directory: '/generators/client/templates/svelte/java-prettier/'
+      schedule:
+          interval: 'daily'
+      open-pull-requests-limit: 10
+      versioning-strategy: increase

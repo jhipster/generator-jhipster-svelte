@@ -1,6 +1,7 @@
 const jhipsterUtils = require('generator-jhipster/generators/utils');
 const constants = require('generator-jhipster/generators/generator-constants');
 const semver = require('semver');
+const path = require('path');
 
 const CLIENT_MAIN_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
 
@@ -8,6 +9,7 @@ module.exports = {
 	addEntityToMenu,
 	isVersionLessThan,
 	moveFile,
+	pathFromSvelteBlueprint,
 };
 
 function addEntityToMenu(generator, entityRoute, entityName, entityClass) {
@@ -39,4 +41,8 @@ function isVersionLessThan(generator, version) {
 function moveFile(generator, source, destination) {
 	generator.log(`Renaming file - ${source} to ${destination}`);
 	generator.fs.move(source, destination, { noGlob: true });
+}
+
+function pathFromSvelteBlueprint(...subpath) {
+	return path.join(__dirname, ...subpath);
 }

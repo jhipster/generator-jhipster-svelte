@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const chalk = require('chalk');
 const LanguagesGenerator = require('generator-jhipster/generators/languages');
 
@@ -21,11 +22,15 @@ module.exports = class extends LanguagesGenerator {
 		this.enableTranslation = this.config.get('enableTranslation') || false;
 	}
 
-	get initializing() {
+	_initializing() {
 		return super._initializing();
 	}
 
-	get prompting() {
+	get initializing() {
+		return this._initializing();
+	}
+
+	_prompting() {
 		const defaultPhaseFromJHipster = super._prompting();
 		return {
 			...defaultPhaseFromJHipster,
@@ -38,25 +43,55 @@ module.exports = class extends LanguagesGenerator {
 		};
 	}
 
-	get configuring() {
+	get prompting() {
+		return this._prompting();
+	}
+
+	_configuring() {
 		return super._configuring();
 	}
 
-	get loading() {
+	get configuring() {
+		return this._configuring();
+	}
+
+	_loading() {
 		return super._loading();
 	}
 
-	get preparing() {
+	get loading() {
+		return this._loading();
+	}
+
+	_preparing() {
 		return super._preparing();
 	}
 
-	get default() {
+	get preparing() {
+		return this._preparing();
+	}
+
+	_default() {
 		return super._default();
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	get writing() {
-		// we don't yet support i18n
+	get default() {
+		return this._default();
+	}
+
+	_writing() {
 		return {};
+	}
+
+	get writing() {
+		return this._writing();
+	}
+
+	_postWriting() {
+		return {};
+	}
+
+	get postWriting() {
+		return this._postWriting();
 	}
 };

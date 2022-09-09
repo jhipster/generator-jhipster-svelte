@@ -22,11 +22,15 @@ module.exports = class extends CypressGenerator {
 		this.cypressCoverage = this.config.get('cypressCoverage') || false;
 	}
 
-	get initializing() {
+	_initializing() {
 		return {};
 	}
 
-	get prompting() {
+	get initializing() {
+		return this._initializing();
+	}
+
+	_prompting() {
 		const defaultPhaseFromJHipster = super._prompting();
 		return {
 			...defaultPhaseFromJHipster,
@@ -39,27 +43,55 @@ module.exports = class extends CypressGenerator {
 		};
 	}
 
+	get prompting() {
+		return this._prompting();
+	}
+
+	_configuring() {
+		return {};
+	}
+
 	get configuring() {
+		return this._configuring();
+	}
+
+	_loading() {
 		return {};
 	}
 
 	get loading() {
+		return this._loading();
+	}
+
+	_preparing() {
 		return {};
 	}
 
 	get preparing() {
+		return this._preparing();
+	}
+
+	_default() {
 		return {};
 	}
 
 	get default() {
+		return this._default();
+	}
+
+	_writing() {
 		return {};
 	}
 
 	get writing() {
+		return this._writing();
+	}
+
+	_postWriting() {
 		return {};
 	}
 
 	get postWriting() {
-		return {};
+		return this._postWriting();
 	}
 };

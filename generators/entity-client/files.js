@@ -1,6 +1,6 @@
 const constants = require('generator-jhipster/generators/generator-constants');
 const generatorUtils = require('generator-jhipster/generators/utils');
-const util = require('../util');
+const { pathFromSvelteBlueprint, addEntityToMenu } = require('../util');
 
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
 const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/entities/`;
@@ -107,7 +107,7 @@ function addEnumerationFiles(generator) {
 				`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType.toLowerCase()}.js`
 			);
 			generator.template(
-				`svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`,
+				pathFromSvelteBlueprint(`entity-client/templates/svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`),
 				destinationFile,
 				generator,
 				{},
@@ -123,7 +123,9 @@ function addUserServiceFile(generator) {
 	);
 	if (containsUserRelationshipField) {
 		generator.template(
-			`svelte/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`,
+			pathFromSvelteBlueprint(
+				`entity-client/templates/svelte/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`
+			),
 			generator.destinationPath(`${FRONTEND_COMPONENTS_DIR}user/user-service.js`),
 			generator
 		);
@@ -136,6 +138,11 @@ function writeFiles() {
 	}
 	addEnumerationFiles(this);
 	addUserServiceFile(this);
-	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
-	util.addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
+	this.writeFilesToDisk(
+		svelteFiles,
+		this,
+		false,
+		pathFromSvelteBlueprint(`entity-client/templates/${CLIENT_TEMPLATES_DIR}`)
+	);
+	addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
 }
