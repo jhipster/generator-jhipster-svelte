@@ -1,9 +1,9 @@
 {
 	"dependencies": {
-		"date-fns": "2.29.2"
+		"date-fns": "2.29.2",
+		"@fortawesome/free-solid-svg-icons": "6.2.0"
 	},
 	"devDependencies": {
-		"@fortawesome/free-solid-svg-icons": "6.2.0",
 		"@sveltejs/adapter-static": "1.0.0-next.42",
 		"@sveltejs/kit": "1.0.0-next.474",
 		"@testing-library/jest-dom": "5.16.5",

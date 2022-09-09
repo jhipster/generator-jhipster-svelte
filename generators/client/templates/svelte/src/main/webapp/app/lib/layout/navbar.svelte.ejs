@@ -1,9 +1,6 @@
 <script>
-	import { faBars } from '@fortawesome/free-solid-svg-icons/faBars'
-	import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
-<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
-	import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
-<%_ } _%>
+	import { faBars, faSignInAlt<% if (authenticationType !== 'oauth2' && !skipUserManagement) { %>, faUserPlus<% } %> } from '@fortawesome/free-solid-svg-icons'
+
 	import NavItem from 'jhipster-svelte-library/layout/nav-item.svelte'
 
 	import Icon from 'jhipster-svelte-library/icon.svelte'

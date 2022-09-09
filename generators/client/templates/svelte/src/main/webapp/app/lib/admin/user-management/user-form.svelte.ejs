@@ -1,7 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
-	import { faSave } from '@fortawesome/free-solid-svg-icons/faSave'
+	import { faBan, faSave } from '@fortawesome/free-solid-svg-icons'
 	import Button from 'jhipster-svelte-library/button.svelte'
 	import Icon from 'jhipster-svelte-library/icon.svelte'
 	import InputControl from 'jhipster-svelte-library/input-control.svelte'
