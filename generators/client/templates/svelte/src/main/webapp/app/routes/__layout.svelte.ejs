@@ -2,7 +2,7 @@
 <%_ if (authenticationType !== 'oauth2') { _%>
 	import { page } from '$app/stores'
 <%_ } _%>
-	import { browser } from '$app/env'
+	import { browser } from '$app/environment'
 
 	import AuthGuard from '$lib/auth/auth-guard.svelte'
 	import Footer from '$lib/layout/footer.svelte'

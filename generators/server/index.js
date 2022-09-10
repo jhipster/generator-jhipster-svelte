@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const chalk = require('chalk');
 const os = require('os');
 const ServerGenerator = require('generator-jhipster/generators/server');
@@ -21,7 +22,7 @@ module.exports = class extends ServerGenerator {
 		this.skipServer = this.config.get('skipServer') || false;
 	}
 
-	get initializing() {
+	_initializing() {
 		const phaseFromJHipster = super._initializing();
 		return {
 			...phaseFromJHipster,
@@ -40,51 +41,81 @@ module.exports = class extends ServerGenerator {
 		};
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	get prompting() {
+	get initializing() {
+		return this._initializing();
+	}
+
+	_prompting() {
 		return super._prompting();
 	}
 
-	get configuring() {
+	get prompting() {
+		return this._prompting();
+	}
+
+	_configuring() {
 		return super._configuring();
 	}
 
-	get composing() {
+	get configuring() {
+		return this._configuring();
+	}
+
+	_composing() {
 		return super._composing();
 	}
 
-	get loading() {
+	get composing() {
+		return this._composing();
+	}
+
+	_loading() {
 		return super._loading();
 	}
 
-	get preparing() {
+	get loading() {
+		return this._loading();
+	}
+
+	_preparing() {
 		return super._preparing();
 	}
 
-	get default() {
+	get preparing() {
+		return this._preparing();
+	}
+
+	_default() {
 		return super._default();
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	get writing() {
+	get default() {
+		return this._default();
+	}
+
+	_writing() {
 		const phaseFromJHipster = super._writing();
-		if (this.skipServer) {
-			return {};
-		}
 		return {
 			...phaseFromJHipster,
 			writeAdditionalFile() {
-				writeFiles.call(this);
+				if (!this.skipServer) {
+					writeFiles.call(this);
+				}
 			},
 			updatePackageJson() {
-				const packageTemplate = this.fs.read(this.templatePath('package.json'));
-				this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(packageTemplate));
+				if (!this.skipServer) {
+					const packageTemplate = this.fs.read(this.templatePath('package.json'));
+					this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(packageTemplate));
+				}
 			},
 		};
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	get postWriting() {
+	get writing() {
+		return this._writing();
+	}
+
+	_postWriting() {
 		// override to not include package scripts
 		return {
 			packageJsonScripts() {
@@ -96,7 +127,12 @@ module.exports = class extends ServerGenerator {
 		};
 	}
 
-	get end() {
+	// eslint-disable-next-line class-methods-use-this
+	get postWriting() {
+		return this._postWriting();
+	}
+
+	_end() {
 		const jhipsterDefault = super._end();
 		return {
 			...jhipsterDefault,
@@ -120,5 +156,9 @@ module.exports = class extends ServerGenerator {
 				);
 			},
 		};
+	}
+
+	get end() {
+		return this._end();
 	}
 };

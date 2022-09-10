@@ -1,6 +1,6 @@
 const constants = require('generator-jhipster/generators/generator-constants');
 const generatorUtils = require('generator-jhipster/generators/utils');
-const util = require('../util');
+const { pathFromSvelteBlueprint, addEntityToMenu } = require('../util');
 
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
 const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/entities/`;
@@ -18,19 +18,19 @@ const svelteFiles = {
 			templates: [
 				{
 					file: 'entity/index.svelte',
-					renameTo: generator => `${generator.entityFolderName}/index.svelte`,
+					renameTo: generator => `${generator.entityFolderName}/+page.svelte`,
 				},
 				{
 					file: 'entity/new.svelte',
-					renameTo: generator => `${generator.entityFolderName}/new.svelte`,
+					renameTo: generator => `${generator.entityFolderName}/new/+page.svelte`,
 				},
 				{
 					file: 'entity/[id]/view.svelte',
-					renameTo: generator => `${generator.entityFolderName}/[id]/view.svelte`,
+					renameTo: generator => `${generator.entityFolderName}/[id]/view/+page.svelte`,
 				},
 				{
 					file: 'entity/[id]/edit.svelte',
-					renameTo: generator => `${generator.entityFolderName}/[id]/edit.svelte`,
+					renameTo: generator => `${generator.entityFolderName}/[id]/edit/+page.svelte`,
 				},
 			],
 		},
@@ -40,18 +40,12 @@ const svelteFiles = {
 			path: FRONTEND_COMPONENTS_DIR,
 			templates: [
 				{
-					file: 'entity/entity-delete-modal.svelte',
-					renameTo: generator =>
-						`${generator.entityFolderName}/${generator.entityFileName}-delete-modal.svelte`,
-				},
-				{
-					file: 'entity/entity-list-actions.svelte',
-					renameTo: generator =>
-						`${generator.entityFolderName}/${generator.entityFileName}-list-actions.svelte`,
-				},
-				{
 					file: 'entity/entity-table.svelte',
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-table.svelte`,
+				},
+				{
+					file: 'entity/entity-table.spec.js',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-table.spec.js`,
 				},
 				{
 					file: 'entity/entity-form.svelte',
@@ -113,7 +107,7 @@ function addEnumerationFiles(generator) {
 				`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType.toLowerCase()}.js`
 			);
 			generator.template(
-				`svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`,
+				pathFromSvelteBlueprint(`entity-client/templates/svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`),
 				destinationFile,
 				generator,
 				{},
@@ -129,7 +123,9 @@ function addUserServiceFile(generator) {
 	);
 	if (containsUserRelationshipField) {
 		generator.template(
-			`svelte/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`,
+			pathFromSvelteBlueprint(
+				`entity-client/templates/svelte/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`
+			),
 			generator.destinationPath(`${FRONTEND_COMPONENTS_DIR}user/user-service.js`),
 			generator
 		);
@@ -142,6 +138,11 @@ function writeFiles() {
 	}
 	addEnumerationFiles(this);
 	addUserServiceFile(this);
-	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
-	util.addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
+	this.writeFilesToDisk(
+		svelteFiles,
+		this,
+		false,
+		pathFromSvelteBlueprint(`entity-client/templates/${CLIENT_TEMPLATES_DIR}`)
+	);
+	addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
 }

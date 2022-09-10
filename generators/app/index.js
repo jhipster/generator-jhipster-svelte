@@ -17,15 +17,18 @@ module.exports = class extends AppGenerator {
 			defaults: false,
 		});
 
+		if (!this.blueprintConfig) {
+			this.blueprintConfig = {};
+		}
+
 		if (this.options.swaggerUi) {
 			this.blueprintConfig.swaggerUi = this.options.swaggerUi;
-		} else if (!this.blueprintConfig) {
-			this.blueprintConfig = {};
+		} else {
 			this.blueprintConfig.swaggerUi = false;
 		}
 	}
 
-	get initializing() {
+	_initializing() {
 		const initPhaseFromJHipster = super._initializing();
 
 		return {
@@ -88,7 +91,11 @@ module.exports = class extends AppGenerator {
 		};
 	}
 
-	get prompting() {
+	get initializing() {
+		return this._initializing();
+	}
+
+	_prompting() {
 		const defaultPhaseFromJHipster = super._prompting();
 		return {
 			...defaultPhaseFromJHipster,
@@ -96,11 +103,25 @@ module.exports = class extends AppGenerator {
 		};
 	}
 
-	get configuring() {
-		return super._configuring();
+	get prompting() {
+		return this._prompting();
 	}
 
-	get composing() {
+	_configuring() {
+		return {
+			...super._configuring(),
+			config() {
+				this.jhipsterContext.configOptions.oldSvelteBlueprintVersion = this.blueprintConfig.version;
+				this.blueprintConfig.version = this.blueprintjs.version;
+			},
+		};
+	}
+
+	get configuring() {
+		return this._configuring();
+	}
+
+	_composing() {
 		const jhipsterDefault = super._composing();
 		return {
 			...jhipsterDefault,
@@ -108,19 +129,39 @@ module.exports = class extends AppGenerator {
 		};
 	}
 
-	get default() {
+	get composing() {
+		return this._composing();
+	}
+
+	_default() {
 		return super._default();
 	}
 
-	get writing() {
+	get default() {
+		return this._default();
+	}
+
+	_writing() {
 		return super._writing();
 	}
 
-	get install() {
+	get writing() {
+		return this._writing();
+	}
+
+	_install() {
 		return super._install();
 	}
 
-	get end() {
+	get install() {
+		return this._install();
+	}
+
+	_end() {
 		return super._end();
+	}
+
+	get end() {
+		return this._end();
 	}
 };

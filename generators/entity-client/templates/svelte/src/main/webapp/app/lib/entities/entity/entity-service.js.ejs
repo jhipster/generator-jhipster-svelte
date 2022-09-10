@@ -1,5 +1,6 @@
+import { request } from 'jhipster-svelte-library/utils/request'
+
 import { serverUrl } from '$lib/utils/env'
-import { request } from '$lib/utils/request'
 <%_
 const baseApi = (applicationTypeGateway && locals.microserviceName) ? 'services/' + microserviceName.toLowerCase() + '/api/' : 'api/';
 const eagerLoadRelationships = relationships.some(relationship => relationship.relationshipEagerLoad);

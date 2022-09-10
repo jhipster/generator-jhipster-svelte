@@ -5,6 +5,7 @@ application {
         authenticationType jwt,
         packageName tech.jhipster.samples.blog,
         prodDatabaseType postgresql,
+		devDatabaseType h2Disk,
         serviceDiscoveryType eureka,
         buildTool maven
     }

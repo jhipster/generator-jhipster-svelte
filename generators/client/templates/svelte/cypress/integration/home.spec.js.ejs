@@ -5,14 +5,14 @@ describe('Home page', () => {
 	})
 
 	it('should greets with welcome title', () => {
-		cy.getBySel('welcomeTitle')
+		cy.getByTestId('welcomeTitle')
 			.should('be.visible')
 			.and('contain', 'Welcome, Svelte Hipster!')
 	})
 
 	describe('unauthenticated user', () => {
 		it('should have login instructions', () => {
-			cy.getBySel('loginInstructions')
+			cy.getByTestId('loginInstructions')
 				.should('be.visible')
 				.and('contain', 'you can try the default accounts')
 				.and(
@@ -23,7 +23,7 @@ describe('Home page', () => {
 		})
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
 		it('should have user registration link', () => {
-			cy.getBySel('svlRegisterHomeLink')
+			cy.getByTestId('svlRegisterHomeLink')
 				.should('be.visible')
 				.and('have.attr', 'href', '/account/register')
 				.and('contain', 'Register a new account')
@@ -45,7 +45,7 @@ describe('Home page', () => {
 <%_ } _%>
 
 		it('should greets logged in user', () => {
-			cy.getBySel('greetMsg')
+			cy.getByTestId('greetMsg')
 				.should('be.visible')
 				.and('contain', `You are logged in as user "${Cypress.env('ADMIN_USERNAME')}".`)
 		})

@@ -2,8 +2,7 @@
 	import Button from 'jhipster-svelte-library/button.svelte'
 	import InputControl from 'jhipster-svelte-library/input-control.svelte'
 	import Form from 'jhipster-svelte-library/page/form.svelte'
-
-	import PasswordConfirm from '$lib/account/password-confirm.svelte'
+	import PasswordConfirm from 'jhipster-svelte-library/password-confirm.svelte'
 
 	export let username = ''
 	export let email = ''

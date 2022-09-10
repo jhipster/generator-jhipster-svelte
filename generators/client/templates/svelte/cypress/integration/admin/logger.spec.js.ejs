@@ -12,16 +12,16 @@ describe('Loggers page', () => {
 <%_ } _%>
 
 	it('should greets with loggers page title and filter control', () => {
-		cy.getBySel('loggersTitle')
+		cy.getByTestId('loggersTitle')
 			.should('be.visible')
 			.should('contain', 'Loggers')
-		cy.getBySel('loggerSearchForm')
+		cy.getByTestId('loggerSearchForm')
 			.getByName('logger')
 			.should('have.value', ``)
 	})
 
 	it('should display loggers table', () => {
-		cy.getBySel('loggersTable')
+		cy.getByTestId('loggersTable')
 			.should('be.visible')
 			.get('tr')
 			.eq(0)
@@ -35,12 +35,12 @@ describe('Loggers page', () => {
 	it('should display logger name and the default enabled logger level in the table', () => {
 
 <%_	if (databaseTypeSql) { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
 <%_ } _%>
 
-		cy.getBySel('loggersTable')
+		cy.getByTestId('loggersTable')
 <%_	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
@@ -53,22 +53,22 @@ describe('Loggers page', () => {
 					.eq(0)
 					.get(`button`)
 					.should('have.length', 6)
-					.getBySel('offLogLevelBtn')
+					.getByTestId('offLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
-					.getBySel('errorLogLevelBtn')
+					.getByTestId('errorLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
-					.getBySel('warnLogLevelBtn')
+					.getByTestId('warnLogLevelBtn')
 					.should('be.visible')
 					.should('be.disabled')
-					.getBySel('infoLogLevelBtn')
+					.getByTestId('infoLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
-					.getBySel('debugLogLevelBtn')
+					.getByTestId('debugLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
-					.getBySel('traceLogLevelBtn')
+					.getByTestId('traceLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
 			})
@@ -76,12 +76,12 @@ describe('Loggers page', () => {
 
 	it('should display actions available on the current selected logger', () => {
 <%_	if (databaseTypeSql) { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
 <%_ } _%>
 
-		cy.getBySel('loggersTable')
+		cy.getByTestId('loggersTable')
 <%_
 	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
@@ -96,22 +96,22 @@ describe('Loggers page', () => {
 					.eq(0)
 					.get(`button`)
 					.should('have.length', 6)
-					.getBySel('offLogLevelBtn')
+					.getByTestId('offLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
-					.getBySel('errorLogLevelBtn')
+					.getByTestId('errorLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
-					.getBySel('warnLogLevelBtn')
+					.getByTestId('warnLogLevelBtn')
 					.should('be.visible')
 					.should('be.disabled')
-					.getBySel('infoLogLevelBtn')
+					.getByTestId('infoLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
-					.getBySel('debugLogLevelBtn')
+					.getByTestId('debugLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
-					.getBySel('traceLogLevelBtn')
+					.getByTestId('traceLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
 			})
@@ -119,14 +119,14 @@ describe('Loggers page', () => {
 
 	it('should change logger level from WARN -> INFO, INFO -> WARN', () => {
 <%_	if (databaseTypeSql) { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
 <%_ } else { _%>
-		cy.getBySel('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
 <%_ } _%>
 
 		cy.intercept('**/management/loggers/*').as('changeLoggers')
 
-		cy.getBySel('loggersTable')
+		cy.getByTestId('loggersTable')
 <%_
 	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
@@ -141,13 +141,13 @@ describe('Loggers page', () => {
 					.eq(0)
 					.get(`button`)
 					.should('have.length', 6)
-					.getBySel('infoLogLevelBtn')
+					.getByTestId('infoLogLevelBtn')
 					.click();
 			})
 
 		cy.wait('@changeLoggers')
 
-		cy.getBySel('loggersTable')
+		cy.getByTestId('loggersTable')
 <%_
 	if (databaseTypeSql) { _%>
 			.contains('td', 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
@@ -162,9 +162,9 @@ describe('Loggers page', () => {
 					.eq(0)
 					.get(`button`)
 					.should('have.length', 6)
-					.getBySel('infoLogLevelBtn')
+					.getByTestId('infoLogLevelBtn')
 					.should('be.visible').should('be.disabled')
-					.getBySel('warnLogLevelBtn')
+					.getByTestId('warnLogLevelBtn')
 					.click();
 			})
 	})
@@ -173,37 +173,37 @@ describe('Loggers page', () => {
 
 		let countBeforeFilter
 
-		cy.getBySel('loggersTable')
+		cy.getByTestId('loggersTable')
 			.get('tbody > tr')
 			.then($tr => (countBeforeFilter = $tr.length))
 
-		cy.getBySel('loggerSearchForm')
+		cy.getByTestId('loggerSearchForm')
 			.getByName('logger')
 			.type('ROOT');
 
-		cy.getBySel('loggersTable')
+		cy.getByTestId('loggersTable')
 			.get('tbody > tr')
 			.then($tr => (expect($tr.length).not.eq(countBeforeFilter)))
 
-		cy.getBySel('loggerSearchForm').getByName('logger').clear()
+		cy.getByTestId('loggerSearchForm').getByName('logger').clear()
 
-		cy.getBySel('loggersTable')
+		cy.getByTestId('loggersTable')
 			.get('tbody > tr')
 			.then($tr => expect($tr.length).eq(countBeforeFilter))
 	})
 
 	it('should validate the pagination controls', () => {
-		cy.getBySel('pageCtrl')
+		cy.getByTestId('pageCtrl')
 			.eq(0)
 			.contains('div', /1-\d+ of \d+/)
 			.next()
 			.within($div => {
 				cy.root()
-					.getBySel('prevPageCtrl')
+					.getByTestId('prevPageCtrl')
 					.should('be.disabled')
 					.get('div')
 					.should('have.text', '1')
-					.getBySel('nextPageCtrl')
+					.getByTestId('nextPageCtrl')
 					.should('be.enabled')
 			})
 	})

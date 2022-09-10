@@ -6,7 +6,7 @@
 				"apple-touch-icon": "off",
 				"tap-targets": "off",
 				"unsized-images": "off",
-				"unused-javascript": "off"
+				"csp-xss": "off"
 			}
 		},
 		"collect": {

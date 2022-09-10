@@ -49,7 +49,7 @@ jobs:
                         'monolithic-session-maven-reactive.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [16.16]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
@@ -58,7 +58,7 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
-            - uses: actions/setup-node@v1
+            - uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node_version }}
             - name: Gradle - Configure cache
@@ -68,20 +68,20 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/9.6.x
+                      ~/.cache/Cypress/10.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-9.6.x
+                  key: ${{ runner.os }}-cypress-10.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -127,12 +127,12 @@ jobs:
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster:$GITHUB_SHA -ntp -Pprod verify
+                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster:$GITHUB_SHA -ntp verify
             - name: Gradle - Package application
               if: contains(matrix.apps, 'gradle')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster:$GITHUB_SHA -Pprod bootJar --no-daemon
+                  docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster:$GITHUB_SHA bootJar --no-daemon
             - name: Maven - Cypress tests
               if: contains(matrix.apps , 'maven')
               run: |
@@ -168,7 +168,7 @@ jobs:
                         'gateway-jwt-maven-postgres-prod.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [16.16]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
@@ -190,20 +190,20 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/9.6.x
+                      ~/.cache/Cypress/10.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-9.6.x
+                  key: ${{ runner.os }}-cypress-10.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -267,6 +267,13 @@ jobs:
               run: |
                   cd "$HOME/svelte-app"
                   ./gradlew -Pprod jibDockerBuild
+            - name: Start Keycloak container
+              if: contains(matrix.apps, 'oidc')
+              run: |
+                  cd "$HOME/svelte-app"
+                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+                  docker-compose -f src/main/docker/keycloak.yml up -d
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   cd "$HOME/svelte-app"
@@ -288,7 +295,7 @@ jobs:
             matrix:
                 apps: ['microservices-oidc-maven-prod.jdl']
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [16.16]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
@@ -310,20 +317,20 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.8.1
+                  key: ${{ runner.os }}-gradle-7.9.3
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/9.6.x
+                      ~/.cache/Cypress/10.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-9.6.x
+                  key: ${{ runner.os }}-cypress-10.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -413,6 +420,13 @@ jobs:
               run: |
                   cd "$HOME/svelte-ms/blog"
                   ./gradlew -Pprod jibDockerBuild
+            - name: Start Keycloak container
+              if: contains(matrix.apps, 'oidc')
+              run: |
+                  sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+                  cd "$HOME/svelte-ms/docker-compose"
+                  docker-compose up -d keycloak
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
@@ -434,7 +448,7 @@ jobs:
             matrix:
                 apps: ['svelte-app-session-lighthouse.jdl']
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [16.16]
         steps:
             - uses: actions/checkout@v2
               with:
@@ -456,14 +470,14 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.8.1
+                  key: ${{ runner.os }}-maven-7.9.3
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/9.6.x
+                      ~/.cache/Cypress/10.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-9.6.x
+                  key: ${{ runner.os }}-cypress-10.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -492,7 +506,7 @@ jobs:
             - name: Prepare Lighthouse run prerequisites
               run: |
                   cd "$HOME/svelte-app"
-                  npm install -g @lhci/cli@0.7.x
+                  npm install -g @lhci/cli
                   npm install --save puppeteer
                   docker-compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false

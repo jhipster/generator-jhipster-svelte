@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
-	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft'
+	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 	import userService from '$lib/admin/user-management/user-service'
 	import Page from 'jhipster-svelte-library/page/page.svelte'

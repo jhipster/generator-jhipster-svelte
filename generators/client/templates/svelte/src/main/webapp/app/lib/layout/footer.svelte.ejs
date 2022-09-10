@@ -1,5 +1,5 @@
 <script>
-	import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+	import { faHeart } from '@fortawesome/free-solid-svg-icons'
 	import Icon from 'jhipster-svelte-library/icon.svelte'
 </script>
 
@@ -7,7 +7,7 @@
 	class="flex flex-col justify-between items-center sm:flex-row bg-gray-200 dark:bg-gray-800 p-3"
 >
 	<div class="text-sm">
-		<p data-test="copyrightMsg">
+		<p data-testid="copyrightMsg">
 			Copyright &copy; 2022 JHipster. All Rights Reserved
 		</p>
 	</div>

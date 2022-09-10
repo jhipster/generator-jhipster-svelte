@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
-	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+	import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
 	import Page from 'jhipster-svelte-library/page/page.svelte'
@@ -13,8 +13,9 @@
 <%_ if (searchEngine) { _%>
 	import SearchForm from 'jhipster-svelte-library/page/search-form.svelte'
 <%_ } _%>
+	import DeleteModal from 'jhipster-svelte-library/page/delete-modal.svelte'
+
 	import <%= entityAngularName %>Table from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-table.svelte'
-	import <%= entityAngularName %>DeleteModal from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-delete-modal.svelte'
 
 	let error
 	let <%= entityInstancePlural %> = []
@@ -165,11 +166,15 @@
 		</div>
 	</div>
 	{#if showDeleteModal}
-		<<%= entityAngularName %>DeleteModal
+		<DeleteModal
 			id="{<%= entityInstance %>Id}"
 			on:close="{closeDelete<%= entityAngularName %>Modal}"
-			on:delete<%= entityAngularName %>="{delete<%= entityAngularName %>}"
-		/>
+			on:delete="{delete<%= entityAngularName %>}"
+		>
+			<svelte:fragment slot="confirm">
+				Are you sure you want to delete the <%= entityClassHumanized %>?
+			</svelte:fragment>
+		</DeleteModal>
 	{/if}
 	<div
 		class="flex flex-row justify-between items-center text-base mt-4"
@@ -193,9 +198,9 @@
 			sortPredicate="{sortPredicate}"
 			on:sortbypredicate="{sortByPredicate}"
 		<%_ } _%>
-			on:update<%= entityInstance %>="{update<%= entityAngularName %>}"
-			on:view<%= entityInstance %>="{view<%= entityAngularName %>}"
-			on:delete<%= entityInstance %>="{showDelete<%= entityAngularName %>Modal}"
+			on:update="{update<%= entityAngularName %>}"
+			on:view="{view<%= entityAngularName %>}"
+			on:delete="{showDelete<%= entityAngularName %>Modal}"
 		/>
 	{/if}
 <%_ if (!paginationNo) { _%>

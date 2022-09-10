@@ -7,13 +7,13 @@
 		<title><%= baseName %></title>
 		<link
 			rel="manifest"
-			href="/manifest.json"
+			href="/web-manifest.json"
 			crossorigin="use-credentials"
 		/>
 		<link rel="icon" type="image/ico" href="/favicon.ico" />
-		%svelte.head%
+		%sveltekit.head%
 	</head>
 	<body>
-		<div>%svelte.body%</div>
+		<div>%sveltekit.body%</div>
 	</body>
 </html>

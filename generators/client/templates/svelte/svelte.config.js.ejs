@@ -1,9 +1,4 @@
 import adapter from '@sveltejs/adapter-static';
-<%_
-    if(this.blueprintConfig.swaggerUi) { _%>
-import copy from 'rollup-plugin-copy'
-<%_ } _%>
-import { splitVendorChunkPlugin } from 'vite'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -20,50 +15,8 @@ const config = {
 			lib: '<%= CLIENT_MAIN_SRC_DIR %>app/lib',
 			routes: '<%= CLIENT_MAIN_SRC_DIR %>app/routes',
 			serviceWorker: '<%= CLIENT_MAIN_SRC_DIR %>app/service-worker',
-			template: '<%= CLIENT_MAIN_SRC_DIR %>app/app.html'
+			appTemplate: '<%= CLIENT_MAIN_SRC_DIR %>app/app.html'
 		},
-		vite: () => ({
-			server: {
-				proxy: {
-					'/api': {
-						target: 'http://localhost:8080',
-						changeOrigin: true,
-					},
-					'/management': {
-						target: 'http://localhost:8080',
-						changeOrigin: true,
-					},
-				<%_ if (authenticationType === 'oauth2') { _%>
-					'/oauth2': {
-						target: 'http://localhost:8080',
-						changeOrigin: true,
-					},
-				<%_ } _%>
-				}
-			},
-			plugins: [
-            <%_
-                if(this.blueprintConfig.swaggerUi) { _%>
-				copy({
-					targets: [
-						{
-							src: [
-								'node_modules/swagger-ui-dist/*.{js,css,html,png}',
-								'!node_modules/swagger-ui-dist/**/index.html',
-								'node_modules/axios/dist/axios.min.js',
-								'src/main/webapp/swagger-ui/index.html',
-							],
-							dest: '.svelte-kit/output/client/swagger-ui',
-						},
-					],
-				}),
-            <%_ } _%>
-				splitVendorChunkPlugin(),
-			],
-			ssr: {
-				noExternal: ['jhipster-svelte-library']
-			},
-		}),
 	}
 };
 

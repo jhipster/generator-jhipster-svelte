@@ -4,6 +4,7 @@ application {
         applicationType monolith,
         authenticationType session,
         packageName tech.jhipster.samples.blog,
+		devDatabaseType h2Disk,
         prodDatabaseType postgresql,
         cacheProvider caffeine,
         buildTool maven

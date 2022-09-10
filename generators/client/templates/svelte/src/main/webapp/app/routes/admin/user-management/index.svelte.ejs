@@ -1,16 +1,17 @@
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
-	import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+	import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 	import auth from '$lib/auth/auth-store'
 	import userService from '$lib/admin/user-management/user-service'
+	import DeleteModal from 'jhipster-svelte-library/page/delete-modal.svelte'
 	import Page from 'jhipster-svelte-library/page/page.svelte'
 	import Button from 'jhipster-svelte-library/button.svelte'
 	import Icon from 'jhipster-svelte-library/icon.svelte'
 	import PaginatedTable from 'jhipster-svelte-library/table/paginated-table.svelte'
+
 	import UserTable from '$lib/admin/user-management/user-table.svelte'
-	import UserDeleteModal from '$lib/admin/user-management/user-delete-modal.svelte'
 
 	let error
 	let users = []
@@ -101,11 +102,15 @@
 	</div>
 	{#if !loading && users.length}
 		{#if showDeleteModal}
-			<UserDeleteModal
+            <DeleteModal
 				id="{userId}"
 				on:close="{closeDeleteUserModal}"
-				on:deleteUser="{deleteUserAccount}"
-			/>
+				on:delete="{deleteUserAccount}"
+			>
+				<svelte:fragment slot="confirm">
+					Are you sure you want to delete the user?
+				</svelte:fragment>
+			</DeleteModal>
 		{/if}
 
 		<PaginatedTable
@@ -116,17 +121,12 @@
 			sortPredicate="{sortPredicate}"
 			totalCount="{totalCount}"
 			props="{{ users: users, currentUser: $auth }}"
-			events="{[
-				'toggleuseraccount',
-				'viewuseraccount',
-				'updateuseraccount',
-				'deleteuseraccount',
-			]}"
+			events="{['toggleuseraccount', 'view', 'update', 'delete']}"
 			on:fetch="{handleFetch}"
 			on:toggleuseraccount="{toggleUserAccount}"
-			on:updateuseraccount="{updateUserAccount}"
-			on:viewuseraccount="{viewUserAccount}"
-			on:deleteuseraccount="{showDeleteUserModal}"
+			on:update="{updateUserAccount}"
+			on:view="{viewUserAccount}"
+			on:delete="{showDeleteUserModal}"
 		/>
 	{/if}
 </Page>

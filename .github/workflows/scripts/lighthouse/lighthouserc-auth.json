@@ -7,7 +7,7 @@
 				"tap-targets": "off",
 				"non-composited-animations": "off",
 				"content-width": "off",
-				"unused-javascript": "off"
+				"csp-xss": "off"
 			}
 		},
 		"collect": {

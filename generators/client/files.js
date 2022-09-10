@@ -1,4 +1,5 @@
 const constants = require('generator-jhipster/generators/generator-constants');
+const { pathFromSvelteBlueprint } = require('../util');
 
 const FRONTEND_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
 const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
@@ -6,17 +7,13 @@ const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/`;
 const CLIENT_TEMPLATES_DIR = 'svelte';
 
-module.exports = {
-	writeFiles,
-};
-
 const svelteFiles = {
 	base: [
 		{
 			templates: [
 				'.eslintignore',
 				'.eslintrc.json',
-				'cypress.json',
+				'cypress.config.cjs',
 				{
 					file: generator => `package-template.json`,
 					renameTo: () => `package.json`,
@@ -26,6 +23,7 @@ const svelteFiles = {
 				'postcss.config.cjs',
 				'svelte.config.js',
 				'tailwind.config.cjs',
+				'vite.config.js',
 			],
 		},
 	],
@@ -98,7 +96,7 @@ const svelteFiles = {
 					method: 'copy',
 				},
 				{ file: 'static/favicon.ico', method: 'copy' },
-				'static/manifest.json',
+				'static/web-manifest.json',
 				{
 					file: generator => `static/img/${generator.hipster}.svg`,
 					renameTo: () => `app/lib/svg/app-avatar.svg`,
@@ -123,11 +121,11 @@ const svelteFiles = {
 		{
 			path: FRONTEND_ROUTES_DIR,
 			templates: [
-				'__error.svelte',
-				'__layout.svelte',
-				'index.svelte',
-				'admin/__layout.svelte',
-				'admin/logger.svelte',
+				{ file: () => `__error.svelte`, renameTo: () => `+error.svelte` },
+				{ file: () => `__layout.svelte`, renameTo: () => `+layout.svelte` },
+				{ file: () => `index.svelte`, renameTo: () => `+page.svelte` },
+				{ file: () => `admin/__layout.svelte`, renameTo: () => `admin/+layout.svelte` },
+				{ file: () => `admin/logger.svelte`, renameTo: () => `admin/logger/+page.svelte` },
 			],
 		},
 	],
@@ -135,21 +133,21 @@ const svelteFiles = {
 		{
 			condition: generator => generator.blueprintConfig.swaggerUi,
 			path: FRONTEND_ROUTES_DIR,
-			templates: ['admin/docs.svelte'],
+			templates: [{ file: () => `admin/docs.svelte`, renameTo: () => `admin/docs/+page.svelte` }],
 		},
 	],
 	gatewayRoute: [
 		{
 			condition: generator => generator.applicationType === 'gateway',
 			path: FRONTEND_ROUTES_DIR,
-			templates: ['admin/gateway.svelte'],
+			templates: [{ file: () => `admin/gateway.svelte`, renameTo: () => `admin/gateway/+page.svelte` }],
 		},
 	],
 	loginRoutes: [
 		{
 			condition: generator => generator.authenticationType !== 'oauth2',
 			path: FRONTEND_ROUTES_DIR,
-			templates: ['login.svelte'],
+			templates: [{ file: () => `login.svelte`, renameTo: () => `login/+page.svelte` }],
 		},
 	],
 	routesUserManagement: [
@@ -157,16 +155,28 @@ const svelteFiles = {
 			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
 			path: FRONTEND_ROUTES_DIR,
 			templates: [
-				'account/activate.svelte',
-				'account/password.svelte',
-				'account/register.svelte',
-				'account/settings.svelte',
-				'account/reset/finish.svelte',
-				'account/reset/init.svelte',
-				'admin/user-management/index.svelte',
-				'admin/user-management/new.svelte',
-				'admin/user-management/[id]/edit.svelte',
-				'admin/user-management/[id]/view.svelte',
+				{ file: () => `account/activate.svelte`, renameTo: () => `account/activate/+page.svelte` },
+				{ file: () => `account/password.svelte`, renameTo: () => `account/password/+page.svelte` },
+				{ file: () => `account/register.svelte`, renameTo: () => `account/register/+page.svelte` },
+				{ file: () => `account/settings.svelte`, renameTo: () => `account/settings/+page.svelte` },
+				{ file: () => `account/reset/finish.svelte`, renameTo: () => `account/reset/finish/+page.svelte` },
+				{ file: () => `account/reset/init.svelte`, renameTo: () => `account/reset/init/+page.svelte` },
+				{
+					file: () => `admin/user-management/index.svelte`,
+					renameTo: () => `admin/user-management/+page.svelte`,
+				},
+				{
+					file: () => `admin/user-management/new.svelte`,
+					renameTo: () => `admin/user-management/new/+page.svelte`,
+				},
+				{
+					file: () => `admin/user-management/[id]/edit.svelte`,
+					renameTo: () => `admin/user-management/[id]/edit/+page.svelte`,
+				},
+				{
+					file: () => `admin/user-management/[id]/view.svelte`,
+					renameTo: () => `admin/user-management/[id]/view/+page.svelte`,
+				},
 			],
 		},
 	],
@@ -181,13 +191,12 @@ const svelteFiles = {
 				'auth/auth-store.js',
 				'auth/auth-guard.svelte',
 				'auth/role-guard.svelte',
-				'layout/account-menu.svelte',
-				'layout/admin-menu.svelte',
-				'layout/entity-menu.svelte',
+				'account/account-menu.svelte',
+				'admin/admin-menu.svelte',
+				'entities/entity-menu.svelte',
 				'layout/footer.svelte',
 				'layout/navbar.svelte',
 				'utils/env.js',
-				'utils/request.js',
 			],
 		},
 	],
@@ -210,12 +219,9 @@ const svelteFiles = {
 				'account/account-service.js',
 				'account/change-password-form.svelte',
 				'account/forgot-password-form.svelte',
-				'account/password.svelte',
-				'account/password-confirm.svelte',
 				'account/register-user-form.svelte',
 				'account/reset-password-form.svelte',
 				'account/user-settings-form.svelte',
-				'admin/user-management/user-delete-modal.svelte',
 				'admin/user-management/user-form.svelte',
 				'admin/user-management/user-list-actions.spec.js',
 				'admin/user-management/user-list-actions.svelte',
@@ -228,5 +234,14 @@ const svelteFiles = {
 };
 
 function writeFiles() {
-	this.writeFilesToDisk(svelteFiles, this, false, `${CLIENT_TEMPLATES_DIR}`);
+	this.writeFilesToDisk(
+		svelteFiles,
+		this,
+		false,
+		pathFromSvelteBlueprint(`client/templates/${CLIENT_TEMPLATES_DIR}`)
+	);
 }
+
+module.exports = {
+	writeFiles,
+};
