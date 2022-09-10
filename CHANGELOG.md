@@ -4,6 +4,30 @@
 
 ## Current
 
+## [0.10.0] - 2022-09-10
+
+### BREAKING CHANGES
+
+-   ✅ The release upgrades the `SvelteKit`, `Cypress`, and `Jest` dependencies having breaking changes. Refer to individual tickets for more details.
+
+### Added
+
+-   ✅ Enhance `Svelte` blueprint to be used as base for new blueprints [#1357](https://github.com/jhipster/generator-jhipster-svelte/pull/1357)
+
+### Fixed
+
+-   ✅ Fix Sonar violations [#1364](https://github.com/jhipster/generator-jhipster-svelte/pull/1364)
+-   ✅ Use ESM import for `Font Awesome` icons inclusion in the generated application [#1363](https://github.com/jhipster/generator-jhipster-svelte/pull/1363)
+-   ✅ Fix frontend build for applications generated with the `swagger` option [#1361](https://github.com/jhipster/generator-jhipster-svelte/pull/1361)
+
+### Changed
+
+-   ✅ Use `password`, `password-confirm` components from `jhipster-svelte-library` [#1284](https://github.com/jhipster/generator-jhipster-svelte/pull/1284)
+-   ✅ Rename the `data-test` attribute to `data-testid` for reuse of data selectors between cypress and testing library unit tests. Rename `getBySel` cypress custom command with `getByTestId` [#1284](https://github.com/jhipster/generator-jhipster-svelte/pull/1284)
+-   ✅ Upgrade `JHipster` dependency to `7.9.3` [#1351](https://github.com/jhipster/generator-jhipster-svelte/pull/1351)
+-   ✅ Upgrade `Cypress` dependency to `10.x` [#1241](https://github.com/jhipster/generator-jhipster-svelte/pull/1241)
+-   ✅ Upgrade `Svelte/Kit`, `Eslint`, `Husky` and other third party dependencies [#1277](https://github.com/jhipster/generator-jhipster-svelte/pull/1277) [#1336](https://github.com/jhipster/generator-jhipster-svelte/pull/1336)
+
 ## [0.9.0] - 2022-05-18
 
 ### BREAKING CHANGES
