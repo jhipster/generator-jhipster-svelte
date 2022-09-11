@@ -224,7 +224,8 @@ npm update -g generator-jhipster-svelte
 | `7.1.x`    | `0.5`            |
 | `7.3.x`    | `0.6`            |
 | `7.4.x`    | `0.7` - `0.7.1`  |
-| `7.8.x`    | >= `0.8`         |
+| `7.8.x`    | `0.8` - `0.9`    |
+| `7.9.x`    | >= `0.10.1`      |
 
 ## Docker development
 

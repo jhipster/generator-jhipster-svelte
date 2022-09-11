@@ -4,6 +4,12 @@
 
 ## Current
 
+## [0.10.1] - 2022-09-11
+
+### Fixed
+
+-   ✅ Include prettier and associated plugins as runtime dependencies [#1372](https://github.com/jhipster/generator-jhipster-svelte/pull/1372)
+
 ## [0.10.0] - 2022-09-10
 
 ### BREAKING CHANGES
