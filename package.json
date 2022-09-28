@@ -40,7 +40,7 @@
 		"chalk": "4.1.2",
 		"generator-jhipster": "7.9.3",
 		"prettier": "2.7.1",
-		"prettier-plugin-svelte": "2.7.0",
+		"prettier-plugin-svelte": "2.7.1",
 		"semver": "7.3.7"
 	},
 	"devDependencies": {
