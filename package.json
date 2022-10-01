@@ -1,6 +1,6 @@
 {
 	"name": "generator-jhipster-svelte",
-	"version": "0.10.1",
+	"version": "0.10.2",
 	"description": "A svelte.js blueprint to generate cybernetically enhanced web applications.",
 	"keywords": [
 		"yeoman-generator",
@@ -40,12 +40,12 @@
 		"chalk": "4.1.2",
 		"generator-jhipster": "7.9.3",
 		"prettier": "2.7.1",
-		"prettier-plugin-svelte": "2.7.0",
+		"prettier-plugin-svelte": "2.7.1",
 		"semver": "7.3.7"
 	},
 	"devDependencies": {
 		"ejs-lint": "1.2.2",
-		"eslint": "8.23.0",
+		"eslint": "8.24.0",
 		"eslint-config-airbnb-base": "15.0.0",
 		"eslint-config-prettier": "8.5.0",
 		"eslint-plugin-import": "2.26.0",
