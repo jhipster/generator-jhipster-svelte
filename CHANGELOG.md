@@ -4,6 +4,13 @@
 
 ## Current
 
+## [0.10.2] - 2022-10-2
+
+### Changed
+
+-   ✅ Upgrade `Cypress` dependency to `10.9.x`. Use `cacheAcrossSpecs` option to cache session across specs [#1416](https://github.com/jhipster/generator-jhipster-svelte/pull/1416)
+-   ✅ Upgrade `Svelte/Kit`, `Eslint` and other third party dependencies [#1416](https://github.com/jhipster/generator-jhipster-svelte/pull/1416)
+
 ## [0.10.1] - 2022-09-11
 
 ### Fixed
