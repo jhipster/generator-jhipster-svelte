@@ -10,7 +10,7 @@ jobs:
         steps:
             - name: Checkout svelte generator repository
               uses: actions/checkout@v2
-            - uses: actions/setup-node@v1
+            - uses: actions/setup-node@v3
               with:
                   node-version: '16.16'
                   registry-url: 'https://registry.npmjs.org'
@@ -54,7 +54,7 @@ jobs:
         strategy:
             fail-fast: true
         steps:
-            - uses: actions/setup-node@v1
+            - uses: actions/setup-node@v3
               with:
                   node-version: '16.x'
             - name: Checkout svelte generator repository
