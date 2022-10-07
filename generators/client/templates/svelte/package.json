@@ -7,7 +7,7 @@
 		"@sveltejs/adapter-static": "1.0.0-next.43",
 		"@sveltejs/kit": "1.0.0-next.509",
 		"@testing-library/jest-dom": "5.16.5",
-		"@testing-library/svelte": "3.2.1",
+		"@testing-library/svelte": "3.2.2",
 		"autoprefixer": "10.4.12",
 		"cross-env": "7.0.3",
 		"cypress": "10.9.0",
