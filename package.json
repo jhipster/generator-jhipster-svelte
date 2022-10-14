@@ -44,7 +44,7 @@
 		"semver": "7.3.8"
 	},
 	"devDependencies": {
-		"ejs-lint": "1.2.2",
+		"ejs-lint": "2.0.0",
 		"eslint": "8.25.0",
 		"eslint-config-airbnb-base": "15.0.0",
 		"eslint-config-prettier": "8.5.0",
