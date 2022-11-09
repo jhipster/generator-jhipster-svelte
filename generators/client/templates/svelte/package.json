@@ -10,7 +10,7 @@
 		"@testing-library/svelte": "3.2.2",
 		"autoprefixer": "10.4.12",
 		"cross-env": "7.0.3",
-		"cypress": "10.9.0",
+		"cypress": "11.0.0",
 		"esbuild": "0.15.11",
 		"eslint": "8.25.0",
 		"eslint-plugin-cypress": "2.12.1",
