@@ -49,7 +49,7 @@ jobs:
                         'monolithic-session-maven-reactive.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.16]
+                node_version: [16.x]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
@@ -79,9 +79,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/10.9.x
+                      ~/.cache/Cypress/11.1.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-10.9.x
+                  key: ${{ runner.os }}-cypress-11.1.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -168,7 +168,7 @@ jobs:
                         'gateway-jwt-maven-postgres-prod.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.16]
+                node_version: [16.x]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
@@ -201,9 +201,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/10.9.x
+                      ~/.cache/Cypress/11.1.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-10.9.x
+                  key: ${{ runner.os }}-cypress-11.1.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -295,7 +295,7 @@ jobs:
             matrix:
                 apps: ['microservices-oidc-maven-prod.jdl']
                 os: [ubuntu-latest]
-                node_version: [16.16]
+                node_version: [16.x]
         steps:
             - uses: actions/checkout@v2
             - name: Download latest chrome binary
@@ -328,9 +328,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/10.9.x
+                      ~/.cache/Cypress/11.1.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-10.9.x
+                  key: ${{ runner.os }}-cypress-11.1.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -448,7 +448,7 @@ jobs:
             matrix:
                 apps: ['svelte-app-session-lighthouse.jdl']
                 os: [ubuntu-latest]
-                node_version: [16.16]
+                node_version: [16.x]
         steps:
             - uses: actions/checkout@v2
               with:
@@ -475,7 +475,7 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/10.9.x
+                      ~/.cache/Cypress/11.1.x
                       ~/.cache/Cypress/cy
                   key: ${{ runner.os }}-cypress-10.9.x
             - name: Retrieve saved Svelte Docker Image

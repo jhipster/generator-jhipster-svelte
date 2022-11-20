@@ -1,6 +1,7 @@
 <script>
 	import { faBars, faSignInAlt<% if (authenticationType !== 'oauth2' && !skipUserManagement) { %>, faUserPlus<% } %> } from '@fortawesome/free-solid-svg-icons'
-
+	import { page } from '$app/stores'
+	import { browser } from '$app/environment'
 	import NavItem from 'jhipster-svelte-library/layout/nav-item.svelte'
 
 	import Icon from 'jhipster-svelte-library/icon.svelte'
@@ -16,6 +17,8 @@
 	function toggleToolbar() {
 		isToolbarOpen = !isToolbarOpen
 	}
+
+	$: pathname = $page && $page.url && $page.url.pathname
 </script>
 
 <header
@@ -41,7 +44,7 @@
 		</div>
 		<div class="flex flex-row justify-items-end items-center">
 			<div class="block sm:hidden mr-2">
-				<ThemeModeToggle />
+                <ThemeModeToggle browser="{browser}" />
 			</div>
 			<div class="sm:hidden">
 				<button
@@ -60,7 +63,7 @@
 	</div>
 	<div class:hidden="{!isToolbarOpen}" class="sm:flex sm:items-center">
 		<div class="hidden sm:block">
-			<ThemeModeToggle />
+            <ThemeModeToggle browser="{browser}" />
 		</div>
 		{#if $auth}
 			<div data-testid="svlEntityMenu" class="sm:ml-4">
@@ -86,6 +89,7 @@
 				<%_ } else { _%>
 					route="/login"
 				<%_ } _%>
+                    pathname="{pathname}"
 				/>
 			</div>
 <%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
@@ -95,6 +99,7 @@
 					label="Sign up"
 					icon="{faUserPlus}"
 					route="/account/register"
+                    pathname="{pathname}"
 				/>
 			</div>
 <%_ } _%>
