@@ -4,6 +4,16 @@
 
 ## Current
 
+### Fixed
+
+-   ✅ Fix issues observed during `npm start` execution. [#1480](https://github.com/jhipster/generator-jhipster-svelte/pull/1480)
+-   ✅ Fix GitHub Actions CI build by downgrading `node.js` to use `v16.x` in the docker image. JHipster CLI is not yet compatible with `v18.x`. [#1501](https://github.com/jhipster/generator-jhipster-svelte/pull/1501)
+
+### Changed
+
+-   ✅ Upgrade `Cypress` dependency to `11.1.x` [#1501](https://github.com/jhipster/generator-jhipster-svelte/pull/1501)
+-   ✅ Upgrade `Svelte/Kit`, `Eslint` and other third party dependencies [#1501](https://github.com/jhipster/generator-jhipster-svelte/pull/1501)
+
 ## [0.10.2] - 2022-10-2
 
 ### Changed
