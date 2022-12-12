@@ -21,7 +21,7 @@
 		"jest": "29.3.1",
 		"jest-environment-jsdom": "29.3.1",
 		"jest-junit": "15.0.0",
-		"jest-sonar": "0.2.12",
+		"jest-sonar": "0.2.15",
 		"jest-svelte-resolver": "1.0.0",
 		"jhipster-svelte-library": "0.10.0",
 		"postcss": "8.4.19",
