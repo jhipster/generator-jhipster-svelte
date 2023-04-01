@@ -1,4 +1,4 @@
-FROM node:16-alpine3.15
+FROM node:16-alpine3.17
 
 LABEL maintainer="Vishal Mahajan"
 
@@ -9,7 +9,7 @@ ARG GIT_USER_EMAIL=jhipster-svelte-bot@jhipster.tech
 ARG GIT_USERNAME="JHipster Svelte Bot"
 ARG GID=1000
 ARG UID=1000
-ARG GLIBC_VERSION=2.34-r0
+ARG GLIBC_VERSION=2.35-r0
 
 ENV	MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
