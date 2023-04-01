@@ -37,8 +37,8 @@ RUN \
 
 RUN \
 	deluser --remove-home node \
-	&& addgroup -S shipster -g ${GID} \
-  	&& adduser -S -G shipster -u ${UID} shipster
+	&& (addgroup -S shipster -g ${GID} || addgroup -S shipster ) \
+  	&& (adduser -S -G shipster -u ${UID} shipster || adduser -S -G shipster shipster)
 
 RUN \
 	mkdir -p $APP_PATH \
