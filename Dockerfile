@@ -1,4 +1,4 @@
-FROM node:16-alpine3.17
+FROM node:16-alpine3.16
 
 LABEL maintainer="Vishal Mahajan"
 
