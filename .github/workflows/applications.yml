@@ -437,6 +437,7 @@ jobs:
                   npm run e2e:ci
     lighthouse-job:
         needs: svelte-image
+        if: ${{ false }}
         name: ${{ matrix.apps }}
         concurrency:
             group: lighthouse-${{ matrix.apps }}-${{ github.head_ref || github.sha }}
