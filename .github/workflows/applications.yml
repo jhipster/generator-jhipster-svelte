@@ -506,7 +506,7 @@ jobs:
             - name: Prepare Lighthouse run prerequisites
               run: |
                   cd "$HOME/svelte-app"
-                  npm install -g @lhci/cli
+                  npm install -g @lhci/cli@0.10.0
                   npm install --save puppeteer
                   docker-compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
