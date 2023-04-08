@@ -122,7 +122,7 @@ jobs:
             - name: Frontend - Lint application
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app --entrypoint ./npmw jhipster/svelte-hipster:$GITHUB_SHA lint
+                  docker run --rm -v $PWD:/app --entrypoint ./npmw jhipster/svelte-hipster:$GITHUB_SHA run lint
             - name: Frontend - Unit tests
               run: |
                   cd "$HOME/svelte-app"
