@@ -79,9 +79,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/11.1.x
+                      ~/.cache/Cypress/12.9.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-11.1.x
+                  key: ${{ runner.os }}-cypress-12.9.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -119,6 +119,10 @@ jobs:
               run: |
                   cd "$HOME/svelte-app"
                   docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/shipster/.gradle --entrypoint ./gradlew jhipster/svelte-hipster:$GITHUB_SHA test --no-daemon
+            - name: Frontend - Lint application
+              run: |
+                  cd "$HOME/svelte-app"
+                  docker run --rm -v $PWD:/app --entrypoint ./npmw jhipster/svelte-hipster:$GITHUB_SHA lint
             - name: Frontend - Unit tests
               run: |
                   cd "$HOME/svelte-app"
@@ -201,9 +205,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/11.1.x
+                      ~/.cache/Cypress/12.9.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-11.1.x
+                  key: ${{ runner.os }}-cypress-12.9.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -328,9 +332,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/11.1.x
+                      ~/.cache/Cypress/12.9.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-11.1.x
+                  key: ${{ runner.os }}-cypress-12.9.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -476,9 +480,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/11.1.x
+                      ~/.cache/Cypress/12.9.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-10.9.x
+                  key: ${{ runner.os }}-cypress-12.9.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
