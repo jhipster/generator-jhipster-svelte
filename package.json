@@ -41,7 +41,7 @@
 		"generator-jhipster": "7.9.3",
 		"prettier": "2.7.1",
 		"prettier-plugin-svelte": "2.10.0",
-		"semver": "7.3.8"
+		"semver": "7.4.0"
 	},
 	"devDependencies": {
 		"ejs-lint": "2.0.0",
