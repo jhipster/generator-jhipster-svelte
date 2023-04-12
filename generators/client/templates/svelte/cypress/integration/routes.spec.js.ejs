@@ -98,13 +98,12 @@ describe('Routes', () => {
 
 		it('should navigate to saved context', () => {
 			cy.getByTestId('loginForm').within(() => {
-				cy.root()
-					.get("input[type='checkbox']")
+				cy.get("input[type='checkbox']")
 					.eq(0)
 					.check()
-					.getByName('username')
+				cy.getByName('username')
 					.type(Cypress.env('ADMIN_USERNAME'))
-					.getByName('password')
+				cy.getByName('password')
 					.type(Cypress.env('ADMIN_PASSWORD') + '{enter}', { log: false })
 			})
 			cy.location('pathname').should('eq', '/admin/logger')
