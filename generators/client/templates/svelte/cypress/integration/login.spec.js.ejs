@@ -30,37 +30,37 @@ describe('User login', () => {
 	it('should require username', () => {
 		cy.getByTestId('loginForm').within(() => {
 			cy.getByName('username').within(() => {
-                cy.root().type('admin')
-                cy.root().clear()
-                cy.root().blur()
-            })
+				cy.root().type('admin')
+				cy.root().clear()
+				cy.root().blur()
+			})
 
 			cy.getByTestId('username-error')
-    			.should('be.visible')
-	    		.and('contain', 'Username is mandatory')
-        })
+				.should('be.visible')
+				.and('contain', 'Username is mandatory')
+		})
 	})
 
 	it('should require password', () => {
 		cy.getByTestId('loginForm').within(() => {
 			cy.getByName('password').within(() => {
-			    cy.root().type('admin', {log: false})
-                cy.root().clear()
-                cy.root().blur()
-            })
-		    cy.getByTestId('password-error')
-			    .should('be.visible')
-			    .and('contain', 'Password is mandatory')
-        })
+				cy.root().type('admin', {log: false})
+				cy.root().clear()
+				cy.root().blur()
+			})
+			cy.getByTestId('password-error')
+				.should('be.visible')
+				.and('contain', 'Password is mandatory')
+		})
 	})
 
 	it('should require a valid username and password', () => {
 		cy.getByTestId('loginForm').within(() => {
 			cy.getByName('username')
-			    .type('admin')
+				.type('admin')
 			cy.getByName('password')
-			    .type('invalid{enter}', {log: false})
-        })
+				.type('invalid{enter}', {log: false})
+		})
 		cy.getByTestId('errorMsg').should(
 			'contain',
 			'Incorrect username or password.'
@@ -72,9 +72,9 @@ describe('User login', () => {
 			cy.get("input[type='checkbox']")
 				.eq(0)
 				.check()
-            cy.getByName('username')
+			cy.getByName('username')
 				.type('admin')
-            cy.getByName('password')
+			cy.getByName('password')
 				.type('admin{enter}', {log: false})
 		})
 		cy.location('pathname').should('eq', '/')
