@@ -247,6 +247,10 @@ jobs:
                   cd "$HOME/svelte-app"
                   rm -rf node_modules/generator-jhipster-svelte
                   ./gradlew test --no-daemon
+            - name: Frontend - Lint application
+              run: |
+                  cd "$HOME/svelte-app"
+                  ./npmw run lint
             - name: Frontend - Unit tests
               run: |
                   cd "$HOME/svelte-app"
@@ -380,6 +384,10 @@ jobs:
                   cd "$HOME/svelte-ms/blog"
                   rm -rf node_modules/generator-jhipster-svelte
                   ./gradlew test --no-daemon
+            - name: Frontend - Lint application
+              run: |
+                  cd "$HOME/svelte-ms/gateway"
+                    ./npmw run lint
             - name: Frontend - Unit tests
               run: |
                   cd "$HOME/svelte-ms/gateway"
