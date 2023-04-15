@@ -19,11 +19,9 @@ describe('User delete dialog page', () => {
 
 		cy.getByTestId('userMgmtTable')
 			.contains('td', randomUser)
-			.parent()
-			.trigger('mouseenter')
-			.within($tr => {
-				cy.root()
-					.get('td')
+			.parent().within($tr => {
+				cy.root().trigger('mouseenter')
+				cy.get('td')
 					.children()
 					.getByName('deleteBtn')
 					.click()
@@ -36,16 +34,15 @@ describe('User delete dialog page', () => {
 
 	it('should display delete user dialog', () => {
 		cy.getByTestId('svlModal').within(() => {
-			cy.root()
-				.get('h1')
+			cy.get('h1')
 				.should('be.visible')
 				.should('contain', 'Confirm delete operation')
-				.get('p')
+			cy.get('p')
 				.should('be.visible')
 				.should('contain', 'Are you sure you want to delete the user?')
-				.getByName('confirmDeleteBtn')
+			cy.getByName('confirmDeleteBtn')
 				.should('not.be.disabled')
-				.getByName('cancelBtn')
+			cy.getByName('cancelBtn')
 				.should('not.be.disabled')
 		})
 	})

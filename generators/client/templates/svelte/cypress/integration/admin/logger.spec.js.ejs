@@ -15,9 +15,10 @@ describe('Loggers page', () => {
 		cy.getByTestId('loggersTitle')
 			.should('be.visible')
 			.should('contain', 'Loggers')
-		cy.getByTestId('loggerSearchForm')
-			.getByName('logger')
+		cy.getByTestId('loggerSearchForm').within(() => {
+			cy.getByName('logger')
 			.should('have.value', ``)
+		})
 	})
 
 	it('should display loggers table', () => {
@@ -35,9 +36,13 @@ describe('Loggers page', () => {
 	it('should display logger name and the default enabled logger level in the table', () => {
 
 <%_	if (databaseTypeSql) { _%>
-		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		cy.getByTestId('loggerSearchForm').within(() => {
+			cy.getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		})
 <%_ } else { _%>
-		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+		cy.getByTestId('loggerSearchForm').within(() => {
+			cy.getByName('logger').type('org.mongodb.driver')
+		})
 <%_ } _%>
 
 		cy.getByTestId('loggersTable')
@@ -48,27 +53,26 @@ describe('Loggers page', () => {
 <%_ } _%>
 			.parent()
 			.within($tr => {
-				cy.root()
-					.get('td')
+				cy.get('td')
 					.eq(0)
 					.get(`button`)
 					.should('have.length', 6)
-					.getByTestId('offLogLevelBtn')
+				cy.getByTestId('offLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
-					.getByTestId('errorLogLevelBtn')
+				cy.getByTestId('errorLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
-					.getByTestId('warnLogLevelBtn')
+				cy.getByTestId('warnLogLevelBtn')
 					.should('be.visible')
 					.should('be.disabled')
-					.getByTestId('infoLogLevelBtn')
+				cy.getByTestId('infoLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
-					.getByTestId('debugLogLevelBtn')
+				cy.getByTestId('debugLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
-					.getByTestId('traceLogLevelBtn')
+				cy.getByTestId('traceLogLevelBtn')
 					.should('not.be.visible')
 					.should('not.be.disabled')
 			})
@@ -76,9 +80,15 @@ describe('Loggers page', () => {
 
 	it('should display actions available on the current selected logger', () => {
 <%_	if (databaseTypeSql) { _%>
-		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		cy.getByTestId('loggerSearchForm').within(() => {
+			cy.getByName('logger')
+				.type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		})
 <%_ } else { _%>
-		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+		cy.getByTestId('loggerSearchForm').within(() => {
+			cy.getByName('logger')
+				.type('org.mongodb.driver')
+		})
 <%_ } _%>
 
 		cy.getByTestId('loggersTable')
@@ -88,30 +98,28 @@ describe('Loggers page', () => {
 <%_ } else { _%>
 			.contains('td', 'org.mongodb.driver')
 <%_ } _%>
-			.parent()
-			.trigger('mouseenter')
-			.within($tr => {
-				cy.root()
-					.get('td')
+			.parent().within($tr => {
+				cy.root().trigger('mouseenter')
+				cy.get('td')
 					.eq(0)
 					.get(`button`)
 					.should('have.length', 6)
-					.getByTestId('offLogLevelBtn')
+				cy.getByTestId('offLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
-					.getByTestId('errorLogLevelBtn')
+				cy.getByTestId('errorLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
-					.getByTestId('warnLogLevelBtn')
+				cy.getByTestId('warnLogLevelBtn')
 					.should('be.visible')
 					.should('be.disabled')
-					.getByTestId('infoLogLevelBtn')
+				cy.getByTestId('infoLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
-					.getByTestId('debugLogLevelBtn')
+				cy.getByTestId('debugLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
-					.getByTestId('traceLogLevelBtn')
+				cy.getByTestId('traceLogLevelBtn')
 					.should('be.visible')
 					.should('not.be.disabled')
 			})
@@ -119,9 +127,14 @@ describe('Loggers page', () => {
 
 	it('should change logger level from WARN -> INFO, INFO -> WARN', () => {
 <%_	if (databaseTypeSql) { _%>
-		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		cy.getByTestId('loggerSearchForm').within(() => {
+			cy.getByName('logger')
+				.type('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+		})
 <%_ } else { _%>
-		cy.getByTestId('loggerSearchForm').getByName('logger').type('org.mongodb.driver')
+		cy.getByTestId('loggerSearchForm').within(() => {
+			cy.getByName('logger').type('org.mongodb.driver')
+		})
 <%_ } _%>
 
 		cy.intercept('**/management/loggers/*').as('changeLoggers')
@@ -133,15 +146,13 @@ describe('Loggers page', () => {
 <%_ } else { _%>
 			.contains('td', 'org.mongodb.driver')
 <%_ } _%>
-			.parent()
-			.trigger('mouseenter')
-			.within($tr => {
-				cy.root()
-					.get('td')
+			.parent().within($tr => {
+				cy.root().trigger('mouseenter')
+				cy.get('td')
 					.eq(0)
 					.get(`button`)
 					.should('have.length', 6)
-					.getByTestId('infoLogLevelBtn')
+				cy.getByTestId('infoLogLevelBtn')
 					.click();
 			})
 
@@ -154,17 +165,15 @@ describe('Loggers page', () => {
 <%_ } else { _%>
 			.contains('td', 'org.mongodb.driver')
 <%_ } _%>
-			.parent()
-			.trigger('mouseenter')
-			.within($tr => {
-				cy.root()
-					.get('td')
+			.parent().within($tr => {
+				cy.root().trigger('mouseenter')
+				cy.get('td')
 					.eq(0)
 					.get(`button`)
 					.should('have.length', 6)
-					.getByTestId('infoLogLevelBtn')
+				cy.getByTestId('infoLogLevelBtn')
 					.should('be.visible').should('be.disabled')
-					.getByTestId('warnLogLevelBtn')
+				cy.getByTestId('warnLogLevelBtn')
 					.click();
 			})
 	})
@@ -198,12 +207,11 @@ describe('Loggers page', () => {
 			.contains('div', /1-\d+ of \d+/)
 			.next()
 			.within($div => {
-				cy.root()
-					.getByTestId('prevPageCtrl')
+				cy.getByTestId('prevPageCtrl')
 					.should('be.disabled')
 					.get('div')
 					.should('have.text', '1')
-					.getByTestId('nextPageCtrl')
+				cy.getByTestId('nextPageCtrl')
 					.should('be.enabled')
 			})
 	})
