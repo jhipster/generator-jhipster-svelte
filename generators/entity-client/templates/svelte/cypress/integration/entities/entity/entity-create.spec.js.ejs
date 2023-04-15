@@ -37,7 +37,9 @@ describe('Create <%= entityInstance %> page', () => {
 
 <%_ if (containsMandatoryField) { _%>
 	it('should require mandatory fields', () => {
-		cy.getByTestId('add<%= entityAngularName %>Form').contains('Create <%= entityClassHumanized %>').should('be.disabled')
+		cy.getByTestId('add<%= entityAngularName %>Form')
+			.contains('Create <%= entityClassHumanized %>')
+			.should('be.disabled')
 	})
 
 <%_ } _%>
@@ -51,76 +53,86 @@ describe('Create <%= entityInstance %> page', () => {
 			}
 _%>
 	<%_ if (field.fieldValidationRequired) { _%>
-		cy.getByTestId('add<%= entityAngularName %>Form').getByName('<%= field.fieldName %>').type('<%= fieldValue %>').clear().blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type('<%= fieldValue %>')
+				cy.root().clear()
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> is mandatory')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldValidationMinLength) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.type(
-				'<%= getMinLengthText(field.fieldValidateRulesMinlength) %>'
-			)
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type(
+					'<%= getMinLengthText(field.fieldValidateRulesMinlength) %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldValidationMaxLength) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.type(
-				'<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>'
-			)
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type(
+					'<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldTypeNumeric && !field.fieldValidationRequired) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.type('1')
-			.clear()
-			.type('-')
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type('1')
+				cy.root().clear()
+				cy.root().type('-')
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> should be numeric')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldTypeNumeric && field.fieldValidationMin) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.type(
-				'<%= Number(field.fieldValidateRulesMin) - 1 %>'
-			)
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type(
+					'<%= Number(field.fieldValidateRulesMin) - 1 %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> should be at least <%= field.fieldValidateRulesMin %>')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldTypeNumeric && field.fieldValidationMax) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.type(
-				'<%= Number(field.fieldValidateRulesMax) + 1 %>'
-			)
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type(
+					'<%= Number(field.fieldValidateRulesMax) + 1 %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> cannot be more than <%= field.fieldValidateRulesMax %>')
+		})
 	<%_ } _%>
 <%_ 	} _%>
 	})

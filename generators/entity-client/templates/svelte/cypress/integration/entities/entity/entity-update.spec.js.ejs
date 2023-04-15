@@ -107,25 +107,26 @@ _%>)
 	})
 
 	it('should be populated and have valid state', () => {
-		cy.getByTestId('add<%= entityAngularName %>Form')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
 		<%_
 			for (field of fields.filter(field => !field.id)) {
 		_%>
 			<%_ if (!field.fieldTypeTimed && !field.fieldTypeDuration && !field.fieldTypeBoolean) { _%>
     		    <%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
-			.getByTestId('<%= field.fieldName %>View')
+			cy.getByTestId('<%= field.fieldName %>View')
 			.should('contain', 'image/png')
                 <%_ } else { _%>
-			.getByName('<%= field.fieldName %>')
+			cy.getByName('<%= field.fieldName %>')
 			.invoke('val')
 			.should('not.be.empty')
 			<%_ } _%>
 		<%_ }
 		}
 		_%>
-		cy.getByTestId('add<%= entityAngularName %>Form')
+			cy.root()
 			.contains('Update <%= entityClassHumanized %>')
 			.should('not.be.disabled')
+		})
 	})
 
 <%_ if (containsFieldValidation) { _%>
@@ -138,78 +139,88 @@ _%>)
 			}
 _%>
 	<%_ if (field.fieldValidationRequired) { _%>
-		cy.getByTestId('add<%= entityAngularName %>Form').getByName('<%= field.fieldName %>').type('<%= fieldValue %>').clear().blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type('<%= fieldValue %>')
+				cy.root().clear()
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> is mandatory')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldValidationMinLength) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.clear()
-			.type(
-				'<%= getMinLengthText(field.fieldValidateRulesMinlength) %>'
-			)
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().clear()
+				cy.root().type(
+					'<%= getMinLengthText(field.fieldValidateRulesMinlength) %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldValidationMaxLength) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.clear()
-			.type(
-				'<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>'
-			)
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().clear()
+				cy.root().type(
+					'<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldTypeNumeric && !field.fieldValidationRequired) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.type('1')
-			.clear()
-			.type('-')
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type('1')
+				cy.root().clear()
+				cy.root().type('-')
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> should be numeric')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldTypeNumeric && field.fieldValidationMin) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.type(
-				'<%= Number(field.fieldValidateRulesMin) - 1 %>'
-			)
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type(
+					'<%= Number(field.fieldValidateRulesMin) - 1 %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> should be at least <%= field.fieldValidateRulesMin %>')
+		})
 	<%_ } _%>
 	<%_ if (field.fieldTypeNumeric && field.fieldValidationMax) { _%>
 
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByName('<%= field.fieldName %>')
-			.type(
-				'<%= Number(field.fieldValidateRulesMax) + 1 %>'
-			)
-			.blur()
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.getByTestId('<%= field.fieldName %>-error')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type(
+					'<%= Number(field.fieldValidateRulesMax) + 1 %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
 			.should('be.visible')
 			.and('contain', '<%= field.fieldNameHumanized %> cannot be more than <%= field.fieldValidateRulesMax %>')
+		})
 	<%_ } _%>
 <%_ 	} _%>
 	})
@@ -234,7 +245,7 @@ _%>
 	}
 _%>
 	it('should update <%= entityInstance %> details', () => {
-		cy.getByTestId('add<%= entityAngularName %>Form')
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
 	<%_
 		for (field of fields.filter(field => !field.id)) {
 			const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
@@ -242,25 +253,24 @@ _%>
 		<%_ if (!field.fieldTypeDuration) {_%>
 			<%_ if (field.fieldTypeBoolean) {_%>
 				<%_ if (fieldValue === true ) { _%>
-		.getByName('<%= field.fieldName %>').uncheck()
+			cy.getByName('<%= field.fieldName %>').uncheck()
 				<%_ } else { _%>
-		.getByName('<%= field.fieldName %>').check()
+			cy.getByName('<%= field.fieldName %>').check()
 				<%_ } _%>
 			<%_ } else if (field.fieldIsEnum) { _%>
-		.getByName('<%= field.fieldName %>')
-		.click()
-		.getByTestId('<%= field.fieldName %>-options')
-		.within(() => {
-			cy.root().get("input[type='checkbox']").eq(0).check()
-			cy.root().get("input[type='checkbox']").eq(1).check()
-		})
-		.type('{esc}')
-            <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
-        .getByName('<%= field.fieldName %>ClearBtn')
-        .click()
-        .setFileInput('<%= field.fieldName %>', 'integration-test.png', 'image/png')
+			cy.getByName('<%= field.fieldName %>').click()
+			cy.getByTestId('<%= field.fieldName %>-options').within(() => {
+				cy.get("input[type='checkbox']").eq(0).check()
+				cy.get("input[type='checkbox']").eq(1).check()
+				cy.root().type('{esc}')
+			})
+			<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+			cy.getByName('<%= field.fieldName %>ClearBtn')
+			.click()
+			cy.setFileInput('<%= field.fieldName %>', 'integration-test.png', 'image/png')
 			<%_ } else { _%>
-		.getByName('<%= field.fieldName %>').clear().type('<%= fieldValue %>')
+			cy.getByName('<%= field.fieldName %>').clear()
+			cy.getByName('<%= field.fieldName %>').type('<%= fieldValue %>')
 			<%_ } _%>
 		<%_ } _%>
 	<%_ } _%>
@@ -273,17 +283,18 @@ _%>
 				relationshipFieldKey = relationship.relationshipName;
 			}
 	_%>
-		.getByName('<%= relationshipFieldKey %>')
-		.click()
-		.getByTestId('<%= relationshipFieldKey %>-bg')
-		.type('{esc}', {force: true})
+			cy.getByName('<%= relationshipFieldKey %>')
+			.click()
+			cy.getByTestId('<%= relationshipFieldKey %>-bg')
+			.type('{esc}', {force: true})
 	<%_
 		}
 	_%>
-		cy.getByTestId('add<%= entityAngularName %>Form')
-			.contains('Update <%= entityClassHumanized %>')
-			.should('not.be.disabled')
-			.click()
+			cy.root()
+				.contains('Update <%= entityClassHumanized %>')
+				.should('not.be.disabled')
+				.click()
+		})
 
 		cy.getByTestId('toast-success').contains(
 			'is updated with identifier'

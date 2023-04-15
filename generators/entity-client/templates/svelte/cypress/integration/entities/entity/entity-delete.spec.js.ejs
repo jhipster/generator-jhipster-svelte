@@ -57,25 +57,24 @@ _%>)
 			Cypress.env('ADMIN_USERNAME'),
 			Cypress.env('ADMIN_PASSWORD')
 		)
-        cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
-        cy.visit('/entities/<%= entityFolderName %>')
-        cy.wait('@get<%= entityClassPlural %>')
-        // eslint-disable-next-line
-        cy.wait(100)
-        cy.getByTestId('<%= entityInstance %>Table')
-            .get('td:nth-child(1)').each(($el, index, $list) => {
-                const text = $el.text();
-                if(text.includes(dynamicId)) {
-                    cy.getByTestId('<%= entityInstance %>Table')
-                        .get('td:nth-child(1)')
-                        .eq(index)
-                        .parent()
-                        .trigger('mouseenter')
-                        .within($tr => {
-                            cy.root().get('td').children().getByName('deleteBtn').click()
-                        })
-                }
-        })
+		cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
+		cy.visit('/entities/<%= entityFolderName %>')
+		cy.wait('@get<%= entityClassPlural %>')
+		// eslint-disable-next-line
+		cy.wait(100)
+		cy.getByTestId('<%= entityInstance %>Table')
+		.get('td:nth-child(1)').each(($el, index, $list) => {
+			const text = $el.text();
+			if(text.includes(dynamicId)) {
+				cy.getByTestId('<%= entityInstance %>Table')
+					.get('td:nth-child(1)')
+					.eq(index)
+					.parent().within($tr => {
+						cy.root().trigger('mouseenter')
+						cy.root().get('td').children().getByName('deleteBtn').click()
+					})
+			}
+		})
 	})
 
 	after(function () {
@@ -94,11 +93,11 @@ _%>)
 	_%>
 	})
 
-    <%_ if (authenticationType === 'oauth2') { _%>
-    afterEach(() => {
-        cy.logoutByApi()
-    })
-    <%_ } _%>
+	<%_ if (authenticationType === 'oauth2') { _%>
+	afterEach(() => {
+		cy.logoutByApi()
+	})
+	<%_ } _%>
 
 	it('should display delete <%= entityAngularName %> dialog', () => {
 		cy.getByTestId('svlModal').within(() => {
@@ -117,7 +116,9 @@ _%>)
 	})
 
 	it('should close the dialog without deleting <%= entityAngularName %>', () => {
-		cy.getByTestId('svlModal').within(() => cy.getByName('cancelBtn').click())
+		cy.getByTestId('svlModal').within(() => {
+			cy.getByName('cancelBtn').click()
+		})
 		cy.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')
