@@ -44,19 +44,17 @@ describe('User Management list page', () => {
 	it('should display "user" user record in the table', () => {
 		cy.getByTestId('userMgmtTable')
 			.contains('td', 'user@localhost')
-			.parent()
-			.within($tr => {
-				cy.root()
-					.get('td')
+			.parent().within($tr => {
+				cy.get('td')
 					.eq(1)
 					.should('contain', 'user')
-					.get('td')
+				cy.get('td')
 					.eq(2)
 					.should('contain', 'user@localhost')
-					.get('td')
+				cy.get('td')
 					.eq(3)
 					.should('contain', 'ROLE_USER')
-					.get('td')
+				cy.get('td')
 					.eq(5)
 					.should('contain', 'system')
 			})
@@ -65,11 +63,9 @@ describe('User Management list page', () => {
 	it('should not allow actions on the current logged in user', () => {
 		cy.getByTestId('userMgmtTable')
 			.contains('td', 'admin@localhost')
-			.parent()
-			.trigger('mouseenter')
-			.within($tr => {
-				cy.root()
-					.get('td')
+			.parent().within($tr => {
+				cy.root().trigger('mouseenter')
+				cy.get('td')
 					.eq(6)
 					.children()
 					.getByName('toggleUserAcctBtn')
@@ -86,11 +82,9 @@ describe('User Management list page', () => {
 	it('should allow deactivation of "user" account record', () => {
 		cy.getByTestId('userMgmtTable')
 			.contains('td', 'user@localhost')
-			.parent()
-			.trigger('mouseenter')
-			.within($tr => {
-				cy.root()
-					.get('td')
+			.parent().within($tr => {
+				cy.root().trigger('mouseenter')
+				cy.get('td')
 					.eq(6)
 					.children()
 					.getByName('toggleUserAcctBtn')
