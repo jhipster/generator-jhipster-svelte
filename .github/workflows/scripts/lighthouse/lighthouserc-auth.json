@@ -8,7 +8,9 @@
 				"non-composited-animations": "off",
 				"content-width": "off",
 				"csp-xss": "off",
-				"uses-passive-event-listeners": "off"
+				"uses-passive-event-listeners": "off",
+				"bf-cache": "off",
+				"th-has-data-cells": ["warn", { "minScore": 0.9 }]
 			}
 		},
 		"collect": {
@@ -31,7 +33,8 @@
 			"isSinglePageApplication": true,
 			"settings": {
 				"disableStorageReset": true
-			}
+			},
+			"chromePath": "/usr/bin/google-chrome-stable"
 		},
 		"upload": {
 			"target": "temporary-public-storage"
