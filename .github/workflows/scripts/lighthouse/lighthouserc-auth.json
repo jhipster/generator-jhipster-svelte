@@ -9,8 +9,8 @@
 				"content-width": "off",
 				"csp-xss": "off",
 				"uses-passive-event-listeners": "off",
-				"bf-cache": "off",
-				"th-has-data-cells": ["warn", { "minScore": 0.9 }]
+				"bf-cache": "warn",
+				"th-has-data-cells": "warn"
 			}
 		},
 		"collect": {

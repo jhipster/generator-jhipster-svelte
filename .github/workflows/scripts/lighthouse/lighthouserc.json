@@ -8,7 +8,7 @@
 				"unsized-images": "off",
 				"csp-xss": "off",
 				"uses-passive-event-listeners": "off",
-				"bf-cache": "off"
+				"bf-cache": "warn"
 			}
 		},
 		"collect": {
