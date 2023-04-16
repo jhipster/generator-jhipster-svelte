@@ -40,6 +40,7 @@
 		"chalk": "4.1.2",
 		"generator-jhipster": "7.9.3",
 		"prettier": "2.7.1",
+		"prettier-plugin-organize-imports": "3.2.2",
 		"prettier-plugin-svelte": "2.10.0",
 		"semver": "7.4.0"
 	},
