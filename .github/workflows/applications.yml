@@ -532,6 +532,9 @@ jobs:
             - name: Run Lighthouse tests - Authenticated Pages
               run: |
                   cd "$HOME/svelte-app"
+                  echo "the google-chrome-stable path: "
+                  which google-chrome-stable
+                  echo "checkout above command execution result!"
                   cp $TEST_SCRIPTS_PATH/lighthouse/lighthouserc-auth.json lighthouserc.json
                   cp $TEST_SCRIPTS_PATH/lighthouse/puppeteer-auth.cjs puppeteer-auth.cjs
                   lhci autorun
