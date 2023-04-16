@@ -12,20 +12,18 @@ _%>
 	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
-	import Page from 'jhipster-svelte-library/page/page.svelte'
-	import Record from 'jhipster-svelte-library/page/record.svelte'
-	import Button from 'jhipster-svelte-library/button.svelte'
-	import Icon from 'jhipster-svelte-library/icon.svelte'
+	import { Page, Record } from 'jhipster-svelte-library/page'
+	import { Button, Icon } from 'jhipster-svelte-library'
 <%_ const timedFieldType = fields.find(field => (field.fieldTypeTimed || field.fieldTypeLocalDate));
 	const durationFieldType = fields.find(field => field.fieldTypeDuration);
 	const bothTimedAndDuration = timedFieldType && durationFieldType;
 	const binaryFieldType = fields.find(field => ((field.fieldTypeBinary && field.blobContentTypeImage) || (field.fieldTypeBinary && field.blobContentTypeAny)));
 	if (timedFieldType || durationFieldType ) { _%>
-	import { <%_ if (timedFieldType) { _%> formatDate<%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } else { _%> <%_ } _%><%_ if (durationFieldType) { _%> formatDurationType <%_ } _%> } from 'jhipster-svelte-library/utils/date-util'
+	import { <%_ if (timedFieldType) { _%> formatDate<%_ } _%><%_ if (bothTimedAndDuration) { _%>, <%_ } else { _%> <%_ } _%><%_ if (durationFieldType) { _%> formatDurationType <%_ } _%> } from 'jhipster-svelte-library/utils'
 <%_ }
 	if (binaryFieldType) {
 _%>
-	import BinaryRecord from 'jhipster-svelte-library/page/binary-record.svelte'
+	import { BinaryRecord } from 'jhipster-svelte-library/page'
 <%_ } _%>
 
 	$: id = $page && $page.params && $page.params.id

@@ -16,6 +16,11 @@ const config = {
 			serviceWorker: '<%= CLIENT_MAIN_SRC_DIR %>app/service-worker',
 			appTemplate: '<%= CLIENT_MAIN_SRC_DIR %>app/app.html'
 		},
+		alias: {
+			'$lib': '<%= CLIENT_MAIN_SRC_DIR %>app/lib',
+			'$lib/*': '<%= CLIENT_MAIN_SRC_DIR %>app/lib/*'
+		},
+		outDir: '<%= BUILD_DIR %>svelte-kit',
 	}
 };
 

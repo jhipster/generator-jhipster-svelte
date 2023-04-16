@@ -1,5 +1,5 @@
 {
-	"printWidth": 80,
+	"printWidth": 100,
 	"tabWidth": 4,
 	"useTabs": true,
 <%_
@@ -7,16 +7,20 @@ if (!skipClient) { _%>
 	"semi": false,
 	"singleQuote": true,
 	"arrowParens": "avoid",
-	"svelteSortOrder": "options-scripts-styles-markup",
-	"svelteStrictMode": true,
-	"svelteBracketNewLine": true,
-	"svelteAllowShorthand": true,
+	"plugins": ["prettier-plugin-svelte"],
+	"pluginSearchDirs": ["."],
 <%_ } _%>
 	"overrides": [
 		{
 			"files": "src/test/resources/**/*.html",
 			"options": {
 				"printWidth": 140
+			}
+		},
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
 			}
 		}<% if (!skipServer && javaPrettier) { %>,
 		{

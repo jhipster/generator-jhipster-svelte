@@ -1,11 +1,11 @@
 import { sveltekit } from '@sveltejs/kit/vite'
+import { defineConfig } from 'vite';
 <%_
 if(this.blueprintConfig.swaggerUi) { _%>
 import copy from 'rollup-plugin-copy'
 <%_ } _%>
 
-/** @type {import('vite').UserConfig} */
-const config = {
+export default defineConfig({
 	server: {
 		proxy: {
 			'/api': {
@@ -35,9 +35,9 @@ const config = {
                         'node_modules/swagger-ui-dist/*.{js,css,html,png}',
                         '!node_modules/swagger-ui-dist/**/index.html',
                         'node_modules/axios/dist/axios.min.js',
-                        'src/main/webapp/swagger-ui/index.html',
+                        '<%= CLIENT_MAIN_SRC_DIR %>swagger-ui/index.html',
                     ],
-                    dest: '.svelte-kit/output/client/swagger-ui',
+                    dest: '<%= BUILD_DIR %>svelte-kit/output/client/swagger-ui',
                 },
             ],
         }),
@@ -46,6 +46,4 @@ const config = {
 	ssr: {
 		noExternal: ['jhipster-svelte-library'],
 	},
-}
-
-export default config
+});

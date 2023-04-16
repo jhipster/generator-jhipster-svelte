@@ -6,24 +6,17 @@ const relationshipFields = relationships.filter(relationship => (
 const containsRelationshipField = relationshipFields && relationshipFields.length;
 _%>
 <script>
-	import TableRowActions from 'jhipster-svelte-library/table/table-row-actions.svelte'
-<%_ if (!paginationNo) { _%>
-	import Sort from 'jhipster-svelte-library/table/sort.svelte'
-<%_ } _%>
-	import Table from 'jhipster-svelte-library/table/table.svelte'
-	import TableData from 'jhipster-svelte-library/table/table-data.svelte'
-	import TableHeader from 'jhipster-svelte-library/table/table-header.svelte'
-	import TableRow from 'jhipster-svelte-library/table/table-row.svelte'
+	import { Table, TableData, TableHeader, TableRow, TableRowActions<% if (!paginationNo) { %>, Sort<% } %> } from 'jhipster-svelte-library/table'
 	<%_ const timedFieldType = fields.find(field => (field.fieldTypeTimed || field.fieldTypeLocalDate));
 	const durationFieldType = fields.find(field => field.fieldTypeDuration);
 	const bothTimedAndDuration = timedFieldType && durationFieldType;
 	const binaryFieldType = fields.find(field => ((field.fieldTypeBinary && field.blobContentTypeImage) || (field.fieldTypeBinary && field.blobContentTypeAny)));
 	if (timedFieldType || durationFieldType ) { _%>
-	import { <% if (timedFieldType) { %>formatDate<% } %><% if (bothTimedAndDuration) { %>, <% } else { %><% } %><% if (durationFieldType) { %> formatDurationType <% } %> } from 'jhipster-svelte-library/utils/date-util'
+	import { <% if (timedFieldType) { %>formatDate<% } %><% if (bothTimedAndDuration) { %>, <% } else { %><% } %><% if (durationFieldType) { %> formatDurationType <% } %> } from 'jhipster-svelte-library/utils'
 	<%_ }
 	if (binaryFieldType) {
 	_%>
-	import BinaryRecord from 'jhipster-svelte-library/page/binary-record.svelte'
+	import { BinaryRecord } from 'jhipster-svelte-library/page'
 	<%_ } _%>
 	export let <%= entityInstancePlural %> = []
 	<%_ if (!paginationNo) { _%>

@@ -14,27 +14,20 @@ _%>
 	import { createEventDispatcher } from 'svelte'
 	import { faBan, faSave } from '@fortawesome/free-solid-svg-icons'
 
-	import Button from 'jhipster-svelte-library/button.svelte'
-	import Icon from 'jhipster-svelte-library/icon.svelte'
-	import InputControl from 'jhipster-svelte-library/input-control.svelte'
-	<%_ if (containsBooleanField) { _%>
-	import CheckboxControl from 'jhipster-svelte-library/checkbox-control.svelte'
-	<%_ } _%>
-	<%_ if (containsEnumField || containsRelationshipField) { _%>
-	import SelectControl from 'jhipster-svelte-library/select-control.svelte'
-	<%_ } _%>
-	import Form from 'jhipster-svelte-library/page/form.svelte'
+	import { Button, Icon, InputControl<% if (containsBooleanField) { %>, CheckboxControl<% } %><% if (containsEnumField || containsRelationshipField) { %>, SelectControl<% } %> } from 'jhipster-svelte-library'
+	import { Form } from 'jhipster-svelte-library/page'
+
 	<%_	for (field of fields.filter(field => field.fieldIsEnum)) { _%>
 	import <%= field.fieldType %> from '$lib/entities/enums/<%= field.fieldType.toLowerCase() %>'
 	<%_ } _%>
 	<%_ if (containsBlobField) { _%>
-	import { getBase64FileData } from 'jhipster-svelte-library/utils/data-util'
+	import { getBase64FileData } from 'jhipster-svelte-library/utils'
 	<%_ } _%>
 	<%_ if (containsInstantField) { _%>
 	import {
 		formatToDatetimeLocalInput,
 		parseFromDatetimeLocalInput,
-	} from 'jhipster-svelte-library/utils/date-util'
+	} from 'jhipster-svelte-library/utils'
 	<%_ } _%>
 
 	export let <%= entityInstance %> = {

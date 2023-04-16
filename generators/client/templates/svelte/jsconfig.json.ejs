@@ -1,11 +1,15 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
+	"extends": "./<%= BUILD_DIR %>svelte-kit/tsconfig.json",
 	"compilerOptions": {
-		"baseUrl": ".",
-		"paths": {
-			"$lib": ["<%= CLIENT_MAIN_SRC_DIR %>app/lib"],
-			"$lib/*": ["<%= CLIENT_MAIN_SRC_DIR %>app/lib/*"]
-		}
+		"allowJs": true,
+		"checkJs": false,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"baseUrl": "."
 	},
 	"include": ["<%= CLIENT_MAIN_SRC_DIR %>app/**/*.js", "<%= CLIENT_MAIN_SRC_DIR %>app/**/*.svelte"]
 }

@@ -1,5 +1,5 @@
 import { serverUrl } from '$lib/utils/env'
-import { request } from 'jhipster-svelte-library/utils/request'
+import { request } from 'jhipster-svelte-library/utils'
 
 export default {
 	fetchUserDetails: (page, size, sortPredicate, sortOrder) => {
