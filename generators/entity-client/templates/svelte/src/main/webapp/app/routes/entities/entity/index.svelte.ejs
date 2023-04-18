@@ -4,16 +4,11 @@
 	import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
-	import Page from 'jhipster-svelte-library/page/page.svelte'
-	import Button from 'jhipster-svelte-library/button.svelte'
-	import Icon from 'jhipster-svelte-library/icon.svelte'
+	import { Button, Icon } from 'jhipster-svelte-library'
+	import { Page, DeleteModal<% if (searchEngine) { %>, SearchForm<% } %> } from 'jhipster-svelte-library/page'
 <%_ if (!paginationNo) { _%>
-	import Pagination from 'jhipster-svelte-library/table/pagination.svelte'
+	import { Pagination } from 'jhipster-svelte-library/table'
 <%_ } _%>
-<%_ if (searchEngine) { _%>
-	import SearchForm from 'jhipster-svelte-library/page/search-form.svelte'
-<%_ } _%>
-	import DeleteModal from 'jhipster-svelte-library/page/delete-modal.svelte'
 
 	import <%= entityAngularName %>Table from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-table.svelte'
 

@@ -8,9 +8,9 @@ const containsRelationshipField = relationshipFields && relationshipFields.lengt
 _%>
 <script>
 	import { goto } from '$app/navigation'
+	import { Page } from 'jhipster-svelte-library/page'
 
 	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
-	import Page from 'jhipster-svelte-library/page/page.svelte'
 	import <%= entityAngularName %>Form from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-form.svelte'
 	<%_
 	if(containsRelationshipField) {

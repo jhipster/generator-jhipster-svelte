@@ -1,8 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
-	import Button from 'jhipster-svelte-library/button.svelte'
-	import InputControl from 'jhipster-svelte-library/input-control.svelte'
-	import Form from 'jhipster-svelte-library/page/form.svelte'
+	import { Button, InputControl } from 'jhipster-svelte-library'
+	import { Form } from 'jhipster-svelte-library/page'
 
 	export let user = { firstName: '', lastName: '', email: '' }
 

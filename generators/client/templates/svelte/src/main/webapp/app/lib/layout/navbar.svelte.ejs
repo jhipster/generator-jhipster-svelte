@@ -2,15 +2,14 @@
 	import { faBars, faSignInAlt<% if (authenticationType !== 'oauth2' && !skipUserManagement) { %>, faUserPlus<% } %> } from '@fortawesome/free-solid-svg-icons'
 	import { page } from '$app/stores'
 	import { browser } from '$app/environment'
-	import NavItem from 'jhipster-svelte-library/layout/nav-item.svelte'
+	import { Icon } from 'jhipster-svelte-library'
+	import { NavItem, ThemeModeToggle } from 'jhipster-svelte-library/layout'
 
-	import Icon from 'jhipster-svelte-library/icon.svelte'
 	import auth from '$lib/auth/auth-store'
 	import AccountMenu from '$lib/account/account-menu.svelte'
 	import AdminMenu from '$lib/admin/admin-menu.svelte'
 	import EntityMenu from '$lib/entities/entity-menu.svelte'
 	import RoleGuard from '$lib/auth/role-guard.svelte'
-	import ThemeModeToggle from 'jhipster-svelte-library/layout/theme-mode-toggle.svelte'
 
 	let isToolbarOpen = false
 

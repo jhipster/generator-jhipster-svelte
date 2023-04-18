@@ -2,9 +2,9 @@
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
+	import { Page } from 'jhipster-svelte-library/page'
 
 	import userService from '$lib/admin/user-management/user-service'
-	import Page from 'jhipster-svelte-library/page/page.svelte'
 	import UserForm from '$lib/admin/user-management/user-form.svelte'
 
 	$: id = $page && $page.params && $page.params.id

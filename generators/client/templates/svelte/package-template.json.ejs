@@ -12,6 +12,8 @@
 		"cleanup": "rimraf <%= DIST_DIR %>",
 		"start": "vite dev --port 9000 --open true",
 		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest <%= CLIENT_MAIN_SRC_DIR %>",
 		"test:watch": "npm run test -- --watch",
 		"e2e": "npm run e2e:ci -- --headed",

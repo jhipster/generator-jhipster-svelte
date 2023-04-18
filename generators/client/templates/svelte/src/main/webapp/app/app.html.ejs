@@ -7,13 +7,13 @@
 		<title><%= baseName %></title>
 		<link
 			rel="manifest"
-			href="/web-manifest.json"
+			href="%sveltekit.assets%/web-manifest.json"
 			crossorigin="use-credentials"
 		/>
-		<link rel="icon" type="image/ico" href="/favicon.ico" />
+		<link rel="icon" type="image/ico" href="%sveltekit.assets%/favicon.ico" />
 		%sveltekit.head%
 	</head>
-	<body>
-		<div>%sveltekit.body%</div>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
