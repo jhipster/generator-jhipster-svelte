@@ -11,7 +11,7 @@
 		"autoprefixer": "10.4.14",
 		"cross-env": "7.0.3",
 		"cypress": "12.9.0",
-		"esbuild": "0.17.16",
+		"esbuild": "0.17.17",
 		"eslint": "8.38.0",
 		"eslint-plugin-cypress": "2.13.2",
 		"eslint-plugin-jest-dom": "4.0.3",
