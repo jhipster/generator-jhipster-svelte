@@ -19,8 +19,12 @@ export default defineConfig({
         <%_ if (authenticationType === 'oauth2') { _%>
             '/oauth2': {
                 target: 'http://localhost:8080',
-                changeOrigin: true,
+                changeOrigin: false,
             },
+			'/login/oauth2': {
+				target: 'http://localhost:8080',
+				changeOrigin: false,
+			},
         <%_ } _%>
 		},
 	},
