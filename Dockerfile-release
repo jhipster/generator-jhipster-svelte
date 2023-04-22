@@ -35,8 +35,8 @@ RUN \
 
 RUN \
 	deluser --remove-home node \
-	&& addgroup -S jsvelte -g ${GID} \
-  	&& adduser -S -G jsvelte -u ${UID} jsvelte
+	&& (addgroup -S jsvelte -g ${GID} || addgroup -S jsvelte ) \
+   	&& (adduser -S -G jsvelte -u ${UID} jsvelte || adduser -S -G jsvelte jsvelte)
 
 RUN \
 	mkdir -p $APP_PATH \
