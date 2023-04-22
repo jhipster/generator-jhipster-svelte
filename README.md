@@ -83,7 +83,7 @@ npm update -g generator-jhipster-svelte
 -   JHipster Svelte blueprint exposes a `cli` to use the correct version of `JHipster`. Run the below command to generate new applications (`interactive` approach):
 
     ```bash
-    shipster
+    jsvelte
     ```
 
 -   Alternatively, you can also use the application `JDL` to generate new applications (`config` approach). Refer to [JDL application](https://www.jhipster.tech/jdl/applications) documentation for all supported options.
@@ -197,16 +197,16 @@ npm update -g generator-jhipster-svelte
 
     Refer to [JDL entity fields](https://www.jhipster.tech/jdl/entities-fields) documentation for all supported entity data types and constraints. Refer to [JDL relationships](https://www.jhipster.tech/managing-relationships/) documentation for supported relationships and syntax. Refer [JHipster micro-services](https://www.jhipster.tech/microservices-architecture/) documentation for all supported components.
 
-    Pass `import-jdl` option along the file path to `shipster` cli to generate new application:
+    Pass `import-jdl` option along the file path to `jsvelte` cli to generate new application:
 
     ```bash
-    shipster import-jdl app.jdl
+    jsvelte import-jdl app.jdl
     ```
 
     To generate Swagger UI, pass `--swagger-ui` option:
 
 -   ```bash
-      shipster import-jdl app.jdl --swagger-ui
+      jsvelte import-jdl app.jdl --swagger-ui
     ```
 
 -   If you have already setup [JHipster](https://www.jhipster.tech/installation/) on your workstation, then, run the below command (it overrides to use the global `JHipster` version). Be cautious to use compatible `JHipster Svelte` and `JHipster` versions.
@@ -258,13 +258,13 @@ docker run -it --rm -v $PWD:/app jhipster/jhipster-svelte
     -   To run unit test cases, use the command:
 
     ```sh
-    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/jhipster-svelte clean test
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jsvelte/.m2 --entrypoint ./mvnw jhipster/jhipster-svelte clean test
     ```
 
     -   To start the application using the default `dev` profile, use the command:
 
     ```sh
-    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/jhipster-svelte -DskipTests
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jsvelte/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/jhipster-svelte -DskipTests
     ```
 
     Access application with http://localhost:8080/
@@ -272,7 +272,7 @@ docker run -it --rm -v $PWD:/app jhipster/jhipster-svelte
 -   If you would like to access the container file system, you can also attach a bourne shell:
 
 ```sh
-docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 --entrypoint sh jhipster/jhipster-svelte
+docker run -it --rm -v $PWD:/app -v ~/.m2:/home/jsvelte/.m2 --entrypoint sh jhipster/jhipster-svelte
 ```
 
 ## 🛠️ Local Development
@@ -306,7 +306,7 @@ mkdir my-app && cd my-app
 npm link generator-jhipster-svelte
 npm link generator-jhipster (Optional: Needed only if you are using a non-released JHipster version)
 
-shipster
+jsvelte
 
 ```
 

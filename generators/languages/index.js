@@ -14,7 +14,7 @@ module.exports = class extends LanguagesGenerator {
 			this.error(
 				`This is a JHipster blueprint and should be used only like ${chalk.yellow(
 					'jhipster --blueprints svelte'
-				)} or using cli ${chalk.yellow('shipster')}`
+				)} or using cli ${chalk.yellow('jsvelte')}`
 			);
 		}
 
