@@ -1,11 +1,7 @@
 name: Sync JHipster Svelte Sample Application
-on:
-    push:
-        tags:
-            - 'v*'
+on: [workflow_dispatch]
 jobs:
     sample-svelte-app:
-        needs: publish-svelte-blueprint
         runs-on: ubuntu-latest
         timeout-minutes: 20
         env:
