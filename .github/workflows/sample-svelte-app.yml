@@ -29,6 +29,7 @@ jobs:
             - name: Generate sample application
               run: |
                   cd $GITHUB_WORKSPACE/sample-app
+                  rm -rf package.json package-lock.json
                   cp $TEST_SCRIPTS_PATH/sample-svelte-app.json .yo-rc.json
                   docker run --rm -v $PWD:/app jhipster/jhipster-svelte --no-insight --force
             - name: Commit sample svelte application
