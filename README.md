@@ -14,8 +14,6 @@ Refer to the [changelog](./CHANGELOG.md) to gain more insights into each release
 
 ## Supported flows and integrations
 
-> Under active development
-
 Following integrations are supported:
 
     ✅ Monolithic, Micro-services architecture applications
