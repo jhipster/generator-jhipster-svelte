@@ -2,17 +2,27 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
-## Current
+## [1.0.0] - 2023-4-23
+
+### BREAKING CHANGES
+
+-   ✅ JHipster Svelte blueprint CLI has been renamed to `jsvelte` [#1655](https://github.com/jhipster/generator-jhipster-svelte/pull/1655)
 
 ### Fixed
 
+-   ✅ Fix OIDC redirection in the dev mode. [#1651](https://github.com/jhipster/generator-jhipster-svelte/pull/1651)
 -   ✅ Fix issues observed during `npm start` execution. [#1480](https://github.com/jhipster/generator-jhipster-svelte/pull/1480)
--   ✅ Fix GitHub Actions CI build by downgrading `node.js` to use `v16.x` in the docker image. JHipster CLI is not yet compatible with `v18.x`. [#1501](https://github.com/jhipster/generator-jhipster-svelte/pull/1501)
+-   ✅ Fix GitHub Actions CI build by downgrading `node.js` to use `v16.x` in the docker image. JHipster CLI is not yet compatible with the nodejs `v18.x`. [#1501](https://github.com/jhipster/generator-jhipster-svelte/pull/1501)
 
 ### Changed
 
+-   ✅ Use the `JHipster Svelte` name consistently in the generated applications and docker images. Docker images shall be available under the [DockerHub](https://hub.docker.com/r/jhipster/jhipster-svelte) repository. [#1654](https://github.com/jhipster/generator-jhipster-svelte/pull/1654)
+-   ✅ Use `Jest` default ESM resolver in unit tests. It removes the dependency on the `jest-svelte-resolver` package. [#1639](https://github.com/jhipster/generator-jhipster-svelte/pull/1639)
+-   ✅ JHipster Svelte blueprint now generates applications with `Svelte/Kit` `1.15.x` GA release. [#1639](https://github.com/jhipster/generator-jhipster-svelte/pull/1639)
+-   ✅ Upgrade `Cypress` dependency to `12.9.x` [#1630](https://github.com/jhipster/generator-jhipster-svelte/pull/1630)
+-   ✅ Upgrade `Eslint` and other third party dependencies [#1611](https://github.com/jhipster/generator-jhipster-svelte/pull/1611)
+-   ✅ Upgrade `Svelte/Kit`, `Eslint`, and other third party dependencies [#1501](https://github.com/jhipster/generator-jhipster-svelte/pull/1501)
 -   ✅ Upgrade `Cypress` dependency to `11.1.x` [#1501](https://github.com/jhipster/generator-jhipster-svelte/pull/1501)
--   ✅ Upgrade `Svelte/Kit`, `Eslint` and other third party dependencies [#1501](https://github.com/jhipster/generator-jhipster-svelte/pull/1501)
 
 ## [0.10.2] - 2022-10-2
 
