@@ -68,7 +68,7 @@ module.exports = class extends AppGenerator {
 					)}\n`
 				);
 				this.log(chalk.white.bold('                            https://www.jhipster.tech\n'));
-				this.log(chalk.white('Welcome to Svelte Hipster ') + chalk.yellow(`v${this.blueprintjs.version}`));
+				this.log(chalk.white('Welcome to JHipster Svelte ') + chalk.yellow(`v${this.blueprintjs.version}`));
 				this.log(chalk.white(`Application files will be generated in folder: ${chalk.yellow(process.cwd())}`));
 				this.log(
 					chalk.keyword('orange')(
@@ -77,7 +77,7 @@ module.exports = class extends AppGenerator {
 				);
 				this.log(
 					chalk.white(
-						`  If you find Svelte Hipster useful, support with a star and follow ${chalk.yellow(
+						`  If you find JHipster Svelte useful, support with a star and follow ${chalk.yellow(
 							'https://github.com/jhipster/generator-jhipster-svelte'
 						)}`
 					)

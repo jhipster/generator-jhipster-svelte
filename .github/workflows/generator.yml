@@ -1,4 +1,4 @@
-name: Svelte Generator
+name: JHipster Svelte Generator
 on:
     push:
         branches:
@@ -19,7 +19,7 @@ jobs:
                 node_version: [16.16]
                 os: [ubuntu-latest]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node_version }}
@@ -27,16 +27,16 @@ jobs:
             - run: npm run lint
     publish-docker-image:
         if: ${{ !github.head_ref }}
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
         steps:
-            - name: Checkout svelte generator repository
-              uses: actions/checkout@v2
+            - name: Checkout JHipster Svelte generator repository
+              uses: actions/checkout@v3
             - uses: docker/metadata-action@v3
               id: meta
               with:
-                  images: jhipster/svelte-hipster
+                  images: jhipster/jhipster-svelte
                   tags: |
                       type=ref,event=branch
             - name: Login to DockerHub
@@ -44,7 +44,7 @@ jobs:
               with:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
-            - name: Build and push Svelte Hipster main branch image
+            - name: Build and push JHipster Svelte main branch image
               uses: docker/build-push-action@v2
               with:
                   context: .

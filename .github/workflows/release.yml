@@ -1,15 +1,15 @@
-name: Release svelte blueprint
+name: Publish JHipster Svelte blueprint
 on:
     release:
-        types: [created, edited]
+        types: [created]
 jobs:
     publish-svelte-blueprint:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: true
         steps:
-            - name: Checkout svelte generator repository
-              uses: actions/checkout@v2
+            - name: Checkout JHipster Svelte generator repository
+              uses: actions/checkout@v3
             - uses: actions/setup-node@v3
               with:
                   node-version: '16.16'
@@ -20,16 +20,16 @@ jobs:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     publish-docker-image:
         needs: publish-svelte-blueprint
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
         steps:
-            - name: Checkout svelte generator repository
-              uses: actions/checkout@v2
+            - name: Checkout JHipster Svelte generator repository
+              uses: actions/checkout@v3
             - uses: docker/metadata-action@v3
               id: meta
               with:
-                  images: jhipster/svelte-hipster
+                  images: jhipster/jhipster-svelte
                   tags: |
                       type=ref,event=tag
             - name: Login to DockerHub
@@ -37,7 +37,7 @@ jobs:
               with:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
-            - name: Build and push Svelte Hispter release image
+            - name: Build and push JHipster Svelte image
               uses: docker/build-push-action@v2
               with:
                   context: .
@@ -47,7 +47,7 @@ jobs:
                   labels: ${{ steps.meta.outputs.labels }}
     sample-svelte-app:
         needs: publish-svelte-blueprint
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         timeout-minutes: 20
         env:
             TEST_SCRIPTS_PATH: ${{ github.workspace }}/main/.github/workflows/scripts
@@ -57,8 +57,8 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: '16.x'
-            - name: Checkout svelte generator repository
-              uses: actions/checkout@v2
+            - name: Checkout JHipster Svelte generator repository
+              uses: actions/checkout@v3
               with:
                   path: main
             - name: Checkout sample svelte app repository
@@ -67,15 +67,15 @@ jobs:
                   repository: jhipster/jhipster-sample-app-svelte
                   path: sample-app
                   token: ${{ secrets.PAT }}
-            - name: Create Svelte Hipster release docker image
+            - name: Create JHipster Svelte release docker image
               run: |
                   cd $GITHUB_WORKSPACE/main
-                  docker build -f Dockerfile-release -t jhipster/svelte-hipster:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
+                  docker build -f Dockerfile-release -t jhipster/jhipster-svelte:latest --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
             - name: Generate sample application
               run: |
                   cd $GITHUB_WORKSPACE/sample-app
                   cp $TEST_SCRIPTS_PATH/sample-svelte-app.json .yo-rc.json
-                  docker run --rm -v $PWD:/app jhipster/svelte-hipster --no-insight --force
+                  docker run --rm -v $PWD:/app jhipster/jhipster-svelte --no-insight --force
             - name: Commit sample svelte application
               run: |
                   cd $GITHUB_WORKSPACE/sample-app

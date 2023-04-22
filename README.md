@@ -1,4 +1,4 @@
-# Svelte Hipster
+# JHipster Svelte
 
 [![NPM version][npm-image]][npm-url] [![code style: prettier][prettier-image]][prettier-url] [![Generated applications build status][github-actions-generated-applications]][github-actions-url]
 
@@ -80,7 +80,7 @@ npm update -g generator-jhipster-svelte
 
 ## Usage
 
--   Svelte Hipster blueprint exposes a `cli` to use the correct version of `JHipster`. Run the below command to generate new applications (`interactive` approach):
+-   JHipster Svelte blueprint exposes a `cli` to use the correct version of `JHipster`. Run the below command to generate new applications (`interactive` approach):
 
     ```bash
     shipster
@@ -209,7 +209,7 @@ npm update -g generator-jhipster-svelte
       shipster import-jdl app.jdl --swagger-ui
     ```
 
--   If you have already setup [JHipster](https://www.jhipster.tech/installation/) on your workstation, then, run the below command (it overrides to use the global `JHipster` version). Be cautious to use compatible `Svelte Hipster` and `JHipster` versions.
+-   If you have already setup [JHipster](https://www.jhipster.tech/installation/) on your workstation, then, run the below command (it overrides to use the global `JHipster` version). Be cautious to use compatible `JHipster Svelte` and `JHipster` versions.
 
     ```bash
     jhipster --blueprints svelte
@@ -217,32 +217,32 @@ npm update -g generator-jhipster-svelte
 
 ## JHipster Compatibility Matrix
 
-| `JHipster` | `Svelte Hipster` |
-| ---------- | ---------------- |
-| `6.10.5`   | `0.1` - `0.2.1`  |
-| `7.0.x`    | `0.3` - `0.4`    |
-| `7.1.x`    | `0.5`            |
-| `7.3.x`    | `0.6`            |
-| `7.4.x`    | `0.7` - `0.7.1`  |
-| `7.8.x`    | `0.8` - `0.9`    |
-| `7.9.x`    | >= `0.10.1`      |
+| `JHipster` | `JHipster Svelte` |
+| ---------- | ----------------- |
+| `6.10.5`   | `0.1` - `0.2.1`   |
+| `7.0.x`    | `0.3` - `0.4`     |
+| `7.1.x`    | `0.5`             |
+| `7.3.x`    | `0.6`             |
+| `7.4.x`    | `0.7` - `0.7.1`   |
+| `7.8.x`    | `0.8` - `0.9`     |
+| `7.9.x`    | >= `0.10.1`       |
 
 ## Docker development
 
-Svelte Hipster docker images are available at [DockerHub](https://hub.docker.com/r/jhipster/svelte-hipster)
+JHipster Svelte docker images are available at [DockerHub](https://hub.docker.com/r/jhipster/jhipster-svelte)
 
 To develop against the latest published release, follow below steps:
 
--   Pull the `Svelte Hipster` docker image:
+-   Pull the `JHipster Svelte` docker image:
 
 ```sh
-docker pull jhipster/svelte-hipster
+docker pull jhipster/jhipster-svelte
 ```
 
 In case, you want to try out the latest code (unpublished), then, pull the image with `main` tag as:
 
 ```sh
-docker pull jhipster/svelte-hipster:main
+docker pull jhipster/jhipster-svelte:main
 ```
 
 -   Create a new directory for your application and run the below command to generate the application:
@@ -250,7 +250,7 @@ docker pull jhipster/svelte-hipster:main
 ```sh
 mkdir svelte-app && cd svelte-app
 
-docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
+docker run -it --rm -v $PWD:/app jhipster/jhipster-svelte
 ```
 
 -   You can also run the generated application from within the container. Following examples consider `maven` as the build tool:
@@ -258,13 +258,13 @@ docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
     -   To run unit test cases, use the command:
 
     ```sh
-    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/svelte-hipster clean test
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 --entrypoint ./mvnw jhipster/jhipster-svelte clean test
     ```
 
     -   To start the application using the default `dev` profile, use the command:
 
     ```sh
-    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/svelte-hipster -DskipTests
+    docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 -p 8080:8080 --entrypoint ./mvnw jhipster/jhipster-svelte -DskipTests
     ```
 
     Access application with http://localhost:8080/
@@ -272,7 +272,7 @@ docker run -it --rm -v $PWD:/app jhipster/svelte-hipster
 -   If you would like to access the container file system, you can also attach a bourne shell:
 
 ```sh
-docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 --entrypoint sh jhipster/svelte-hipster
+docker run -it --rm -v $PWD:/app -v ~/.m2:/home/shipster/.m2 --entrypoint sh jhipster/jhipster-svelte
 ```
 
 ## 🛠️ Local Development
