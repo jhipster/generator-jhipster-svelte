@@ -35,18 +35,18 @@ RUN \
 
 RUN \
 	deluser --remove-home node \
-	&& addgroup -S shipster -g ${GID} \
-  	&& adduser -S -G shipster -u ${UID} shipster
+	&& addgroup -S jsvelte -g ${GID} \
+  	&& adduser -S -G jsvelte -u ${UID} jsvelte
 
 RUN \
 	mkdir -p $APP_PATH \
 	&& mkdir -p $SVELTE_PATH \
 	&& mkdir -p $NPM_PATH \
-	&& chown -R shipster:shipster $APP_PATH \
-	&& chown -R shipster:shipster $SVELTE_PATH \
-	&& chown -R shipster:shipster $NPM_PATH
+	&& chown -R jsvelte:jsvelte $APP_PATH \
+	&& chown -R jsvelte:jsvelte $SVELTE_PATH \
+	&& chown -R jsvelte:jsvelte $NPM_PATH
 
-USER shipster
+USER jsvelte
 
 RUN \
 	npm config set prefix "$NPM_PATH" \
@@ -67,4 +67,4 @@ VOLUME ["$APP_PATH"]
 
 EXPOSE 9000 8080
 
-ENTRYPOINT ["shipster"]
+ENTRYPOINT ["jsvelte"]

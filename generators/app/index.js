@@ -33,46 +33,27 @@ module.exports = class extends AppGenerator {
 
 		return {
 			...initPhaseFromJHipster,
+			// prettier-ignore
 			displayLogo() {
 				/* eslint-disable prettier/prettier */
-
 				this.log('\n');
-				this.log(
-					`  ${chalk.keyword('orange')('  ██████╗')}${chalk.green(
-						' ██╗   ██╗ ████████╗ ███████╗   ██████╗ ████████╗ ████████╗ ███████╗'
-					)}`
-				);
-				this.log(
-					`  ${chalk.keyword('orange')(' ██╔════╝')}${chalk.green(
-						' ██║   ██║ ╚══██╔══╝ ██╔═══██╗ ██╔════╝ ╚══██╔══╝ ██╔═════╝ ██╔═══██╗'
-					)}`
-				);
-				this.log(
-					`  ${chalk.keyword('orange')(' ╚█████╗ ')}${chalk.green(
-						' ████████║    ██║    ███████╔╝ ╚█████╗     ██║    ██████╗   ███████╔╝'
-					)}`
-				);
-				this.log(
-					`  ${chalk.keyword('orange')('  ╚═══██╗')}${chalk.green(
-						' ██╔═══██║    ██║    ██╔════╝   ╚═══██╗    ██║    ██╔═══╝   ██╔══██║'
-					)}`
-				);
-				this.log(
-					`  ${chalk.keyword('orange')(' ██████╔╝')}${chalk.green(
-						' ██║   ██║ ████████╗ ██║       ██████╔╝    ██║    ████████╗ ██║  ╚██╗'
-					)}`
-				);
-				this.log(
-					`  ${chalk.keyword('orange')(' ╚═════╝ ')}${chalk.green(
-						' ╚═╝   ╚═╝ ╚═══════╝ ╚═╝       ╚═════╝     ╚═╝    ╚═══════╝ ╚═╝   ╚═╝'
-					)}\n`
-				);
-				this.log(chalk.white.bold('                            https://www.jhipster.tech\n'));
+
+				this.log(`  ${chalk.cyan('      .d88888b.                     .d88888b.')}`);
+				this.log(`  ${chalk.cyan('    d888888888888b.             .d888888888888d')}`);
+				this.log(`  ${chalk.cyan('   888888888888888888.       .888888888888888888')}`);
+				this.log(`  ${chalk.cyan('  8888888888888888888888   8888888888888888888888')}`);
+				this.log(`  ${chalk.cyan('  88888888888888888888888888888888888888888888888')}`);
+				this.log(`  ${chalk.cyan('  8888888888888888888888   8888888888888888888888')}`);
+				this.log(`  ${chalk.cyan('   888888888888888888"       "888888888888888888')}`);
+				this.log(`  ${chalk.cyan('    Y8888888888888P"            "d888888888888P')}`);
+				this.log(`  ${chalk.cyan('      "Y888P8P"                     "Y888P8P"')}\n`);
+
+				this.log(chalk.white.bold('             https://www.jhipster.tech\n'));
 				this.log(chalk.white('Welcome to JHipster Svelte ') + chalk.yellow(`v${this.blueprintjs.version}`));
 				this.log(chalk.white(`Application files will be generated in folder: ${chalk.yellow(process.cwd())}`));
 				this.log(
 					chalk.keyword('orange')(
-						' _______________________________________________________________________________________________________________\n'
+						' _________________________________________________________________________________________________________________________\n'
 					)
 				);
 				this.log(
@@ -84,7 +65,7 @@ module.exports = class extends AppGenerator {
 				);
 				this.log(
 					chalk.green(
-						' _______________________________________________________________________________________________________________\n'
+						' _________________________________________________________________________________________________________________________\n'
 					)
 				);
 			},

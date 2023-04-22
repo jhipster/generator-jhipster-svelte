@@ -37,18 +37,18 @@ RUN \
 
 RUN \
 	deluser --remove-home node \
-	&& (addgroup -S shipster -g ${GID} || addgroup -S shipster ) \
-  	&& (adduser -S -G shipster -u ${UID} shipster || adduser -S -G shipster shipster)
+	&& (addgroup -S jsvelte -g ${GID} || addgroup -S jsvelte ) \
+  	&& (adduser -S -G jsvelte -u ${UID} jsvelte || adduser -S -G jsvelte jsvelte)
 
 RUN \
 	mkdir -p $APP_PATH \
 	&& mkdir -p $SVELTE_PATH \
 	&& mkdir -p $NPM_PATH \
-	&& chown -R shipster:shipster $APP_PATH \
-	&& chown -R shipster:shipster $SVELTE_PATH \
-	&& chown -R shipster:shipster $NPM_PATH
+	&& chown -R jsvelte:jsvelte $APP_PATH \
+	&& chown -R jsvelte:jsvelte $SVELTE_PATH \
+	&& chown -R jsvelte:jsvelte $NPM_PATH
 
-USER shipster
+USER jsvelte
 
 RUN \
 	npm config set prefix "$NPM_PATH" \
