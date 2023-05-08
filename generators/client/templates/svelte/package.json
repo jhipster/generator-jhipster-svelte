@@ -13,7 +13,7 @@
 		"cypress": "12.10.0",
 		"esbuild": "0.17.18",
 		"eslint": "8.39.0",
-		"eslint-plugin-cypress": "2.13.2",
+		"eslint-plugin-cypress": "2.13.3",
 		"eslint-plugin-jest-dom": "4.0.3",
 		"eslint-plugin-svelte3": "4.0.0",
 		"eslint-plugin-testing-library": "5.10.3",
