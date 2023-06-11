@@ -14,7 +14,7 @@
 		"esbuild": "0.17.19",
 		"eslint": "8.42.0",
 		"eslint-plugin-cypress": "2.13.3",
-		"eslint-plugin-jest-dom": "4.0.3",
+		"eslint-plugin-jest-dom": "5.0.1",
 		"eslint-plugin-svelte3": "4.0.0",
 		"eslint-plugin-testing-library": "5.11.0",
 		"husky": "8.0.3",
