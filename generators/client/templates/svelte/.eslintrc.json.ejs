@@ -1,6 +1,7 @@
 {
 	"extends": [
 		"eslint:recommended",
+		"plugin:svelte/recommended",
 		"plugin:cypress/recommended",
 		"plugin:jest-dom/recommended"
 	],
@@ -15,12 +16,8 @@
 		"cypress/globals": true,
 		"jest": true
 	},
-	"plugins": ["svelte3", "cypress", "jest-dom", "testing-library"],
+	"plugins": ["svelte", "cypress", "jest-dom", "testing-library"],
 	"overrides": [
-		{
-			"files": ["**/*.svelte"],
-			"processor": "svelte3/svelte3"
-		},
 		{
 			"files": ["src/**/*.spec.js"],
 			"extends": ["plugin:testing-library/dom"]
