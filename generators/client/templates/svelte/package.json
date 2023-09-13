@@ -19,7 +19,7 @@
 		"eslint-plugin-testing-library": "5.11.0",
 		"husky": "8.0.3",
 		"jest": "29.6.4",
-		"jest-environment-jsdom": "29.6.4",
+		"jest-environment-jsdom": "29.7.0",
 		"jest-junit": "16.0.0",
 		"jest-sonar": "0.2.16",
 		"jhipster-svelte-library": "0.11.2",
