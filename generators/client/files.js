@@ -19,6 +19,7 @@ const svelteFiles = {
 					file: generator => `package-template.json`,
 					renameTo: () => `package.json`,
 				},
+				'jest-setup.js',
 				'jest.config.cjs',
 				'jsconfig.json',
 				'postcss.config.cjs',
