@@ -2,6 +2,17 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
+## [1.1.0] - 2023-10-1
+
+### Fixed
+
+-   ✅ Fixed build step to correctly copy the Swagger UI files [#1823](https://github.com/jhipster/generator-jhipster-svelte/pull/1823)
+
+### Changed
+
+-   ✅ Replaced `eslint-plugin-svelte3` dependency with `eslint-plugin-svelte` [#1824](https://github.com/jhipster/generator-jhipster-svelte/pull/1824)
+-   ✅ Upgraded `Svelte/Kit`, `Eslint`, `Cypress`, `Testing Library`, `Jest` and other third party dependencies [#1861](https://github.com/jhipster/generator-jhipster-svelte/pull/1861)
+
 ## [1.0.0] - 2023-4-23
 
 ### BREAKING CHANGES
