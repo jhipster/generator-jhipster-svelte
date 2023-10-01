@@ -7,8 +7,7 @@ const containsRelationshipField = relationshipFields && relationshipFields.lengt
 const entityFakeData = generateFakeData('cypress');
 const testId = 1000000;
 _%>
-import '@testing-library/jest-dom/extend-expect'
-import {fireEvent, render} from '@testing-library/svelte'
+import {fireEvent, render, waitFor } from '@testing-library/svelte'
 import { screen } from '@testing-library/dom'
 
 import <%= entityAngularName %>Table from './<%= entityFileName %>-table.svelte'
@@ -226,6 +225,6 @@ _%>
 	expect(button).toBeEnabled()
 	expect(button).toHaveClass('hidden')
 
-	await fireEvent.mouseEnter(screen.getByRole('row', { name: /<%= testId %>/i }))
-	expect(button).not.toHaveClass('hidden')
+	fireEvent.mouseEnter(screen.getByRole('row', { name: /<%= testId %>/i }))
+	await waitFor(() => expect(button).not.toHaveClass('hidden'))
 })
