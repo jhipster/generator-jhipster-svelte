@@ -226,5 +226,5 @@ _%>
 	expect(button).toHaveClass('hidden')
 
 	fireEvent.mouseEnter(screen.getByRole('row', { name: /<%= testId %>/i }))
-	waitFor(() => expect(button).not.toHaveClass('hidden'))
+	await waitFor(() => expect(button).not.toHaveClass('hidden'))
 })
