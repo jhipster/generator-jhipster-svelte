@@ -14,8 +14,10 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+		<%_ if(this.blueprintConfig.jest) { _%>
 		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest <%= CLIENT_MAIN_SRC_DIR %>",
 		"test:watch": "npm run test -- --watch",
+		<%_ } _%>
 		"e2e": "npm run e2e:ci -- --headed",
 		"e2e:ci": "cypress run --browser chrome",
         "cy:open": "cypress open --e2e --browser chrome",

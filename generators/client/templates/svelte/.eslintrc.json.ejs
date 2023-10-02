@@ -13,8 +13,9 @@
 		"es2017": true,
 		"browser": true,
 		"node": true,
-		"cypress/globals": true,
+		"cypress/globals": true<%_ if (this.blueprintConfig.jest) { _%>,
 		"jest": true
+		<%_ } _%>
 	},
 	"plugins": ["svelte", "cypress", "jest-dom", "testing-library"],
 	"overrides": [

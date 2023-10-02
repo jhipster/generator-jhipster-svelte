@@ -19,8 +19,6 @@ const svelteFiles = {
 					file: generator => `package-template.json`,
 					renameTo: () => `package.json`,
 				},
-				'jest-setup.js',
-				'jest.config.cjs',
 				'jsconfig.json',
 				'postcss.config.cjs',
 				'svelte.config.js',
@@ -81,6 +79,15 @@ const svelteFiles = {
 			condition: generator => generator.blueprintConfig.swaggerUi,
 			path: FRONTEND_SRC_DIR,
 			templates: ['swagger-ui/index.html'],
+		},
+	],
+	jest: [
+		{
+			condition: generator => generator.blueprintConfig.jest,
+			templates: [
+				{ file: `jest/jest-setup.js`, renameTo: () => `jest-setup.js` },
+				{ file: `jest/jest.config.cjs`, renameTo: () => `jest.config.cjs` },
+			],
 		},
 	],
 	static: [

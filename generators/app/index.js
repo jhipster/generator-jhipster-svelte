@@ -11,20 +11,34 @@ module.exports = class extends AppGenerator {
 		this.blueprintjs = blueprintPackageJson;
 		this.skipServer = this.config.get('skipServer') || false;
 
+		if (!this.blueprintConfig) {
+			this.blueprintConfig = {};
+		}
+
+		// --swagger-ui option support
 		this.option('swagger-ui', {
 			desc: 'Generate Swagger UI',
 			type: Boolean,
 			defaults: false,
 		});
 
-		if (!this.blueprintConfig) {
-			this.blueprintConfig = {};
-		}
-
 		if (this.options.swaggerUi) {
 			this.blueprintConfig.swaggerUi = this.options.swaggerUi;
 		} else {
 			this.blueprintConfig.swaggerUi = false;
+		}
+
+		// --jest option support
+		this.option('jest', {
+			desc: 'Jest JavaScript unit testing framework',
+			type: Boolean,
+			defaults: true,
+		});
+
+		if (this.options.jest) {
+			this.blueprintConfig.jest = this.options.jest;
+		} else {
+			this.blueprintConfig.jest = true;
 		}
 	}
 
