@@ -1,4 +1,12 @@
+<%_
+	let mockFn
+	if (this.blueprintConfig.jest) {
+		mockFn = 'jest'
+_%>
 import { jest } from '@jest/globals'
+<%_
+	}
+_%>
 import { render, fireEvent } from '@testing-library/svelte'
 import { screen } from '@testing-library/dom'
 
@@ -80,7 +88,7 @@ test('should dispatch the toggleuseraccount event', async () => {
 	})
 	const button = screen.getByRole('button', { name: /toggleactivation/i })
 
-	const mockHandler = jest.fn()
+	const mockHandler = <%= mockFn %>.fn()
 	component.$on('toggleuseraccount', mockHandler)
 
 	fireEvent.click(button)
@@ -102,7 +110,7 @@ test('should dispatch the view event', async () => {
 	})
 	const button = screen.getByRole('button', { name: /view/i })
 
-	const mockHandler = jest.fn()
+	const mockHandler = <%= mockFn %>.fn()
 	component.$on('view', mockHandler)
 
 	fireEvent.click(button)

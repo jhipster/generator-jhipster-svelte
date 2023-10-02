@@ -240,7 +240,7 @@ To launch your application's tests, run:
 <%_ } _%>
 ### Client tests
 
-Unit tests are run by [Jest][]. They're located alongside components and can be run with:
+Unit tests are run by <% if (this.blueprintConfig.jest) { %>[Jest][]<% } %>. They're located alongside components and can be run with:
 
 ```
 <%= clientPackageManager %> test
@@ -323,7 +323,10 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 [Setting up Continuous Integration]: <%= DOCUMENTATION_ARCHIVE_URL %>/setting-up-ci/
 <% if (testFrameworks.includes("gatling")) { %>[Gatling]: https://gatling.io/<% } %>
 [Node.js]: https://nodejs.org/
+
+<%_ if (this.blueprintConfig.jest) { _%>
 [Jest]: https://facebook.github.io/jest/
+<%_ } _%>
 [Cypress]: https://www.cypress.io/
 <%_ if (enableSwaggerCodegen) { _%>
 [OpenAPI-Generator]: https://openapi-generator.tech

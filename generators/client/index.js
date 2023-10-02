@@ -237,6 +237,13 @@ module.exports = class extends ClientGenerator {
 						this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(swaggerPackageTemplate));
 					}
 
+					if (this.blueprintConfig.jest) {
+						const jestPackageTemplate = this.fs.read(
+							this.templatePath(pathFromSvelteBlueprint('client/templates/svelte/jest/package.json'))
+						);
+						this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(jestPackageTemplate));
+					}
+
 					if (this.javaPrettier) {
 						const javaPrettierPackageTemplate = this.fs.read(
 							this.templatePath(

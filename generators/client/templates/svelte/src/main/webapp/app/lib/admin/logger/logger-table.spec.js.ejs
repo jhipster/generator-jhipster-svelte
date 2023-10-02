@@ -1,4 +1,12 @@
+<%_
+	let mockFn
+	if (this.blueprintConfig.jest) {
+		mockFn = 'jest'
+_%>
 import { jest } from '@jest/globals'
+<%_
+	}
+_%>
 import { fireEvent, render } from '@testing-library/svelte'
 import { screen } from '@testing-library/dom'
 
@@ -102,7 +110,7 @@ test('should dispatch the changeloglevel event', async () => {
 	})
 	const button = screen.getByRole('button', { name: /WARN/i })
 
-	const mockHandler = jest.fn()
+	const mockHandler = <%= mockFn %>.fn()
 	component.$on('changeloglevel', mockHandler)
 
 	fireEvent.click(button)
