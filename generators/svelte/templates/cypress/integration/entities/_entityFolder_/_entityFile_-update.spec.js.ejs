@@ -1,0 +1,301 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const containsMandatoryField = fields.find(field => field.fieldValidationRequired);
+	const containsFieldValidation = containsMandatoryField || fields.find(field => (field.fieldValidationMinLength
+			|| field.fieldValidationMaxLength
+			|| field.fieldValidationMin
+			|| field.fieldValidationMax
+			|| (!field.fieldValidationRequired && field.fieldTypeNumeric)));
+	const placeHolderText = 'lorem ipsum';
+	const getMinLengthText = function(len) {
+		return placeHolderText.substr(0, len > 1 ? len-1 : 0);
+	}
+	const getMaxLengthText = function(len) {
+		let maxLengthText = placeHolderText;
+		while(maxLengthText.length < len) {
+			maxLengthText+= placeHolderText;
+		}
+		return maxLengthText;
+	}
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
+
+describe('Update <%= entityInstance %> page', () => {
+	let dynamicId
+<%_
+	if (containsRelationshipField || containsBinaryField ) {
+_%>
+
+	before(() => {
+		prepare<%= entityAngularName %>PrerequisiteData()
+	})
+<%_
+		}
+_%>
+
+	before(function() {
+		cy.loginByApi(
+			Cypress.env('ADMIN_USERNAME'),
+			Cypress.env('ADMIN_PASSWORD')
+		)
+
+		add<%= entityAngularName %>(<%_
+	if (containsBinaryField) {
+_%>this.binaryData<%_} _%><%_
+	if (containsBinaryField && containsRelationshipField) {
+_%>,<%_} _%><%_
+		let fieldIndex = 0;
+		const fieldLength = relationshipFields.length;
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>this.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			} else {
+_%>this.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			}
+			fieldIndex++;
+		}
+_%>)
+		.then(res => {
+			dynamicId = res.id
+		})
+	})
+
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.loginByApi(
+			Cypress.env('ADMIN_USERNAME'),
+			Cypress.env('ADMIN_PASSWORD')
+		)
+        cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
+	})
+
+	after(function () {
+		cy.delete(`<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`)
+	<%_ if (authenticationType === 'oauth2') { _%>
+		cy.logoutByApi()
+	<%_ } _%>
+	<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+	_%>
+		cy.delete(`<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
+	<%_
+				}
+			}
+	_%>
+	})
+
+    <%_ if (authenticationType === 'oauth2') { _%>
+    afterEach(() => {
+        cy.logoutByApi()
+    })
+    <%_ } _%>
+
+	it('should greets with update <%= entityInstance %> title', () => {
+		cy.getByTestId('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', 'Update <%= entityClassHumanized %>')
+	})
+
+	it('should be populated and have valid state', () => {
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+		<%_
+			for (field of fields.filter(field => !field.id)) {
+		_%>
+			<%_ if (!field.fieldTypeTimed && !field.fieldTypeDuration && !field.fieldTypeBoolean) { _%>
+    		    <%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+			cy.getByTestId('<%= field.fieldName %>View')
+			.should('contain', 'image/png')
+                <%_ } else { _%>
+			cy.getByName('<%= field.fieldName %>')
+			.invoke('val')
+			.should('not.be.empty')
+			<%_ } _%>
+		<%_ }
+		}
+		_%>
+			cy.root()
+			.contains('Update <%= entityClassHumanized %>')
+			.should('not.be.disabled')
+		})
+	})
+
+<%_ if (containsFieldValidation) { _%>
+	it('should validate field values', () => {
+<%_
+		for (field of fields.filter(field => !field.id)) {
+			const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+			if (fieldValue === undefined) {
+				warning(`Error generating a value for field ${field.fieldName}`);
+			}
+_%>
+	<%_ if (field.fieldValidationRequired) { _%>
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type('<%= fieldValue %>')
+				cy.root().clear()
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> is mandatory')
+		})
+	<%_ } _%>
+	<%_ if (field.fieldValidationMinLength) { _%>
+
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().clear()
+				cy.root().type(
+					'<%= getMinLengthText(field.fieldValidateRulesMinlength) %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters')
+		})
+	<%_ } _%>
+	<%_ if (field.fieldValidationMaxLength) { _%>
+
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().clear()
+				cy.root().type(
+					'<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters')
+		})
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && !field.fieldValidationRequired) { _%>
+
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type('1')
+				cy.root().clear()
+				cy.root().type('-')
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> should be numeric')
+		})
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && field.fieldValidationMin) { _%>
+
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type(
+					'<%= Number(field.fieldValidateRulesMin) - 1 %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> should be at least <%= field.fieldValidateRulesMin %>')
+		})
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && field.fieldValidationMax) { _%>
+
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+			cy.getByName('<%= field.fieldName %>').within(() => {
+				cy.root().type(
+					'<%= Number(field.fieldValidateRulesMax) + 1 %>'
+				)
+				cy.root().blur()
+			})
+			cy.getByTestId('<%= field.fieldName %>-error')
+			.should('be.visible')
+			.and('contain', '<%= field.fieldNameHumanized %> cannot be more than <%= field.fieldValidateRulesMax %>')
+		})
+	<%_ } _%>
+<%_ 	} _%>
+	})
+
+<%_ } _%>
+
+	it('should navigate back to the <%= entityInstance %> list page', () => {
+		cy.getByName('cancelBtn').click()
+
+		cy.location('pathname')
+			.should('eq', '/entities/<%= entityFolderName %>')
+			.getByTestId('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+	it('should update <%= entityInstance %> details', () => {
+		cy.getByTestId('add<%= entityAngularName %>Form').within(() => {
+	<%_
+		for (field of fields.filter(field => !field.id)) {
+			const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+	_%>
+		<%_ if (!field.fieldTypeDuration) {_%>
+			<%_ if (field.fieldTypeBoolean) {_%>
+				<%_ if (fieldValue === true ) { _%>
+			cy.getByName('<%= field.fieldName %>').uncheck()
+				<%_ } else { _%>
+			cy.getByName('<%= field.fieldName %>').check()
+				<%_ } _%>
+			<%_ } else if (field.fieldIsEnum) { _%>
+			cy.getByName('<%= field.fieldName %>').click()
+			cy.getByTestId('<%= field.fieldName %>-options').within(() => {
+				cy.get("input[type='checkbox']").eq(0).check()
+				cy.get("input[type='checkbox']").eq(1).check()
+				cy.root().type('{esc}')
+			})
+			<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+			cy.getByName('<%= field.fieldName %>ClearBtn')
+			.click()
+			cy.setFileInput('<%= field.fieldName %>', 'integration-test.png', 'image/png')
+			<%_ } else { _%>
+			cy.getByName('<%= field.fieldName %>').clear()
+			cy.getByName('<%= field.fieldName %>').type('<%= fieldValue %>')
+			<%_ } _%>
+		<%_ } _%>
+	<%_ } _%>
+	<%_
+		for (const relationship of relationshipFields) {
+			let relationshipFieldKey
+			if (relationship.relationshipManyToMany) {
+				relationshipFieldKey = relationship.relationshipNamePlural;
+			} else {
+				relationshipFieldKey = relationship.relationshipName;
+			}
+	_%>
+			cy.getByName('<%= relationshipFieldKey %>')
+			.click()
+			cy.getByTestId('<%= relationshipFieldKey %>-bg')
+			.type('{esc}', {force: true})
+	<%_
+		}
+	_%>
+			cy.root()
+				.contains('Update <%= entityClassHumanized %>')
+				.should('not.be.disabled')
+				.click()
+		})
+
+		cy.getByTestId('toast-success').contains(
+			'is updated with identifier'
+		)
+
+		cy.location('pathname')
+			.should('eq', '/entities/<%= entityFolderName %>')
+			.getByTestId('<%= entityInstance %>Title')
+			.should('be.visible')
+			.should('contain', '<%= entityClassPluralHumanized %>')
+	})
+})

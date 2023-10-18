@@ -1,0 +1,3 @@
+.prettierrc.yml skip
+README.md skip
+cli/cli.cjs skip

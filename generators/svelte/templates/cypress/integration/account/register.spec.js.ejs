@@ -1,0 +1,140 @@
+describe('Register User', () => {
+	beforeEach(() => {
+		cy.unregisterServiceWorkers()
+		cy.visit('/account/register')
+	})
+
+	it('should greets with Create user title', () => {
+		cy.getByTestId('registerTitle')
+			.should('be.visible')
+			.should('contain', 'Create user account')
+	})
+
+	it('should require mandatory fields', () => {
+		cy.getByTestId('registerForm')
+			.contains('Create account')
+			.should('be.disabled')
+	})
+
+	it('should require username', () => {
+		cy.getByTestId('registerForm').within(() => {
+			cy.getByName('username').within(() => {
+				cy.root().type('admin')
+				cy.root().clear()
+				cy.root().blur()
+			})
+			cy.getByTestId('username-error')
+			.should('be.visible')
+			.and('contain', 'Username is mandatory')
+		})
+	})
+
+	it('should require email', () => {
+		cy.getByTestId('registerForm').within(() => {
+			cy.getByName('email').within(() => {
+				cy.root().type('admin@localhost.org')
+				cy.root().clear()
+				cy.root().blur()
+			})
+			cy.getByTestId('email-error')
+			.should('be.visible')
+			.and('contain', 'Email is mandatory')
+		})
+	})
+
+	it('should require valid email', () => {
+		cy.getByTestId('registerForm').within(() => {
+			cy.getByName('email').within(() => {
+				cy.root().type('admin@localhost')
+				cy.root().blur()
+			})
+			cy.getByTestId('email-error')
+			.should('be.visible')
+			.and('contain', 'Email address is not valid')
+		})
+	})
+
+	it('should require password', () => {
+		cy.getByTestId('registerForm').within(() => {
+			cy.getByName('password').within(() => {
+				cy.root().type('password', {log: false})
+				cy.root().clear()
+				cy.root().blur()
+			})
+			cy.getByTestId('password-error')
+			.should('be.visible')
+			.and('contain', 'Password is mandatory')
+		})
+	})
+
+	it('should require confirm password', () => {
+		cy.getByTestId('registerForm').within(() => {
+			cy.getByName('passwordConfirm').within(() => {
+				cy.root().type('password', {log: false})
+				cy.root().clear()
+				cy.root().blur()
+			})
+			cy.getByTestId('passwordConfirm-error')
+			.should('be.visible')
+			.and('contain', 'Password is mandatory')
+		})
+	})
+
+	it('should require password and confirm password to match', () => {
+		cy.getByTestId('registerForm').within(() => {
+			cy.getByName('password').within(() => {
+				cy.root().type('abcd', {log: false})
+				cy.root().blur()
+			})
+			cy.getByName('passwordConfirm').within(() => {
+				cy.root().type('defg', {log: false})
+				cy.root().blur()
+			})
+			cy.getByTestId('passwordConfirm-error')
+			.should('be.visible')
+			.and('contain', 'Password and its confirmation do not match')
+		})
+	})
+
+	// TODO test is outdated, no error is returned due to data leakage.
+	it.skip('should not allow user account creation with duplicate username', () => {
+		cy.getByTestId('registerForm').within(() => {
+			cy.getByName('username')
+				.type('admin')
+			cy.getByName('email')
+				.type('joe@localhost.org')
+			cy.getByName('password')
+				.type('jondoe', {log: false})
+			cy.getByName('passwordConfirm')
+				.type('jondoe', {log: false})
+			cy.root()
+				.contains('Create account')
+				.should('not.be.disabled')
+				.click()
+		})
+		cy.getByTestId('errorMsg').contains(
+			'Login name already in use. Please choose another one.'
+		)
+	})
+
+	it('should create new user account', () => {
+		cy.getByTestId('registerForm').within(() => {
+			cy.getByName('username')
+				.type('jon')
+			cy.getByName('email')
+				.type('joe@localhost.org')
+			cy.getByName('password')
+				.type('jondoe', {log: false})
+			cy.getByName('passwordConfirm')
+				.type('jondoe', {log: false})
+			cy.root()
+				.contains('Create account')
+				.should('not.be.disabled')
+				.click()
+		})
+		cy.getByTestId('successMsg').contains(
+			'User account successfully created. Please check your email for confirmation.'
+		)
+		cy.getByTestId('registerForm').should('not.exist')
+	})
+})

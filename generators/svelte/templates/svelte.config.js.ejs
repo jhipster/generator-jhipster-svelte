@@ -1,0 +1,27 @@
+import adapter from '@sveltejs/adapter-static';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	kit: {
+		adapter: adapter({
+			pages: '<%= clientDistDir %>',
+			assets: '<%= clientDistDir %>',
+			fallback: 'index.html'
+		}),
+		appDir: 'app',
+		files: {
+			assets: '<%= clientSrcDir %>static',
+			lib: '<%= clientSrcDir %>app/lib',
+			routes: '<%= clientSrcDir %>app/routes',
+			serviceWorker: '<%= clientSrcDir %>app/service-worker',
+			appTemplate: '<%= clientSrcDir %>app/app.html'
+		},
+		alias: {
+			'$lib': '<%= clientSrcDir %>app/lib',
+			'$lib/*': '<%= clientSrcDir %>app/lib/*'
+		},
+		outDir: '<%= temporaryDir %>svelte-kit',
+	}
+};
+
+export default config;

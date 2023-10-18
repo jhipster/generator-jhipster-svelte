@@ -1,0 +1,53 @@
+import { sveltekit } from '@sveltejs/kit/vite'
+import { defineConfig } from 'vite';
+<%_ if(swaggerUi) { _%>
+import copy from 'rollup-plugin-copy'
+<%_ } _%>
+
+export default defineConfig({
+	server: {
+		proxy: {
+			'/api': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+			},
+			'/management': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+			},
+        <%_ if (authenticationType === 'oauth2') { _%>
+            '/oauth2': {
+                target: 'http://localhost:8080',
+                changeOrigin: false,
+            },
+			'/login/oauth2': {
+				target: 'http://localhost:8080',
+				changeOrigin: false,
+			},
+        <%_ } _%>
+		},
+	},
+	plugins: [
+        sveltekit(),
+<%_
+        if(swaggerUi) { _%>
+        copy({
+            targets: [
+                {
+                    src: [
+                        'node_modules/swagger-ui-dist/*.{js,css,html,png}',
+                        '!node_modules/swagger-ui-dist/**/index.html',
+                        'node_modules/axios/dist/axios.min.js',
+                        '<%= clientSrcDir %>swagger-ui/index.html',
+                    ],
+                    dest: '<%- clientDistDir %>swagger-ui',
+                },
+            ],
+            hook: 'writeBundle',
+        }),
+    <%_ } _%>
+    ],
+	ssr: {
+		noExternal: ['jhipster-svelte-library'],
+	},
+});

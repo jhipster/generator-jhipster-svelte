@@ -1,0 +1,79 @@
+name: Verify Sample Projects
+on: [push, pull_request]
+permissions:
+    contents: read
+jobs:
+    samples:
+        name: ${{ matrix.sample }}
+        runs-on: ${{ matrix.os }}
+        defaults:
+            run:
+                working-directory: ${{ github.workspace }}/app
+        timeout-minutes: 30
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest]
+                node-version: [18]
+                sample:
+                    - gateway-jwt-maven-postgres-prod.jdl
+                    - microservices-oidc-maven-prod.jdl
+                    - monolithic-jwt-gradle.json
+                    - monolithic-jwt-maven-mongodb-prod.jdl
+                    - monolithic-jwt-maven-skip-user.jdl
+                    - monolithic-oidc-maven-postgres-prod.jdl
+                    - monolithic-session-gradle.json
+                    - monolithic-session-maven-postgres-prod.jdl
+                    - monolithic-session-maven-reactive.jdl
+                    - monolithic-session-maven.jdl
+                    - sample-svelte-app.json
+                    - svelte-app-session-lighthouse.jdl
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  path: generator-jhipster-svelte
+                  fetch-depth: 2
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - uses: actions/setup-java@v3
+              with:
+                  distribution: 'temurin'
+                  java-version: '17'
+            - name: 'Setup enviroment'
+              run: |
+                  git config --global user.name "JHipster Bot"
+                  git config --global user.email "jhipster-bot@jhipster.tech"
+                  echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+                  mkdir ${{ github.workspace }}/app
+              working-directory: ${{ github.workspace }}/generator-jhipster-svelte
+            - name: 'Install blueprint'
+              run: npm install && npm link
+              working-directory: ${{ github.workspace }}/generator-jhipster-svelte
+            - name: 'Generate Project'
+              run: jsvelte generate-sample ${{ matrix.sample }} --skip-jhipster-dependencies
+            - name: 'Run install'
+              if: contains(matrix.sample, 'microservices-')
+              run: |
+                  cd gateway
+                  npm install
+                  cd ../blog
+                  npm install
+            - name: 'Run Client Tests'
+              run: npm run test ${{ (contains(matrix.sample, 'microservices-') && '--prefix gateway' ) || '' }}
+            - name: 'Build App/Stack'
+              run: npm run java:docker ${{ (contains(matrix.sample, 'microservices-') && '--prefix gateway && npm run java:docker --prefix blog' ) || '' }}
+            - name: 'Start App/Stack'
+              run: ${{ (contains(matrix.sample, 'microservices-') && 'docker compose -f docker-compose/docker-compose.yml up --wait' ) || 'npm run app:up' }}
+            - name: 'E2E Tests'
+              id: e2e
+              run: npm run e2e:ci ${{ (contains(matrix.sample, 'microservices-') && '--prefix gateway' ) || '' }}
+            - name: Dump docker logs
+              if: always()
+              uses: jwalton/gh-docker-logs@v2
+            - name: 'E2E: Store failure screenshots'
+              uses: actions/upload-artifact@v3
+              if: always() && steps.e2e.outcome == 'failure'
+              with:
+                  name: screenshots-${{ matrix.sample }}
+                  path: ${{ github.workspace }}/app/**/cypress/screenshots

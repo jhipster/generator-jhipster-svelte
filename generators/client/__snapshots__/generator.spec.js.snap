@@ -1,0 +1,264 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SubGenerator client of svelte JHipster blueprint > run > should succeed 1`] = `
+{
+  ".eslintignore": {
+    "stateCleared": "modified",
+  },
+  ".eslintrc.json": {
+    "stateCleared": "modified",
+  },
+  ".npmrc": {
+    "stateCleared": "modified",
+  },
+  ".yo-rc.json": {
+    "stateCleared": "modified",
+  },
+  "cypress.config.cjs": {
+    "stateCleared": "modified",
+  },
+  "cypress/fixtures/integration-test.png": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/account/change-password.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/account/register.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/account/reset/init-password.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/account/settings.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/admin/logger.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/admin/user-management/user-create.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/admin/user-management/user-delete.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/admin/user-management/user-list.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/admin/user-management/user-update.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/admin/user-management/user-view.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/footer.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/home.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/login.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/navbar.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/integration/routes.spec.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/plugins/index.cjs": {
+    "stateCleared": "modified",
+  },
+  "cypress/support/commands.js": {
+    "stateCleared": "modified",
+  },
+  "cypress/support/index.js": {
+    "stateCleared": "modified",
+  },
+  "jest-setup.js": {
+    "stateCleared": "modified",
+  },
+  "jest.config.cjs": {
+    "stateCleared": "modified",
+  },
+  "jsconfig.json": {
+    "stateCleared": "modified",
+  },
+  "package.json": {
+    "stateCleared": "modified",
+  },
+  "postcss.config.cjs": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/app.html": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/global.css": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/account/account-menu.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/account/account-service.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/account/change-password-form.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/account/forgot-password-form.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/account/register-user-form.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/account/reset-password-form.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/account/user-settings-form.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/admin-menu.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/logger/logger-service.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/logger/logger-table.spec.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/logger/logger-table.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/user-management/user-form.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/user-management/user-list-actions.spec.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/user-management/user-list-actions.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/user-management/user-service.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/user-management/user-table.spec.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/admin/user-management/user-table.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/auth/auth-guard.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/auth/auth-service.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/auth/auth-store.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/auth/role-guard.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/entities/entity-menu.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/layout/footer.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/layout/navbar.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/svg/app-avatar.svg": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/svg/app-logo.svg": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/lib/utils/env.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/+error.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/+layout.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/account/activate/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/account/password/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/account/register/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/account/reset/finish/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/account/reset/init/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/account/settings/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/admin/+layout.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/admin/docs/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/admin/logger/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/admin/user-management/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/admin/user-management/[id]/edit/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/admin/user-management/[id]/view/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/admin/user-management/new/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/routes/login/+page.svelte": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/service-worker.js": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/app/tailwind.css": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/static/content/img/hipster-192.png": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/static/content/img/hipster-512.png": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/static/content/img/logo-jhipster.png": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/static/favicon.ico": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/static/web-manifest.json": {
+    "stateCleared": "modified",
+  },
+  "src/main/webapp/swagger-ui/index.html": {
+    "stateCleared": "modified",
+  },
+  "svelte.config.js": {
+    "stateCleared": "modified",
+  },
+  "tailwind.config.cjs": {
+    "stateCleared": "modified",
+  },
+  "vite.config.js": {
+    "stateCleared": "modified",
+  },
+}
+`;

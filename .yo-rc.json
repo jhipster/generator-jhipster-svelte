@@ -1,10 +1,67 @@
 {
+	"generator-jhipster": {
+		"additionalSubGenerators": "svelte",
+		"baseName": "svelte",
+		"cli": true,
+		"cliName": "jsvelte",
+		"entities": [],
+		"generators": {
+			"bootstrap-application": {
+				"command": false,
+				"priorities": ["loading"],
+				"sbs": false,
+				"written": true
+			},
+			"client": {
+				"command": false,
+				"priorities": ["initializing", "composing"],
+				"sbs": false,
+				"written": true
+			},
+			"common": {
+				"command": false,
+				"priorities": ["initializing"],
+				"sbs": true,
+				"written": true
+			},
+			"languages": {
+				"command": false,
+				"priorities": ["initializing"],
+				"sbs": true,
+				"written": true
+			},
+			"svelte": {
+				"command": false,
+				"priorities": [
+					"initializing",
+					"prompting",
+					"configuring",
+					"composing",
+					"loading",
+					"preparing",
+					"writing",
+					"writingEntities",
+					"postWriting",
+					"postWritingEntities",
+					"end"
+				],
+				"sbs": null,
+				"written": true
+			}
+		},
+		"jhipsterVersion": "8.0.0-rc.1",
+		"js": true,
+		"localBlueprint": false,
+		"sampleWritten": true,
+		"skipCommitHook": true,
+		"subGenerators": ["bootstrap-application", "client", "common", "languages"]
+	},
 	"generator-jhipster-blueprint": {
 		"promptValues": {
-			"githubName": "vishal423",
-			"authorName": "Vishal Mahajan",
 			"authorEmail": "vishal423@gmail.com",
-			"authorUrl": "https://twitter.com/vishal423"
+			"authorName": "Vishal Mahajan",
+			"authorUrl": "https://twitter.com/vishal423",
+			"githubName": "vishal423"
 		}
 	}
 }

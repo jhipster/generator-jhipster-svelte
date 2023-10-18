@@ -1,0 +1,374 @@
+// ***********************************************
+// For more comprehensive examples of custom
+// commands please read more here:
+// https://on.cypress.io/custom-commands
+// ***********************************************
+//
+
+Cypress.Commands.add('unregisterServiceWorkers', () => {
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker
+			.getRegistrations()
+			.then(registrations =>
+				registrations.forEach(reg => reg.unregister())
+			)
+	}
+})
+
+Cypress.Commands.add('getByTestId', (selector, ...args) => {
+	return cy.get(`[data-testid=${selector}]`, ...args)
+})
+
+Cypress.Commands.add('getByName', selector => {
+	return cy.get(`[name=${selector}]`)
+})
+<%_ if (authenticationType === 'session') { _%>
+Cypress.Commands.add('loginByApi', (username, password) => {
+	cy.session([username],
+		() => {
+			cy.request({ url: `api/authenticate` })
+				.then(res => {
+					expect(res.status).to.eq(200)
+					return cy.getCookie('XSRF-TOKEN').should('have.property', 'value')
+				})
+				.then(csrfCookie => {
+					return cy.request({
+						method: 'POST',
+						url: `api/authentication`,
+						form: true,
+						headers: {
+							'X-XSRF-TOKEN': csrfCookie,
+						},
+						body: {
+							username,
+							password,
+							'remember-me': true,
+						},
+					})
+				})
+				.then(res => {
+					expect(res.status).to.eq(200)
+					return cy.request('GET', `api/account`)
+				})
+				.then(res => {
+					expect(res.status).to.eq(200)
+				})
+		},
+		{
+			validate() {
+				cy.request({ url: `api/account`,  failOnStatusCode: false }).its('status').should('eq', 200)
+			},
+			// TODO: If something goes wrong, this option is causing https://github.com/cypress-io/cypress/issues/25272. Cypress restart is required.
+			// cacheAcrossSpecs: true,
+		}
+	)
+})
+<%_ } else if (authenticationType === 'jwt') { _%>
+Cypress.Commands.add('loginByApi', (username, password) => {
+	cy.session([username],
+		() => {
+			cy.request({
+					method: 'POST',
+					url: `api/authenticate`,
+					body: {
+						username,
+						password,
+						'remember-me': false,
+					},
+				})
+			.then(res => {
+				expect(res.status).to.eq(200)
+				localStorage.setItem('authToken', res.body.id_token)
+				return cy.request({
+					url: `api/account`,
+					headers: {
+						'Authorization': `Bearer ${res.body.id_token}`
+					}
+				})
+			})
+			.then(res => {
+				expect(res.status).to.eq(200)
+			})
+		},
+		{
+			validate() {
+				cy.request({
+					url: `api/account`,
+					failOnStatusCode: false,
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem(
+							'authToken'
+						)}`,
+					},
+				})
+					.its('status')
+					.should('eq', 200)
+			},
+			// TODO: If something goes wrong, this option is causing https://github.com/cypress-io/cypress/issues/25272. Cypress restart is required.
+			// cacheAcrossSpecs: true,
+		}
+	)
+})
+
+Cypress.Commands.add('save', (url, body, status = 201) => {
+	cy.request({
+		method: 'POST',
+		url: url,
+		form: false,
+		headers: {
+			Authorization: `Bearer ${localStorage.getItem('authToken') || sessionStorage.getItem('authToken')}`,
+			'Content-Type': 'application/json',
+		},
+		body: body,
+	})
+	.then(res => {
+		expect(res.status).to.eq(status)
+		return cy.wrap(res.body)
+	})
+})
+
+Cypress.Commands.add('delete', (url, lenient = true) => {
+	cy.request({
+		method: 'DELETE',
+		url: url,
+		headers: {
+			Authorization: `Bearer ${localStorage.getItem('authToken') || sessionStorage.getItem('authToken')}`,
+		},
+		failOnStatusCode: lenient ? false : true
+	})
+	.then(res => {
+		if (!lenient) {
+			expect(res.status).to.eq(204)
+		}
+	})
+})
+
+Cypress.Commands.add('getById', (url, status = 200) => {
+	cy.request({
+		method: 'GET',
+		url: url,
+		headers: {
+			Authorization: `Bearer ${localStorage.getItem('authToken') || sessionStorage.getItem('authToken')}`,
+		},
+	}).then(res => {
+		expect(res.status).to.eq(status)
+		return cy.wrap(res.body)
+	})
+})
+<%_ } else { _%>
+
+Cypress.Commands.add('loginByApi', (username, password) => {
+	cy.session(
+		[username],
+		() => {
+			cy.request({
+				url: '/oauth2/authorization/oidc',
+				followRedirect: false,
+			})
+				.its('headers.location')
+				.as('authorizeUrl')
+				.then(function () {
+					const url = new URL(this.authorizeUrl)
+					const origin = url.origin
+
+					if (origin.includes('okta')) {
+						oktaLogin(this.authorizeUrl, origin, username, password)
+					} else if (origin.includes('auth0')) {
+						auth0Login(origin, username, password)
+					} else {
+						keycloakLogin(username, password)
+					}
+				})
+		},
+		{
+			validate() {
+				cy.request({ url: `api/account`, failOnStatusCode: false })
+					.its('status')
+					.should('eq', 200)
+			},
+			// TODO: If something goes wrong, this option is causing https://github.com/cypress-io/cypress/issues/25272. Cypress restart is required.
+			// cacheAcrossSpecs: true,
+		}
+	)
+})
+
+function auth0Login(origin, username, password) {
+	cy.request({
+		url: `/oauth2/authorization/oidc`,
+		followRedirect: true,
+	})
+		.then(res => {
+			const html = document.createElement('html')
+			html.innerHTML = res.body
+			const state = html.querySelector('input[name="state"]').value
+			return cy.request({
+				method: 'POST',
+				url: `${origin}/u/login`,
+				followRedirect: true,
+				form: true,
+				body: {
+					state,
+					action: 'default',
+					username,
+					password,
+				},
+			})
+		})
+		.then(() => {
+			cy.request({
+				url: '/oauth2/authorization/oidc',
+				followRedirect: true,
+			}).then(() => {
+				cy.visit('/')
+			})
+		})
+}
+
+function keycloakLogin(username, password) {
+	cy.request({
+		url: `/oauth2/authorization/oidc`,
+		followRedirect: true,
+	})
+		.then(res => {
+			const html = document.createElement('html')
+			html.innerHTML = res.body
+			const form = html.getElementsByTagName('form')[0]
+			const url = form.action
+			return cy.request({
+				method: 'POST',
+				url,
+				followRedirect: false,
+				form: true,
+				body: {
+					username,
+					password,
+				},
+			})
+		})
+		.then(() => {
+			return cy.request({
+				url: '/oauth2/authorization/oidc',
+				followRedirect: true,
+			})
+		})
+}
+
+function oktaLogin(authorizeUrl, origin, username, password) {
+	cy.request({
+		method: 'POST',
+		url: `${origin}/api/v1/authn`,
+		followRedirect: false,
+		body: {
+			username,
+			password,
+		},
+	})
+		.its('body.sessionToken')
+		.as('sessionToken')
+		.then(function () {
+			cy.request({
+				url: `${authorizeUrl}&sessionToken=${this.sessionToken}`,
+				followRedirect: true,
+			})
+		})
+}
+
+Cypress.Commands.add('logoutByApi', () => {
+	// cy.getCookie('XSRF-TOKEN')
+	// 	.then(csrfCookie => {
+	// 		return cy.location().then(loc$ => {
+	// 			return cy.request({
+	// 				method: 'POST',
+	// 				url: `api/logout`,
+	// 				headers: {
+	// 					'X-XSRF-TOKEN': csrfCookie.value,
+	// 					origin: loc$.origin,
+	// 				},
+	// 			})
+	// 		})
+	// 	})
+	// 	.then(res => {
+	// 		expect(res.status).to.eq(200)
+	// 		return cy.request({
+	// 			url: res.body.logoutUrl,
+	// 			followRedirect: true,
+	// 		})
+	// 	})
+	// 	.then(res => {
+	// 		expect(res.status).to.eq(200)
+	// 		cy.visit('/')
+	// 	})
+})
+<%_ }
+	if (authenticationType === 'session' || authenticationType === 'oauth2') { _%>
+
+Cypress.Commands.add('save', (url, body, status = 201) => {
+	cy.getCookie('XSRF-TOKEN')
+		.then(csrfCookie => {
+			return cy.request({
+				method: 'POST',
+				url: url,
+				form: false,
+				headers: {
+					'X-XSRF-TOKEN': csrfCookie.value,
+					'Content-Type': 'application/json',
+				},
+				body: body,
+			})
+		})
+		.then(res => {
+			expect(res.status).to.eq(status)
+			return cy.wrap(res.body)
+		})
+})
+
+Cypress.Commands.add('delete', (url, lenient = true) => {
+	cy.getCookie('XSRF-TOKEN')
+		.then(csrfCookie => {
+			return cy.request({
+				method: 'DELETE',
+				url: url,
+				headers: {
+					'X-XSRF-TOKEN': csrfCookie.value,
+				},
+				failOnStatusCode: lenient ? false : true
+			})
+		})
+		.then(res => {
+			if (!lenient) {
+				expect(res.status).to.eq(204)
+			}
+		})
+})
+
+Cypress.Commands.add('getById', (url, status = 200) => {
+	cy.getCookie('XSRF-TOKEN')
+		.then(csrfCookie => {
+			return cy.request({
+				method: 'GET',
+				url: url,
+				headers: {
+					'X-XSRF-TOKEN': csrfCookie.value,
+				},
+			})
+		})
+		.then(res => {
+			expect(res.status).to.eq(status)
+			return cy.wrap(res.body)
+		})
+})
+
+<%_ } _%>
+
+Cypress.Commands.add('setFileInput', (fieldSelector, testFile, mimeType) => {
+	cy.fixture(testFile).then($blob => {
+		cy.getByName(fieldSelector).then($el => {
+			const blob = Cypress.Blob.base64StringToBlob($blob, mimeType)
+			const file = new File([blob], testFile, { type: mimeType })
+			const list = new DataTransfer()
+			list.items.add(file)
+			$el[0].files = list.files
+			$el[0].dispatchEvent(new Event('change'))
+		})
+	})
+})
