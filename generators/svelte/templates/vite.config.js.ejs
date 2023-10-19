@@ -40,7 +40,7 @@ export default defineConfig({
                         'node_modules/axios/dist/axios.min.js',
                         '<%= clientSrcDir %>swagger-ui/index.html',
                     ],
-                    dest: '<%- clientDistDir %>swagger-ui',
+                    dest: '<%- temporaryDir %>svelte-kit/output/client/swagger-ui',
                 },
             ],
             hook: 'writeBundle',
