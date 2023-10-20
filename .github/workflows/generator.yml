@@ -1,9 +1,9 @@
-name: Generator
+name: JHipster Svelte Generator
 on: [push, pull_request]
 permissions:
     contents: read
 jobs:
-    svelte:
+    generator-jhipster-svelte:
         name: npm-test
         runs-on: ubuntu-latest
         timeout-minutes: 10
