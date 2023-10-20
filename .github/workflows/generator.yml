@@ -4,7 +4,6 @@ permissions:
     contents: read
 jobs:
     generator-jhipster-svelte:
-        name: npm-test
         runs-on: ubuntu-latest
         timeout-minutes: 10
         steps:
