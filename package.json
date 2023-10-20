@@ -46,7 +46,7 @@
 	"dependencies": {
 		"chalk": "^5.3.0",
 		"color-convert": "^2.0.1",
-		"generator-jhipster": "github:mshima/generator-jhipster#skip_ci-txt",
+		"generator-jhipster": "github:jhipster/generator-jhipster#main",
 		"prettier-plugin-organize-imports": "3.2.3",
 		"prettier-plugin-svelte": "3.0.3",
 		"semver": "7.5.4"
