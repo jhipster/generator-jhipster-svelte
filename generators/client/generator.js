@@ -8,8 +8,6 @@ export default class extends ClientGenerator {
 		super(args, opts, {
 			...features,
 			checkBlueprint: true,
-			// Dropped it once migration is done.
-			jhipster7Migration: true,
 		});
 	}
 
