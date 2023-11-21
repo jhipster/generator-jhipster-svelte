@@ -43,6 +43,7 @@ const commonFiles = {
 		{
 			condition: generator => !generator.skipCommitHook,
 			templates: [
+				'.lintstagedrc.json',
 				{
 					file: 'pre-commit',
 					renameTo: () => '.husky/pre-commit',
