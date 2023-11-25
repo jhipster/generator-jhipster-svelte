@@ -40,16 +40,16 @@
 		"pages": [],
 		"entitySuffix": "",
 		"dtoSuffix": "DTO",
-		"generator-jhipster-svelte": {
-			"jest": true,
-			"swaggerUi": true,
-			"version": "1.1.0"
-		},
-		"otherModules": [
+		"blueprints": [
 			{
 				"name": "generator-jhipster-svelte",
 				"version": "1.1.0"
 			}
-		],
+		]
+	},
+	"generator-jhipster-svelte": {
+		"jest": true,
+		"swaggerUi": true,
+		"version": "1.1.0"
 	}
 }
