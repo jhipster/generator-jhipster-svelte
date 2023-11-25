@@ -90,6 +90,12 @@ const svelteFiles = {
 			],
 		},
 	],
+	vitest: [
+		{
+			condition: generator => !generator.blueprintConfig.jest,
+			templates: [{ file: `vitest/vitest-setup.js`, renameTo: () => `vitest-setup.js` }],
+		},
+	],
 	static: [
 		{
 			path: FRONTEND_SRC_DIR,

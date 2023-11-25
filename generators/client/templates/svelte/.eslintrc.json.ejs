@@ -17,6 +17,11 @@
 		"jest": true
 		<%_ } _%>
 	},
+	<%_ if (!this.blueprintConfig.jest) { _%>
+	"globals" : {
+ 		"vi" : true
+ 	},
+	<%_ } _%>
 	"plugins": ["svelte", "cypress", "jest-dom", "testing-library"],
 	"overrides": [
 		{

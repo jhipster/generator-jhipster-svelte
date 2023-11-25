@@ -1,4 +1,8 @@
 {
+	"scripts": {
+		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest <%= CLIENT_MAIN_SRC_DIR %> --coverage",
+		"test:watch": "npm run test -- --watch"
+	},
 	"devDependencies": {
 		"cross-env": "7.0.3",
 		"jest": "29.7.0",

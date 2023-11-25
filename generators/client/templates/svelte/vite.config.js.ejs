@@ -1,5 +1,9 @@
 import { sveltekit } from '@sveltejs/kit/vite'
-import { defineConfig } from 'vite';
+<%_ if (this.blueprintConfig.jest) { _%>
+import { defineConfig } from 'vite'
+<%_ } else { _%>
+import { defineConfig } from 'vitest/config'
+<%_ } _%>
 <%_
 if(this.blueprintConfig.swaggerUi) { _%>
 import copy from 'rollup-plugin-copy'
@@ -51,4 +55,21 @@ export default defineConfig({
 	ssr: {
 		noExternal: ['jhipster-svelte-library'],
 	},
+	<%_ if (!this.blueprintConfig.jest) { _%>
+	test: {
+ 		globals: true,
+ 		environment: 'jsdom',
+ 		setupFiles: './vitest-setup.js',
+ 		css: true,
+		reporters: ['verbose', 'vitest-sonar-reporter'],
+        outputFile: '<%= BUILD_DIR %>test-results/js/sonar-report.xml',
+		sonarReporterOptions: { silent: true },
+ 		coverage: {
+			reporter: ['text', 'html', 'lcov'],
+ 			reportsDirectory: '<%= BUILD_DIR %>test-results/js/',
+ 			exclude: ['<%= BUILD_DIR %>']
+ 		}
+ 	},
+	<%_ } _%>
+
 });

@@ -1,7 +1,13 @@
 import adapter from '@sveltejs/adapter-static';
+<%_ if (!this.blueprintConfig.jest) { _%>
+import { vitePreprocess } from '@sveltejs/kit/vite'
+<%_ } _%>
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
+	<%_ if (!this.blueprintConfig.jest) { _%>
+	preprocess : vitePreprocess(),
+	<%_ } _%>
 	kit: {
 		adapter: adapter({
 			pages: '<%= DIST_DIR %>',

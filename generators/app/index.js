@@ -32,13 +32,13 @@ module.exports = class extends AppGenerator {
 		this.option('jest', {
 			desc: 'Jest JavaScript unit testing framework',
 			type: Boolean,
-			defaults: true,
+			defaults: false,
 		});
 
 		if (this.options.jest) {
 			this.blueprintConfig.jest = this.options.jest;
 		} else {
-			this.blueprintConfig.jest = true;
+			this.blueprintConfig.jest = false;
 		}
 	}
 
