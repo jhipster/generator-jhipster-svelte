@@ -3,7 +3,7 @@ const colors = require('tailwindcss/colors')
 module.exports = {
 	mode: 'jit',
 	darkMode: 'class',
-	content: ['./src/main/webapp/**/*.{svelte,html}', 'node_modules/jhipster-svelte-library/**/*.{svelte,html}'],
+	content: ['./<%= CLIENT_MAIN_SRC_DIR %>**/*.{svelte,html}', 'node_modules/jhipster-svelte-library/**/*.{svelte,html}'],
 	theme: {
 		colors: {
 			transparent: 'transparent',

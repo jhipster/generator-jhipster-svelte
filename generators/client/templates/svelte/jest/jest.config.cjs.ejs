@@ -11,22 +11,22 @@ module.exports = {
 		'^\\$lib(.*)$': '<rootDir>/<%= CLIENT_MAIN_SRC_DIR %>app/lib$1',
 	},
 	setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
-	coverageDirectory: '<rootDir>/<%= BUILD_DIR %>jest-coverage/',
+	coverageDirectory: '<rootDir>/<%= BUILD_DIR %>test-results/js/',
 	cacheDirectory: '<rootDir>/<%= BUILD_DIR %>jest-cache',
 	reporters: [
 		'default',
 		[
 			'jest-junit',
 			{
-				outputDirectory: './<%= BUILD_DIR %>test-results/jest',
-				outputName: 'TESTS-results-sonar.xml',
+				outputDirectory: './<%= BUILD_DIR %>test-results/js',
+				outputName: 'sonar-report.xml',
 			},
 		],
 		[
 			'jest-sonar',
 			{
-				outputDirectory: '<%= BUILD_DIR %>test-results/jest',
-				outputName: 'TESTS-results-sonar.xml',
+				outputDirectory: '<%= BUILD_DIR %>test-results/js',
+				outputName: 'sonar-report.xml',
 				reportedFilePath: 'relative',
 			},
 		],
