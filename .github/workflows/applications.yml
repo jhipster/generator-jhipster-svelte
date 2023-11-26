@@ -17,7 +17,7 @@ jobs:
             cancel-in-progress: true
         timeout-minutes: 5
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Create JHipster Svelte docker image
               run: |
                   docker build -t jhipster/jhipster-svelte:$GITHUB_SHA --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
@@ -49,9 +49,9 @@ jobs:
                         'monolithic-session-maven-reactive.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [20.x]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Download latest chrome binary
               if: contains(matrix.os , 'ubuntu-latest')
               run: |
@@ -68,13 +68,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.9.4
+                  key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.9.4
+                  key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -172,9 +172,9 @@ jobs:
                         'gateway-jwt-maven-postgres-prod.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [20.x]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Download latest chrome binary
               if: contains(matrix.os , 'ubuntu-latest')
               run: |
@@ -194,13 +194,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.9.4
+                  key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.9.4
+                  key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -303,9 +303,9 @@ jobs:
             matrix:
                 apps: ['microservices-oidc-maven-prod.jdl']
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [20.x]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Download latest chrome binary
               if: contains(matrix.os , 'ubuntu-latest')
               run: |
@@ -325,13 +325,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.9.4
+                  key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.9.4
+                  key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -460,9 +460,9 @@ jobs:
             matrix:
                 apps: ['svelte-app-session-lighthouse.jdl']
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [20.x]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.sha }}
             - name: Download latest chrome binary
@@ -482,7 +482,7 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.9.4
+                  key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:

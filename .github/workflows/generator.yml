@@ -16,10 +16,10 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                node_version: [16.16]
+                node_version: [20.x]
                 os: [ubuntu-latest]
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node_version }}
@@ -32,7 +32,7 @@ jobs:
             fail-fast: false
         steps:
             - name: Checkout JHipster Svelte generator repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
             - uses: docker/metadata-action@v3
               id: meta
               with:

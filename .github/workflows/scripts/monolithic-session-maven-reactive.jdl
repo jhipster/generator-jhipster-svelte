@@ -18,7 +18,7 @@ entity Blog {
 }
 
 relationship ManyToOne {
-  Blog{user(login)} to User
+  Blog{user(login)} to User with builtInEntity
 }
 
 paginate Blog with pagination
