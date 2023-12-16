@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "6.4.2",
-    "date-fns": "2.30.0"
+    "date-fns": "2.30.0",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.39.0",
