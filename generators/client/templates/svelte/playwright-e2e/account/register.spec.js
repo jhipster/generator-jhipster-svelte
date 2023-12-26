@@ -8,9 +8,7 @@ test.describe('Register User', () => {
     });
 
     test('should greet with Create user title', async ({ page }) => {
-        await page.locator('[data-testid="registerTitle"]').textContent().then((text) => {
-            expect(text).toContain('Create user account');
-        });
+		await expect(page.getByTestId('registerTitle')).toHaveText('Create user account');
     });
 
     test ('should require mandatory fields', async ( { page }) => {
@@ -18,74 +16,57 @@ test.describe('Register User', () => {
     });
 
     test ('should require username', async ({ page }) => {
-        await page.getByLabel('username').fill('admin');
-        await page.getByLabel('username').fill('');
-
-        await page.locator('[data-testid="username-error"]').textContent().then((text) => {
-            expect(text).toContain('Username is mandatory');
-        });
+        await page.getByLabel('Username*').fill('admin');
+        await page.getByLabel('Username*').fill('');
+		await expect(page.getByTestId('username-error')).toHaveText('Username is mandatory');
     });
 
     test('should require email', async ({ page }) => {
-        await page.getByLabel('email').fill('admin@localhost.org');
-        await page.getByLabel('email').fill('');
-
-        await page.locator('[data-testid="email-error"]').textContent().then((text) => {
-            expect(text).toContain('Email is mandatory');
-        });
+        await page.getByLabel('Email*').fill('admin@localhost.org');
+        await page.getByLabel('Email*').fill('');
+		await expect(page.getByTestId('email-error')).toHaveText('Email is mandatory');
     });
-    
-    test('should require valid email', async ({ page }) => {
-        await page.getByLabel('email').fill('admin@localhost');
 
-        await page.locator('[data-testid="email-error"]').textContent().then((text) => {
-            expect(text).toContain('Email address is not valid');
-        });
+    test('should require valid Email*', async ({ page }) => {
+        await page.getByLabel('Email*').fill('admin@localhost');
+		await expect(page.getByTestId('email-error')).toHaveText('Email address is not valid');
     });
 
     test('should require password', async ({ page }) => {
-        await page.getByLabel('password').nth(0).fill('password', { log: false });
-        await page.getByLabel('password').nth(0).fill('');
-
-        await page.locator('[data-testid="password-error"]').textContent().then((text) => {
-            expect(text).toContain('Password is mandatory');
-        });
+        await page.getByLabel('Password*', { exact: true }).fill('password', { log: false });
+        await page.getByLabel('Password*', { exact: true }).fill('');
+		await expect(page.getByTestId('password-error')).toHaveText('Password is mandatory');
     });
 
     test('should require confirm password', async ({ page }) => {
-        await page.getByLabel('password').nth(1).fill('password', { log: false });
-
-        await page.locator('[data-testid="passwordConfirm-error"]').textContent().then((text) => {
-            expect(text).toContain('Password and its confirmation do not match');
-        });
+        await page.getByLabel('Confirm Password*').fill('password', { log: false });
+		await page.getByLabel('Confirm Password*').fill('');
+		await expect(page.getByTestId('passwordConfirm-error')).toHaveText('Password and its confirmation do not match');
     });
 
     test('should require password and confirm password to match', async ({ page }) => {
-        await page.getByLabel('password').nth(0).fill('abcd', { log: false });
-        await page.getByLabel('password').nth(1).fill('defg', { log: false });  // fills confirm password field
-
-        await page.locator('[data-testid="passwordConfirm-error"]').textContent().then((text) => {
-            expect(text).toContain('Password and its confirmation do not match');
-        });
+        await page.getByLabel('Password*', { exact: true })fill('abcd', { log: false });
+        await page.getByLabel('Confirm Password*').fill('defg', { log: false });  // fills confirm password field
+		await expect(page.getByTestId('passwordConfirm-error')).toHaveText('Password and its confirmation do not match');
     });
-/*
+
     test('should not allow user account creation with duplicate username', async ({ page }) => {
-        await page.getByLabel('username').fill('admin');
-        await page.getByLabel('email').fill('joe@localhost.org');
-        await page.getByLabel('password').nth(0).fill('jondoe', { log: false });
-        await page.getByLabel('password').nth(1).fill('jondoe', { log: false });    // fills confirm password field
+        await page.getByLabel('Username*').fill('admin');
+        await page.getByLabel('Email*').fill('joe@localhost.org');
+        await page.getByLabel('Password*', { exact: true }).fill('jondoe', { log: false });
+        await page.getByLabel('Confirm Password*').fill('jondoe', { log: false });    // fills confirm password field
         await page.getByRole('button', { name: 'Create account' }).click();
 
-        expect(await page.locator('[data-testid="errorMsg"]').innerText()).toContain('Login name already in use. Please choose another one.');
+        await expect(page.getByTestId('errorMsg')).toHaveText('Login name already in use. Please choose another one.');
     });
-*/
+
     test('should create a new user account', async ({ page }) => {
-        await page.getByLabel('username').fill('jon');
-        await page.getByLabel('email').fill('joe@localhost.org');
-        await page.getByLabel('password').nth(0).fill('jondoe', { log: false });
-        await page.getByLabel('password').nth(1).fill('jondoe', { log: false });    // fills confirm password field
+        await page.getByLabel('Username*').fill('jon');
+        await page.getByLabel('Email*').fill('joe@localhost.org');
+        await page.getByLabel('Password*', { exact: true }).fill('jondoe', { log: false });
+        await page.getByLabel('Confirm Password*').fill('jondoe', { log: false });    // fills confirm password field
         await page.getByRole('button', { name: 'Create account' }).click();
 
-        expect(await page.locator('[data-testid="successMsg"]').innerText()).toContain('User account successfully created. Please check your email for confirmation.');
+        await expect(page.getByTestId('successMsg')).toHaveText('User account successfully created. Please check your email for confirmation.');
     });
 });

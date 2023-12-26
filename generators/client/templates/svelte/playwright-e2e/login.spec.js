@@ -7,58 +7,54 @@ test.describe("User login", () => {
   });
 
   test("should greets with Sign in", async ({ page }) => {
-    const signInTitle = await page.getByTestId('signInTitle');
-
-    expect (await signInTitle).toBeVisible()
-    expect(await signInTitle.textContent()).toContain('Sign in to <%= baseName %>');
+	await expect(page.getByTestId('signInTitle')).toBeVisible();
+	await expect(page.getByTestId('signInTitle')).toHaveText('Sign in to <%= baseName %>');
   });
 
-  /* test to be here */
+  test("should display link to register", async ({ page }) => {
+	await expect(page.getByTestId('registerLink')).toHaveText('Create an account');
+	await expect(page.getByTestId('registerLink')).toHaveAttribute('href', '/account/register');
+  });
+
+  test("should display link to forgot password", async ({ page }) => {
+	await expect(page.getByTestId('forgotPwdLink')).toHaveText('Forgot password?');
+	await expect(page.getByTestId('forgotPwdLink')).toHaveAttribute('href', '/account/reset/init');
+  });
+
+  test("should require username and password", async ({ page }) => {
+	await expect(page.getByTestId('loginForm')).toHaveText('Sign in');
+	await expect(page.getByTestId('loginForm')).toBeDisabled();
+  });
 
   test("should require username", async ({ page }) => {
-    const loginForm = await page.getByTestId('loginForm');
-    const usernameInput = await loginForm.getByLabel('username');
-    const usernameError = await loginForm.getByTestId('username-error');
+	await page.getByLabel('Username').fill('admin');
+	await page.getByLabel('Username').fill('');
 
-    await usernameInput.fill('admin');
-    await usernameInput.clear();
-    await usernameInput.blur();
-
-    expect(await usernameError.isVisible()).toBe(true);
-    expect(await usernameError.textContent()).toContain('Username is mandatory');
+	await expect(page.getByTestId('username-error')).toBeVisible();
+	await expect(page.getByTestId('username-error')).toHaveText('Username is mandatory');
   });
 
   test("should require password", async ({ page }) => {
-    const loginForm = await page.getByTestId('loginForm');
-    const passwordInput = await loginForm.getByLabel('password');
-    const passwordError = await loginForm.getByTestId('password-error');
+	await page.getByLabel('Password').fill('admin', { log: false });
+	await page.getByLabel('Password').fill('');
 
-    await passwordInput.fill('admin', { log: false });
-    await passwordInput.clear();
-    await passwordInput.blur();
-
-    expect(await passwordError.isVisible()).toBe(true);
-    expect(await passwordError.textContent()).toContain('Password is mandatory');
+	await expect(page.getByTestId('password-error')).toBeVisible();
+	await expect(page.getByTestId('password-error')).toHaveText('Password is mandatory');
   });
 
   test("should require a valid username and password", async ({ page }) => {
-    const loginForm = await page.getByTestId('loginForm');
-    const errorMsg = await page.getByTestId('errorMsg');
+	await page.getByLabel('Username').fill('admin');
+	await page.getByLabel('Password').fill('invalid', { log: false });
+	await page.getByRole('button', { name: 'Sign in' }).click();
 
-    await loginForm.getByLabel('username').fill('admin');
-    await loginForm.getByLabel('password').fill('invalid{enter}', { log: false });
-
-    await loginForm.getByRole('button', { name: 'Sign in' }).click();
-
-    expect(await errorMsg.textContent()).toContain('Incorrect username or password.');
+	await expect(page.getByTestId('errorMsg')).toHaveText('Incorrect username or password.');
   });
 
   test("should navigate to / on successful login", async ({ page }) => {
-    const loginForm = await page.getByTestId('loginForm');
-    await loginForm.getByRole('checkbox').check();
-    await loginForm.getByLabel('Username').fill('admin');
-    await loginForm.getByLabel('Password').fill('admin{enter}', { log: false });
-    await loginForm.getByRole('button', { name: 'Sign in' }).click();
-    expect(page.url()).toContain('/login');
+	await page.getByRole('checkbox').check();
+	await page.getByLabel('Username').fill('admin');
+	await page.getByLabel('Password').fill('admin', { log: false });
+	await page.getByRole('button', { name: 'Sign in' }).click();
+	await expect(page).toHaveURL('/login');
   });
 });

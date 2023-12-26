@@ -6,27 +6,28 @@ test.describe('Forgot password', () => {
     });
 
     test('should greets with forgot password title', async ({ page }) => {
-        await expect(page.locator('[data-testid=forgotPwdTitle]')).toHaveText('Reset your password');
+        await expect(page.getByTestId('forgotPwdTitle')).toHaveText('Reset your password');
     });
 
     test('should verify instructions to reset password', async ({ page }) => {
-        await expect(page.locator('[data-testid=warningMsg]')).toHaveText("Enter your user account's verified email address.");
+        await expect(page.getByTestId('warningMsg')).toHaveText("Enter your user account's verified email address.");
     });
 
     test('should require mandatory fields', async ({ page }) => {
-        await expect(page.locator('[data-testid=forgotPwdForm] button')).toBeDisabled();
+        await expect(page.getByTestId('forgotPwdForm')).toHaveText('Send password reset email')
+		await expect(page.getByTestId('forgotPwdForm')).toBeDisabled();
     });
 
     test('should require email', async ({ page }) => {
-        await page.locator('[data-testid=forgotPwdForm] [name=email]').type('admin');
-        await expect(page.locator('[data-testid=email-error]')).toHaveText('Email address is not valid');
+        await page.getByLabel('Email').fill('admin');
+        await expect(page.getByTestId('email-error')).toHaveText('Email address is not valid');
     });
 
     test('should reset user password', async ({ page }) => {
-        await page.locator('[data-testid=forgotPwdForm] [name=email]').type('admin@localhost.org');
-        await page.locator('[data-testid=forgotPwdForm] button').click();
+        await page.getByLabel('Email').fill('admin@localhost.org');
+        await page.getByTestId('forgotPwdForm').click();
 
-        await expect(page.locator('[data-testid=successMsg]')).toHaveText(
+        await expect(page.getByTestId('successMsg')).toHaveText(
             'Check your email for details on how to reset your password.'
         );
     });

@@ -8,28 +8,22 @@ test.describe("Home page", () => {
     });
 
     test("should greets with welcome title", async ({ page }) => {
-        const welcomeTitle = await page.getByTestId('welcomeTitle');
-
-        expect(await welcomeTitle).toBeVisible();
-        expect(await welcomeTitle.textContent()).toContain('Welcome, JHipster Svelte!');
+		await expect(page.getByTestId('welcomeTitle')).toBeVisible();
+		await expect(page.getByTestId('welcomeTitle')).toHaveText('Welcome, JHipster Svelte!');
     });
 
     test.describe("unauthenticated user", () => {
         test("should have login instructions", async ({ page }) => {
-            const loginInstructions = await page.getByTestId('loginInstructions');
-
-            expect(await loginInstructions).toBeVisible();
-            expect(await loginInstructions.textContent()).toContain('you can try the default accounts');
-            expect(await loginInstructions.textContent()).toContain('Administrator (login="admin" and password="admin")');
-            expect(await loginInstructions.textContent()).toContain('User (login="user" and password="user").');
+            await expect(page.getByTestId('loginInstructions')).toBeVisible();
+            await expect(page.getByTestId('loginInstructions')).toHaveText('you can try the default accounts');
+            await expect(page.getByTestId('loginInstructions')).toHaveText('Administrator (login="admin" and password="admin")');
+            await expect(page.getByTestId('loginInstructions')).toHaveText('User (login="user" and password="user").');
         });
 
         test("should have user registration link", async ({ page }) => {
-            const registrationLink = await page.getByTestId('svlRegisterHomeLink');
-
-            expect(await registrationLink).toBeVisible();
-            expect(await registrationLink.getAttribute('href')).toBe('/account/register');
-            expect(await registrationLink.textContent()).toContain('Register a new account');
+            await expect(page.getByTestId('svlRegisterHomeLink')).toBeVisible();
+            await expect(page.getByTestId('svlRegisterHomeLink')).toHaveAttribute('href', '/account/register');
+            await expect(page.getByTestId('svlRegisterHomeLink')).toHaveText('Register a new account');
         });
     });
 
@@ -53,10 +47,8 @@ test.describe("Home page", () => {
         });
 
         test("should greets logged in user", async ({ page }) => {
-            const greetMsg = await page.getByTestId('greetMsg');
-
-            expect(await greetMsg).toBeVisible();
-            expect(await greetMsg.textContent()).toContain(`You are logged in as user "${process.env.ADMIN_USERNAME}".`);
+            await expect(page.getByTestId('greetMsg')).toBeVisible();
+            await expect(page.getByTestId('greetMsg')).toHaveText(`You are logged in as user "${process.env.ADMIN_USERNAME}".`);
         });
     });
 });
