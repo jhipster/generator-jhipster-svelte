@@ -17,54 +17,47 @@ test.describe('Create user page', () => {
     });
 
     test('should greet with Create user title', async ({ page }) => {
-        const title = await page.locator('[data-testid=userMgmtTitle]').innerText();
-        expect(title).toContain('Create user account');
+        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Create user account');
     });
 
     test('should require mandatory fields', async ({ page }) => {
-        const createBtn = await page.locator('[data-testid=addUserForm] button').nth(2).isEnabled();
-        expect(createBtn).toBeFalsy();
+        const createBtn = page.getByTestId('addUserForm').locator('div').filter({ hasText: 'Create user account'}).nth(1);
+        await expect(createBtn).toBeFalsy();
     });
 
     test('should require username', async ({ page }) => {
 
-        await page.getByLabel('username').fill('admin');
-        await page.getByLabel('username').fill(' ');
+        await page.getByLabel('Username*').fill('admin');
+        await page.getByLabel('Username*').fill(' ');
 
-        const usernameError = await page.locator('[data-testid=username-error]').innerText();
-        expect(usernameError).toContain('Username is mandatory');
+        await expect(page.getByTestId('username-error')).toHaveText('Username is mandatory');
     });
 
     test('should require email', async ({ page }) => {
 
-        await page.getByLabel('email').fill('admin@localhost.org');
-        await page.getByLabel('email').fill('');
+        await page.getByLabel('Email*').fill('admin@localhost.org');
+        await page.getByLabel('Email*').fill('');
 
-        const emailError = await page.locator('[data-testid=email-error]').innerText();
-        expect(emailError).toContain('Email is mandatory');
+        await expect(page.getByTestId('email-error')).toHaveText('Email is mandatory');
     });
 
     test('should require roles', async ({ page }) => {
-        await page.locator('[name=roles]').click();
-        await page.locator('[data-testid=roles-options] input[type=checkbox]').nth(0).dblclick(10);
-        await page.locator('[name=roles]').click();
+        await page.getByLabel('Expand select options').click();
+		await page.getByText('ROLE_ADMIN').dblclick();
+		await page.getByLabel('Expand select options').click();
 
-        const rolesError = await page.locator('[data-testid=roles-error]').innerText();
-        expect(rolesError).toContain('Select at least one role');
+        await expect(page.getByTestId('roles-error')).toHaveText('Select at least one role');
     });
 
     test('should navigate back to the user list page', async ({ page }) => {
-        await page.click('[name=cancelBtn]');
+        await page.getByRole('button', { name: 'Cancel' }).click();
 
-        const pathname = await page.evaluate(() => window.location.pathname);
-        expect(pathname).toBe('/admin/user-management');
-
-        const title = await page.locator('[data-testid=userMgmtTitle]').innerText();
-        expect(title).toContain('Users');
+        await expect(page).toHaveURL('/admin/user-management');
+        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
     });
 
     test.describe('create account', () => {
-        
+
         let randomUser;
 
         test.beforeEach(async ({ page }) => {
@@ -82,26 +75,25 @@ test.describe('Create user page', () => {
         });
 
         test('should create a new user account', async ({ page }) => {
-            await page.getByLabel('username').fill(`${randomUser}`);
-            await page.getByLabel('firstname').fill('john');
-            await page.getByLabel('lastname').fill('doe');
-            await page.getByLabel('email').fill(`${randomUser}+@localhost.org`);
-            await page.locator('[data-testid=roles-options] input[type=checkbox]').nth(0).dblclick();
+            await page.getByLabel('Username*').fill(`${randomUser}`);
+            await page.getByLabel('First name').fill('john');
+            await page.getByLabel('Last name').fill('doe');
+            await page.getByLabel('Email*').fill(`${randomUser}+@localhost.org`);
+            await page.getByLabel('Expand select options').click();
+			await page.getByText('ROLE_ADMIN').click();
+			await page.getByLabel('Expand select options').click();
 
 
-            const createBtn = await page.locator('[data-testid=addUserForm] button').isEnabled();
-            expect(createBtn).toBeTruthy();
+            const createBtn = await page.getByTestId('addUserForm').locator('div').filter({ hasText: 'Create user account' }).nth(1);
+            await expect(createBtn).toBeEnabled();
+			await createBtn.click();
 
-            await page.locator('[data-testid=addUserForm] button');
+            await expect(page.getByTestId('toast-success')).toHaveText('A user is created with identifier');
 
-            const successToast = await page.locator('[data-testid=toast-success]').innerText();
-            expect(successToast).toContain('A user is created with identifier');
+            await expect(page).toHaveURL('/admin/user-management');
 
-            const pathname = await page.evaluate(() => window.location.pathname);
-            expect(pathname).toBe('/admin/user-management');
-
-            const title = await page.locator('[data-testid=userMgmtTitle]').innerText();
-            expect(title).toContain('Users');
+			await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+            await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
         });
     });
 });

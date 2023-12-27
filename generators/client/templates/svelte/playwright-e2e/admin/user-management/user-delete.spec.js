@@ -18,11 +18,11 @@ test.describe('User delete dialog page', () => {
         */
 
         await page.goto('admin/user-management');
-        
+
         //HOVER AND CLICK DELETE BUTTON
-        const userTable = await page.locator('[data-testid=userMgmtTable]');
+        const userTable = await page.getByTestId('userMgmtTable');
         const tableRow = await userTable.getByRole('cell', { name: `${randomUser}`, exact: true });
-        expect(await tableRow.innerText()).toContain(`${randomUser}`);
+        await expect(tableRow.innerText()).toContain(`${randomUser}`);
         tableRow.hover();
 
         const deleteBtn = await page.getByRole('button', { name: 'Delete' });
@@ -38,22 +38,25 @@ test.describe('User delete dialog page', () => {
     });
 
     test('should display delete user dialog', async ({ page }) => {
-        expect(await page.locator('[data-testid=svlModal] h1').innerText()).toContain('Confirm delete operation');
-        expect(await page.locator('[data-testid=svlModal] p').innerText()).toContain('Are you sure you want to delete the user?');
-        expect(await page.locator('[data-testid=svlModal] button[name=cancelBtn]')).toBeEnabled();
-        expect(await page.locator('[data-testid=svlModal] button[name=confirmDeleteBtn]')).toBeEnabled();
+		await page.getByRole('button', { name: 'delete' }).click();
+        await expect(page.getByRole('heading').toHaveText('Confirm delete operation');
+        await expect(page.getByTestId('svlModal')).toHaveText('Are you sure you want to delete the user?');
+        await expect(page.getByRole('button', { name: 'Cancel' })).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'Delete' })).toBeEnabled();
     });
 
     test('should close the dialog without deleting user', async ({ page }) => {
+		await page.getByRole('button', { name: 'delete' }).click();
         await page.getByRole('button', { name: 'Cancel' }).click();
-        expect(await page.locator('[data-testid=userMgmtTitle]').innerText()).toContain('User');
+        await expect(page.getByTestId('userMgmtTitle')).toHaveText('User');
     });
 
     test('should delete the user', async ({ page }) => {
-        await page.locator('[data-testid=svlModal] button[name=confirmDeleteBtn]').click();
-        expect(await page.locator('[data-testid=toast-success]').innerText()).toContain('A user is deleted with identifier');
-        
-        expect(await page.locator('[data-testid =userMgmtTitle]').innerText()).toContain('Users');
+        await page.getByRole('button', { name: 'delete' }).click();
+		await page.getByRole('button', { name: 'Delete' }).click();
+        await expect(page.getByTestId('toast-success')).toHaveText('A user is deleted with identifier');
+
+        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
     });
 });
 

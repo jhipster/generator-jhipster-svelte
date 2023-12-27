@@ -19,15 +19,15 @@ test.describe('Loggers page', () => {
     });
 
     test('should greets with loggers page title and filter control', async ({ page }) => {
-        expect(await page.getByTestId('loggersTitle')).toBeVisible();
-        expect(await page.getByTestId('loggersTitle').innerText()).toContain('Loggers');
-        expect(await page.getByPlaceholder('Filter logger')).toHaveValue('');
+        await expect(page.getByTestId('loggersTitle')).toBeVisible();
+        await expect(page.getByTestId('loggersTitle').innerText()).toContain('Loggers');
+        await expect(page.getByPlaceholder('Filter logger')).toHaveValue('');
     });
 
     test('should display loggers table', async ({ page }) => {
-        expect(await page.getByRole('columnheader')).toBeVisible();
-        expect(await page.getByRole('columnheader').innerText()).toContain('Name');
-        expect(await page.getByRole('columnheader')).toHaveCount(1);
+        await expect(page.getByRole('columnheader')).toBeVisible();
+        await expect(page.getByRole('columnheader').innerText()).toContain('Name');
+        await expect(page.getByRole('columnheader')).toHaveCount(1);
     });
 
     test('should display logger name and the default enabled logger level in the table', async ({ page }) => {
@@ -37,9 +37,9 @@ test.describe('Loggers page', () => {
         await page.getByPlaceholder('Filter logger').fill(hibernateLoggerName);
         await page.getByPlaceholder('Filter logger').fill(mongodbLoggerName);
 
-        expect(await page.getByTestId('loggersTable').innerText()).toContain(hibernateLoggerName);
+        await expect(page.getByTestId('loggersTable')).toHaveText(hibernateLoggerName);
 
-        expect(await page.getByTestId('loggersTable').innerText()).toContain(mongodbLoggerName);
+        await expect(page.getByTestId('loggersTable')).toHaveText(mongodbLoggerName);
     });
 
     test('should display actions available on the current selected logger', async ({ page }) = {
@@ -55,25 +55,22 @@ test.describe('Loggers page', () => {
 
         await page.getByPlaceholder('Filter logger').fill('ROOT');
         const countAfterFilter = await page.getByRole('cell').count();
-        
-        expect(countBeforeFilter).toBeGreaterThanOrEqual(countAfterFilter);
+
+        await expect(countBeforeFilter).toBeGreaterThanOrEqual(countAfterFilter);
 
         await page.getByPlaceholder('Filter logger').fill('');
         const countAfterFilterClear = await page.getByRole('cell').count();
 
-        expect(countBeforeFilter).toHaveValue(countAfterFilterClear);
+        await expect(countBeforeFilter).toHaveValue(countAfterFilterClear);
     });
 
     test('should validate the pagination controls', async ({ page }) => {
-        const pageCtrl = await page.locator('[data-testid=pageCtrl]');
+        const pageCtrl = await page.getByTestId('pageCtrl');
         const pageInfo = await pageCtrl.locator('div').nth(0).innerText();
-        expect(pageInfo).toMatch(/1-\d+ of \d+/);
+        await expect(pageInfo).toMatch(/1-\d+ of \d+/);
 
-        const prevPageCtrl = await pageCtrl.locator('[data-testid=prevPageCtrl]').nth(0);
-        expect(await prevPageCtrl.isEnabled()).toBe(false);
-
-        const nextPageCtrl = await pageCtrl.locator('[data-testid=nextPageCtrl]').nth(1);
-        expect(await nextPageCtrl.isEnabled()).toBe(false);
+        await expect(page.getByTestId('prevPageCtrl').first()).toBeDisabled();
+        await expect(page.getByTestId('nextPageCtrl').first()).toBeDisabled();
     });
 
 });

@@ -28,78 +28,60 @@ test.describe('Update user page', () => {
     });
 
     test('should greet with update user title', async ({ page }) => {
-        const title = await page.locator('[data-test-id=userMgmtTitle]').innerText();
-        expect(title).toContain('Update user account');
+        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Update user account');
     });
 
     test('should be populated and have a valid state', async ({ page }) => {
-        expect(await page.getByLabel('Username*')).toHaveValue(`${randomUser}`);
-        expect(await page.getByLabel('First Name')).toHaveValue('john');
-        expect(await page.getByLabel('Last Name')).toHaveValue('doe');
-        expect(await page.getByLabel('Email*')).toHaveValue(`${randomUser}@localhost.org`);
-        expect(await page.getByRole('USER_ROLE')).toBeChecked();
-        expect(await page.locator('[data-testid=roles-options] input[type=checkbox]').nth(1)).toBeChecked();
-        expect(await page.getByRole('button', { name: 'Update new account' })).toBeEnabled();
+        await expect(page.getByLabel('Username*')).toHaveValue(`${randomUser}`);
+        await expect(page.getByLabel('First Name')).toHaveValue('john');
+        await expect(page.getByLabel('Last Name')).toHaveValue('doe');
+        await expect(page.getByLabel('Email*')).toHaveValue(`${randomUser}@localhost.org`);
+        await expect(page.getByRole('USER_ROLE')).toBeChecked();
+        await expect(page.locator('[data-testid=roles-options] input[type=checkbox]').nth(1)).toBeChecked();
+        await expect(page.getByRole('button', { name: 'Update new account' })).toBeEnabled();
     });
 
     test('should require username', async ({ page }) => {
         await page.getByLabel('Username*').fill('');
 
-        const usernameError = await page.locator('[data-testid=username-error]').innerText();
-        expect(usernameError).toContain('Username is mandatory');
+        await expect(page.getByTestId('username-error')).toHaveText('Username is mandatory');
     });
 
     test('should require email', async ({ page }) => {
         await page.getByLabel('Email*').fill('');
 
-        const emailError = await page.locator('[data-testid=email-error]').innerText();
-        expect(emailError).toContain('Email is mandatory');
+        await expect(page.getByTestId('email-error')).toHaveText('Email is mandatory');
     });
 
     test('should require roles', async ({ page }) => {
-        const rolesCheckBox = page.locator('[name=roles]');
+		await page.getByLabel('Expand select options').click();
+		await page.getByText('ROLE_USER').dblclick();
+		await page.getByLabel('Expand select options').click();
 
-        await rolesCheckBox.click();
-        await page.locator('[data-testid=roles-options] input[input=checkbox]').nth(1).click();
-        await rolesCheckBox.click();
-
-        const rolesError = await page.locator('[data-testid=roles-error]').innerText();
-        expect(rolesError).toContain('Select at least one role');
+        await expect(page.getByTestId('roles-error')).toHaveText('Select at least one role');
     });
 
     test('should navigate back to the user list page', async ({ page }) => {
-        await page.locator('[name=cancelBtn]').click();
-
-        const pathname = await page.evaluate(() => window.location.pathname);
-        expect(pathname).toBe('/admin/user-management');
-
-        const title = await page.locator('[data-testid=userMgmtTitle]').innerText();
-        expect(title).toContain('Users');
-
+        await page.getByRole('button', { name: 'Cancel'}).click();
+        await expect(page).toHaveURL('/admin/user-management');
+        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
     });
 
     test('should update user account details', async ({ page }) => {
-        const rolesCheckBox = await page.locator('[name=roles]');
-
         await page.getByLabel('Username*').fill(`${randomUser}`);
         await page.getByLabel('First Name').fill('john');
         await page.getByLabel('Last Name').fill('doe');
         await page.getByLabel('Email*').fill(`${randomUser}@localhost.org`);
-        await rolesCheckBox.click();
-        await page.locator('[data-testid=roles-options] input[type=checkbox]').nth(1).click();
-        await rolesCheckBox.click();
+		await page.getByLabel('Expand select options').click();
+		await page.getByText('ROLE_USER').click();
+		await page.getByLabel('Expand select options').click();
 
-        expect(page.getByRole('button', { name: 'Update user account' })).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'Update user account' })).toBeEnabled();
         await page.getByRole('button', { name: 'Update user account' }).click();
 
-        const successToast = await page.locator('[data-testid=toast-success]').innerText();
-        expect(successToast).toContain('A user is updated with identifier');
-
-        const pathname = await page.evaluate(() => window.location.pathname);
-        expect(pathname).toBe('/admin/user-management');
-
-        const title = await page.locator('[data-testid=userMgmtTitle]').innerText();
-        expect(title).toContain('Users');
+        await expect(page.getByTestId('toast-success')).toHaveText('A user is updated with identifier');
+        await expect(page).toHaveURL('/admin/user-management');
+        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
     });
 });
 

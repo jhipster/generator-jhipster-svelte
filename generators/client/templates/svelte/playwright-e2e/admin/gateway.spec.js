@@ -11,7 +11,7 @@ test.describe('Gateway page', () => {
     });
 
     test('should greets with Gateway page title', async ({ page }) => {
-        await expect(page.locator('[data-testid=gatewayTitle]')).toHaveText('Gateway routes');
+        await expect(page.getByTestId('gatewayTitle')).toHaveText('Gateway routes');
     });
 
     test('should display Gateway routes table', async ({ page }) => {
