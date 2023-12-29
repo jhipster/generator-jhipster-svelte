@@ -17,9 +17,8 @@ test.describe('Change User Password', () => {
     });
 
     test('should require mandatory fields to be filled', async ({ page }) => {
-		await expect(page.getByTestId('passwordForm'))
-				.toHaveText('Update password')
-				.toBeDisabled();
+		await expect(page.getByTestId('passwordForm')).toHaveText('Update password');
+		await expect(page.getByTestId('passwordForm')).toBeDisabled();
     });
 
     test('should require current password', async ({ page }) => {
@@ -30,7 +29,7 @@ test.describe('Change User Password', () => {
     });
 
     test('should require new password', async ({ page }) => {
-        await page.getByLabel('New Password*', { exact: true })fill('admin', { log: false });
+        await page.getByLabel('New Password*', { exact: true }).fill('admin', { log: false });
         await page.getByLabel('New Password*', { exact: true }).fill('', { log: false });
 
         await expect(page.getByTestId('newPassword-error')).toHaveText('Password is mandatory');

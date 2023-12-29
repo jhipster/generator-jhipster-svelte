@@ -8,42 +8,34 @@ test.describe("Routes", () => {
     test.describe("unauthenticated user", () => {
         test("should not allow navigation to settings page", async ({ page }) => {
             await page.goto('/account/settings');
+            await expect(page).toHaveURL('/login');
 
-            expect(page.url()).toBe('/login');
-            const signInTitle = await page.getByTestId('signInTitle');
-
-            expect(await signInTitle).toBeVisible();
-            expect(await signInTitle.textContent()).toContain('Sign in to <%= baseName %>');
+            await expect(page.getByTestId('signInTitle')).toBeVisible();
+            await expect(page.getByTestId('signInTitle')).toHaveText('Sign in to <%= baseName %>');
         });
 
         test("should not allow navigation to user management page", async ({ page }) => {
             await page.goto('/admin/user-management');
+            await expect(page).toHaveURL('/login');
 
-            expect(page.url()).toBe('/login');
-            const signInTitle = await page.getByTestId('signInTitle');
-
-            expect(await signInTitle).toBeVisible();
-            expect(await signInTitle.textContent()).toContain('Sign in to <%= baseName %>');
+            await expect(page.getByTestId('signInTitle')).toBeVisible();
+            await expect(page.getByTestId('signInTitle')).toHaveText('Sign in to <%= baseName %>');
         });
 
         test("should not allow navigation to Loggers page", async ({ page }) => {
             await page.goto('/admin/logger');
+            await expect(page).toHaveURL('/login');
 
-            expect(page.url()).toBe('/login');
-            const signInTitle = await page.getByTestId('signInTitle');
-
-            expect(await signInTitle.isVisible()).toBe(true);
-            expect(await signInTitle.textContent()).toContain('Sign in to <%= baseName %>');
+            await expect(page.getByTestId('signInTitle')).toBeVisible();
+            await expect(page.getByTestId('signInTitle')).toHaveText('Sign in to <%= baseName %>');
         });
 
         test("should allow navigation to home page", async ({ page }) => {
             await page.goto('/');
+            await expect(page).toHaveURL('/');
 
-            expect(page).toHaveUrl('/');
-            const welcomeTitle = await page.getByTestId('welcomeTitle');
-
-            expect(await welcomeTitle).toBeVisible();
-            expect(await welcomeTitle.textContent()).toContain('Welcome, JHipster Svelte!');
+            await expect(page.getByTestId('welcomeTitle')).toBeVisible();
+            await expect(page.getByTestId('welcomeTitle')).toHaveURL('Welcome, JHipster Svelte!');
         });
     });
 
@@ -69,49 +61,43 @@ test.describe("Routes", () => {
             await page.goto('/oauth2/authorization/oidc');
             await page.goto('/login');
 
-            expect(page).toHaveUrl('/');
-            const welcomeTitle = await page.getByTestId('welcomeTitle');
+            await expect(page).toHaveURL('/');
 
-            expect(await welcomeTitle).toBeVisible();
-            expect(await welcomeTitle.textContent()).toContain('Welcome, JHipster Svelte!');
+            await expect(page.getByTestId('welcomeTitle')).toBeVisible();
+            await expect(page.getByTestId('welcomeTitle')).toHaveText('Welcome, JHipster Svelte!');
         });
 
         test("should not allow navigation to register page", async ({ page }) => {
             await page.goto('/account/register');
+            await expect(page).toHaveURL('/');
 
-            expect(page).toHaveUrl('/');
-            const welcomeTitle = await page.getByTestId('welcomeTitle');
-
-            expect(await welcomeTitle).toBeVisible();
-            expect(await welcomeTitle.textContent()).toContain('Welcome, JHipster Svelte!');
+            await expect(page.getByTestId('welcomeTitle')).toBeVisible();
+            await expect(page.getByTestId('welcomeTitle')).toHaveURL('Welcome, JHipster Svelte!');
         });
 
         test("should allow navigation to home page", async ({ page }) => {
             await page.goto('/');
+            await expect(page).toHaveURL('/');
 
-            expect(page).toHaveUrl('/');
-            const welcomeTitle = await page.getByTestId('welcomeTitle');
-
-            expect(await welcomeTitle).toBeVisible();
-            expect(await welcomeTitle.textContent()).toContain('Welcome, JHipster Svelte!');
+            await expect(page.getByTestId('welcomeTitle')).toBeVisible();
+            await expect(page.getByTestId('welcomeTitle')).toHaveText('Welcome, JHipster Svelte!');
         });
     });
 
     test.describe('navigation context', () => {
-        test.beforeEach(async () => {
+        test.beforeEach(async ({ page }) => {
             await page.goto('/admin/logger');
-            expect(page).toHaveUrl('/login');
+            await expect(page).toHaveURL('/login');
         });
 
         test('should navigate to saved context', async () => {
             await page.getByLabel('Username').fill(process.env.ADMIN_USERNAME);
             await page.getByLabel('Password').fill(process.env.ADMIN_PASSWORD);
             await page.geByRole('button', { name: "Sign in" }).click();
-            
-            expect(page).toHaveUrl('/admin/logger');
-            await expect(page.locator('[data-testid="loggersTitle"]')).toBeVisible();
-            const loggersTitleText = await page.locator('[data-testid="loggersTitle"]').innerText();
-            expect(loggersTitleText).toContain('Loggers');
+
+            await expect(page).toHaveURL('/admin/logger');
+            await expect(page.getByTestId('loggersTitle')).toBeVisible();
+            await expect(page.getByTestId('loggersTitle')).toHaveText('Loggers');
         });
     });
 });

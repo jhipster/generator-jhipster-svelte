@@ -39,7 +39,7 @@ test.describe('User delete dialog page', () => {
 
     test('should display delete user dialog', async ({ page }) => {
 		await page.getByRole('button', { name: 'delete' }).click();
-        await expect(page.getByRole('heading').toHaveText('Confirm delete operation');
+        await expect(page.getByRole('heading')).toHaveText('Confirm delete operation');
         await expect(page.getByTestId('svlModal')).toHaveText('Are you sure you want to delete the user?');
         await expect(page.getByRole('button', { name: 'Cancel' })).toBeEnabled();
         await expect(page.getByRole('button', { name: 'Delete' })).toBeEnabled();

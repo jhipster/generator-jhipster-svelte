@@ -45,7 +45,7 @@ test.describe('Register User', () => {
     });
 
     test('should require password and confirm password to match', async ({ page }) => {
-        await page.getByLabel('Password*', { exact: true })fill('abcd', { log: false });
+        await page.getByLabel('Password*', { exact: true }).fill('abcd', { log: false });
         await page.getByLabel('Confirm Password*').fill('defg', { log: false });  // fills confirm password field
 		await expect(page.getByTestId('passwordConfirm-error')).toHaveText('Password and its confirmation do not match');
     });

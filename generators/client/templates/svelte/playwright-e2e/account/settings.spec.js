@@ -33,7 +33,7 @@ test.describe('User Settings', () => {
 
         await page.getByLabel('Email*').fill('admin@localhost');
         await expect(page.getByTestId('email-error')).toHaveText('Email address is not valid');
-        await expect(page.getByRole('button', { name: "Update Settings" }).toBeDisabled();
+        await expect(page.getByRole('button', { name: "Update Settings" })).toBeDisabled();
     });
 
     test('should update user settings', async () => {

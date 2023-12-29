@@ -42,7 +42,7 @@ test.describe('Loggers page', () => {
         await expect(page.getByTestId('loggersTable')).toHaveText(mongodbLoggerName);
     });
 
-    test('should display actions available on the current selected logger', async ({ page }) = {
+    test('should display actions available on the current selected logger', async ({ page }) => {
         // TODO
     });
 
