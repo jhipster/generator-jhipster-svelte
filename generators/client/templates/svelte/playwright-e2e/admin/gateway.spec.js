@@ -1,12 +1,10 @@
 import { test, expect } from "@playwright/test";
+const { ApiEndPoint } = require('../api-pom.js');
 
 test.describe('Gateway page', () => {
-    test.beforeEach(async ({ page }) => {
-        /*
-        *
-        *LOGIN API TO BE HERE
-        *
-        */
+    test.beforeEach(async ({ page, context }) => {
+        const apiEndPoint = new ApiEndPoint(context);
+		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
         await page.goto('/admin/gateway');
     });
 

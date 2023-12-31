@@ -1,14 +1,10 @@
 import { test, expect } from '@playwright/test';
+const { ApiEndPoint } = require('../api-pom.js');
 
 test.describe('Change User Password', () => {
-    test.beforeEach(async({ page }) => {
-        /*
-        *
-        * API LOGIC TO BE HERE
-        *
-        *
-        *
-        */
+    test.beforeEach(async({ page, context }) => {
+        const apiEndPoint = new ApiEndPoint(context);
+		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
         await page.goto('/account/password');
     });
 
@@ -17,8 +13,8 @@ test.describe('Change User Password', () => {
     });
 
     test('should require mandatory fields to be filled', async ({ page }) => {
-		await expect(page.getByTestId('passwordForm')).toHaveText('Update password');
-		await expect(page.getByTestId('passwordForm')).toBeDisabled();
+		await expect(page.getByTestId('passwordForm').getByRole('button')).toHaveText('Update password');
+		await expect(page.getByTestId('passwordForm').getByRole('button')).toBeDisabled();
     });
 
     test('should require current password', async ({ page }) => {
@@ -50,12 +46,12 @@ test.describe('Change User Password', () => {
     });
 
     test('should update user password', async ({ page }) => {
-        await page.getByLabel('Password*').fill('admin', { log: false });
+        await page.getByLabel('Current Password*').fill('admin', { log: false });
         await page.getByLabel('New Password*', { exact: true }).fill('admin', { log: false });
         await page.getByLabel('Confirm New Password*').fill('admin', { log: false });
 
         await expect(page.getByRole('button', { name: 'Update password' })).toBeEnabled()
-		await expect(page.getByRole('button', { name: 'Update password' })).click();
+		await page.getByRole('button', { name: 'Update password' }).click();
         await expect(page.getByTestId('successMsg')).toHaveText('Password changed!');
     });
 

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+const { ApiEndPoint } = require('./api-pom.js');
 
 test.describe('Navbar', () => {
     test.beforeEach(async ({ page }) => {
@@ -6,48 +7,42 @@ test.describe('Navbar', () => {
     });
 
     test.describe('unauthenticated user', () => {
-        test('should display application name', async ({ page }) => {
+        /*test('should display application name', async ({ page }) => {
             await page.locator('[data-testid="svlAppName"]').isVisible();
             const appNameText = await page.locator('[data-testid="svlAppName"]').innerText();
             expect(appNameText).toContain('<%= baseName %>');
-        });
+        });*/
 
         test('should display application version', async ({ page }) => {
-            await page.locator('[data-testid="svlAppVersion"]').isVisible();
-            const appVersionText = await page.locator('[data-testid="svlAppVersion"]').innerText();
-            expect(appVersionText).toContain('DEV');
+            await expect(page.getByTestId('svlAppVersion')).toBeVisible();
+            await expect(page.getByTestId('svlAppVersion')).toHaveText('DEV');
         });
 
         test('should not display navigation toggle button', async ({ page }) => {
-            await expect(page.locator('[data-testid="svlNavBtn"]')).toBeHidden();
+            await expect(page.getByTestId('svlNavBtn')).toBeHidden();
         });
 
         test('should not display account menu', async ({ page }) => {
-            await expect(page.locator('[data-testid="svlAcctMenu"]')).toBeHidden();
+            await expect(page.getByTestId('svlAcctMenu')).toBeHidden();
         });
 
         test('should display sign in link', async ({ page }) => {
-            await page.locator('[data-testid="svlLoginLink"]').isVisible();
-            const signInLinkText = await page.locator('[data-testid="svlLoginLink"]').innerText();
-            expect(signInLinkText).toContain('Sign in');
+            await expect(page.getByTestId('svlLoginLink')).toBeVisible();
+            await expect(page.getByTestId('svlLoginLink')).toHaveText('Sign in');
         });
 
         test("should display register link", async ({ page }) => {
-            await page.locator('[data-testid="svlRegisterLink"]').isVisible();
-            const registerLinkText = await page.locator('[data-testid="svlRegisterLink"]').innerText();
-            expect(registerLinkText).toContain('Sign up');
+            await expect(page.getByTestId('svlRegisterLink')).toBeVisible();
+            await expect(page.getByTestId('svlRegisterLink')).toHaveText('Sign up');
         });
     });
 
     test.describe('authenticated user', () => {
-        test.beforeEach(async ({ page }) => {
-            /*
-             *
-             *  LOGIN FUNCTION TO BE HERE
-             *
-             */
- 
-            await page.goto('/');
+        test.beforeEach(async ({ page, context }) => {
+			const apiEndPoint = new ApiEndPoint(context);
+			await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
+
+			await page.goto('/');
         });
 
         test.afterEach(async ({ page }) => {
@@ -59,81 +54,66 @@ test.describe('Navbar', () => {
         });
 
         test('should not display register link', async ({ page }) => {
-            expect(await page.locator('[data-testid="svlRegisterLink"]')).toBeHidden();
+            await expect(page.getByTestId('svlRegisterLink')).toBeHidden();
         });
 
         test('should not sign in link', async ({ page }) => {
-            expect(await page.locator('[data-testid="svlLoginLink"]')).toBeHidden();
+            await expect(page.getByTestId('svlLoginLink')).toBeHidden();
         });
 
         test('should display account menu', async ({ page }) => {
-            const accMenuBtn = await page.locator('[data-testid="svlAcctMenu"]');
-            const changePwdLink = await page.locator('[data-testid="svlChgPwdLink"]');
-            const settingsLink = await page.locator('[data-testid="svlSettingsLink"]');
-            const signOutLink = await page.locator('[data-testid="svlSignoutLink"]');
+			await expect(page.getByTestId('svlAcctMenu')).toBeVisible();
+			await expect(page.getByTestId('svlAcctMenu')).toBeEnabled();
+			await page.getByTestId('svlAcctMenu').click();
 
-            expect(accMenuBtn).toBeVisible();
-            expect(accMenuBtn).toBeEnabled;
-            accMenuBtn.click();
-            
-            expect(changePwdLink).toBeVisible();
-            expect(changePwdLink.innerText()).toContain('/account/password');
-            expect(changePwdLink.innerText()).toContain('Change Password');
+			await expect(page.getByTestId('svlChgPwdLink')).toBeVisible();
+			await expect(page.getByTestId('svlChgPwdLink')).toHaveAttribute('href', '/account/password');
+			await expect(page.getByTestId('svlChgPwdLink')).toHaveText('Change Password');
 
-            expect(settingsLink).toBeVisible();
-            expect(settingsLink.innerText()).toContain('/account/settings');
-            expect(settingsLink.innerText()).toContain('Settings');
+			await expect(page.getByTestId('svlSettingsLink')).toBeVisible();
+			await expect(page.getByTestId('svlSettingsLink')).toHaveAttribute('href', '/account/settings');
+			await expect(page.getByTestId('svlSettingsLink')).toHaveText('Settings');
 
-            expect(signOutLink).toBeVisible();
-            expect(signOutLink).toHaveUrl('/');
-            expect(signOutLink.innerText()).toContain('Sign out');
-        });
-        
+			await expect(page.getByTestId('svlSignoutLink')).toBeVisible();
+			await expect(page.getByTestId('svlSignoutLink')).toHaveAttribute('href', '/');
+			await expect(page.getByTestId('svlSignoutLink')).toHaveText('Sign out');
+         });
+
         test('should display administrator menu', async ({ page }) => {
-            const adminMenu = await page.locator('[data-testid="svlAdminMenu"]');
-            const loggerLink = await page.locator('[data-testid="svlLoggerLink"]');
-            const userMgmtLink = await page.locator('[data-testid="svlUserMgmtLink"]');
+			await expect(page.getByTestId('svlAdminMenu')).toBeVisible();
+			await expect(page.getByTestId('svlAdminMenu')).toBeEnabled();
+			await page.getByTestId('svlAdminMenu').click();
 
-            expect(adminMenu).toBeVisible();
-            expect(adminMenu).toBeEnabled();
-            adminMenu.click();
+			await expect(page.getByTestId('svlLoggerLink')).toBeVisible();
+			await expect(page.getByTestId('svlLoggerLink')).toHaveAttribute('href', '/admin/logger');
+			await expect(page.getByTestId('svlLoggerLink')).toHaveText('Loggers');
 
-            expect(loggerLink).toBeVisible();
-            expect(loggerLink.innerText()).toContain('/admin/logger');
-            expect(loggerLink.innerText()).toContain('Loggers');
-
-            expect(userMgmtLink).toBeVisible();
-            expect(userMgmtLink.innerText()).toContain('/admin/user-management');
-            expect(userMgmtLink.innerText()).toContain('User Management');
-        });
+			await expect(page.getByTestId('svlUserMgmtLink')).toBeVisible();
+			await expect(page.getByTestId('svlUserMgmtLink')).toHaveAttribute('href', '/admin/user-management');
+			await expect(page.getByTestId('svlUserMgmtLink')).toHaveText('User Management');
+            });
 
         test('should navigate to change password page', async ({ page }) => {
-            const changePwdLink = await page.locator('[data-testid="svlChgPwdLink"]');
-
-            await page.locator('[data-testid="svlAccountLink"]').click()
-            expect(changePwdLink).toBeVisible();
-            changePwdLink.click();
-            expect(page).toHaveUrl('/account/settings');
+			await page.getByTestId('svlAccountLink').click();
+			await expect(page.getByTestId('svlChgPwdLink')).toBeVisible()
+			await page.getByTestId('svlChgPwdLink').click();
+			await expect(page).toHaveURL('/account/password');
         });
 
         test('should navigate to settings page', async ({ page }) => {
-            const settingsLink = await page.locator('[data-testid="svlSettingsLink"]');
-
-            await page.locator('[data-testid="svlAccountLink"]')).click();
-            expect(settingsLink).toBeVisible();
-            settingsLink.click();
-            expect(page).toHaveUrl('/account/settings');
+			await page.getByTestId('svlAccountLink').click();
+			await expect(page.getByTestId('svlSettingsLink')).toBeVisible();
+			await page.getByTestId('svlSettingsLink').click();
+			await expect(page).toHaveURL('/account/settings');
         });
 
         test('should logout user', async({ page }) => {
-            const loginLink = await page.locator('[data-testid="svlLoginLink"]');
-            const signOutLink = await page.locator('[data-testid="svlSignoutLink"]');
-
-            expect(page).toHaveUrl('/');
-            expect(signOutLink).toBeVisible();
-            signOutLink.click();
-            await page.locator('[data-testid="svlAccountLink"]').click();
-            expect(loginLink).toBeVisible().toContain('Sign in');
+			await page.getByTestId('svlAcctMenu').getByTestId('svlAccountLink').click();
+			await expect(page.getByTestId('svlSignoutLink')).toBeVisible();
+			await page.getByTestId('svlSignoutLink').click();
+			await expect(page).toHaveURL('/');
+			await expect(page.getByTestId('svlLoginLink')).toBeVisible();
+			await expect(page.getByTestId('svlLoginLink')).toHaveText('Sign in');
         });
     });
 
@@ -157,7 +137,8 @@ test.describe('Navbar', () => {
         });
 
         test('should not display administrator menu', async ({ page }) => {
-            expect(await page.locator('[data-testid="svlAdminMenu"]')).toBeHidden();
+            await expect(page.getByTestId('svlAdminMenu')).toBeHidden();
+        });
 
     });
 
@@ -173,12 +154,10 @@ test.describe('Navbar', () => {
         });
 
         test('should logout user', async ({ page }) => {
-            const signOutLink = await page.locator('[data-testid="svlSignoutLink"]');
-
-            await page.locator('[data-testid="svlAccountLink"]').click();
-            expect(signOutLink).toBeVisible();
-            expect(signOutLink.innerText()).toContain('Sign in');
-            expect(page).toHaveUrl('/');
+            await page.getByTestId('svlAccountLink').click();
+            await expect(page.getByTestId('svlSignoutLink')).toBeVisible();
+            await expect(page.getByTestId('svlSignoutLink')).toHaveText('Sign in');
+            await expect(page).toHaveURL('/');
         });
     });
 

@@ -1,26 +1,24 @@
 import { test, expect } from "@playwright/test";
+const { ApiEndPoint } = require('../api-pom.js');
 
 test.describe('User Settings', () => {
-    test.beforeEach(async () => {
-        /*
-         *
-         *  LOGIN FUNCTION TO BE HERE
-         *
-         */
+    test.beforeEach(async ({ page, context }) => {
+        const apiEndPoint = new ApiEndPoint(context);
+		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
         await page.goto('/account/settings');
     });
 
-    test('should greet with User Settings title', async () => {
+    test('should greet with User Settings title', async ({ page }) => {
         await expect(page.getByText(`User settings for [${process.env.ADMIN_USERNAME}]`)).toBeVisible();
     });
 
-    test('should display current settings', async () => {
+    test('should display current settings', async ({ page }) => {
         await expect(page.getByLabel('First Name')).toHaveText('<%_ if (databaseTypeSql) { _%>Admin<%_ } else { _%>admin<%_ }_%>');
         await expect(page.getByLabel('Last Name')).toHaveText('Admin');
         await expect(page.getByLabel('Email*')).toHaveText('admin@localhost');
     });
 
-    test('should display form control validation messages', async () => {
+    test('should display form control validation messages', async ({ page }) => {
         await page.getByLabel('First Name').fill('AveryLongFirstNameThatExceedsTheMaximumLengthLimitToCheckValidation');
         await expect(page.getByTestId('firstName-error')).toHaveText('First name cannot be longer than 50 characters');
 
@@ -36,7 +34,7 @@ test.describe('User Settings', () => {
         await expect(page.getByRole('button', { name: "Update Settings" })).toBeDisabled();
     });
 
-    test('should update user settings', async () => {
+    test('should update user settings', async ({ page }) => {
         await page.getByLabel('First Name').fill('<%_ if (databaseTypeSql) { _%>Admin<%_} else { _%>admin<%_ }_%>');
         await page.getByLabel('Last Name').fill('Admin');
         await page.getByLabel('Email*').fill('admin@localhost.org');

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-
+const { ApiEndPoint } = require('./api-pom.js');
 
 test.describe("Home page", () => {
     test.beforeEach(async ({ page }) => {
@@ -15,10 +15,8 @@ test.describe("Home page", () => {
     test.describe("unauthenticated user", () => {
         test("should have login instructions", async ({ page }) => {
             await expect(page.getByTestId('loginInstructions')).toBeVisible();
-            await expect(page.getByTestId('loginInstructions')).toHaveText('you can try the default accounts');
-            await expect(page.getByTestId('loginInstructions')).toHaveText('Administrator (login="admin" and password="admin")');
-            await expect(page.getByTestId('loginInstructions')).toHaveText('User (login="user" and password="user").');
-        });
+			await expect(page.getByTestId('loginInstructions')).toHaveText('If you want to sign in, you can try the default accounts: - Administrator (login="admin" and password="admin") - User (login="user" and password="user").');
+		});
 
         test("should have user registration link", async ({ page }) => {
             await expect(page.getByTestId('svlRegisterHomeLink')).toBeVisible();
@@ -28,22 +26,18 @@ test.describe("Home page", () => {
     });
 
     test.describe("authenticated user", () => {
-        test.beforeEach(async ({ page }) => {
-
-            await page.goto('/login');
-            await page.getByLabel('Username').fill(process.env.ADMIN_USERNAME);
-            await page.getByLabel('Password').fill(process.env.ADMIN_PASSWORD, { log: false });
-            await page.getByRole('button', { name: 'Sign in' }).click();
+        test.beforeEach(async ({ page, context }) => {
+			const apiEndPoint = new ApiEndPoint(context);
+			await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
 
             await page.goto('/');
-
         });
         test.afterEach(() => {
-            //
-            //
-            //    LOGOUT FUNCTION TO BE HERE
-            //
-            //
+            /*
+            *
+            *    LOGOUT FUNCTION TO BE HERE
+            *
+            */
         });
 
         test("should greets logged in user", async ({ page }) => {

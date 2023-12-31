@@ -1,12 +1,10 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from "@playwright/test";
+const {ApiEndPoint } = require('../api-pom.js');
 
 test.describe('Loggers page', () => {
-    test.beforeEach(async ({ page }) => {
-        /*
-         *
-         *  LOGIN FUNCTION TO BE HERE
-         *
-         */
+    test.beforeEach(async ({ page, context }) => {
+        const apiEndPoint = new ApiEndPoint(context);
+		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
         await page.goto('/admin/logger');
     });
 
@@ -20,13 +18,13 @@ test.describe('Loggers page', () => {
 
     test('should greets with loggers page title and filter control', async ({ page }) => {
         await expect(page.getByTestId('loggersTitle')).toBeVisible();
-        await expect(page.getByTestId('loggersTitle').innerText()).toContain('Loggers');
+        await expect(page.getByTestId('loggersTitle')).toHaveText('Loggers');
         await expect(page.getByPlaceholder('Filter logger')).toHaveValue('');
     });
 
     test('should display loggers table', async ({ page }) => {
         await expect(page.getByRole('columnheader')).toBeVisible();
-        await expect(page.getByRole('columnheader').innerText()).toContain('Name');
+        await expect(page.getByRole('columnheader')).toHaveText('Name');
         await expect(page.getByRole('columnheader')).toHaveCount(1);
     });
 
