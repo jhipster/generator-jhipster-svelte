@@ -29,11 +29,10 @@ test.describe('User Management list page', () => {
         await expect(page.getByRole('columnheader').nth(6)).toHaveText('Modified At');
     });
 
-    test('should display "user" user record in the table', async ({ page }) => {
-        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).nth(0)).toContain('user@localhost.com');
-        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).nth(0)).toContain('user');
-        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).nth(0)).toContain('ROLE_USER');
-        //await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).nth(0)).toHaveText('system');
+    test('should display "jon" user record in the table', async ({ page }) => {
+        await expect(page.locator('[data-testid=userMgmtTable] tr').nth(2).locator('td').nth(1)).toHaveText('jon');
+        await expect(page.locator('[data-testid=userMgmtTable] tr').nth(2).locator('td').nth(2)).toHaveText('joe@localhost.org');
+        await expect(page.locator('[data-testid=userMgmtTable] tr').nth(2).locator('td').nth(3)).toHaveText('ROLE_USER');
     });
 
     test('should not allow actions on the current logged-in user', async ({ page }) => {
@@ -45,8 +44,8 @@ test.describe('User Management list page', () => {
         await expect(page.getByRole('button', { name: 'delete' })).toBeDisabled();
     });
 
-    test('should allow deactivation of "user" account record', async ({ page }) => {
-        await page.getByRole('cell', { name: 'user@localhost.com' }).click();
+    test('should allow deactivation of "jon" account record', async ({ page }) => {
+        await page.getByRole('cell', { name: 'joe@localhost.org' }).click();
 
         await expect(page.getByRole('button', { name: 'toggleActivation' })).toBeEnabled();
     });
@@ -74,5 +73,6 @@ test.describe('User Management list page', () => {
 
         await expect(loginValueAfter).not.toEqual(loginValueBefore);
     });
+
 });
 

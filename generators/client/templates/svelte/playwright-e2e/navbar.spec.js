@@ -8,7 +8,7 @@ test.describe('Navbar', () => {
 
     test.describe('unauthenticated user', () => {
         test('should display application name', async ({ page }) => {
-            await page.getByTestId('svlAppName').toBeVisible();
+            await expect(page.getByTestId('svlAppName')).toBeVisible();
             await expect(page.getByTestId('svlAppName')).toHaveText('<%= baseName %>');
         });
 
