@@ -22,8 +22,8 @@ test.describe("User login", () => {
   });
 
   test("should require username and password", async ({ page }) => {
-	await expect(page.getByTestId('loginForm')).toHaveText('Sign in');
-	await expect(page.getByTestId('loginForm')).toBeDisabled();
+	await expect(page.getByTestId('loginForm').getByRole('button')).toHaveText('Sign in');
+	await expect(page.getByTestId('loginForm').getByRole('button')).toBeDisabled();
   });
 
   test("should require username", async ({ page }) => {

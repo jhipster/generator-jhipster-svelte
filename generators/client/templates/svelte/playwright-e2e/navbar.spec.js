@@ -7,11 +7,10 @@ test.describe('Navbar', () => {
     });
 
     test.describe('unauthenticated user', () => {
-        /*test('should display application name', async ({ page }) => {
-            await page.locator('[data-testid="svlAppName"]').isVisible();
-            const appNameText = await page.locator('[data-testid="svlAppName"]').innerText();
-            expect(appNameText).toContain('<%= baseName %>');
-        });*/
+        test('should display application name', async ({ page }) => {
+            await page.getByTestId('svlAppName').toBeVisible();
+            await expect(page.getByTestId('svlAppName')).toHaveText('<%= baseName %>');
+        });
 
         test('should display application version', async ({ page }) => {
             await expect(page.getByTestId('svlAppVersion')).toBeVisible();

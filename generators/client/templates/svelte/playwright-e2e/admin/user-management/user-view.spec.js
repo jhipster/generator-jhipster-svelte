@@ -1,31 +1,28 @@
 import { test, expect } from "@playwright/test";
+const { ApiEndPoint } = require('../../api-pom.js');
 
 test.describe('User view details page', () => {
     let randomUser;
+	let apiEndPoint;
 
-    test.beforeEach(async ({ page }) => {
-
-        /*
-        *
-        * LOGIN API TO BE HERE
-        *
-        */
+    test.beforeEach(async ({ page, context }) => {
+		apiEndPoint = new ApiEndPoint(context);
+		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
 
         randomUser = 'test' + new Date().getTime();
-        /*
-        *
-        * SAVE USER FUNCTION TO BE HERE
-        *
-        */
+        const res = await apiEndPoint.save('api/admin/users', {
+			login: randomUser,
+			firstName: 'John',
+			lastName: 'Doe',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		});
         await page.goto(`/admin/user-management/${res.login}/view`);
     });
 
     test.afterEach(async ({ page }) => {
-        /*
-        *
-        * DELETE USER FUNCTION TO BE HERE
-        *
-        */
+        await apiEndPoint.delete(`api/admin/users/${randomUser}`);
         await page.close();
     });
 
@@ -45,7 +42,7 @@ test.describe('User view details page', () => {
     test('should navigate back to the user list page', async ({ page }) => {
         await page.getByRole('button', { name: 'Back' }).click();
         await expect(page).toHaveURL('/admin/user-management');
-        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
+        await expect(page.getByTestId('userMgmtTitle').locator('span')).toHaveText('Users');
     });
 });
 

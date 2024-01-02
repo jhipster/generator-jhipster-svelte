@@ -1,30 +1,29 @@
 import { test, expect } from "@playwright/test";
+const { ApiEndPoint } = require('../../api-pom.js');
 
 test.describe('Update user page', () => {
     let randomUser;
+	let apiEndPoint;
 
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, context }) => {
         randomUser = 'test' + new Date().getTime();
+		apiEndPoint = new ApiEndPoint(context);
+		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
 
-        /*
-        *
-        * LOGIN API FUNCTION TO BE HERE
-        *
-        */
+        const res = await apiEndPoint.save('api/admin/users', {
+			login: randomUser,
+			firstName: 'john',
+			lastName: 'doe',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		});
 
-        /*
-        *
-        * SAVE USER FUNCTION TO BE HERE
-        *
-        */
+		await page.goto(`admin/user-management/${res.login}/edit`);
     });
 
     test.afterEach(async ({ page }) => {
-        /*
-        *
-        * DELETE USER FUNCTION TO BE HERE
-        *
-        */
+        await apiEndPoint.delete(`api/admin/users/${randomUser}`);
     });
 
     test('should greet with update user title', async ({ page }) => {
@@ -36,9 +35,9 @@ test.describe('Update user page', () => {
         await expect(page.getByLabel('First Name')).toHaveValue('john');
         await expect(page.getByLabel('Last Name')).toHaveValue('doe');
         await expect(page.getByLabel('Email*')).toHaveValue(`${randomUser}@localhost.org`);
-        await expect(page.getByRole('USER_ROLE')).toBeChecked();
-        await expect(page.locator('[data-testid=roles-options] input[type=checkbox]').nth(1)).toBeChecked();
-        await expect(page.getByRole('button', { name: 'Update new account' })).toBeEnabled();
+        await expect(page.getByLabel('ROLE_USER')).toBeChecked();
+		await page.keyboard.press('PageDown');
+        await expect(page.getByRole('button', { name: 'Update user account' })).toBeEnabled();
     });
 
     test('should require username', async ({ page }) => {
@@ -55,7 +54,7 @@ test.describe('Update user page', () => {
 
     test('should require roles', async ({ page }) => {
 		await page.getByLabel('Expand select options').click();
-		await page.getByText('ROLE_USER').dblclick();
+		await page.getByText('ROLE_USER').click();
 		await page.getByLabel('Expand select options').click();
 
         await expect(page.getByTestId('roles-error')).toHaveText('Select at least one role');
@@ -64,7 +63,7 @@ test.describe('Update user page', () => {
     test('should navigate back to the user list page', async ({ page }) => {
         await page.getByRole('button', { name: 'Cancel'}).click();
         await expect(page).toHaveURL('/admin/user-management');
-        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
+        await expect(page.getByTestId('userMgmtTitle').locator('span')).toHaveText('Users');
     });
 
     test('should update user account details', async ({ page }) => {
@@ -73,15 +72,15 @@ test.describe('Update user page', () => {
         await page.getByLabel('Last Name').fill('doe');
         await page.getByLabel('Email*').fill(`${randomUser}@localhost.org`);
 		await page.getByLabel('Expand select options').click();
-		await page.getByText('ROLE_USER').click();
+		await page.getByText('ROLE_USER').dblclick();
 		await page.getByLabel('Expand select options').click();
 
         await expect(page.getByRole('button', { name: 'Update user account' })).toBeEnabled();
         await page.getByRole('button', { name: 'Update user account' }).click();
 
-        await expect(page.getByTestId('toast-success')).toHaveText('A user is updated with identifier');
+        await expect(page.getByTestId('toast-success')).toHaveText(`A user is updated with identifier ${randomUser}`);
         await expect(page).toHaveURL('/admin/user-management');
-        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
+        await expect(page.getByTestId('userMgmtTitle').locator('span')).toHaveText('Users');
     });
 });
 

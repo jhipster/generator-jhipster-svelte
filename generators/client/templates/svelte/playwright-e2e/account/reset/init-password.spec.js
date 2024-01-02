@@ -14,8 +14,8 @@ test.describe('Forgot password', () => {
     });
 
     test('should require mandatory fields', async ({ page }) => {
-        await expect(page.getByTestId('forgotPwdForm')).toHaveText('Send password reset email')
-		await expect(page.getByTestId('forgotPwdForm')).toBeDisabled();
+        await expect(page.getByTestId('forgotPwdForm').getByRole('button')).toHaveText('Send password reset email');
+		await expect(page.getByRole('button', { name: 'Send password reset email' })).toBeDisabled();
     });
 
     test('should require email', async ({ page }) => {

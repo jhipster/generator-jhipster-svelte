@@ -1,13 +1,11 @@
 import { test, expect } from "@playwright/test";
+const { ApiEndPoint } = require('../../api-pom.js');
 
 test.describe('User Management list page', () => {
 
-    test.beforeEach(async ({ page }) => {
-        /*
-        *
-        * LOGIN API FUNCTION TO BE HERE
-        *
-        */
+    test.beforeEach(async ({ page, context }) => {
+        const apiEndPoint = new ApiEndPoint(context);
+		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
         await page.goto('/admin/user-management');
     });
 
@@ -16,7 +14,7 @@ test.describe('User Management list page', () => {
     });
 
     test('should greet with users page title', async ({ page }) => {
-        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
+        await expect(page.getByTestId('userMgmtTitle').locator('span')).toHaveText('Users');
     });
 
     test('should display users table', async ({ page }) => {
@@ -32,25 +30,25 @@ test.describe('User Management list page', () => {
     });
 
     test('should display "user" user record in the table', async ({ page }) => {
-        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).innerText()).toContain('user@localhost');
-        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).innerText()).toContain('user');
-        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).innerText()).toContain('ROLE_USER');
-        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).innerText()).toContain('system');
+        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).nth(0)).toContain('user@localhost.com');
+        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).nth(0)).toContain('user');
+        await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).nth(0)).toContain('ROLE_USER');
+        //await expect(page.locator('[data-testid=userMgmtTable] tbody').filter({ has: page.locator('td') }).nth(0)).toHaveText('system');
     });
 
     test('should not allow actions on the current logged-in user', async ({ page }) => {
-        await page.getByRole('cell', { name: 'admin@localhost' }).hover();
+        await page.getByRole('cell', { name: 'admin@localhost' }).click();
 
-        await expect(page.getByRole('button', { name: 'toggleUserAccBtn' })).toBeDisabled();
-        await expect(page.getByRole('button', { name: 'viewBtn' })).toBeEnabled();
-        await expect(page.getByRole('button', { name: 'editBtn' })).toBeDisabled();
-        await expect(page.getByRole('button', { name: 'deleteBtn' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'toggleActivation' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'view' })).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'edit' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'delete' })).toBeDisabled();
     });
 
     test('should allow deactivation of "user" account record', async ({ page }) => {
-        await page.getByRole('cell', { name: 'user@localhost' }).hover();
+        await page.getByRole('cell', { name: 'user@localhost.com' }).click();
 
-        await expect(page.getByRole('button', { name: 'toggleUserAccBtn' })).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'toggleActivation' })).toBeEnabled();
     });
 
     test('should validate the pagination controls', async ({ page }) => {

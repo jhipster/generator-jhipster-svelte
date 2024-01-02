@@ -1,15 +1,13 @@
 import { test, expect } from "@playwright/test";
+const { ApiEndPoint } = require('../../api-pom.js');
 
 test.describe('Create user page', () => {
+	let apiEndPoint;
 
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, context }) => {
+		apiEndPoint = new ApiEndPoint(context);
+		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
         await page.goto('/admin/user-management/new');
-        /*
-        *
-        *LOGIN FUNCTION TO BE HERE
-        *
-        */
-
     });
 
     test.afterEach(async ({ page }) => {
@@ -21,12 +19,10 @@ test.describe('Create user page', () => {
     });
 
     test('should require mandatory fields', async ({ page }) => {
-        const createBtn = page.getByTestId('addUserForm').locator('div').filter({ hasText: 'Create user account'}).nth(1);
-        await expect(createBtn).toBeFalsy();
+		await expect(page.getByRole('button', { name: 'Create user account' })).toBeDisabled();
     });
 
     test('should require username', async ({ page }) => {
-
         await page.getByLabel('Username*').fill('admin');
         await page.getByLabel('Username*').fill(' ');
 
@@ -34,7 +30,6 @@ test.describe('Create user page', () => {
     });
 
     test('should require email', async ({ page }) => {
-
         await page.getByLabel('Email*').fill('admin@localhost.org');
         await page.getByLabel('Email*').fill('');
 
@@ -53,24 +48,18 @@ test.describe('Create user page', () => {
         await page.getByRole('button', { name: 'Cancel' }).click();
 
         await expect(page).toHaveURL('/admin/user-management');
-        await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
+        await expect(page.getByTestId('userMgmtTitle').locator('span')).toHaveText('Users');
     });
 
     test.describe('create account', () => {
-
         let randomUser;
 
         test.beforeEach(async ({ page }) => {
             randomUser = 'test' + new Date().getTime();
             await page.goto('admin/user-management/new');
         });
-
-        test.afterEach(async ({ page }) => {
-            /*
-            *
-            *DELETE USER FUNCTION TO BE HERE
-            *
-            */
+        test.afterEach(async ({ page, context }) => {
+			await apiEndPoint.delete(`api/admin/users/${randomUser}`);
             await page.close();
         });
 
@@ -78,7 +67,7 @@ test.describe('Create user page', () => {
             await page.getByLabel('Username*').fill(`${randomUser}`);
             await page.getByLabel('First name').fill('john');
             await page.getByLabel('Last name').fill('doe');
-            await page.getByLabel('Email*').fill(`${randomUser}+@localhost.org`);
+            await page.getByLabel('Email*').fill(`${randomUser}@localhost.org`);
             await page.getByLabel('Expand select options').click();
 			await page.getByText('ROLE_ADMIN').click();
 			await page.getByLabel('Expand select options').click();
@@ -88,12 +77,12 @@ test.describe('Create user page', () => {
             await expect(createBtn).toBeEnabled();
 			await createBtn.click();
 
-            await expect(page.getByTestId('toast-success')).toHaveText('A user is created with identifier');
+            await expect(page.getByTestId('toast-success')).toHaveText(`A user is created with identifier ${randomUser}`);
 
             await expect(page).toHaveURL('/admin/user-management');
 
 			await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
-            await expect(page.getByTestId('userMgmtTitle')).toHaveText('Users');
+            await expect(page.getByTestId('userMgmtTitle').locator('span')).toHaveText('Users');
         });
     });
 });
