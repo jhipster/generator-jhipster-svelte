@@ -8,7 +8,7 @@ test.describe("Footer", () => {
 
   test("should display copyright message", async ({ page }) => {
     await expect(page.getByTestId('copyrightMsg')).toBeVisible();
-    await expect(page.getByTestId('copyrightMsg')).toHaveText('Copyright © 2023 JHipster. All Rights Reserved');
+    await expect(page.getByTestId('copyrightMsg')).toHaveText('Copyright © 2024 JHipster. All Rights Reserved');
   });
 });
 

@@ -10,7 +10,7 @@ test.describe('User delete dialog page', () => {
 		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
 
         randomUser = 'test' + new Date().getTime();
-        await await apiEndPoint.save('api/admin/users', {
+        await apiEndPoint.save('api/admin/users', {
 			login: randomUser,
 			firstName: '',
 			lastName: '',

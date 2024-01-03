@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
+const { authenticationType, skipUserManagement } = require('./jdl-config.js');
 const { ApiEndPoint } = require('./api-pom.js');
+
 
 test.describe("Home page", () => {
     test.beforeEach(async ({ page }) => {
@@ -18,11 +20,13 @@ test.describe("Home page", () => {
 			await expect(page.getByTestId('loginInstructions')).toHaveText('If you want to sign in, you can try the default accounts: - Administrator (login="admin" and password="admin") - User (login="user" and password="user").');
 		});
 
-        test("should have user registration link", async ({ page }) => {
-            await expect(page.getByTestId('svlRegisterHomeLink')).toBeVisible();
-            await expect(page.getByTestId('svlRegisterHomeLink')).toHaveAttribute('href', '/account/register');
-            await expect(page.getByTestId('svlRegisterHomeLink')).toHaveText('Register a new account');
-        });
+		if (authenticationType !== 'oauth2' && !skipUserManagement) {
+			test("should have user registration link", async ({ page }) => {
+				await expect(page.getByTestId('svlRegisterHomeLink')).toBeVisible();
+				await expect(page.getByTestId('svlRegisterHomeLink')).toHaveAttribute('href', '/account/register');
+				await expect(page.getByTestId('svlRegisterHomeLink')).toHaveText('Register a new account');
+			});
+		}
     });
 
     test.describe("authenticated user", () => {
@@ -32,13 +36,16 @@ test.describe("Home page", () => {
 
             await page.goto('/');
         });
-        test.afterEach(() => {
-            /*
-            *
-            *    LOGOUT FUNCTION TO BE HERE
-            *
-            */
-        });
+
+		if (authenticationType === 'oauth2') {
+			test.afterEach(() => {
+				/*
+				*
+				*    LOGOUT FUNCTION TO BE HERE
+				*
+				*/
+			});
+		}
 
         test("should greets logged in user", async ({ page }) => {
             await expect(page.getByTestId('greetMsg')).toBeVisible();

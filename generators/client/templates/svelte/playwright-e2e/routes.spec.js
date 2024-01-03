@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 const { ApiEndPoint } = require('./api-pom.js');
+const { authenticationType, skipUserManagement, baseName } = require('./jdl-config.js');
 
 test.describe("Routes", () => {
     test.beforeEach(async ({ page }) => {
@@ -7,29 +8,33 @@ test.describe("Routes", () => {
     });
 
     test.describe("unauthenticated user", () => {
-        test("should not allow navigation to settings page", async ({ page }) => {
-            await page.goto('/account/settings');
-            await expect(page).toHaveURL('/login');
+		if(authenticationType !== 'oauth2' && !skipUserManagement) {
+			test("should not allow navigation to settings page", async ({ page }) => {
+				await page.goto('/account/settings');
+				await expect(page).toHaveURL('/login');
 
-            await expect(page.getByTestId('signInTitle')).toBeVisible();
-            await expect(page.getByTestId('signInTitle')).toHaveText('Sign in to <%= baseName %>');
-        });
+				expect(await page.getByTestId('signInTitle')).toBeVisible();
+				await expect(page.getByTestId('signInTitle')).toHaveText(`Sign in to ${baseName}`);
+			});
 
-        test("should not allow navigation to user management page", async ({ page }) => {
-            await page.goto('/admin/user-management');
-            await expect(page).toHaveURL('/login');
+			test("should not allow navigation to user management page", async ({ page }) => {
+				await page.goto('/admin/user-management');
+				await expect(page).toHaveURL('/login');
 
-            await expect(page.getByTestId('signInTitle')).toBeVisible();
-            await expect(page.getByTestId('signInTitle')).toHaveText('Sign in to <%= baseName %>');
-        });
+				expect(await page.getByTestId('signInTitle')).toBeVisible();
+				await expect(page.getByTestId('signInTitle')).toHaveText(`Sign in to ${baseName}`);
+			});
+		}
 
-        test("should not allow navigation to Loggers page", async ({ page }) => {
-            await page.goto('/admin/logger');
-            await expect(page).toHaveURL('/login');
+		if(authenticationType !== 'oauth2') {
+			test("should not allow navigation to Loggers page", async ({ page }) => {
+				await page.goto('/admin/logger');
+				await expect(page).toHaveURL('/login');
 
-            await expect(page.getByTestId('signInTitle')).toBeVisible();
-            await expect(page.getByTestId('signInTitle')).toHaveText('Sign in to <%= baseName %>');
-        });
+				expect(await page.getByTestId('signInTitle')).toBeVisible();
+				await expect(page.getByTestId('signInTitle')).toHaveText(`Sign in to ${baseName}`);
+			});
+		}
 
         test("should allow navigation to home page", async ({ page }) => {
             await page.goto('/');
@@ -46,18 +51,22 @@ test.describe("Routes", () => {
 			await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
         });
 
-
-        test.afterEach(async ({ page }) => {
-            /*
-            *
-            *  LOGOUT FUNCTION TO BE HERE
-            *
-            */
-        });
+		if(authenticationType === 'oauth2') {
+			test.afterEach(async ({ page }) => {
+				/*
+				*
+				*  LOGOUT FUNCTION TO BE HERE
+				*
+				*/
+			});
+		}
 
         test("should not allow navigation to login page", async ({ page }) => {
-            await page.goto('/oauth2/authorization/oidc');
-            await page.goto('/login');
+			if(authenticationType === 'oauth2') {
+				await page.goto('/oauth2/authorization/oidc');
+			} else {
+				await page.goto('/login');
+			}
 
             await expect(page).toHaveURL('/');
 
@@ -65,13 +74,15 @@ test.describe("Routes", () => {
             await expect(page.getByTestId('welcomeTitle')).toHaveText('Welcome, JHipster Svelte!');
         });
 
-        test("should not allow navigation to register page", async ({ page }) => {
-            await page.goto('/account/register');
-            await expect(page).toHaveURL('/');
+		if(authenticationType !== 'oauth2' && !skipUserManagement) {
+			test("should not allow navigation to register page", async ({ page }) => {
+				await page.goto('/account/register');
+				await expect(page).toHaveURL('/');
 
-            await expect(page.getByTestId('welcomeTitle')).toBeVisible();
-            await expect(page.getByTestId('welcomeTitle')).toHaveText('Welcome, JHipster Svelte!');
-        });
+				await expect(page.getByTestId('welcomeTitle')).toBeVisible();
+				await expect(page.getByTestId('welcomeTitle')).toHaveText('Welcome, JHipster Svelte!');
+			});
+		}
 
         test("should allow navigation to home page", async ({ page }) => {
             await page.goto('/');
@@ -82,21 +93,23 @@ test.describe("Routes", () => {
         });
     });
 
-    test.describe('navigation context', () => {
-        test.beforeEach(async ({ page }) => {
-            await page.goto('/admin/logger');
-            await expect(page).toHaveURL('/login');
-        });
+	if(authenticationType !== 'oauth2') {
+		test.describe('navigation context', () => {
+			test.beforeEach(async ({ page }) => {
+				await page.goto('/admin/logger');
+				await expect(page).toHaveURL('/login');
+			});
 
-        test('should navigate to saved context', async ({ page }) => {
-            await page.getByLabel('Username').fill(process.env.ADMIN_USERNAME);
-            await page.getByLabel('Password').fill(process.env.ADMIN_PASSWORD);
-            await page.getByRole('button', { name: "Sign in" }).click();
+			test('should navigate to saved context', async ({ page }) => {
+				await page.getByLabel('Username').fill(process.env.ADMIN_USERNAME);
+				await page.getByLabel('Password').fill(process.env.ADMIN_PASSWORD);
+				await page.getByRole('button', { name: "Sign in" }).click();
 
-            await expect(page).toHaveURL('/admin/logger');
-            await expect(page.getByTestId('loggersTitle')).toBeVisible();
-            await expect(page.getByTestId('loggersTitle')).toHaveText('Loggers');
-        });
-    });
+				await expect(page).toHaveURL('/admin/logger');
+				await expect(page.getByTestId('loggersTitle')).toBeVisible();
+				await expect(page.getByTestId('loggersTitle')).toHaveText('Loggers');
+			});
+		});
+	}
 });
 
