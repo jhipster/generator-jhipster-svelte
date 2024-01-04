@@ -6,7 +6,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-static": "2.0.3",
 		"@sveltejs/kit": "1.27.6",
-		"@testing-library/jest-dom": "6.1.4",
+		"@testing-library/jest-dom": "6.2.0",
 		"@testing-library/svelte": "4.0.5",
 		"autoprefixer": "10.4.16",
 		"cypress": "13.6.0",
