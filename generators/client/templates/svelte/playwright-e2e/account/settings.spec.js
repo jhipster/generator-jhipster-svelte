@@ -1,7 +1,24 @@
 import { test, expect } from "@playwright/test";
 const { ApiEndPoint } = require('../api-pom.js');
+const { databaseType } = require('../jdl-config.js');
+
+let databaseTypeSql;
+
+if (databaseType === 'sql') {
+	databaseTypeSql = true;
+} else {
+	databaseTypeSql = false;
+}
 
 test.describe('User Settings', () => {
+	let firstName;
+
+	if (databaseTypeSql) {
+		firstName = 'Admin';
+	} else {
+		firstName = 'admin'
+	}
+
     test.beforeEach(async ({ page, context }) => {
         const apiEndPoint = new ApiEndPoint(context);
 		await apiEndPoint.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
@@ -13,7 +30,7 @@ test.describe('User Settings', () => {
     });
 
     test('should display current settings', async ({ page }) => {
-        await expect(page.getByLabel('First Name')).toHaveText('<%_ if (databaseTypeSql) { _%>Admin<%_ } else { _%>admin<%_ }_%>');
+        await expect(page.getByLabel('First Name')).toHaveText(firstName);
         await expect(page.getByLabel('Last Name')).toHaveText('Admin');
         await expect(page.getByLabel('Email*')).toHaveText('admin@localhost');
     });
@@ -35,11 +52,11 @@ test.describe('User Settings', () => {
     });
 
     test('should update user settings', async ({ page }) => {
-        await page.getByLabel('First Name').fill('<%_ if (databaseTypeSql) { _%>Admin<%_} else { _%>admin<%_ }_%>');
+        await page.getByLabel('First Name').fill(firstName);
         await page.getByLabel('Last Name').fill('Admin');
         await page.getByLabel('Email*').fill('admin@localhost.org');
         await expect(page.getByRole('button', { name: 'Update Settings' })).toBeEnabled()
-		await expect(page.getByRole('button', { name: 'Update Settings' })).click();
+		await page.getByRole('button', { name: 'Update Settings' }).click();
         await expect(page.getByTestId('successMsg')).toHaveText('Settings changed!');
 
     });

@@ -5,6 +5,7 @@ module.exports = {
 	baseName: config['generator-jhipster']['baseName'],
 	authenticationType: config['generator-jhipster']['authenticationType'],
 	skipUserManagement: config['generator-jhipster']['skipUserManagement'],
+	databaseType: config['generator-jhipster']['databaseType']
 };
 
 
