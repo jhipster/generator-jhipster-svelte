@@ -1,18 +1,14 @@
 const command = {
-	options: {},
-	configs: {
+	configs: {},
+	options: {
 		jest: {
-			cli: {
-				description: 'Jest JavaScript unit testing framework',
-				type: Boolean,
-			},
+			description: 'Jest JavaScript unit testing framework',
+			type: Boolean,
 			scope: 'blueprint',
 		},
 		swaggerUi: {
-			cli: {
-				description: 'Generate Swagger UI',
-				type: Boolean,
-			},
+			description: 'Generate Swagger UI',
+			type: Boolean,
 			scope: 'blueprint',
 		},
 	},

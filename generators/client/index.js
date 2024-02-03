@@ -13,7 +13,7 @@ import { createNeedleCallback } from 'generator-jhipster/generators/base/support
 import prettierPluginSvelte from 'prettier-plugin-svelte';
 import prettierPluginImports from 'prettier-plugin-organize-imports';
 import { getPackageJson } from '../util.js';
-import command from './command.js';
+import blueprintCommand from './command.js';
 import svelteFiles from './files.js';
 // import { entitySvelteFiles } from './entity-files.js';
 
@@ -22,6 +22,8 @@ import svelteFiles from './files.js';
 // const blueprintPackageJson = require('../../package.json');
 // const util = require('../util');
 // const { pathFromSvelteBlueprint } = require('../util');
+
+export { default as command } from './command.js';
 
 export default class extends ClientGenerator {
 	constructor(args, opts, features) {
@@ -43,8 +45,8 @@ export default class extends ClientGenerator {
 		return this.asInitializingTaskGroup({
 			...super.initializing,
 			async initializingTemplateTask() {
-				this.parseJHipsterArguments(command.arguments);
-				this.parseJHipsterOptions(command.options);
+				this.parseJHipsterArguments(blueprintCommand.arguments);
+				this.parseJHipsterOptions(blueprintCommand.options);
 			},
 		});
 	}
@@ -55,7 +57,7 @@ export default class extends ClientGenerator {
 				this.clientFramework = this.jhipsterConfig.clientFramework = 'svelte';
 				this.jhipsterConfig.clientTheme = this.clientTheme = 'none';
 				this.jhipsterConfig.clientThemeVariant = this.clientThemeVariant = '';
-				this.jhipsterConfig.withAdminUi = this.askForAdminUi = '';
+				this.jhipsterConfig.withAdminUi = this.askForAdminUi = false;
 				this.jhipsterConfig.clientPackageManager = 'npm';
 			},
 		});
@@ -64,6 +66,20 @@ export default class extends ClientGenerator {
 	get [BaseApplicationGenerator.CONFIGURING]() {
 		return this.asConfiguringTaskGroup({
 			...super.configuring,
+			setDefaultBlueprintConfig() {
+				if (this.blueprintConfig) {
+					if (this.blueprintConfig.swaggerUi === undefined) {
+						this.blueprintConfig.swaggerUi = false;
+					}
+					if (this.blueprintConfig.jest === undefined) {
+						this.blueprintConfig.jest = false;
+					}
+				}
+			},
+			setLocalCommandOptions() {
+				this.jest = this.blueprintConfig.jest;
+				this.swaggerUi = this.blueprintConfig.swaggerUi;
+			},
 		});
 	}
 
@@ -208,7 +224,7 @@ export default class extends ClientGenerator {
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
 					sections: svelteFiles,
-					context: application,
+					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest },
 				});
 			},
 		});
@@ -297,12 +313,12 @@ export default class extends ClientGenerator {
 				const packageTemplate = JSON.parse(this.readTemplate('package.json'));
 				this.packageJson.merge(packageTemplate);
 
-				if (application.swaggerUi) {
+				if (this.swaggerUi) {
 					const swaggerPackageJson = JSON.parse(this.readTemplate('swagger/package.json'));
 					this.packageJson.merge(swaggerPackageJson);
 				}
 
-				const unitFrameworkType = application.jest ? 'jest' : 'vitest';
+				const unitFrameworkType = this.jest ? 'jest' : 'vitest';
 
 				const unitPackageJson = JSON.parse(this.readTemplate(`${unitFrameworkType}/package.json`));
 				this.packageJson.merge(unitPackageJson);
