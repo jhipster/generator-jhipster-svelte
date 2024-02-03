@@ -11,18 +11,18 @@
 	const oneToOneRelationship = relationshipFields.filter(relationship => relationship.relationshipOneToOne);
     const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
 _%>
-import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %><% if (!paginationNo || searchEngine) { %>, add<%= entityAngularName %>2<% } %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %><% if (!paginationNo || searchEngineAny) { %>, add<%= entityAngularName %>2<% } %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
 
 describe('<%= entityAngularName %> list page', () => {
 	let dynamicId
-<%_ if (!paginationNo || searchEngine) { _%>
+<%_ if (!paginationNo || searchEngineAny) { _%>
 	let dynamicId2
 <%_ } _%>
 <%_
 	if (containsRelationshipField || containsBinaryField ) {
 _%>
 	before(() => {
-		prepare<%= entityAngularName %>PrerequisiteData(<%= !!(!paginationNo || searchEngine) %>)
+		prepare<%= entityAngularName %>PrerequisiteData(<%= !!(!paginationNo || searchEngineAny) %>)
 	})
 <%_
 		}
@@ -33,7 +33,7 @@ _%>
 			Cypress.env('ADMIN_USERNAME'),
 			Cypress.env('ADMIN_PASSWORD')
 		)
-	<%_ if (!paginationNo || searchEngine) { _%>
+	<%_ if (!paginationNo || searchEngineAny) { _%>
 		// create another <%= entityAngularName %> to test sort implementation
 		add<%= entityAngularName %>2(<%_
 	if (containsBinaryField) {
@@ -93,7 +93,7 @@ _%>)
 	after(function() {
 		cy.delete(`<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`)
 <%_
-	if (!paginationNo || searchEngine) {
+	if (!paginationNo || searchEngineAny) {
 _%>
 		cy.delete(`<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId2}`)
 <%_
@@ -110,7 +110,7 @@ _%>
 	_%>
 		cy.delete(`<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id}`, true)
 <%_
-					if (relationship.relationshipOneToOne && (!paginationNo || searchEngine)) {
+					if (relationship.relationshipOneToOne && (!paginationNo || searchEngineAny)) {
 _%>
 		cy.delete(`<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${this.<%= relationship.relationshipName %>Id2}`, true)
 <%_
@@ -230,7 +230,7 @@ _%>
 	})
 <%_ } _%>
 
-<%_ if (searchEngine) { _%>
+<%_ if (searchEngineAny) { _%>
 	it('should search the records by valid Id field', () => {
 		let countBeforeSearch
 		cy.getByTestId('<%= entityInstance %>Table')

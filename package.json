@@ -24,9 +24,10 @@
 		"email": "vishal423@gmail.com",
 		"url": "https://twitter.com/vishal423"
 	},
+	"type": "module",
 	"main": "generators/app/index.js",
 	"bin": {
-		"jsvelte": "./cli/jsvelte.js"
+		"jsvelte": "cli/jsvelte.cjs"
 	},
 	"files": [
 		"cli",
@@ -38,8 +39,8 @@
 		"prepare": "husky install"
 	},
 	"dependencies": {
-		"chalk": "4.1.2",
-		"generator-jhipster": "8.0.0",
+		"chalk": "5.3.0",
+		"generator-jhipster": "8.1.0",
 		"prettier": "3.0.3",
 		"prettier-plugin-organize-imports": "3.2.3",
 		"prettier-plugin-svelte": "3.1.2",
@@ -57,5 +58,8 @@
 		"lint-staged": "15.1.0",
 		"yeoman-assert": "3.1.1",
 		"yeoman-test": "8.2.0"
+	},
+	"engines": {
+		"node": "^18.13.0 || >= 20.2.0"
 	}
 }

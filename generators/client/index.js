@@ -1,300 +1,348 @@
-const chalk = require('chalk');
-const ClientGenerator = require('generator-jhipster/generators/client');
-const constants = require('generator-jhipster/generators/generator-constants');
-const writeFiles = require('./files').writeFiles;
-const blueprintPackageJson = require('../../package.json');
-const util = require('../util');
-const { pathFromSvelteBlueprint } = require('../util');
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/extensions */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-shadow */
+import { lt } from 'semver';
 
-module.exports = class extends ClientGenerator {
-	constructor(args, opts) {
-		super(args, { ...opts, fromBlueprint: true });
+import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
+import ClientGenerator from 'generator-jhipster/generators/client';
+import { TEMPLATES_WEBAPP_SOURCES_DIR } from 'generator-jhipster';
+import { getEnumInfo } from 'generator-jhipster/generators/base-application/support';
+import { createNeedleCallback } from 'generator-jhipster/generators/base/support';
+import prettierPluginSvelte from 'prettier-plugin-svelte';
+import prettierPluginImports from 'prettier-plugin-organize-imports';
+import { getPackageJson } from '../util.js';
+import command from './command.js';
+import svelteFiles from './files.js';
+// import { entitySvelteFiles } from './entity-files.js';
 
-		const jhContext = (this.jhipsterContext = this.options.jhipsterContext);
+// const constants = require('generator-jhipster/generators/generator-constants');
+// const writeFiles = require('./files').writeFiles;
+// const blueprintPackageJson = require('../../package.json');
+// const util = require('../util');
+// const { pathFromSvelteBlueprint } = require('../util');
 
-		if (!jhContext) {
-			this.error(
-				`This is a JHipster blueprint and should be used like ${chalk.yellow('jhipster --blueprints svelte')}`
-			);
+export default class extends ClientGenerator {
+	constructor(args, opts, features) {
+		super(args, opts, { ...features });
+	}
+
+	async beforeQueue() {
+		await this.dependsOnJHipster('bootstrap-application');
+		const bootstrapGenerator = await this.dependsOnJHipster('bootstrap');
+		if (!bootstrapGenerator.prettierExtensions.includes(prettierPluginSvelte)) {
+			bootstrapGenerator.prettierExtensions.push('svelte');
 		}
-
-		this.blueprintjs = blueprintPackageJson;
-
-		this.skipServer = this.config.get('skipServer') || false;
-		this.skipClient = this.config.get('skipClient') || false;
+		if (!bootstrapGenerator.prettierOptions.plugins.includes(prettierPluginSvelte)) {
+			bootstrapGenerator.prettierOptions.plugins.push(prettierPluginSvelte, prettierPluginImports);
+		}
 	}
 
-	_initializing() {
-		return super._initializing();
-	}
-
-	get initializing() {
-		return this._initializing();
-	}
-
-	// eslint-disable-next-line class-methods-use-this
-	_prompting() {
-		return {
-			askForModuleName: undefined,
-			askForClient: undefined,
-			askForAdminUi: undefined,
-			askForClientTheme: undefined,
-			askForClientThemeVariant: undefined,
-			overrideConfigOptions() {
-				this.configOptions.clientFramework =
-					this.jhipsterConfig.clientFramework =
-					this.clientFramework =
-						'svelte';
-				this.configOptions.clientTheme = this.clientTheme = 'none';
-				this.configOptions.clientThemeVariant = this.clientThemeVariant = '';
-				this.configOptions.withAdminUi = this.askForAdminUi = '';
+	get [BaseApplicationGenerator.INITIALIZING]() {
+		return this.asInitializingTaskGroup({
+			...super.initializing,
+			async initializingTemplateTask() {
+				this.parseJHipsterArguments(command.arguments);
+				this.parseJHipsterOptions(command.options);
 			},
-		};
+		});
 	}
 
-	get prompting() {
-		return this._prompting();
-	}
-
-	_configuring() {
-		return super._configuring();
-	}
-
-	get configuring() {
-		return this._configuring();
-	}
-
-	_composing() {
-		return super._composing();
-	}
-
-	get composing() {
-		return this._composing();
-	}
-
-	_loading() {
-		const jhipsterDefault = super._loading();
-		return {
-			...jhipsterDefault,
-			loadPackageJson() {
-				// use different strategy to update dependabot packages
+	get [BaseApplicationGenerator.PROMPTING]() {
+		return this.asPromptingTaskGroup({
+			clientConfigurations() {
+				this.clientFramework = this.jhipsterConfig.clientFramework = 'svelte';
+				this.jhipsterConfig.clientTheme = this.clientTheme = 'none';
+				this.jhipsterConfig.clientThemeVariant = this.clientThemeVariant = '';
+				this.jhipsterConfig.withAdminUi = this.askForAdminUi = '';
+				this.jhipsterConfig.clientPackageManager = 'npm';
 			},
-		};
+		});
 	}
 
-	get loading() {
-		return this._loading();
+	get [BaseApplicationGenerator.CONFIGURING]() {
+		return this.asConfiguringTaskGroup({
+			...super.configuring,
+		});
 	}
 
-	_preparing() {
-		return super._preparing();
+	get [BaseApplicationGenerator.COMPOSING]() {
+		return this.asComposingTaskGroup({
+			async composingTemplateTask() {
+				// override
+			},
+		});
 	}
 
-	get preparing() {
-		return this._preparing();
+	get [BaseApplicationGenerator.LOADING]() {
+		return this.asLoadingTaskGroup({
+			async loadingTemplateTask({ application }) {
+				application.oldSvelteBlueprintVersion = this.blueprintConfig.version;
+				application.svelteBlueprintVersion = this.blueprintConfig.version = getPackageJson().version;
+			},
+		});
 	}
 
-	_default() {
-		return super._default();
-	}
-
-	get default() {
-		return this._default();
-	}
-
-	// eslint-disable-next-line class-methods-use-this
-	_writing() {
-		return {
-			cleanup() {
-				if (!this.skipClient) {
-					if (util.isVersionLessThan(this, '0.10.0')) {
-						this.removeFile(`${constants.ANGULAR_DIR}/lib/admin/user-management/user-delete-modal.svelte`);
-						this.removeFile(`cypress.json`);
-						util.moveFile(
-							this,
-							`${constants.ANGULAR_DIR}routes/__error.svelte`,
-							`${constants.ANGULAR_DIR}routes/+error.svelte`
-						);
-						util.moveFile(
-							this,
-							`${constants.ANGULAR_DIR}routes/__layout.svelte`,
-							`${constants.ANGULAR_DIR}routes/+layout.svelte`
-						);
-						util.moveFile(
-							this,
-							`${constants.ANGULAR_DIR}routes/index.svelte`,
-							`${constants.ANGULAR_DIR}routes/+page.svelte`
-						);
-						util.moveFile(
-							this,
-							`${constants.ANGULAR_DIR}routes/admin/__layout.svelte`,
-							`${constants.ANGULAR_DIR}routes/admin/+layout.svelte`
-						);
-
-						util.moveFile(
-							this,
-							`${constants.ANGULAR_DIR}routes/admin/logger.svelte`,
-							`${constants.ANGULAR_DIR}routes/admin/logger/+page.svelte`
-						);
-
-						if (this.blueprintConfig.swaggerUi) {
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/admin/docs.svelte`,
-								`${constants.ANGULAR_DIR}routes/admin/docs/+page.svelte`
-							);
-						}
-						if (this.applicationType === 'gateway') {
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/admin/gateway.svelte`,
-								`${constants.ANGULAR_DIR}routes/admin/gateway/+page.svelte`
-							);
-						}
-						if (this.authenticationType !== 'oauth2') {
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/login.svelte`,
-								`${constants.ANGULAR_DIR}routes/login/+page.svelte`
-							);
-						}
-						if (!this.skipUserManagement && this.authenticationType !== 'oauth2') {
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/account/activate.svelte`,
-								`${constants.ANGULAR_DIR}routes/account/activate/+page.svelte`
-							);
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/account/password.svelte`,
-								`${constants.ANGULAR_DIR}routes/account/password/+page.svelte`
-							);
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/account/register.svelte`,
-								`${constants.ANGULAR_DIR}routes/account/register/+page.svelte`
-							);
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/account/settings.svelte`,
-								`${constants.ANGULAR_DIR}routes/account/settings/+page.svelte`
-							);
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/account/reset/finish.svelte`,
-								`${constants.ANGULAR_DIR}routes/account/reset/finish/+page.svelte`
-							);
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/account/reset/init.svelte`,
-								`${constants.ANGULAR_DIR}routes/account/reset/init/+page.svelte`
-							);
-
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/admin/user-management/index.svelte`,
-								`${constants.ANGULAR_DIR}routes/admin/user-management/+page.svelte`
-							);
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/admin/user-management/new.svelte`,
-								`${constants.ANGULAR_DIR}routes/admin/user-management/new/+page.svelte`
-							);
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/admin/user-management/[id]/edit.svelte`,
-								`${constants.ANGULAR_DIR}routes/admin/user-management/[id]/edit/+page.svelte`
-							);
-							util.moveFile(
-								this,
-								`${constants.ANGULAR_DIR}routes/admin/user-management/[id]/view.svelte`,
-								`${constants.ANGULAR_DIR}routes/admin/user-management/[id]/view/+page.svelte`
-							);
-						}
-					}
+	get [BaseApplicationGenerator.PREPARING]() {
+		return this.asPreparingTaskGroup({
+			async preparingTemplateTask({ application, source }) {
+				if (!application.prettierExtensions.includes(',svelte')) {
+					application.prettierExtensions = `${application.prettierExtensions},svelte`;
 				}
-			},
-			writeAdditionalFile() {
-				if (!this.skipClient) {
-					writeFiles.call(this);
-				}
-			},
-			configurePrettier() {
-				this.javaPrettier = true;
-				this.prettier = true;
-			},
-			updatePackageJson() {
-				if (!this.skipClient) {
-					const packageTemplate = this.fs.read(
-						this.templatePath(pathFromSvelteBlueprint('client/templates/svelte/package.json'))
+				source.addEntityToMenu = ({ entityClass, entityRoute, entityName }) => {
+					this.editFile(
+						`${application.clientSrcDir}/app/lib/entities/entity-menu.svelte`,
+						createNeedleCallback({
+							needle: 'add-entity-to-menu',
+							contentToAdd: `\t\t<MenuItem
+ \t\t\ttestId="svl${entityClass}MgmtLink"
+ \t\t\tlink="/entities/${entityRoute}"
+ \t\t\ton:click="{() => (isOpen = false)}"
+ \t\t>
+ \t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
+ \t\t\t${entityName}
+ \t\t</MenuItem>
+ `,
+						}),
 					);
-					this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(packageTemplate));
+				};
+			},
+		});
+	}
 
-					if (this.blueprintConfig.swaggerUi) {
-						const swaggerPackageTemplate = this.fs.read(
-							this.templatePath(pathFromSvelteBlueprint('client/templates/svelte/swagger/package.json'))
-						);
-						this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(swaggerPackageTemplate));
-					}
-
-					const unitFrameworkType = this.blueprintConfig.jest ? 'jest' : 'vitest';
-					const unitPackageTemplate = this.fs.read(
-						this.templatePath(
-							pathFromSvelteBlueprint(`client/templates/svelte/${unitFrameworkType}/package.json`)
-						)
+	get [BaseApplicationGenerator.WRITING]() {
+		return this.asWritingTaskGroup({
+			async cleanup({ application }) {
+				const { oldSvelteBlueprintVersion } = application;
+				if (oldSvelteBlueprintVersion && lt(oldSvelteBlueprintVersion, '0.10.0')) {
+					this.removeFile(
+						`${application.clientSrcDir}app/lib/admin/user-management/user-delete-modal.svelte`,
 					);
-					this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(unitPackageTemplate));
+					this.removeFile(`cypress.json`);
+					this.moveFile(
+						`${application.clientSrcDir}app/routes/__error.svelte`,
+						`${application.clientSrcDir}app/routes/+error.svelte`,
+					);
+					this.moveFile(
+						`${application.clientSrcDir}app/routes/__layout.svelte`,
+						`${application.clientSrcDir}app/routes/+layout.svelte`,
+					);
+					this.moveFile(
+						`${application.clientSrcDir}app/routes/index.svelte`,
+						`${application.clientSrcDir}app/routes/+page.svelte`,
+					);
+					this.moveFile(
+						`${application.clientSrcDir}app/routes/admin/__layout.svelte`,
+						`${application.clientSrcDir}app/routes/admin/+layout.svelte`,
+					);
 
-					if (this.javaPrettier) {
-						const javaPrettierPackageTemplate = this.fs.read(
-							this.templatePath(
-								pathFromSvelteBlueprint('client/templates/svelte/java-prettier/package.json')
-							)
+					this.moveFile(
+						`${application.clientSrcDir}app/routes/admin/logger.svelte`,
+						`${application.clientSrcDir}app/routes/admin/logger/+page.svelte`,
+					);
+
+					if (this.swaggerUi) {
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/admin/docs.svelte`,
+							`${application.clientSrcDir}app/routes/admin/docs/+page.svelte`,
 						);
-						this.fs.extendJSON(
-							this.destinationPath('package.json'),
-							JSON.parse(javaPrettierPackageTemplate)
+					}
+					if (this.applicationType === 'gateway') {
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/admin/gateway.svelte`,
+							`${application.clientSrcDir}app/routes/admin/gateway/+page.svelte`,
+						);
+					}
+					if (this.authenticationType !== 'oauth2') {
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/login.svelte`,
+							`${application.clientSrcDir}app/routes/login/+page.svelte`,
+						);
+					}
+					if (!this.skipUserManagement && this.authenticationType !== 'oauth2') {
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/account/activate.svelte`,
+							`${application.clientSrcDir}app/routes/account/activate/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/account/password.svelte`,
+							`${application.clientSrcDir}app/routes/account/password/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/account/register.svelte`,
+							`${application.clientSrcDir}app/routes/account/register/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/account/settings.svelte`,
+							`${application.clientSrcDir}app/routes/account/settings/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/account/reset/finish.svelte`,
+							`${application.clientSrcDir}app/routes/account/reset/finish/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/account/reset/init.svelte`,
+							`${application.clientSrcDir}app/routes/account/reset/init/+page.svelte`,
+						);
+
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/admin/user-management/index.svelte`,
+							`${application.clientSrcDir}app/routes/admin/user-management/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/admin/user-management/new.svelte`,
+							`${application.clientSrcDir}app/routes/admin/user-management/new/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/admin/user-management/[id]/edit.svelte`,
+							`${application.clientSrcDir}app/routes/admin/user-management/[id]/edit/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/admin/user-management/[id]/view.svelte`,
+							`${application.clientSrcDir}app/routes/admin/user-management/[id]/view/+page.svelte`,
 						);
 					}
 				}
 			},
-		};
+			async writingTemplateTask({ application }) {
+				await this.writeFiles({
+					sections: svelteFiles,
+					context: application,
+				});
+			},
+		});
 	}
 
-	get writing() {
-		return this._writing();
-	}
-
-	// eslint-disable-next-line class-methods-use-this
-	_postWriting() {
-		// override to not include package scripts
-		return {};
-	}
-
-	get postWriting() {
-		return this._postWriting();
-	}
-
-	_end() {
-		const jhipsterDefault = super._end();
-		return {
-			...jhipsterDefault,
-			end() {
-				if (!this.skipClient) {
-					const logMsg = `Start frontend development server with: ${chalk.yellow.bold(
-						`${this.clientPackageManager} start`
-					)}\n`;
-
-					this.log(chalk.green(logMsg));
-					if (!this.options.skipInstall) {
-						this.spawnCommandSync(this.clientPackageManager, ['run', 'cleanup']);
+	get [BaseApplicationGenerator.WRITING_ENTITIES]() {
+		return this.asWritingEntitiesTaskGroup({
+			async cleanup({ application, entities }) {
+				const { oldSvelteBlueprintVersion } = application;
+				if (oldSvelteBlueprintVersion && lt(oldSvelteBlueprintVersion, '0.10.0')) {
+					for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+						this.removeFile(
+							`${application.clientSrcDir}app/lib/entities/${entity.entityFolderName}/${entity.entityFileName}-delete-modal.svelte`,
+						);
+						this.removeFile(
+							`${application.clientSrcDir}app/lib/entities/${entity.entityFolderName}/${entity.entityFileName}-list-actions.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/index.svelte`,
+							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/new.svelte`,
+							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/new/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/view.svelte`,
+							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/view/+page.svelte`,
+						);
+						this.moveFile(
+							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/edit.svelte`,
+							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/edit/+page.svelte`,
+						);
 					}
 				}
 			},
-		};
+			async writeEntityFiles({ application, entities }) {
+				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+					/* eslint-disable no-await-in-loop */
+					/* eslint-disable no-undef */
+					await this.writeFiles({
+						sections: entitySvelteFiles,
+						context: { ...application, ...entity },
+					});
+				}
+			},
+			async writeUserService({ application, entities }) {
+				if (entities.some(entity => entity.relationships.some(rel => rel.otherEntity.builtInUser))) {
+					this.writeFile(
+						`${TEMPLATES_WEBAPP_SOURCES_DIR}app/lib/entities/user/user-service.js.ejs`,
+						`${application.clientSrcDir}app/lib/entities/user/user-service.js`,
+						application,
+					);
+				}
+			},
+			writeEnumerations({ application, entities }) {
+				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+					for (const field of entity.fields) {
+						if (field.fieldIsEnum === true) {
+							const enumInfo = {
+								...getEnumInfo(field, application.clientRootFolder),
+								frontendAppName: application.frontendAppName,
+								packageName: application.packageName,
+							};
+							this.writeFile(
+								`${TEMPLATES_WEBAPP_SOURCES_DIR}app/lib/entities/enums/enum.js.ejs`,
+								`${application.clientSrcDir}app/lib/entities/enums/${field.fieldType.toLowerCase()}.js`,
+								enumInfo,
+							);
+						}
+					}
+				}
+			},
+		});
 	}
 
-	get end() {
-		return this._end();
+	get [BaseApplicationGenerator.POST_WRITING]() {
+		return this.asPostWritingTaskGroup({
+			updatePackageJson({ application }) {
+				this.packageJson.merge({
+					devDependencies: {
+						'prettier-plugin-svelte': getPackageJson().dependencies['prettier-plugin-svelte'],
+					},
+				});
+
+				const packageTemplate = JSON.parse(this.readTemplate('package.json'));
+				this.packageJson.merge(packageTemplate);
+
+				if (application.swaggerUi) {
+					const swaggerPackageJson = JSON.parse(this.readTemplate('swagger/package.json'));
+					this.packageJson.merge(swaggerPackageJson);
+				}
+
+				const unitFrameworkType = application.jest ? 'jest' : 'vitest';
+
+				const unitPackageJson = JSON.parse(this.readTemplate(`${unitFrameworkType}/package.json`));
+				this.packageJson.merge(unitPackageJson);
+
+				const javaPrettierPackageJson = JSON.parse(this.readTemplate(`java-prettier/package.json`));
+				this.packageJson.merge(javaPrettierPackageJson);
+
+				this.packageJson.merge({
+					devDependencies: {
+						'prettier-plugin-java': application.nodeDependencies['prettier-plugin-java'],
+					},
+				});
+			},
+		});
 	}
-};
+
+	get [BaseApplicationGenerator.POST_WRITING_ENTITIES]() {
+		return this.asPostWritingEntitiesTaskGroup({
+			async postWritingEntitiesTemplateTask({ entities, source }) {
+				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+					source.addEntityToMenu({
+						entityClass: entity.entityAngularName,
+						entityRoute: entity.entityFolderName,
+						entityName: entity.entityClassHumanized,
+					});
+				}
+			},
+		});
+	}
+
+	get [BaseApplicationGenerator.END]() {
+		return this.asEndTaskGroup({
+			async endTemplateTask() {
+				// override
+			},
+		});
+	}
+
+	moveFile(source, destination) {
+		this.log(`Renaming file - ${source} to ${destination}`);
+		this.moveDestination(source, destination, { noGlob: true });
+	}
+}

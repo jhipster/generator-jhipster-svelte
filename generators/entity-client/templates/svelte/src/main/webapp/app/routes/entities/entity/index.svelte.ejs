@@ -5,7 +5,7 @@
 
 	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
 	import { Button, Icon } from 'jhipster-svelte-library'
-	import { Page, DeleteModal<% if (searchEngine) { %>, SearchForm<% } %> } from 'jhipster-svelte-library/page'
+	import { Page, DeleteModal<% if (searchEngineAny) { %>, SearchForm<% } %> } from 'jhipster-svelte-library/page'
 <%_ if (!paginationNo) { _%>
 	import { Pagination } from 'jhipster-svelte-library/table'
 <%_ } _%>
@@ -24,13 +24,13 @@
 	let loading = true
 	let showDeleteModal = false
 	let <%= entityInstance %>Id = null
-<%_ if (searchEngine) { _%>
+<%_ if (searchEngineAny) { _%>
 	let searchCriteria
 <%_ } _%>
 
 	onMount(() => fetch<%= entityClassPlural %>())
 
-<%_ if (searchEngine) { _%>
+<%_ if (searchEngineAny) { _%>
 	function fetch<%= entityClassPlural %>() {
 		loading = true
 		error = undefined
@@ -130,7 +130,7 @@
 		fetch<%= entityClassPlural %>()
 	}
 <%_ } _%>
-<%_ if (searchEngine) { _%>
+<%_ if (searchEngineAny) { _%>
 
 	function search<%= entityClassPlural %>(event) {
 		searchCriteria = event.detail.criteria
@@ -173,7 +173,7 @@
 	{/if}
 	<div
 		class="flex flex-row justify-between items-center text-base mt-4"
-	><%_ if (searchEngine) { _%>
+	><%_ if (searchEngineAny) { _%>
 		<SearchForm testId="<%= entityInstance %>" name="<%= entityInstance %>" on:search="{search<%= entityClassPlural %>}" />
 	<%_ }
 		if (!paginationNo) { _%>

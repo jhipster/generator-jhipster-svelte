@@ -237,7 +237,7 @@ _%>
 			.should('contain', '<%= entityClassPluralHumanized %>')
 	})
 <%_
-	if (searchEngine) {
+	if (searchEngineAny) {
 _%>
 /*
 // Observed java.lang.StackOverflowError while updating an entity with elasticsearch integration
@@ -307,7 +307,7 @@ _%>
 			.should('contain', '<%= entityClassPluralHumanized %>')
 	})
 <%_
-	if (searchEngine) {
+	if (searchEngineAny) {
 _%>
 */
 <%_

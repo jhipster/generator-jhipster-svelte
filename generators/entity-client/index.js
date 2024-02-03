@@ -15,7 +15,7 @@ module.exports = class extends EntityClientGenerator {
 
 		if (!jhContext) {
 			this.error(
-				`This is a JHipster blueprint and should be used like ${chalk.yellow('jhipster --blueprints svelte')}`
+				`This is a JHipster blueprint and should be used like ${chalk.yellow('jhipster --blueprints svelte')}`,
 			);
 		}
 
@@ -86,30 +86,30 @@ module.exports = class extends EntityClientGenerator {
 				if (!this.skipClient) {
 					if (util.isVersionLessThan(this, '0.10.0')) {
 						this.removeFile(
-							`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-delete-modal.svelte`
+							`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-delete-modal.svelte`,
 						);
 						this.removeFile(
-							`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-list-actions.svelte`
+							`${constants.ANGULAR_DIR}/lib/entities/${this.entityFolderName}/${this.entityFileName}-list-actions.svelte`,
 						);
 						util.moveFile(
 							this,
 							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/index.svelte`,
-							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/+page.svelte`
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/+page.svelte`,
 						);
 						util.moveFile(
 							this,
 							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new.svelte`,
-							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new/+page.svelte`
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/new/+page.svelte`,
 						);
 						util.moveFile(
 							this,
 							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view.svelte`,
-							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view/+page.svelte`
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/view/+page.svelte`,
 						);
 						util.moveFile(
 							this,
 							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit.svelte`,
-							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit/+page.svelte`
+							`${constants.ANGULAR_DIR}/routes/entities/${this.entityFolderName}/[id]/edit/+page.svelte`,
 						);
 					}
 				}

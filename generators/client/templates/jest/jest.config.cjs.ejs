@@ -1,0 +1,34 @@
+module.exports = {
+	testEnvironment: 'jsdom',
+	transform: {
+		'^.+\\.svelte$': 'svelte-jester',
+	},
+	testMatch: ['<rootDir>/(<%= clientSrcDir %>**/*.spec.js)'],
+	transformIgnorePatterns: ['node_modules/(?!(jhipster-svelte-library))'],
+	moduleFileExtensions: ['js', 'svelte'],
+	extensionsToTreatAsEsm: [".svelte"],
+	moduleNameMapper: {
+		'^\\$lib(.*)$': '<rootDir>/<%= clientSrcDir %>app/lib$1',
+	},
+	setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
+	coverageDirectory: '<rootDir>/<%= temporaryDir %>test-results/js/',
+	cacheDirectory: '<rootDir>/<%= temporaryDir %>jest-cache',
+	reporters: [
+		'default',
+		[
+			'jest-junit',
+			{
+				outputDirectory: './<%= temporaryDir %>test-results/js',
+				outputName: 'sonar-report.xml',
+			},
+		],
+		[
+			'jest-sonar',
+			{
+				outputDirectory: '<%= temporaryDir %>test-results/js',
+				outputName: 'sonar-report.xml',
+				reportedFilePath: 'relative',
+			},
+		],
+	],
+}

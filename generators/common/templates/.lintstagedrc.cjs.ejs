@@ -1,0 +1,5 @@
+module.exports = {
+	'{,src/**/,cypress/**/}*.{md,json,js,svelte,css,html,yml,java}': ['npm run format'],
+	'{src/**/}*.{js,svelte}': ['npm run lint'],
+	'{,src/**/}*.{js,svelte}': ['npm run check'],
+};

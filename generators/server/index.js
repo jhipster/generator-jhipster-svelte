@@ -1,164 +1,83 @@
-/* eslint-disable class-methods-use-this */
-const chalk = require('chalk');
-const os = require('os');
-const ServerGenerator = require('generator-jhipster/generators/server');
+/* eslint-disable import/no-unresolved */
+import ServerGenerator from 'generator-jhipster/generators/server';
+import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
 
-const { writeFiles } = require('./files');
-const blueprintPackageJson = require('../../package.json');
-
-module.exports = class extends ServerGenerator {
-	constructor(args, opts) {
-		super(args, { ...opts, fromBlueprint: true });
-
-		const jhContext = (this.jhipsterContext = this.options.jhipsterContext);
-
-		if (!jhContext) {
-			this.error(
-				`This is a JHipster blueprint and should be used like ${chalk.yellow('jhipster --blueprints svelte')} `
-			);
-		}
-
-		this.blueprintjs = blueprintPackageJson;
-		this.skipServer = this.config.get('skipServer') || false;
+export default class extends ServerGenerator {
+	constructor(args, opts, features) {
+		super(args, opts, { ...features });
 	}
 
-	_initializing() {
-		const phaseFromJHipster = super._initializing();
-		return {
-			...phaseFromJHipster,
-			displayLogo() {
-				// don't overwrite logo
-			},
-			initializeBlueprintOptions() {
-				if (this.options.swaggerUi) {
-					this.swaggerUi = this.options.swaggerUi;
-				} else if (this.blueprintConfig) {
-					this.swaggerUi = this.blueprintConfig.swaggerUi;
-				} else {
-					this.swaggerUi = false;
-				}
-			},
-		};
+	get [BaseApplicationGenerator.INITIALIZING]() {
+		return this.asInitializingTaskGroup({
+			...super.initializing,
+		});
 	}
 
-	get initializing() {
-		return this._initializing();
+	get [BaseApplicationGenerator.PROMPTING]() {
+		return this.asPromptingTaskGroup({
+			...super.prompting,
+		});
 	}
 
-	_prompting() {
-		return super._prompting();
+	get [BaseApplicationGenerator.CONFIGURING]() {
+		return this.asConfiguringTaskGroup({
+			...super.configuring,
+		});
 	}
 
-	get prompting() {
-		return this._prompting();
+	get [BaseApplicationGenerator.COMPOSING]() {
+		return this.asComposingTaskGroup({
+			...super.composing,
+		});
 	}
 
-	_configuring() {
-		return super._configuring();
+	get [BaseApplicationGenerator.LOADING]() {
+		return this.asLoadingTaskGroup({
+			...super.loading,
+		});
 	}
 
-	get configuring() {
-		return this._configuring();
+	get [BaseApplicationGenerator.PREPARING]() {
+		return this.asPreparingTaskGroup({
+			...super.preparing,
+		});
 	}
 
-	_composing() {
-		return super._composing();
+	get [BaseApplicationGenerator.POST_PREPARING]() {
+		return this.asPostPreparingTaskGroup({
+			...super.postPreparing,
+		});
 	}
 
-	get composing() {
-		return this._composing();
+	get [BaseApplicationGenerator.DEFAULT]() {
+		return this.asDefaultTaskGroup({
+			...super.default,
+		});
 	}
 
-	_loading() {
-		return super._loading();
+	get [BaseApplicationGenerator.WRITING]() {
+		return this.asWritingTaskGroup({
+			...super.writing,
+		});
 	}
 
-	get loading() {
-		return this._loading();
+	get [BaseApplicationGenerator.WRITING_ENTITIES]() {
+		return this.asWritingEntitiesTaskGroup({
+			...super.writingEntities,
+		});
 	}
 
-	_preparing() {
-		return super._preparing();
+	get [BaseApplicationGenerator.POST_WRITING]() {
+		return this.asPostWritingTaskGroup({
+			...super.postWriting,
+			packageJsonBackendScripts: undefined,
+			packageJsonE2eScripts: undefined,
+		});
 	}
 
-	get preparing() {
-		return this._preparing();
+	get [BaseApplicationGenerator.END]() {
+		return this.asEndTaskGroup({
+			...super.end,
+		});
 	}
-
-	_default() {
-		return super._default();
-	}
-
-	get default() {
-		return this._default();
-	}
-
-	_writing() {
-		const phaseFromJHipster = super._writing();
-		return {
-			...phaseFromJHipster,
-			writeAdditionalFile() {
-				if (!this.skipServer) {
-					writeFiles.call(this);
-				}
-			},
-			updatePackageJson() {
-				if (!this.skipServer) {
-					const packageTemplate = this.fs.read(this.templatePath('package.json'));
-					this.fs.extendJSON(this.destinationPath('package.json'), JSON.parse(packageTemplate));
-				}
-			},
-		};
-	}
-
-	get writing() {
-		return this._writing();
-	}
-
-	_postWriting() {
-		// override to not include package scripts
-		return {
-			packageJsonScripts() {
-				const packageJsonConfigStorage = this.packageJson.createStorage('config').createProxy();
-				packageJsonConfigStorage.backend_port = this.gatewayServerPort || this.serverPort;
-				packageJsonConfigStorage.packaging = this.defaultPackaging;
-				packageJsonConfigStorage.default_environment = this.defaultEnvironment;
-			},
-		};
-	}
-
-	// eslint-disable-next-line class-methods-use-this
-	get postWriting() {
-		return this._postWriting();
-	}
-
-	_end() {
-		const jhipsterDefault = super._end();
-		return {
-			...jhipsterDefault,
-			end() {
-				let executable = 'mvnw';
-				if (this.buildTool === 'gradle') {
-					executable = 'gradlew';
-				}
-
-				const logMsgComment =
-					os.platform() === 'win32'
-						? ` (${chalk.yellow.bold(executable)} if using Windows Command Prompt)`
-						: '';
-
-				this.log(
-					chalk.green(
-						`\nStart backend Spring Boot application with : ${chalk.yellow.bold(
-							`./${executable}`
-						)}${logMsgComment}`
-					)
-				);
-			},
-		};
-	}
-
-	get end() {
-		return this._end();
-	}
-};
+}

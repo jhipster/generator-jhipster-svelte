@@ -104,14 +104,14 @@ function addEnumerationFiles(generator) {
 				packageName: generator.packageName,
 			};
 			const destinationFile = generator.destinationPath(
-				`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType.toLowerCase()}.js`
+				`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType.toLowerCase()}.js`,
 			);
 			generator.template(
-				pathFromSvelteBlueprint(`entity-client/templates/svelte/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`),
+				pathFromSvelteBlueprint(`entity-client/templates/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`),
 				destinationFile,
 				generator,
 				{},
-				enumInfo
+				enumInfo,
 			);
 		}
 	});
@@ -119,15 +119,15 @@ function addEnumerationFiles(generator) {
 
 function addUserServiceFile(generator) {
 	const containsUserRelationshipField = generator.relationships.filter(
-		relationship => relationship.otherEntityName === 'user'
+		relationship => relationship.otherEntityName === 'user',
 	);
 	if (containsUserRelationshipField) {
 		generator.template(
 			pathFromSvelteBlueprint(
-				`entity-client/templates/svelte/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`
+				`entity-client/templates/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`,
 			),
 			generator.destinationPath(`${FRONTEND_COMPONENTS_DIR}user/user-service.js`),
-			generator
+			generator,
 		);
 	}
 }
@@ -142,7 +142,7 @@ function writeFiles() {
 		svelteFiles,
 		this,
 		false,
-		pathFromSvelteBlueprint(`entity-client/templates/${CLIENT_TEMPLATES_DIR}`)
+		pathFromSvelteBlueprint(`entity-client/templates/${CLIENT_TEMPLATES_DIR}`),
 	);
 	addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
 }
