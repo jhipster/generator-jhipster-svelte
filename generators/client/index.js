@@ -15,13 +15,7 @@ import prettierPluginImports from 'prettier-plugin-organize-imports';
 import { getPackageJson } from '../util.js';
 import blueprintCommand from './command.js';
 import svelteFiles from './files.js';
-// import { entitySvelteFiles } from './entity-files.js';
-
-// const constants = require('generator-jhipster/generators/generator-constants');
-// const writeFiles = require('./files').writeFiles;
-// const blueprintPackageJson = require('../../package.json');
-// const util = require('../util');
-// const { pathFromSvelteBlueprint } = require('../util');
+import entitySvelteFiles from './entity-files.js';
 
 export { default as command } from './command.js';
 
@@ -267,7 +261,7 @@ export default class extends ClientGenerator {
 					/* eslint-disable no-undef */
 					await this.writeFiles({
 						sections: entitySvelteFiles,
-						context: { ...application, ...entity },
+						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest },
 					});
 				}
 			},

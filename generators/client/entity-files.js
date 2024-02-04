@@ -1,17 +1,10 @@
-const constants = require('generator-jhipster/generators/generator-constants');
-const generatorUtils = require('generator-jhipster/generators/utils');
-const { pathFromSvelteBlueprint, addEntityToMenu } = require('../util');
+import { TEMPLATES_WEBAPP_SOURCES_DIR } from 'generator-jhipster';
 
-const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
+const FRONTEND_APP_DIR = `${TEMPLATES_WEBAPP_SOURCES_DIR}/app/`;
 const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/entities/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/entities/`;
-const CLIENT_TEMPLATES_DIR = 'svelte';
 
-module.exports = {
-	writeFiles,
-};
-
-const svelteFiles = {
+export default {
 	entityRoutes: [
 		{
 			path: FRONTEND_ROUTES_DIR,
@@ -94,55 +87,3 @@ const svelteFiles = {
 		},
 	],
 };
-
-function addEnumerationFiles(generator) {
-	generator.fields.forEach(field => {
-		if (field.fieldIsEnum === true) {
-			const enumInfo = {
-				...generatorUtils.getEnumInfo(field, generator.clientRootFolder),
-				frontendAppName: generator.frontendAppName,
-				packageName: generator.packageName,
-			};
-			const destinationFile = generator.destinationPath(
-				`${FRONTEND_COMPONENTS_DIR}enums/${field.fieldType.toLowerCase()}.js`,
-			);
-			generator.template(
-				pathFromSvelteBlueprint(`entity-client/templates/${FRONTEND_COMPONENTS_DIR}enums/enum.js.ejs`),
-				destinationFile,
-				generator,
-				{},
-				enumInfo,
-			);
-		}
-	});
-}
-
-function addUserServiceFile(generator) {
-	const containsUserRelationshipField = generator.relationships.filter(
-		relationship => relationship.otherEntityName === 'user',
-	);
-	if (containsUserRelationshipField) {
-		generator.template(
-			pathFromSvelteBlueprint(
-				`entity-client/templates/${FRONTEND_COMPONENTS_DIR}user/user-service.js.ejs`,
-			),
-			generator.destinationPath(`${FRONTEND_COMPONENTS_DIR}user/user-service.js`),
-			generator,
-		);
-	}
-}
-
-function writeFiles() {
-	if (this.skipClient) {
-		return;
-	}
-	addEnumerationFiles(this);
-	addUserServiceFile(this);
-	this.writeFilesToDisk(
-		svelteFiles,
-		this,
-		false,
-		pathFromSvelteBlueprint(`entity-client/templates/${CLIENT_TEMPLATES_DIR}`),
-	);
-	addEntityToMenu(this, this.entityFolderName, this.entityClassHumanized, this.entityAngularName);
-}

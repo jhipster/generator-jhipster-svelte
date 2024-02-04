@@ -7,6 +7,12 @@ export default class extends ServerGenerator {
 		super(args, opts, { ...features });
 	}
 
+	async beforeQueue() {
+		await this.dependsOnJHipster('bootstrap-application');
+		await this.dependsOnJHipster('common');
+		await this.dependsOnJHipster('java');
+	}
+
 	get [BaseApplicationGenerator.INITIALIZING]() {
 		return this.asInitializingTaskGroup({
 			...super.initializing,
@@ -49,6 +55,12 @@ export default class extends ServerGenerator {
 		});
 	}
 
+	get [BaseApplicationGenerator.CONFIGURING_EACH_ENTITY]() {
+		return this.asConfiguringEachEntityTaskGroup({
+			...super.configuringEachEntity,
+		});
+	}
+
 	get [BaseApplicationGenerator.DEFAULT]() {
 		return this.asDefaultTaskGroup({
 			...super.default,
@@ -72,6 +84,12 @@ export default class extends ServerGenerator {
 			...super.postWriting,
 			packageJsonBackendScripts: undefined,
 			packageJsonE2eScripts: undefined,
+		});
+	}
+
+	get [BaseApplicationGenerator.POST_WRITING_ENTITIES]() {
+		return this.asPostWritingEntitiesTaskGroup({
+			// do nothing
 		});
 	}
 
