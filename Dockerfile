@@ -1,4 +1,4 @@
-FROM node:16-alpine3.15
+FROM node:20-alpine3.19
 
 LABEL maintainer="Vishal Mahajan"
 
@@ -16,7 +16,7 @@ ENV	MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wag
 RUN apk update \
 	&& apk --no-cache --update add \
 		git \
-		openjdk11 \
+		openjdk17-jdk \
 		ca-certificates \
 		wget \
 		bash
