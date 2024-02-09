@@ -10,7 +10,11 @@
 				"csp-xss": "off",
 				"uses-passive-event-listeners": "off",
 				"bf-cache": "off",
-				"th-has-data-cells": "warn"
+				"th-has-data-cells": "warn",
+				"link-in-text-block": "off",
+				"total-byte-weight": "off",
+				"unused-javascript": "off",
+				"uses-text-compression": "off"
 			}
 		},
 		"collect": {

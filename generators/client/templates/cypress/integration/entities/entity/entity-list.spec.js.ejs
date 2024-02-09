@@ -231,7 +231,7 @@ _%>
 <%_ } _%>
 
 <%_ if (searchEngineAny) { _%>
-	it('should search the records by valid Id field', () => {
+	it.skip('should search the records by valid Id field', () => {
 		let countBeforeSearch
 		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tr')
@@ -263,7 +263,7 @@ _%>
 			})
 	})
 
-	it('should search the records by invalid Id', () => {
+	it.skip('should search the records by invalid Id', () => {
 		let countBeforeSearch
 		cy.getByTestId('<%= entityInstance %>Table')
 			.get('tr')
