@@ -16,7 +16,7 @@ ENV	MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wag
 RUN apk update \
 	&& apk --no-cache --update add \
 		git \
-		openjdk17-jdk \
+		openjdk21-jdk \
 		ca-certificates \
 		wget \
 		bash

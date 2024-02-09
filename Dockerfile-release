@@ -11,10 +11,12 @@ ARG GID=1000
 ARG UID=1000
 ARG GLIBC_VERSION=2.34-r0
 
+ENV	MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+
 RUN apk update \
 	&& apk --no-cache --update add \
 		git \
-		openjdk17-jdk \
+		openjdk21-jdk \
 		ca-certificates \
 		wget \
 		bash
@@ -36,7 +38,7 @@ RUN \
 RUN \
 	deluser --remove-home node \
 	&& (addgroup -S jsvelte -g ${GID} || addgroup -S jsvelte ) \
-   	&& (adduser -S -G jsvelte -u ${UID} jsvelte || adduser -S -G jsvelte jsvelte)
+  	&& (adduser -S -G jsvelte -u ${UID} jsvelte || adduser -S -G jsvelte jsvelte)
 
 RUN \
 	mkdir -p $APP_PATH \
@@ -67,4 +69,4 @@ VOLUME ["$APP_PATH"]
 
 EXPOSE 9000 8080
 
-ENTRYPOINT ["jsvelte"]
+ENTRYPOINT ["entrypoint.sh"]
