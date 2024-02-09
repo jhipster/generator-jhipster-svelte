@@ -55,18 +55,19 @@ RUN \
 	&& echo PATH="$NPM_PATH/bin:$PATH" >> "$HOME/.profile" \
 	&& . "$HOME/.profile"
 
-COPY package.json package-lock.json $SVELTE_PATH/
+COPY --chown=jsvelte:jsvelte package.json package-lock.json $SVELTE_PATH/
 
 WORKDIR $SVELTE_PATH
 
 RUN	npm ci --quiet
 
-COPY cli $SVELTE_PATH/cli
+COPY --chown=jsvelte:jsvelte cli $SVELTE_PATH/cli
+
+COPY --chown=jsvelte:jsvelte generators $SVELTE_PATH/generators
+
 RUN npm link
 
-COPY generators $SVELTE_PATH/generators
-
-COPY docker/entrypoint.sh /usr/local/bin/
+COPY --chown=jsvelte:jsvelte docker/entrypoint.sh /usr/local/bin/
 
 WORKDIR $APP_PATH
 
