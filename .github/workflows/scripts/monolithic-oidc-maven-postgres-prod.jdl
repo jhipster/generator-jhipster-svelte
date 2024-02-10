@@ -4,7 +4,6 @@ application {
     applicationType monolith
     authenticationType oauth2
     packageName tech.jhipster.sample.blog
-    searchEngine elasticsearch
     prodDatabaseType postgresql
 	devDatabaseType h2Disk
     cacheProvider ehcache
