@@ -142,7 +142,7 @@ jobs:
                   cd "$HOME/svelte-app"
                   docker run -d  --rm -v $PWD:/app -v $HOME/.m2:/home/jsvelte/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/jhipster-svelte:$GITHUB_SHA -DskipTests
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  ./npmw run e2e:ci
+                  npm run e2e:ci
             - name: Gradle Cypress tests
               if: contains(matrix.apps, 'gradle')
               run: |
@@ -150,7 +150,7 @@ jobs:
                   docker run --rm -v $PWD:/app -v $HOME/.gradle:/home/jsvelte/.gradle --entrypoint ./gradlew jhipster/jhipster-svelte:$GITHUB_SHA clean
                   docker run -d --rm -v $PWD:/app -v $HOME/.gradle:/home/jsvelte/.gradle -p8080:8080 --entrypoint ./gradlew jhipster/jhipster-svelte:$GITHUB_SHA -x test
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  ./npmw run e2e:ci
+                  npm run e2e:ci
     production-profile-builds:
         needs: svelte-image
         name: ${{ matrix.apps }}
@@ -288,7 +288,7 @@ jobs:
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
                   docker compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
-                  ./npmw run e2e:ci
+                  npm run e2e:ci
     microservices-production-profile-builds:
         needs: svelte-image
         name: ${{ matrix.apps }}
@@ -447,7 +447,7 @@ jobs:
                   docker compose up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   cd "$HOME/svelte-ms/gateway"
-                  ./npmw run e2e:ci
+                  npm run e2e:ci
     lighthouse-job:
         needs: svelte-image
         name: ${{ matrix.apps }}
