@@ -4,7 +4,7 @@ application {
     packageName tech.jhipster.samples.gateway
     applicationType gateway
     authenticationType oauth2
-	devDatabaseType h2Disk
+    devDatabaseType h2Disk
     prodDatabaseType postgresql
     serviceDiscoveryType eureka
     testFrameworks [cypress]
