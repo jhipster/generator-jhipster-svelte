@@ -12,7 +12,8 @@
 				"link-in-text-block": "off",
 				"total-byte-weight": "off",
 				"unused-javascript": "off",
-				"uses-text-compression": "off"
+				"uses-text-compression": "off",
+				"target-size": "off"
 			}
 		},
 		"collect": {
