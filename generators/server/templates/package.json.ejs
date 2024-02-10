@@ -25,25 +25,21 @@
   "cacheDirectories": [
     "node_modules"
   ],
-  "devDependencies": {
-<%_ if (!skipJhipsterDependencies) { _%>
-  <%_ otherModules.forEach(module => { _%>
-    "<%= module.name %>": "<%= module.version %>",
-  <%_ }); _%>
-"generator-jhipster": "<%= jhipsterVersion %>"
-<%_
-    }
-_%>
-  },
   "engines": {
-    "node": ">=<%= NODE_VERSION %>"
+    "node": ">=<%= nodeVersion %>"
   },
   "config": {
     "default_environment": "prod"
   },
+  "devDependencies": {
+	"husky": "8.0.3",
+	"prettier": "3.1.0",
+	"prettier-plugin-java": "2.5.0",
+	"lint-staged": "14.0.1"
+  },
   "scripts": {
     "prepare": "husky install",
-    "prettier:check": "prettier --check \"{,src/**/}*.{<%= getPrettierExtensions() %>}\"",
-    "prettier:format": "prettier --write \"{,src/**/}*.{<%= getPrettierExtensions() %>}\""
+    "prettier:check": "prettier --check \"{,src/**/}*.{<%= prettierExtensions %>}\"",
+    "prettier:format": "prettier --write \"{,src/**/}*.{<%= prettierExtensions %>}\""
   }
 }

@@ -22,12 +22,14 @@ sonar.testExecutionReportPaths=<%= temporaryDir %>/test-results/js/sonar-report.
 sonar.javascript.lcov.reportPaths=<%= temporaryDir %>/test-results/js/lcov.info
 sonar.exclusions=<%= clientSrcDir %>static/**/*.*, <%= temporaryDir %>**/*.*
 
-sonar.issue.ignore.multicriteria=BoldAndItalicTagsCheck,<%_ if (!skipServer) { _%>S2187,S3437,<% if (authenticationType === 'jwt') { %>S4502,<% } %>S4684,S5145,UndocumentedApi<%_ } _%>
+sonar.issue.ignore.multicriteria=BoldAndItalicTagsCheck,<%_ if (!skipServer) { _%><% if(gatlingTests) { %>S2187,<% } %>S3437,<% if (authenticationType === 'jwt') { %>S4502,<% } %>S4684,S5145,UndocumentedApi<%_ } _%>
 <%_ if (!skipServer) { _%>
+<%_ if (gatlingTests) { _%>
 
  # Rule https://rules.sonarsource.com/java/RSPEC-2187 is ignored, gatling tests are not supported by sonar
  sonar.issue.ignore.multicriteria.S2187.resourceKey = src/test/java/gatling/**/*
  sonar.issue.ignore.multicriteria.S2187.ruleKey = java:S2187
+<%_ } _%>
 
 # Rule https://rules.sonarsource.com/java/RSPEC-3437 is ignored, as a JPA-managed field cannot be transient
 sonar.issue.ignore.multicriteria.S3437.resourceKey=<%= MAIN_DIR %>java/**/*

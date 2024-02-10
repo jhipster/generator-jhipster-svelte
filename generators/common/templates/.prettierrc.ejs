@@ -13,10 +13,13 @@ if (!skipClient) { _%>
 	"plugins": [
 <%_ if (!skipServer && backendTypeJavaAny) { _%>
 		"prettier-plugin-java",
-<%_ } _%>
+<%_ }
+	if (!skipClient) { _%>
+_%>
 		"prettier-plugin-organize-imports",
 		"prettier-plugin-packagejson",
 		"prettier-plugin-svelte"
+<%_ } _%>
 	],
 	"overrides": [
 		{

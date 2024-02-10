@@ -12,15 +12,15 @@ export default class extends LanguagesGenerator {
 			...super.prompting,
 			askI18n: undefined,
 			askForLanguages: undefined,
-			additionalLanguageConfigurations() {
-				this.languagesToApply = [];
-				this.enableTranslation = this.jhipsterConfig.enableTranslation = false;
-			},
 		});
 	}
 
 	get [BaseApplicationGenerator.CONFIGURING]() {
 		return this.asConfiguringTaskGroup({
+			overrideLanguageConfigurations() {
+				this.languagesToApply = [];
+				this.enableTranslation = this.jhipsterConfig.enableTranslation = false;
+			},
 			...super.configuring,
 		});
 	}
