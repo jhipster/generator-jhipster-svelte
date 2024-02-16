@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"swagger-ui-dist": "5.10.3"
+		"swagger-ui-dist": "5.11.6"
 	},
 	"devDependencies": {
 		"rollup-plugin-copy": "3.5.0"
