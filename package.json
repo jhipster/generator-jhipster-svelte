@@ -55,7 +55,7 @@
 		"eslint-plugin-prettier": "5.0.1",
 		"fs-extra": "11.1.1",
 		"husky": "8.0.3",
-		"lint-staged": "15.1.0",
+		"lint-staged": "15.2.2",
 		"yeoman-assert": "3.1.1",
 		"yeoman-test": "8.2.0"
 	},
