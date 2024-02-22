@@ -10,13 +10,24 @@ if (!skipClient) { _%>
 	"svelteSortOrder": "options-scripts-styles-markup",
 	"svelteStrictMode": true,
 <%_ } _%>
+	"plugins": [
+<%_ if (!skipServer && backendTypeJavaAny) { _%>
+		"prettier-plugin-java",
+<%_ }
+	if (!skipClient) { _%>
+_%>
+		"prettier-plugin-organize-imports",
+		"prettier-plugin-packagejson",
+		"prettier-plugin-svelte"
+<%_ } _%>
+	],
 	"overrides": [
 		{
 			"files": "src/test/resources/**/*.html",
 			"options": {
 				"printWidth": 140
 			}
-		}<% if (!skipServer && javaPrettier) { %>,
+		}<% if (!skipServer && backendTypeJavaAny) { %>,
 		{
 			"files": "*.java",
 			"options": {

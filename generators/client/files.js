@@ -1,11 +1,9 @@
-const constants = require('generator-jhipster/generators/generator-constants');
-const { pathFromSvelteBlueprint } = require('../util');
+import { TEMPLATES_WEBAPP_SOURCES_DIR } from 'generator-jhipster';
 
-const FRONTEND_SRC_DIR = constants.CLIENT_MAIN_SRC_DIR;
-const FRONTEND_APP_DIR = constants.ANGULAR_DIR;
+const FRONTEND_SRC_DIR = TEMPLATES_WEBAPP_SOURCES_DIR;
+const FRONTEND_APP_DIR = `${TEMPLATES_WEBAPP_SOURCES_DIR}/app/`;
 const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/`;
-const CLIENT_TEMPLATES_DIR = 'svelte';
 
 const svelteFiles = {
 	base: [
@@ -15,9 +13,12 @@ const svelteFiles = {
 				'.eslintrc.json',
 				'.npmrc',
 				'cypress.config.cjs',
+				'.gitignore.jhi.svelte',
+				'.prettierignore.jhi.svelte',
+				'README.md.jhi.svelte',
 				{
-					file: generator => `package-template.json`,
-					renameTo: () => `package.json`,
+					file: 'package-template.json',
+					renameTo: () => 'package.json',
 				},
 				'jsconfig.json',
 				'postcss.config.cjs',
@@ -31,7 +32,7 @@ const svelteFiles = {
 		{
 			templates: [
 				{
-					file: generator => `${FRONTEND_SRC_DIR}static/img/${generator.hipster}_head-192.png`,
+					file: generator => `${FRONTEND_SRC_DIR}static/content/img/${generator.hipster}_head-192.png`,
 					renameTo: () => `cypress/fixtures/integration-test.png`,
 					method: 'copy',
 				},
@@ -76,14 +77,14 @@ const svelteFiles = {
 	],
 	swagger: [
 		{
-			condition: generator => generator.blueprintConfig.swaggerUi,
+			condition: generator => generator.swaggerUi,
 			path: FRONTEND_SRC_DIR,
 			templates: ['swagger-ui/index.html'],
 		},
 	],
 	jest: [
 		{
-			condition: generator => generator.blueprintConfig.jest,
+			condition: generator => generator.jest,
 			templates: [
 				{ file: `jest/jest-setup.js`, renameTo: () => `jest-setup.js` },
 				{ file: `jest/jest.config.cjs`, renameTo: () => `jest.config.cjs` },
@@ -92,7 +93,7 @@ const svelteFiles = {
 	],
 	vitest: [
 		{
-			condition: generator => !generator.blueprintConfig.jest,
+			condition: generator => !generator.jest,
 			templates: [{ file: `vitest/vitest-setup.js`, renameTo: () => `vitest-setup.js` }],
 		},
 	],
@@ -101,28 +102,28 @@ const svelteFiles = {
 			path: FRONTEND_SRC_DIR,
 			templates: [
 				{
-					file: generator => `static/img/${generator.hipster}_head-192.png`,
-					renameTo: () => `static/img/hipster-192.png`,
+					file: generator => `static/content/img/${generator.hipster}_head-192.png`,
+					renameTo: () => `static/content/img/hipster-192.png`,
 					method: 'copy',
 				},
 				{
-					file: generator => `static/img/${generator.hipster}_head-512.png`,
-					renameTo: () => `static/img/hipster-512.png`,
+					file: generator => `static/content/img/${generator.hipster}_head-512.png`,
+					renameTo: () => `static/content/img/hipster-512.png`,
 					method: 'copy',
 				},
 				{ file: 'static/favicon.ico', method: 'copy' },
 				'static/web-manifest.json',
 				{
-					file: generator => `static/img/${generator.hipster}.svg`,
+					file: generator => `static/content/img/${generator.hipster}.svg`,
 					renameTo: () => `app/lib/svg/app-avatar.svg`,
 					method: 'copy',
 				},
 				{
-					file: generator => `static/img/logo-jhipster-long.svg`,
+					file: generator => `static/content/img/logo-jhipster-long.svg`,
 					renameTo: () => `app/lib/svg/app-logo.svg`,
 					method: 'copy',
 				},
-				{ file: 'static/img/logo-jhipster.png', method: 'copy' },
+				{ file: 'static/content/img/logo-jhipster.png', method: 'copy' },
 			],
 		},
 	],
@@ -146,7 +147,7 @@ const svelteFiles = {
 	],
 	swaggerRoute: [
 		{
-			condition: generator => generator.blueprintConfig.swaggerUi,
+			condition: generator => generator.swaggerUi,
 			path: FRONTEND_ROUTES_DIR,
 			templates: [{ file: () => `admin/docs.svelte`, renameTo: () => `admin/docs/+page.svelte` }],
 		},
@@ -248,15 +249,4 @@ const svelteFiles = {
 	],
 };
 
-function writeFiles() {
-	this.writeFilesToDisk(
-		svelteFiles,
-		this,
-		false,
-		pathFromSvelteBlueprint(`client/templates/${CLIENT_TEMPLATES_DIR}`)
-	);
-}
-
-module.exports = {
-	writeFiles,
-};
+export default svelteFiles;

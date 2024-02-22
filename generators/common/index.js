@@ -16,92 +16,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const chalk = require('chalk');
-const CommonGenerator = require('generator-jhipster/generators/common');
-const { writeFiles, writeMainGeneratorFiles, prettierConfigFiles } = require('./files');
-const blueprintPackageJson = require('../../package.json');
-const { pathFromSvelteBlueprint } = require('../util');
+/* eslint-disable import/no-unresolved */
+import CommonGenerator from 'generator-jhipster/generators/common';
+import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
 
-module.exports = class extends CommonGenerator {
-	constructor(args, opts) {
-		super(args, { ...opts, fromBlueprint: true });
-		const jhContext = (this.jhipsterContext = this.options.jhipsterContext);
-
-		if (!jhContext) {
-			this.error(
-				`This is a JHipster blueprint and should be used like ${chalk.yellow('jhipster --blueprints svelte')}`
-			);
-		}
-
-		this.blueprintjs = blueprintPackageJson;
-		this.skipServer = this.config.get('skipServer') || false;
-		this.javaPrettier = false;
+export default class extends CommonGenerator {
+	constructor(args, opts, features) {
+		super(args, opts, { ...features });
 	}
 
-	_initializing() {
-		return super._initializing();
+	async beforeQueue() {
+		await this.dependsOnJHipster('bootstrap-application');
+		await this.dependsOnJHipster('git');
 	}
 
-	get initializing() {
-		return this._initializing();
+	get [BaseApplicationGenerator.INITIALIZING]() {
+		return this.asInitializingTaskGroup({
+			...super.initializing,
+		});
 	}
 
-	_loading() {
-		const defaultPhaseFromJHipster = super._loading();
-		return {
-			...defaultPhaseFromJHipster,
-			loadPackageJson() {
-				// override as the dependencies are differently managed
-			},
-		};
+	get [BaseApplicationGenerator.PROMPTING]() {
+		return this.asPromptingTaskGroup({
+			...super.prompting,
+		});
 	}
 
-	get loading() {
-		return this._loading();
+	get [BaseApplicationGenerator.CONFIGURING]() {
+		return this.asConfiguringTaskGroup({
+			...super.configuring,
+		});
 	}
 
-	_preparing() {
-		return super._preparing();
+	get [BaseApplicationGenerator.CONFIGURING_EACH_ENTITY]() {
+		return this.asConfiguringEachEntityTaskGroup({
+			...super.configuringEachEntity,
+		});
 	}
 
-	get preparing() {
-		return this._preparing();
+	get [BaseApplicationGenerator.LOADING]() {
+		return this.asLoadingTaskGroup({
+			...super.loading,
+			loadPackageJson: undefined,
+		});
 	}
 
-	_default() {
-		return super._default();
+	get [BaseApplicationGenerator.PREPARING]() {
+		return this.asPreparingTaskGroup({
+			...super.preparing,
+		});
 	}
 
-	get default() {
-		return this._default();
+	get [BaseApplicationGenerator.DEFAULT]() {
+		return this.asDefaultTaskGroup({
+			...super.default,
+		});
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	_writing() {
-		return {
-			configurePrettier() {
-				this.javaPrettier = true;
-				this.prettier = true;
-			},
-			writePrettierConfig() {
-				if (this.prettier) {
-					// Prettier configuration needs to be the first written files - all subgenerators considered - for prettier transform to work
-					this.writeFilesToDisk(
-						prettierConfigFiles,
-						this,
-						false,
-						pathFromSvelteBlueprint(`common/templates`)
-					);
-				}
-			},
-			writeAdditionalFile() {
-				writeMainGeneratorFiles.call(this);
-				writeFiles.call(this);
-			},
-		};
+	get [BaseApplicationGenerator.WRITING]() {
+		return this.asWritingTaskGroup({
+			...super.writing,
+		});
 	}
 
-	get writing() {
-		return this._writing();
+	get [BaseApplicationGenerator.POST_WRITING]() {
+		return this.asPostWritingTaskGroup({
+			...super.postWriting,
+			addCommitHookDependencies: undefined,
+		});
 	}
-};
+}

@@ -12,22 +12,24 @@ sonar.test.inclusions=src/**/*.spec.js
 <%_ } else { _%>
 
 sonar.java.codeCoveragePlugin=jacoco
-sonar.coverage.jacoco.xmlReportPaths=<%= BUILD_DIR %>/**/jacoco*.xml
-sonar.junit.reportPaths=<%= BUILD_DIR %>surefire-reports,<%= BUILD_DIR %>failsafe-reports
+sonar.coverage.jacoco.xmlReportPaths=<%= temporaryDir %>/**/jacoco*.xml
+sonar.junit.reportPaths=<%= temporaryDir %>surefire-reports,<%= temporaryDir %>failsafe-reports
 
 sonar.test.inclusions=src/test/**/*.*, src/**/*.spec.js
 <%_ } _%>
 
-sonar.testExecutionReportPaths=<%= BUILD_DIR %>/test-results/js/sonar-report.xml
-sonar.javascript.lcov.reportPaths=<%= BUILD_DIR %>/test-results/js/lcov.info
-sonar.exclusions=<%= CLIENT_MAIN_SRC_DIR %>static/**/*.*, <%= CLIENT_DIST_DIR %>**/*.*
+sonar.testExecutionReportPaths=<%= temporaryDir %>/test-results/js/sonar-report.xml
+sonar.javascript.lcov.reportPaths=<%= temporaryDir %>/test-results/js/lcov.info
+sonar.exclusions=<%= clientSrcDir %>static/**/*.*, <%= temporaryDir %>**/*.*
 
-sonar.issue.ignore.multicriteria=BoldAndItalicTagsCheck,<%_ if (!skipServer) { _%>S2187,S3437,<% if (authenticationType === 'jwt') { %>S4502,<% } %>S4684,S5145,UndocumentedApi<%_ } _%>
+sonar.issue.ignore.multicriteria=BoldAndItalicTagsCheck,<%_ if (!skipServer) { _%><% if(gatlingTests) { %>S2187,<% } %>S3437,<% if (authenticationType === 'jwt') { %>S4502,<% } %>S4684,S5145,UndocumentedApi<%_ } _%>
 <%_ if (!skipServer) { _%>
+<%_ if (gatlingTests) { _%>
 
  # Rule https://rules.sonarsource.com/java/RSPEC-2187 is ignored, gatling tests are not supported by sonar
  sonar.issue.ignore.multicriteria.S2187.resourceKey = src/test/java/gatling/**/*
  sonar.issue.ignore.multicriteria.S2187.ruleKey = java:S2187
+<%_ } _%>
 
 # Rule https://rules.sonarsource.com/java/RSPEC-3437 is ignored, as a JPA-managed field cannot be transient
 sonar.issue.ignore.multicriteria.S3437.resourceKey=<%= MAIN_DIR %>java/**/*
@@ -53,5 +55,5 @@ sonar.issue.ignore.multicriteria.S5145.ruleKey = javasecurity:S5145
 <%_ } _%>
 
 # Rule https://sonarcloud.io/coding_rules?open=Web%3ABoldAndItalicTagsCheck&rule_key=Web%3ABoldAndItalicTagsCheck is ignored. Even if we agree that using the "i" tag is an awful practice, this is what is recommended by http://fontawesome.io/examples/
-sonar.issue.ignore.multicriteria.BoldAndItalicTagsCheck.resourceKey=<%= CLIENT_MAIN_SRC_DIR %>app/**/*.*
+sonar.issue.ignore.multicriteria.BoldAndItalicTagsCheck.resourceKey=<%= clientSrcDir %>app/**/*.*
 sonar.issue.ignore.multicriteria.BoldAndItalicTagsCheck.ruleKey=Web:BoldAndItalicTagsCheck

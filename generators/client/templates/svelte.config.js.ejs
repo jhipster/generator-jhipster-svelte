@@ -1,0 +1,33 @@
+import adapter from '@sveltejs/adapter-static';
+<%_ if (!this.jest) { _%>
+import { vitePreprocess } from '@sveltejs/kit/vite'
+<%_ } _%>
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	<%_ if (!this.jest) { _%>
+	preprocess : vitePreprocess(),
+	<%_ } _%>
+	kit: {
+		adapter: adapter({
+			pages: '<%= clientDistDir %>',
+			assets: '<%= clientDistDir %>',
+			fallback: 'index.html'
+		}),
+		appDir: 'app',
+		files: {
+			assets: '<%= clientSrcDir %>static',
+			lib: '<%= clientSrcDir %>app/lib',
+			routes: '<%= clientSrcDir %>app/routes',
+			serviceWorker: '<%= clientSrcDir %>app/service-worker',
+			appTemplate: '<%= clientSrcDir %>app/app.html'
+		},
+		alias: {
+			'$lib': '<%= clientSrcDir %>app/lib',
+			'$lib/*': '<%= clientSrcDir %>app/lib/*'
+		},
+		outDir: '<%= temporaryDir %>svelte-kit',
+	}
+};
+
+export default config;

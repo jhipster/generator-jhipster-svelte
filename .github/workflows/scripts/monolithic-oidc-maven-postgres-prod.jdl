@@ -4,7 +4,6 @@ application {
     applicationType monolith
     authenticationType oauth2
     packageName tech.jhipster.sample.blog
-    searchEngine elasticsearch
     prodDatabaseType postgresql
 	devDatabaseType h2Disk
     cacheProvider ehcache
@@ -29,7 +28,7 @@ entity Tag {
 }
 
 relationship ManyToOne {
-  Blog{user(login)} to User
+  Blog{user(login)} to User with builtInEntity
   Post{blog(name)} to Blog
 }
 

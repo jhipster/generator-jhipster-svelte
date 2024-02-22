@@ -56,7 +56,7 @@ relationship OneToMany {
   SampleBlobEntity{domainEntity} to SampleDomainEntityTwo{blobEntity(textBlobData)},
 }
 relationship ManyToOne {
-  SampleDomainEntityThree{user(login)} to User
+  SampleDomainEntityThree{user(login)} to User with builtInEntity
 }
 relationship ManyToMany {
   SampleDomainEntity{sampleEntity(name)} to SampleEntity{sampleDomainEntity}

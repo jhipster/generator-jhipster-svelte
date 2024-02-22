@@ -1,4 +1,4 @@
-FROM node:16-alpine3.15
+FROM node:20-alpine3.19
 
 LABEL maintainer="Vishal Mahajan"
 
@@ -9,27 +9,30 @@ ARG GIT_USER_EMAIL=jhipster-svelte-bot@jhipster.tech
 ARG GIT_USERNAME="JHipster Svelte Bot"
 ARG GID=1000
 ARG UID=1000
-ARG GLIBC_VERSION=2.34-r0
+# ARG GLIBC_VERSION=2.34-r0
+# ARG GCOMPAT_VERSION=1.1.0-r4
 
 ENV	MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 RUN apk update \
 	&& apk --no-cache --update add \
+		gcompat \
 		git \
-		openjdk11 \
+		openjdk21 \
 		ca-certificates \
 		wget \
 		bash
 
-RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
-	&& wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
-	&& wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk \
-	&& wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-i18n-${GLIBC_VERSION}.apk \
-	&& apk add glibc-${GLIBC_VERSION}.apk glibc-bin-${GLIBC_VERSION}.apk glibc-i18n-${GLIBC_VERSION}.apk \
-	&& /usr/glibc-compat/bin/localedef -i en_US -f UTF-8 en_US.UTF-8 \
-	&& rm -rf glibc-${GLIBC_VERSION}.apk glibc-bin-${GLIBC_VERSION}.apk glibc-i18n-${GLIBC_VERSION}.apk \
-	&& apk del wget \
-  	&& sed -i -e "s/bin\/ash/bin\/sh/" /etc/passwd
+# RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+	# && wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
+	# && wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk \
+	# && wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-i18n-${GLIBC_VERSION}.apk \
+	# && apk add --no-cache gc
+	# && apk add --no-cache --force-overwrite glibc-${GLIBC_VERSION}.apk glibc-bin-${GLIBC_VERSION}.apk glibc-i18n-${GLIBC_VERSION}.apk \
+	# && /usr/glibc-compat/bin/localedef -i en_US -f UTF-8 en_US.UTF-8 \
+	# && rm -rf glibc-${GLIBC_VERSION}.apk glibc-bin-${GLIBC_VERSION}.apk glibc-i18n-${GLIBC_VERSION}.apk \
+	# && apk del wget \
+RUN sed -i -e "s/bin\/ash/bin\/sh/" /etc/passwd
 
 RUN \
 	echo ${GID} \
@@ -55,18 +58,19 @@ RUN \
 	&& echo PATH="$NPM_PATH/bin:$PATH" >> "$HOME/.profile" \
 	&& . "$HOME/.profile"
 
-COPY package.json package-lock.json $SVELTE_PATH/
+COPY --chown=jsvelte:jsvelte package.json package-lock.json $SVELTE_PATH/
 
 WORKDIR $SVELTE_PATH
 
 RUN	npm ci --quiet
 
-COPY cli $SVELTE_PATH/cli
+COPY --chown=jsvelte:jsvelte cli $SVELTE_PATH/cli
+
+COPY --chown=jsvelte:jsvelte generators $SVELTE_PATH/generators
+
 RUN npm link
 
-COPY generators $SVELTE_PATH/generators
-
-COPY docker/entrypoint.sh /usr/local/bin/
+COPY --chown=jsvelte:jsvelte docker/entrypoint.sh /usr/local/bin/
 
 WORKDIR $APP_PATH
 

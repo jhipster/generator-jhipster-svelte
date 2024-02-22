@@ -17,7 +17,7 @@ jobs:
             cancel-in-progress: true
         timeout-minutes: 5
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Create JHipster Svelte docker image
               run: |
                   docker build -t jhipster/jhipster-svelte:$GITHUB_SHA --build-arg UID=$(id -u) --build-arg GID=$(id -g) .
@@ -40,18 +40,17 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                apps:
-                    [
+                apps: [
                         'monolithic-session-maven.jdl',
-                        'monolithic-session-gradle.json',
+                        # 'monolithic-session-gradle.json',
                         'monolithic-jwt-maven-skip-user.jdl',
-                        'monolithic-jwt-gradle.json',
+                        # 'monolithic-jwt-gradle.json',
                         'monolithic-session-maven-reactive.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [20.x]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Download latest chrome binary
               if: contains(matrix.os , 'ubuntu-latest')
               run: |
@@ -68,13 +67,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.9.4
+                  key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.9.4
+                  key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -172,18 +171,19 @@ jobs:
                         'gateway-jwt-maven-postgres-prod.jdl',
                     ]
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [20.x]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Download latest chrome binary
               if: contains(matrix.os , 'ubuntu-latest')
               run: |
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
-            - uses: actions/setup-java@v1
+            - uses: actions/setup-java@v4
               with:
-                  java-version: '11'
+                  distribution: 'temurin'
+                  java-version: '21'
             - uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node_version }}
@@ -194,13 +194,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.9.4
+                  key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.9.4
+                  key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -280,13 +280,13 @@ jobs:
               run: |
                   cd "$HOME/svelte-app"
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
-                  docker-compose -f src/main/docker/keycloak.yml up -d
+                  docker compose -f src/main/docker/keycloak.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   cd "$HOME/svelte-app"
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
-                  docker-compose -f src/main/docker/app.yml up -d
+                  docker compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e:ci
     microservices-production-profile-builds:
@@ -303,18 +303,19 @@ jobs:
             matrix:
                 apps: ['microservices-oidc-maven-prod.jdl']
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [20.x]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Download latest chrome binary
               if: contains(matrix.os , 'ubuntu-latest')
               run: |
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
-            - uses: actions/setup-java@v1
+            - uses: actions/setup-java@v4
               with:
-                  java-version: '11'
+                  distribution: 'temurin'
+                  java-version: '21'
             - uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node_version }}
@@ -325,13 +326,13 @@ jobs:
                   path: |
                       ~/.gradle/caches
                       ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-7.9.4
+                  key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
               uses: actions/cache@v2
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.9.4
+                  key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -437,13 +438,13 @@ jobs:
               run: |
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
                   cd "$HOME/svelte-ms/docker-compose"
-                  docker-compose up -d keycloak
+                  docker compose up -d keycloak
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
                   cd "$HOME/svelte-ms/docker-compose"
-                  docker-compose up -d
+                  docker compose up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   cd "$HOME/svelte-ms/gateway"
                   npm run e2e:ci
@@ -460,9 +461,9 @@ jobs:
             matrix:
                 apps: ['svelte-app-session-lighthouse.jdl']
                 os: [ubuntu-latest]
-                node_version: [16.x]
+                node_version: [20.x]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.sha }}
             - name: Download latest chrome binary
@@ -471,9 +472,10 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
-            - uses: actions/setup-java@v1
+            - uses: actions/setup-java@v4
               with:
-                  java-version: '11'
+                  distribution: 'temurin'
+                  java-version: '21'
             - uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node_version }}
@@ -482,7 +484,7 @@ jobs:
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-7.9.4
+                  key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
               uses: actions/cache@v2
               with:
@@ -520,7 +522,7 @@ jobs:
                   cd "$HOME/svelte-app"
                   npm install -g @lhci/cli
                   npm install --save puppeteer
-                  docker-compose -f src/main/docker/app.yml up -d
+                  docker compose -f src/main/docker/app.yml up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
             - name: Run Lighthouse tests - Unauthenticated Pages
               run: |

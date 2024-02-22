@@ -118,7 +118,7 @@ npm update -g generator-jhipster-svelte
     }
 
     relationship ManyToOne {
-        Blog{user(login)} to User
+        Blog{user(login)} to User with builtInEntity
         Post{blog(name)} to Blog
     }
 
@@ -175,7 +175,7 @@ npm update -g generator-jhipster-svelte
     }
 
     relationship ManyToOne {
-      Blog{user(login)} to User,
+      Blog{user(login)} to User with builtInEntity
       Post{blog(name)} to Blog
     }
 
