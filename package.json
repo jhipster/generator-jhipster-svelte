@@ -38,7 +38,7 @@
 	"scripts": {
 		"format": "prettier --write \"{,generators/**/,.github/**/}*.{md,json,js,svelte,css,html,yml}\"",
 		"lint": "eslint .",
-		"prepare": "husky install"
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"chalk": "5.3.0",

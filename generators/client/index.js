@@ -93,14 +93,14 @@ export default class extends ClientGenerator {
 						createNeedleCallback({
 							needle: 'add-entity-to-menu',
 							contentToAdd: `\t\t<MenuItem
- \t\t\ttestId="svl${entityClass}MgmtLink"
- \t\t\tlink="/entities/${entityRoute}"
- \t\t\ton:click="{() => (isOpen = false)}"
- \t\t>
- \t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
- \t\t\t${entityName}
- \t\t</MenuItem>
- `,
+\t\t\ttestId="svl${entityClass}MgmtLink"
+\t\t\tlink="/entities/${entityRoute}"
+\t\t\ton:click="{() => (isOpen = false)}"
+\t\t>
+\t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
+\t\t\t${entityName}
+\t\t</MenuItem>
+`,
 						}),
 					);
 				};
