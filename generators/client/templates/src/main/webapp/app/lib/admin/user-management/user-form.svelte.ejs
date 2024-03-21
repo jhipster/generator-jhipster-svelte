@@ -159,8 +159,8 @@
 		value="{user.authorities}"
 		options="{{
 			data: authorities.map(authority => ({
-				name: authority,
-				value: authority,
+				name: authority.name,
+				value: authority.name,
 			})),
 		}}"
 		on:validate="{event => {

@@ -5,6 +5,7 @@
  		"test:watch": "vitest"
 	},
 	"devDependencies": {
+		"@sveltejs/vite-plugin-svelte": "3.0.2",
 		"@vitest/ui": "1.4.0",
  		"@vitest/coverage-v8": "1.4.0",
 		"jsdom": "24.0.0",
