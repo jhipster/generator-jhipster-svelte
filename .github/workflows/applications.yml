@@ -78,9 +78,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/13.6.x
+                      ~/.cache/Cypress/13.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-13.6.x
+                  key: ${{ runner.os }}-cypress-13.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -205,9 +205,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/13.6.x
+                      ~/.cache/Cypress/13.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-13.6.x
+                  key: ${{ runner.os }}-cypress-13.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -223,6 +223,8 @@ jobs:
                   mkdir -p "$HOME/.m2"
                   mkdir -p "$HOME/.gradle"
                   mkdir -p "$HOME/.cache"
+                  docker -v
+                  docker compose version
             - name: Generate application
               if: contains(matrix.apps, '.json')
               run: |
@@ -337,9 +339,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/13.6.x
+                      ~/.cache/Cypress/13.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-13.6.x
+                  key: ${{ runner.os }}-cypress-13.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:
@@ -355,12 +357,14 @@ jobs:
                   mkdir -p "$HOME/.m2"
                   mkdir -p "$HOME/.gradle"
                   mkdir -p "$HOME/.cache"
+                  docker -v
+                  docker compose version
             - name: Generate application
               if: contains(matrix.apps, '.jdl')
               run: |
                   cd "$HOME/svelte-ms"
                   cp $TEST_SCRIPTS_PATH/${{ matrix.apps }} app.jdl
-                  docker run --rm -v $PWD:/app -v $HOME/.cache:/home/jsvelte/.cache  jhipster/jhipster-svelte:$GITHUB_SHA import-jdl app.jdl --no-insight --force
+                  docker run --rm -v $PWD:/app -v $HOME/.cache:/home/jsvelte/.cache  jhipster/jhipster-svelte:$GITHUB_SHA import-jdl app.jdl --no-insight --skip-checks --force
             - name: Maven - Unit tests - Gateway
               if: contains(matrix.apps , 'maven')
               run: |
@@ -489,9 +493,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                      ~/.cache/Cypress/13.6.x
+                      ~/.cache/Cypress/13.7.x
                       ~/.cache/Cypress/cy
-                  key: ${{ runner.os }}-cypress-13.6.x
+                  key: ${{ runner.os }}-cypress-13.7.x
             - name: Retrieve saved Svelte Docker Image
               uses: actions/download-artifact@v2
               with:

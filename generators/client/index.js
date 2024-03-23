@@ -10,8 +10,6 @@ import ClientGenerator from 'generator-jhipster/generators/client';
 import { TEMPLATES_WEBAPP_SOURCES_DIR } from 'generator-jhipster';
 import { getEnumInfo } from 'generator-jhipster/generators/base-application/support';
 import { createNeedleCallback } from 'generator-jhipster/generators/base/support';
-import prettierPluginSvelte from 'prettier-plugin-svelte';
-import prettierPluginImports from 'prettier-plugin-organize-imports';
 import { getPackageJson } from '../util.js';
 import blueprintCommand from './command.js';
 import svelteFiles from './files.js';
@@ -27,12 +25,11 @@ export default class extends ClientGenerator {
 	async beforeQueue() {
 		await this.dependsOnJHipster('bootstrap-application');
 		const bootstrapGenerator = await this.dependsOnJHipster('bootstrap');
-		if (!bootstrapGenerator.prettierExtensions.includes(prettierPluginSvelte)) {
-			bootstrapGenerator.prettierExtensions.push('svelte');
-		}
-		if (!bootstrapGenerator.prettierOptions.plugins.includes(prettierPluginSvelte)) {
-			bootstrapGenerator.prettierOptions.plugins.push(prettierPluginSvelte, prettierPluginImports);
-		}
+		bootstrapGenerator.prettierExtensions.push('svelte');
+		bootstrapGenerator.prettierOptions.plugins.push(import.meta.resolve('prettier-plugin-svelte', import.meta.url));
+		bootstrapGenerator.prettierOptions.plugins.push(
+			import.meta.resolve('prettier-plugin-organize-imports', import.meta.url),
+		);
 	}
 
 	get [BaseApplicationGenerator.INITIALIZING]() {
@@ -106,14 +103,14 @@ export default class extends ClientGenerator {
 						createNeedleCallback({
 							needle: 'add-entity-to-menu',
 							contentToAdd: `\t\t<MenuItem
- \t\t\ttestId="svl${entityClass}MgmtLink"
- \t\t\tlink="/entities/${entityRoute}"
- \t\t\ton:click="{() => (isOpen = false)}"
- \t\t>
- \t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
- \t\t\t${entityName}
- \t\t</MenuItem>
- `,
+\t\t\ttestId="svl${entityClass}MgmtLink"
+\t\t\tlink="/entities/${entityRoute}"
+\t\t\ton:click="{() => (isOpen = false)}"
+\t\t>
+\t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
+\t\t\t${entityName}
+\t\t</MenuItem>
+`,
 						}),
 					);
 				};

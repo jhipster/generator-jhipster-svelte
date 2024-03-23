@@ -7,7 +7,7 @@
 	"scripts": {
 		"format": "prettier --write \"{,src/**/,cypress/**/}*.{md,json,js,svelte,css,html,yml}\"",
 		"lint": "eslint .",
-		"prepare": "husky install",
+		"prepare": "husky",
 		"lint:fix": "npm run lint --fix",
 		"cleanup": "rimraf <%= clientDistDir %>",
 		"start": "vite dev --port 9000 --open true",

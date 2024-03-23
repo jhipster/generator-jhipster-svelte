@@ -31,10 +31,10 @@ _%>
 				<span>ID</span>
 				<%_ if (!paginationNo) { _%>
 				<Sort
-                    active="{sortPredicate === 'id'}"
-                    sortPredicate="id"
-                    hasRecords="{<%= entityInstancePlural %>.length}"
-                    on:sortbypredicate
+					active="{sortPredicate === 'id'}"
+					sortPredicate="id"
+					hasRecords="{<%= entityInstancePlural %>.length}"
+					on:sortbypredicate
 				/>
 				<%_ } _%>
 			</TableHeader>
@@ -43,10 +43,10 @@ _%>
 				<span><%= field.fieldNameHumanized %></span>
 				<%_ if (!paginationNo) { _%>
 				<Sort
-                    active="{sortPredicate === '<%= field.fieldName%>'}"
-                    sortPredicate="<%= field.fieldName%>"
-                    hasRecords="{<%= entityInstancePlural %>.length}"
-                    on:sortbypredicate
+					active="{sortPredicate === '<%= field.fieldName%>'}"
+					sortPredicate="<%= field.fieldName%>"
+					hasRecords="{<%= entityInstancePlural %>.length}"
+					on:sortbypredicate
 				/>
 				<%_ } _%>
 			</TableHeader>
@@ -66,7 +66,7 @@ _%>
 				// exclude id field in last field index calculation
 				const lastFieldIndex = fields.length - 1;
 				let fieldIndex = 1;
-                    for (field of fields.filter(field => !field.id)) {
+					for (field of fields.filter(field => !field.id)) {
 				_%>
 				<TableData<% if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { %> classes="min-w-[130px] {showActions ? 'relative' : ''}"<%_ } _%>>
 					<%_ if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { _%>
@@ -74,16 +74,16 @@ _%>
 						<%_ }_%>
 						<%_ if (field.fieldTypeBinary && field.blobContentTypeImage) { _%>
 						<BinaryRecord
-                            field="{<%= entityInstance %>.<%= field.fieldName %>}"
-                            fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
-                            name="<%= field.fieldName %>"
-                            fieldType="image"
+							field="{<%= entityInstance %>.<%= field.fieldName %>}"
+							fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
+							name="<%= field.fieldName %>"
+							fieldType="image"
 						/>
 						<%_ } else if (field.fieldTypeBinary && field.blobContentTypeAny) { _%>
 						<BinaryRecord
-                            field="{<%= entityInstance %>.<%= field.fieldName %>}"
-                            fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
-                            name="<%= field.fieldName %>"
+							field="{<%= entityInstance %>.<%= field.fieldName %>}"
+							fieldContentType="{<%= entityInstance %>.<%= field.fieldName %>ContentType}"
+							name="<%= field.fieldName %>"
 						/>
 						<%_ } else if (field.fieldTypeTimed || field.fieldTypeLocalDate) { _%>
 						{formatDate(<%=entityInstance %>.<%= field.fieldName %>)}
@@ -95,7 +95,7 @@ _%>
 						<%_ if(fieldIndex === lastFieldIndex && !containsRelationshipField ) { _%>
 					</div>
 					<div
-                        class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
+						class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
 					>
 						<TableRowActions
 							id="{ <%= entityInstance %>.id }"
@@ -127,14 +127,14 @@ _%>
 					<%_ if(relationshipFieldIndex === relationshipFields.length) { _%>
 					</div>
 					<div
-                        class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
+						class="absolute top-1/2 -translate-y-1/2 right-4 z-10"
 					>
 						<TableRowActions
-    						id="{ <%= entityInstance %>.id }"
-	    					visible="{ showActions }"
-		    				on:view
-			    			on:update
-				    		on:delete
+							id="{ <%= entityInstance %>.id }"
+							visible="{ showActions }"
+							on:view
+							on:update
+							on:delete
 						/>
 					</div>
 					<%_ }_%>
@@ -147,7 +147,7 @@ _%>
 		{:else}
 			<TableRow let:showActions>
 				<TableData colspan="3" classes="text-center py-8"
-				    >No <%= entityClassPluralHumanized %> found</TableData
+					>No <%= entityClassPluralHumanized %> found</TableData
 				>
 			</TableRow>
 		{/each}
