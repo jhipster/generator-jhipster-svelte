@@ -61,6 +61,18 @@ export default class extends ServerGenerator {
 		});
 	}
 
+	get [BaseApplicationGenerator.PREPARING_EACH_ENTITY]() {
+		return this.asPreparingEachEntityTaskGroup({
+			...super.preparingEachEntity,
+		});
+	}
+
+	get [BaseApplicationGenerator.POST_PREPARING_EACH_ENTITY]() {
+		return this.asPostPreparingEachEntityTaskGroup({
+			...super.postPreparingEachEntity,
+		});
+	}
+
 	get [BaseApplicationGenerator.DEFAULT]() {
 		return this.asDefaultTaskGroup({
 			...super.default,
