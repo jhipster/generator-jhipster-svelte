@@ -357,6 +357,8 @@ jobs:
                   mkdir -p "$HOME/.m2"
                   mkdir -p "$HOME/.gradle"
                   mkdir -p "$HOME/.cache"
+                  docker -v
+                  docker compose version
             - name: Generate application
               if: contains(matrix.apps, '.jdl')
               run: |

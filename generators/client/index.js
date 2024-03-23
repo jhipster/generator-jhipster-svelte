@@ -27,7 +27,9 @@ export default class extends ClientGenerator {
 		const bootstrapGenerator = await this.dependsOnJHipster('bootstrap');
 		bootstrapGenerator.prettierExtensions.push('svelte');
 		bootstrapGenerator.prettierOptions.plugins.push(import.meta.resolve('prettier-plugin-svelte', import.meta.url));
-		bootstrapGenerator.prettierOptions.plugins.push(import.meta.resolve('prettier-plugin-organize-imports', import.meta.url));
+		bootstrapGenerator.prettierOptions.plugins.push(
+			import.meta.resolve('prettier-plugin-organize-imports', import.meta.url),
+		);
 	}
 
 	get [BaseApplicationGenerator.INITIALIZING]() {
