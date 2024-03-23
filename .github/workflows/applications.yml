@@ -364,7 +364,7 @@ jobs:
               run: |
                   cd "$HOME/svelte-ms"
                   cp $TEST_SCRIPTS_PATH/${{ matrix.apps }} app.jdl
-                  docker run --rm -v $PWD:/app -v $HOME/.cache:/home/jsvelte/.cache  jhipster/jhipster-svelte:$GITHUB_SHA import-jdl app.jdl --no-insight --force
+                  docker run --rm -v $PWD:/app -v $HOME/.cache:/home/jsvelte/.cache  jhipster/jhipster-svelte:$GITHUB_SHA import-jdl app.jdl --no-insight --skip-checks --force
             - name: Maven - Unit tests - Gateway
               if: contains(matrix.apps , 'maven')
               run: |
