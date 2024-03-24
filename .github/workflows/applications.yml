@@ -223,8 +223,6 @@ jobs:
                   mkdir -p "$HOME/.m2"
                   mkdir -p "$HOME/.gradle"
                   mkdir -p "$HOME/.cache"
-                  docker -v
-                  docker compose version
             - name: Generate application
               if: contains(matrix.apps, '.json')
               run: |
@@ -283,7 +281,7 @@ jobs:
                   cd "$HOME/svelte-app"
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
                   docker compose -f src/main/docker/keycloak.yml up -d
-                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080/realms/master)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   cd "$HOME/svelte-app"
@@ -357,8 +355,6 @@ jobs:
                   mkdir -p "$HOME/.m2"
                   mkdir -p "$HOME/.gradle"
                   mkdir -p "$HOME/.cache"
-                  docker -v
-                  docker compose version
             - name: Generate application
               if: contains(matrix.apps, '.jdl')
               run: |
@@ -443,7 +439,7 @@ jobs:
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
                   cd "$HOME/svelte-ms/docker-compose"
                   docker compose up -d keycloak
-                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080)" != "200" ]]; do sleep 5; done' || false
+                  timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080/realms/master)" != "200" ]]; do sleep 5; done' || false
             - name: Run Cypress tests
               run: |
                   sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
