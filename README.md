@@ -189,6 +189,7 @@ npm update -g generator-jhipster-svelte
 
     deployment {
       deploymentType docker-compose
+      serviceDiscoveryType eureka
       appsFolders [gateway, blog]
     }
     ```

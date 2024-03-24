@@ -57,5 +57,6 @@ microservice Blog, Post, Tag with blog
 
 deployment {
   deploymentType docker-compose
+  serviceDiscoveryType eureka
   appsFolders [gateway, blog]
 }
