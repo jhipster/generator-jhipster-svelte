@@ -9,7 +9,7 @@
 		"@testing-library/jest-dom": "6.4.2",
 		"@testing-library/svelte": "4.1.0",
 		"autoprefixer": "10.4.19",
-		"cypress": "13.6.4",
+		"cypress": "13.5.1",
 		"esbuild": "0.20.2",
 		"eslint": "8.57.0",
 		"eslint-plugin-cypress": "2.15.1",

@@ -24,8 +24,8 @@ Cypress.Commands.add('getByName', selector => {
 })
 <%_ if (authenticationType === 'session') { _%>
 Cypress.Commands.add('loginByApi', (username, password) => {
-//	cy.session([username],
-//		() => {
+	cy.session([username],
+		() => {
 			cy.request({ url: `api/authenticate` })
 				.then(res => {
 					expect(res.status).to.eq(200)
@@ -53,19 +53,19 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 				.then(res => {
 					expect(res.status).to.eq(200)
 				})
-//		},
-//		{
-//			validate() {
-//				cy.request({ url: `api/account`,  failOnStatusCode: false }).its('status').should('eq', 200)
-//			},
-//			cacheAcrossSpecs: true,
-//		}
-//	)
+		},
+		{
+			validate() {
+				cy.request({ url: `api/account`,  failOnStatusCode: false }).its('status').should('eq', 200)
+			},
+			cacheAcrossSpecs: true,
+		}
+	)
 })
 <%_ } else if (authenticationType === 'jwt') { _%>
 Cypress.Commands.add('loginByApi', (username, password) => {
-//	cy.session([username],
-//		() => {
+	cy.session([username],
+		() => {
 			cy.request({
 					method: 'POST',
 					url: `api/authenticate`,
@@ -88,24 +88,24 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 			.then(res => {
 				expect(res.status).to.eq(200)
 			})
-//		},
-//		{
-//			validate() {
-//				cy.request({
-//					url: `api/account`,
-//					failOnStatusCode: false,
-//					headers: {
-//						Authorization: `Bearer ${localStorage.getItem(
-//							'authToken'
-//						)}`,
-//					},
-//				})
-//					.its('status')
-//					.should('eq', 200)
-//			},
-//			// cacheAcrossSpecs: true,
-//		}
-//	)
+		},
+		{
+			validate() {
+				cy.request({
+					url: `api/account`,
+					failOnStatusCode: false,
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem(
+							'authToken'
+						)}`,
+					},
+				})
+					.its('status')
+					.should('eq', 200)
+			},
+			cacheAcrossSpecs: true,
+		}
+	)
 })
 
 Cypress.Commands.add('save', (url, body, status = 201) => {
@@ -156,9 +156,9 @@ Cypress.Commands.add('getById', (url, status = 200) => {
 <%_ } else { _%>
 
 Cypress.Commands.add('loginByApi', (username, password) => {
-//	cy.session(
-//		[username],
-//		() => {
+	cy.session(
+		[username],
+		() => {
 			cy.request({
 				url: '/oauth2/authorization/oidc',
 				followRedirect: false,
@@ -177,16 +177,16 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 						keycloakLogin(username, password)
 					}
 				})
-//		},
-//		{
-//			validate() {
-//				cy.request({ url: `api/account`, failOnStatusCode: false })
-//					.its('status')
-//					.should('eq', 200)
-//			},
-//			cacheAcrossSpecs: true,
-//		}
-//	)
+		},
+		{
+			validate() {
+				cy.request({ url: `api/account`, failOnStatusCode: false })
+					.its('status')
+					.should('eq', 200)
+			},
+			cacheAcrossSpecs: true,
+		}
+	)
 })
 
 function auth0Login(origin, username, password) {
@@ -271,30 +271,30 @@ function oktaLogin(authorizeUrl, origin, username, password) {
 }
 
 Cypress.Commands.add('logoutByApi', () => {
-	cy.getCookie('XSRF-TOKEN')
-	 	.then(csrfCookie => {
-	 		return cy.location().then(loc$ => {
-	 			return cy.request({
-	 				method: 'POST',
-	 				url: `api/logout`,
-	 				headers: {
-	 					'X-XSRF-TOKEN': csrfCookie.value,
-	 					origin: loc$.origin,
-	 				},
-	 			})
-	 		})
-	 	})
-	 	.then(res => {
-	 		expect(res.status).to.eq(200)
-	 		return cy.request({
-	 			url: res.body.logoutUrl,
-	 			followRedirect: true,
-	 		})
-	 	})
-	 	.then(res => {
-	 		expect(res.status).to.eq(200)
-	 		cy.visit('/')
-	 	})
+//	cy.getCookie('XSRF-TOKEN')
+//	 	.then(csrfCookie => {
+//	 		return cy.location().then(loc$ => {
+//	 			return cy.request({
+//	 				method: 'POST',
+//	 				url: `api/logout`,
+//	 				headers: {
+//	 					'X-XSRF-TOKEN': csrfCookie.value,
+//	 					origin: loc$.origin,
+//	 				},
+//	 			})
+//	 		})
+//	 	})
+//	 	.then(res => {
+//	 		expect(res.status).to.eq(200)
+//	 		return cy.request({
+//	 			url: res.body.logoutUrl,
+//	 			followRedirect: true,
+//	 		})
+//	 	})
+//	 	.then(res => {
+//	 		expect(res.status).to.eq(200)
+//	 		cy.visit('/')
+//	 	})
 })
 <%_ }
 	if (authenticationType === 'session' || authenticationType === 'oauth2') { _%>
