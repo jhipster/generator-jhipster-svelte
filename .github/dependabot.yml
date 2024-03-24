@@ -7,22 +7,35 @@ updates:
       open-pull-requests-limit: 10
 
     - package-ecosystem: 'npm'
-      directory: '/generators/client/templates/svelte/'
+      directory: '/generators/client/templates/'
       schedule:
           interval: 'daily'
       open-pull-requests-limit: 10
       versioning-strategy: increase
 
     - package-ecosystem: 'npm'
-      directory: '/generators/client/templates/svelte/swagger/'
+      directory: '/generators/client/templates/swagger/'
       schedule:
           interval: 'daily'
       open-pull-requests-limit: 10
       versioning-strategy: increase
 
     - package-ecosystem: 'npm'
-      directory: '/generators/client/templates/svelte/java-prettier/'
+      directory: '/generators/client/templates/java-prettier/'
       schedule:
           interval: 'daily'
       open-pull-requests-limit: 10
       versioning-strategy: increase
+    - package-ecosystem: 'npm'
+      directory: '/generators/client/templates/jest/'
+      schedule:
+          interval: 'daily'
+      open-pull-requests-limit: 10
+      versioning-strategy: increase
+    - package-ecosystem: 'npm'
+      directory: '/generators/client/templates/vitest/'
+      schedule:
+          interval: 'daily'
+      open-pull-requests-limit: 10
+      versioning-strategy: increase
+
