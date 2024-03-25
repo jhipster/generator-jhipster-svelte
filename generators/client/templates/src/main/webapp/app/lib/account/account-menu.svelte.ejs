@@ -37,7 +37,7 @@
 			.then(res => {
 				auth.logout()
 				if (browser) {
-					goto(res.logoutUrl)
+					window.location.href = res.logoutUrl
 				}
 			})
 			.catch()
