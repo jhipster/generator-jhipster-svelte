@@ -5,7 +5,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "3.0.1",
-		"@sveltejs/kit": "2.5.4",
+		"@sveltejs/kit": "2.5.5",
 		"@testing-library/jest-dom": "6.4.2",
 		"@testing-library/svelte": "4.1.0",
 		"autoprefixer": "10.4.19",
