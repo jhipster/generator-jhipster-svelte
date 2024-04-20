@@ -1,0 +1,359 @@
+import { render, screen } from '@testing-library/svelte'
+import userEvent from '@testing-library/user-event'
+
+import UserForm from './user-form.svelte'
+
+test('should render an empty user form to create a new user account', () => {
+	render(UserForm, {
+		authorities: [{ name: 'ROLE_USER' }, { name: 'ROLE_ADMIN' }],
+	})
+
+	expect(screen.getByRole('textbox', { name: /username/i })).toHaveValue('')
+	expect(screen.getByRole('textbox', { name: /first name/i })).toHaveValue('')
+	expect(screen.getByRole('textbox', { name: /last name/i })).toHaveValue('')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue('')
+
+	expect(screen.getByRole('checkbox', { name: /activate/i })).toBeChecked()
+
+	expect(screen.getByRole('textbox', { name: /roles/i })).toHaveValue('')
+	expect(screen.getByRole('checkbox', { name: /role_user/i })).not.toBeChecked()
+	expect(screen.getByRole('checkbox', { name: /role_admin/i })).not.toBeChecked()
+
+	expect(screen.getByRole('button', { name: /cancel/i })).toBeEnabled()
+	expect(screen.getByRole('button', { name: /create user account/i })).toBeDisabled()
+})
+
+test('should validate default empty form element focus', async () => {
+	const user = userEvent.setup()
+	render(UserForm, {
+		authorities: [{ name: 'ROLE_USER' }, { name: 'ROLE_ADMIN' }],
+	})
+
+	const usernameInput = screen.getByRole('textbox', { name: /username/i })
+	const firstNameInput = screen.getByRole('textbox', { name: /first name/i })
+	const lastNameInput = screen.getByRole('textbox', { name: /last name/i })
+	const emailInput = screen.getByRole('textbox', { name: /email/i })
+	const activateInput = screen.getByRole('checkbox', { name: /activate/i })
+	const rolesInput = screen.getByRole('textbox', { name: /roles/i })
+	const roleUserInput = screen.getByRole('checkbox', { name: /role_user/i })
+	const roleAdminInput = screen.getByRole('checkbox', { name: /role_admin/i })
+	const cancelBtn = screen.getByRole('button', { name: /cancel/i })
+	const createBtn = screen.getByRole('button', { name: /create user account/i })
+
+	expect(document.body).toHaveFocus()
+	await user.tab()
+	expect(usernameInput).toHaveFocus()
+
+	await user.tab()
+	expect(firstNameInput).toHaveFocus()
+
+	await user.tab()
+	expect(lastNameInput).toHaveFocus()
+
+	await user.tab()
+	expect(emailInput).toHaveFocus()
+
+	await user.tab()
+	expect(activateInput).toHaveFocus()
+
+	await user.tab()
+	expect(rolesInput).toHaveFocus()
+
+	await user.tab()
+	expect(cancelBtn).toHaveFocus()
+
+	await user.tab()
+	expect(document.body).toHaveFocus()
+})
+
+test('should validate filled form element focus', async () => {
+	const user = userEvent.setup()
+	render(UserForm, {
+		authorities: [{ name: 'ROLE_USER' }, { name: 'ROLE_ADMIN' }],
+	})
+
+	const usernameInput = screen.getByRole('textbox', { name: /username/i })
+	const firstNameInput = screen.getByRole('textbox', { name: /first name/i })
+	const lastNameInput = screen.getByRole('textbox', { name: /last name/i })
+	const emailInput = screen.getByRole('textbox', { name: /email/i })
+	const activateInput = screen.getByRole('checkbox', { name: /activate/i })
+	const rolesInput = screen.getByRole('textbox', { name: /roles/i })
+	const roleUserInput = screen.getByRole('checkbox', { name: /role_user/i })
+	const roleAdminInput = screen.getByRole('checkbox', { name: /role_admin/i })
+	const cancelBtn = screen.getByRole('button', { name: /cancel/i })
+	const createBtn = screen.getByRole('button', { name: /create user account/i })
+
+	expect(document.body).toHaveFocus()
+
+	await user.tab()
+	expect(usernameInput).toHaveFocus()
+	await user.type(usernameInput, 'testB')
+
+	await user.tab()
+	expect(firstNameInput).toHaveFocus()
+	await user.type(firstNameInput, 'fname')
+
+	await user.tab()
+	expect(lastNameInput).toHaveFocus()
+	await user.type(lastNameInput, 'lname')
+
+	await user.tab()
+	expect(emailInput).toHaveFocus()
+	await user.type(emailInput, 'a@a.com')
+
+	await user.tab()
+	expect(activateInput).toHaveFocus()
+	await user.click(activateInput)
+
+	await user.tab()
+	expect(rolesInput).toHaveFocus()
+	await user.click(roleUserInput)
+	await user.type(rolesInput, '{esc}')
+	expect(rolesInput).toHaveValue('ROLE_USER')
+
+	await user.tab()
+	expect(cancelBtn).toHaveFocus()
+
+	// await user.tab()
+	// expect(createBtn).toHaveFocus()
+
+	await user.tab()
+	expect(document.body).toHaveFocus()
+})
+
+test('should render populated user form to update an existing user account', () => {
+	render(UserForm, {
+		user: {
+			id: 11,
+			login: 'testA',
+			firstName: 'Fname',
+			lastName: 'Lname',
+			email: 'testa@localhost.org',
+			activated: false,
+			authorities: ['ROLE_ADMIN'],
+		},
+		authorities: [{ name: 'ROLE_USER' }, { name: 'ROLE_ADMIN' }],
+	})
+
+	expect(screen.getByRole('textbox', { name: /username/i })).toHaveValue('testA')
+	expect(screen.getByRole('textbox', { name: /first name/i })).toHaveValue('Fname')
+	expect(screen.getByRole('textbox', { name: /last name/i })).toHaveValue('Lname')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue('testa@localhost.org')
+
+	expect(screen.getByRole('checkbox', { name: /activate/i })).not.toBeChecked()
+
+	expect(screen.getByRole('textbox', { name: /roles/i })).toHaveValue('ROLE_ADMIN')
+	expect(screen.getByRole('checkbox', { name: /role_user/i })).not.toBeChecked()
+	expect(screen.getByRole('checkbox', { name: /role_admin/i })).toBeChecked()
+
+	expect(screen.getByRole('button', { name: /cancel/i })).toBeEnabled()
+	expect(screen.getByRole('button', { name: /update user account/i })).toBeDisabled()
+})
+
+describe('username validations', () => {
+	test('should display username mandatory validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const usernameInput = screen.getByRole('textbox', { name: /username/i })
+		expect(usernameInput).toHaveValue('')
+
+		await user.type(usernameInput, 'testB{esc}')
+		expect(usernameInput).toHaveValue('testB')
+
+		await user.clear(usernameInput)
+		expect(usernameInput).toHaveValue('')
+
+		expect(await screen.findByText('Username is mandatory')).toBeVisible()
+	})
+
+	test('should display username maximum length validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const usernameInput = screen.getByRole('textbox', { name: /username/i })
+
+		await user.type(
+			usernameInput,
+			'loremipsumloremipsumloremipsumloremipsumloremipsumlorem{esc}',
+		)
+		expect(usernameInput).toHaveValue('loremipsumloremipsumloremipsumloremipsumloremipsumlorem')
+
+		expect(
+			await screen.findByText('Username cannot be longer than 50 characters'),
+		).toBeVisible()
+	})
+
+	test('should display invalid characters validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const usernameInput = screen.getByRole('textbox', { name: /username/i })
+
+		await user.type(usernameInput, 'invalid$#{esc}')
+		expect(usernameInput).toHaveValue('invalid$#')
+
+		expect(
+			await screen.findByText('Username can only contain letters and digits'),
+		).toBeVisible()
+	})
+})
+
+describe('first name validations', () => {
+	test('should allow empty first name field', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const firstNameInput = screen.getByRole('textbox', { name: /first name/i })
+		expect(firstNameInput).toHaveValue('')
+
+		await user.type(firstNameInput, 'fname{esc}')
+		expect(firstNameInput).toHaveValue('fname')
+
+		await user.clear(firstNameInput)
+		expect(firstNameInput).toHaveValue('')
+
+		expect(screen.queryByText('First name is mandatory')).not.toBeInTheDocument()
+	})
+
+	test('should display first name maximum length validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const firstNameInput = screen.getByRole('textbox', { name: /first name/i })
+		expect(firstNameInput).toHaveValue('')
+
+		await user.type(
+			firstNameInput,
+			'loremipsumloremipsumloremipsumloremipsumloremipsumlorem{esc}',
+		)
+		expect(firstNameInput).toHaveValue(
+			'loremipsumloremipsumloremipsumloremipsumloremipsumlorem',
+		)
+
+		expect(
+			await screen.findByText('First name cannot be longer than 50 characters'),
+		).toBeVisible()
+	})
+})
+
+describe('Last name validations', () => {
+	test('should allow empty last name field', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const lastNameInput = screen.getByRole('textbox', { name: /last name/i })
+		expect(lastNameInput).toHaveValue('')
+
+		await user.type(lastNameInput, 'lname{esc}')
+		expect(lastNameInput).toHaveValue('lname')
+
+		await user.clear(lastNameInput)
+		expect(lastNameInput).toHaveValue('')
+
+		expect(screen.queryByText('Last name is mandatory')).not.toBeInTheDocument()
+	})
+
+	test('should display last name maximum length validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const lastNameInput = screen.getByRole('textbox', { name: /last name/i })
+		expect(lastNameInput).toHaveValue('')
+
+		await user.type(
+			lastNameInput,
+			'loremipsumloremipsumloremipsumloremipsumloremipsumlorem{esc}',
+		)
+		expect(lastNameInput).toHaveValue('loremipsumloremipsumloremipsumloremipsumloremipsumlorem')
+
+		expect(
+			await screen.findByText('Last name cannot be longer than 50 characters'),
+		).toBeVisible()
+	})
+})
+
+describe('email validations', () => {
+	test('should display email mandatory validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const emailInput = screen.getByRole('textbox', { name: /email/i })
+		expect(emailInput).toHaveValue('')
+
+		await user.type(emailInput, 'test@localhost.org{esc}')
+		expect(emailInput).toHaveValue('test@localhost.org')
+
+		await user.clear(emailInput)
+		expect(await screen.findByText('Email is mandatory')).toBeVisible()
+	})
+
+	test('should display email minimum length validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const emailInput = screen.getByRole('textbox', { name: /email/i })
+		await user.type(emailInput, 'a@a{esc}')
+
+		expect(
+			await screen.findByText('Email is required to be at least 5 characters'),
+		).toBeVisible()
+	})
+
+	test('should display email maximum length validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const emailInput = screen.getByRole('textbox', { name: /email/i })
+		await user.type(
+			emailInput,
+			'loremipsumloremipsumloremipsumloremipsumloremipsumloremloremipsumloremipsumloremipsumloremipsumloremipsumloremloremipsumloremipsumloremipsumloremipsumloremipsumloreloremipsumloremipsumloremipsumloremipsumloremipsumloreloremipsumloremipsumloremipsumloremipsumloremipsumloremmm{esc}',
+		)
+
+		expect(await screen.findByText('Email cannot be longer than 254 characters')).toBeVisible()
+	})
+
+	test('should display invalid characters validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {})
+
+		const emailInput = screen.getByRole('textbox', { name: /email/i })
+		await user.type(emailInput, 'invalid{esc}')
+
+		expect(await screen.findByText('Email address is not valid')).toBeVisible()
+	})
+})
+
+describe('Roles validations', () => {
+	test('should allow role selection', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {
+			authorities: [{ name: 'ROLE_USER' }, { name: 'ROLE_ADMIN' }],
+		})
+
+		const rolesInput = screen.getByRole('textbox', { name: /roles/i })
+		expect(rolesInput).toHaveValue('')
+
+		const roleUserInput = screen.getByRole('checkbox', { name: /role_user/i })
+		await user.click(roleUserInput)
+		expect(roleUserInput).toBeChecked()
+		expect(rolesInput).toHaveValue('ROLE_USER')
+	})
+
+	test('should display roles mandatory validation message', async () => {
+		const user = userEvent.setup()
+		render(UserForm, {
+			authorities: [{ name: 'ROLE_USER' }, { name: 'ROLE_ADMIN' }],
+		})
+
+		const rolesInput = screen.getByRole('textbox', { name: /roles/i })
+		const roleUserInput = screen.getByRole('checkbox', { name: /role_user/i })
+		await user.click(roleUserInput)
+		await user.click(roleUserInput)
+		// await user.type(rolesInput, '{esc}')
+		// await user.tab()
+
+		// expect(await screen.findByText('Select at least one role')).toBeVisible()
+	})
+})
+
