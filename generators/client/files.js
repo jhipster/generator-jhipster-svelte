@@ -239,6 +239,7 @@ const svelteFiles = {
 				'account/reset-password-form.svelte',
 				'account/user-settings-form.svelte',
 				'admin/user-management/user-form.svelte',
+				'admin/user-management/user-form.spec.js',
 				'admin/user-management/user-list-actions.spec.js',
 				'admin/user-management/user-list-actions.svelte',
 				'admin/user-management/user-table.spec.js',
