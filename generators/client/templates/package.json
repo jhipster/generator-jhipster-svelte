@@ -11,7 +11,7 @@
 		"@testing-library/user-event": "14.5.2",
 		"autoprefixer": "10.4.19",
 		"cypress": "13.5.1",
-		"esbuild": "0.20.2",
+		"esbuild": "0.21.0",
 		"eslint": "8.57.0",
 		"eslint-plugin-cypress": "3.0.3",
 		"eslint-plugin-jest-dom": "5.4.0",
