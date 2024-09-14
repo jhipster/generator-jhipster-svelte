@@ -159,10 +159,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                apps: [
-                        'monolithic-session-gradle.json',
-                        'monolithic-jwt-gradle.json',
-                    ]
+                apps: ['monolithic-session-gradle.json', 'monolithic-jwt-gradle.json']
                 os: [ubuntu-latest]
                 node_version: [20.x]
         steps:
