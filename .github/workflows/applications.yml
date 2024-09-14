@@ -24,7 +24,7 @@ jobs:
                   mkdir -p svelte-artifacts/images
                   docker save jhipster/jhipster-svelte:$GITHUB_SHA > svelte-artifacts/images/svelte-image.tar
             - name: Save Svelte Docker image
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: docker-artifact
                   path: svelte-artifacts/images
@@ -55,11 +55,11 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node_version }}
             - name: Gradle - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'gradle')
               with:
                   path: |
@@ -67,20 +67,20 @@ jobs:
                       ~/.gradle/wrapper
                   key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
                   key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   path: |
                       ~/.cache/Cypress/13.5.x
                       ~/.cache/Cypress/cy
                   key: ${{ runner.os }}-cypress-13.5.x
             - name: Retrieve saved Svelte Docker Image
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v4
               with:
                   name: docker-artifact
                   path: svelte-artifacts/images
@@ -159,10 +159,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                apps: [
-                        'monolithic-session-gradle.json',
-                        'monolithic-jwt-gradle.json',
-                    ]
+                apps: ['monolithic-session-gradle.json', 'monolithic-jwt-gradle.json']
                 os: [ubuntu-latest]
                 node_version: [20.x]
         steps:
@@ -173,7 +170,7 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install google-chrome-stable -y
                   sudo apt-get install xvfb
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node_version }}
             - uses: actions/setup-java@v4
@@ -181,7 +178,7 @@ jobs:
                   distribution: 'temurin'
                   java-version: '21'
             - name: Gradle - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'gradle')
               with:
                   path: |
@@ -189,13 +186,13 @@ jobs:
                       ~/.gradle/wrapper
                   key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
                   key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   path: |
                       ~/.cache/Cypress/13.5.x
@@ -293,11 +290,11 @@ jobs:
               with:
                   distribution: 'temurin'
                   java-version: '21'
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node_version }}
             - name: Gradle - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'gradle')
               with:
                   path: |
@@ -305,20 +302,20 @@ jobs:
                       ~/.gradle/wrapper
                   key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
                   key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   path: |
                       ~/.cache/Cypress/13.5.x
                       ~/.cache/Cypress/cy
                   key: ${{ runner.os }}-cypress-13.5.x
             - name: Retrieve saved Svelte Docker Image
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v4
               with:
                   name: docker-artifact
                   path: svelte-artifacts/images
@@ -425,11 +422,11 @@ jobs:
               with:
                   distribution: 'temurin'
                   java-version: '21'
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node_version }}
             - name: Gradle - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'gradle')
               with:
                   path: |
@@ -437,20 +434,20 @@ jobs:
                       ~/.gradle/wrapper
                   key: ${{ runner.os }}-gradle-8.0.0
             - name: Maven - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
                   key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   path: |
                       ~/.cache/Cypress/13.5.x
                       ~/.cache/Cypress/cy
                   key: ${{ runner.os }}-cypress-13.5.x
             - name: Retrieve saved Svelte Docker Image
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v4
               with:
                   name: docker-artifact
                   path: svelte-artifacts/images
@@ -585,24 +582,24 @@ jobs:
               with:
                   distribution: 'temurin'
                   java-version: '21'
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node_version }}
             - name: Maven - Configure cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               if: contains(matrix.apps, 'maven')
               with:
                   path: ~/.m2/repository
                   key: ${{ runner.os }}-maven-8.0.0
             - name: Configure cypress cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   path: |
                       ~/.cache/Cypress/13.5.x
                       ~/.cache/Cypress/cy
                   key: ${{ runner.os }}-cypress-13.5.x
             - name: Retrieve saved Svelte Docker Image
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v4
               with:
                   name: docker-artifact
                   path: svelte-artifacts/images

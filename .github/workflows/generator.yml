@@ -20,7 +20,7 @@ jobs:
                 os: [ubuntu-latest]
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node_version }}
             - run: npm ci
@@ -33,19 +33,19 @@ jobs:
         steps:
             - name: Checkout JHipster Svelte generator repository
               uses: actions/checkout@v4
-            - uses: docker/metadata-action@v3
+            - uses: docker/metadata-action@v5
               id: meta
               with:
                   images: jhipster/jhipster-svelte
                   tags: |
                       type=ref,event=branch
             - name: Login to DockerHub
-              uses: docker/login-action@v1
+              uses: docker/login-action@v3
               with:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
             - name: Build and push JHipster Svelte main branch image
-              uses: docker/build-push-action@v2
+              uses: docker/build-push-action@v5
               with:
                   context: .
                   push: true
