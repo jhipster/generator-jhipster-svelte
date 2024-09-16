@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* eslint-disable import/no-unresolved */
 import CommonGenerator from 'generator-jhipster/generators/common';
 import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
 

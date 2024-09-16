@@ -9,12 +9,11 @@ const svelteFiles = {
 	base: [
 		{
 			templates: [
-				'.eslintignore',
-				'.eslintrc.json',
 				'.npmrc',
-				'cypress.config.cjs',
 				'.gitignore.jhi.svelte',
 				'.prettierignore.jhi.svelte',
+				'cypress.config.cjs',
+				'eslint.config.js',
 				'README.md.jhi.svelte',
 				{
 					file: 'package-template.json',

@@ -1,0 +1,61 @@
+import svelte from "eslint-plugin-svelte";
+import cypress from "eslint-plugin-cypress";
+import jestDom from "eslint-plugin-jest-dom";
+import globals from "globals";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import js from "@eslint/js";
+import { FlatCompat } from "@eslint/eslintrc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({
+    baseDirectory: __dirname,
+    recommendedConfig: js.configs.recommended,
+    allConfig: js.configs.all
+});
+
+export default [{
+    ignores: [
+        "**/node_modules/",
+        "src/main/docker/",
+        "**/target/",
+        "**/build/",
+        "**/node/",
+        "**/pnpm-lock.yaml",
+        "**/package-lock.json",
+        "**/yarn.lock",
+    ],
+}, ...compat.extends(
+    "eslint:recommended",
+    "plugin:svelte/recommended",
+    "plugin:cypress/recommended",
+    "plugin:jest-dom/recommended",
+), {
+    plugins: {
+        svelte,
+        cypress,
+        "jest-dom": jestDom,
+    },
+
+    languageOptions: {
+        globals: {
+            ...globals.browser,
+            ...globals.node,
+            ...cypress.environments.globals.globals,
+		<%_ if (this.blueprintConfig.jest) { _%>
+		"jest": true,
+		<%_ } else { _%>
+            vi: true,
+		<%_ } _%>
+        },
+
+        ecmaVersion: 2020,
+        sourceType: "module",
+    },
+
+    rules: {
+        "no-unused-vars": "off",
+    },
+}];
+

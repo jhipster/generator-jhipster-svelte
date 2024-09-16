@@ -6,9 +6,7 @@ const { version } = require('../package.json');
 const packagePath = dirname(__dirname);
 
 (async () => {
-	/* eslint-disable import/no-unresolved */
 	const { runJHipster, done, logger } = await import('generator-jhipster/cli');
-	/* eslint-disable import/extensions */
 	const { getLogo } = await import('./logo.js');
 	const blueprint = 'jsvelte';
 	runJHipster({
@@ -21,7 +19,6 @@ const packagePath = dirname(__dirname);
 		},
 		printBlueprintLogo: () => {},
 		printLogo: () => {
-			/* eslint-disable no-console */
 			console.log(getLogo());
 		},
 		lookups: [{ packagePaths: [packagePath], lookups: ['generators'] }],

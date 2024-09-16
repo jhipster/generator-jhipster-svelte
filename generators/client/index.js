@@ -1,8 +1,3 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable no-param-reassign */
-/* eslint-disable import/extensions */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-shadow */
 import { lt } from 'semver';
 
 import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
@@ -211,6 +206,10 @@ export default class extends ClientGenerator {
 						);
 					}
 				}
+				if (oldSvelteBlueprintVersion && lt(oldSvelteBlueprintVersion, '1.2.0')) {
+					this.removeFile(`.eslintrc.json`);
+					this.removeFile(`.eslintignore`);
+				}
 			},
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
@@ -254,8 +253,6 @@ export default class extends ClientGenerator {
 			},
 			async writeEntityFiles({ application, entities }) {
 				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
-					/* eslint-disable no-await-in-loop */
-					/* eslint-disable no-undef */
 					await this.writeFiles({
 						sections: entitySvelteFiles,
 						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest },

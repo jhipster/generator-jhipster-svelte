@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import DockerGenerator from 'generator-jhipster/generators/docker';
 import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
 
