@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
 import LanguagesGenerator from 'generator-jhipster/generators/languages';
 

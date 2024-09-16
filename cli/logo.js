@@ -1,8 +1,6 @@
 import chalk from 'chalk';
-/* eslint-disable import/extensions */
 import { getPackageJson } from '../generators/util.js';
 
-/* eslint-disable import/prefer-default-export */
 export const getLogo = () => `
    ${chalk.cyan('      .d88888b.                     .d88888b.')}
    ${chalk.cyan('    d888888888888b.             .d888888888888d')}

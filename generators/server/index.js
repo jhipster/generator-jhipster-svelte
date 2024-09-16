@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import ServerGenerator from 'generator-jhipster/generators/server';
 import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
 
