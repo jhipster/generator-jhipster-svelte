@@ -43,16 +43,15 @@ export default [{
             ...globals.browser,
             ...globals.node,
             ...cypress.environments.globals.globals,
-		<%_ if (!this.blueprintConfig.jest) { _%>
+		<%_ if (this.blueprintConfig.jest) { _%>
+		"jest": true,
+		<%_ } else { _%>
             vi: true,
 		<%_ } _%>
         },
 
         ecmaVersion: 2020,
         sourceType: "module",
-		<%_ if (this.blueprintConfig.jest) { _%>
-		"jest": true,
-		<%_ } _%>
     },
 
     rules: {

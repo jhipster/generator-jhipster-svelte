@@ -206,6 +206,10 @@ export default class extends ClientGenerator {
 						);
 					}
 				}
+				if (oldSvelteBlueprintVersion && lt(oldSvelteBlueprintVersion, '1.2.0')) {
+					this.removeFile(`.eslintrc.json`);
+					this.removeFile(`.eslintignore`);
+				}
 			},
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
