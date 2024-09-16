@@ -33,26 +33,8 @@ const commonFiles = {
 			templates: ['.editorconfig', '.gitignore', 'README.md', 'sonar-project.properties'],
 		},
 	],
-	// serverFiles: [
-	// 	{
-	// 		condition: generator => !generator.skipServer,
-	// 		templates: ['src/main/resources/banner.txt'],
-	// 	},
-	// ],
-	commitHooks: [
-		{
-			condition: generator => !generator.skipCommitHook,
-			templates: [
-				'.lintstagedrc.json',
-				{
-					file: 'pre-commit',
-					renameTo: () => '.husky/pre-commit',
-					method: 'copy',
-				},
-			],
-		},
-	],
 };
+
 const sharedFiles = {
 	global: [
 		{
