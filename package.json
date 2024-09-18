@@ -59,7 +59,7 @@
 		"husky": "9.1.6",
 		"lint-staged": "15.2.10",
 		"yeoman-assert": "3.1.1",
-		"yeoman-test": "8.2.0"
+		"yeoman-test": "9.1.0"
 	},
 	"engines": {
 		"node": ">= 20.11.0"
