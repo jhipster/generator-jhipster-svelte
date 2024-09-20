@@ -6,7 +6,7 @@
 	"devDependencies": {
 		"@eslint/js": "9.10.0",
 		"@sveltejs/adapter-static": "3.0.5",
-		"@sveltejs/kit": "2.5.27",
+		"@sveltejs/kit": "2.5.28",
 		"@testing-library/jest-dom": "6.5.0",
 		"@testing-library/svelte": "5.2.1",
 		"@testing-library/user-event": "14.5.2",
