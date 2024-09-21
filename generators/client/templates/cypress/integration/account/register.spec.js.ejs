@@ -96,7 +96,7 @@ describe('Register User', () => {
 		})
 	})
 
-	it.skip('should not allow user account creation with duplicate username', () => {
+	it('should not allow user account creation with duplicate username', () => {
 		cy.getByTestId('registerForm').within(() => {
 			cy.getByName('username')
 				.type('admin')
