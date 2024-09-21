@@ -1,5 +1,6 @@
 import ServerGenerator from 'generator-jhipster/generators/server';
 import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
+export { default as command } from './command.js';
 
 export default class extends ServerGenerator {
 	constructor(args, opts, features) {

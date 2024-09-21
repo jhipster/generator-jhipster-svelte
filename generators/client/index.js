@@ -6,7 +6,6 @@ import { TEMPLATES_WEBAPP_SOURCES_DIR } from 'generator-jhipster';
 import { getEnumInfo } from 'generator-jhipster/generators/base-application/support';
 import { createNeedleCallback } from 'generator-jhipster/generators/base/support';
 import { getPackageJson } from '../util.js';
-import blueprintCommand from './command.js';
 import svelteFiles from './files.js';
 import entitySvelteFiles from './entity-files.js';
 
@@ -29,10 +28,8 @@ export default class extends ClientGenerator {
 
 	get [BaseApplicationGenerator.INITIALIZING]() {
 		return this.asInitializingTaskGroup({
-			...super.initializing,
-			async initializingTemplateTask() {
-				this.parseJHipsterArguments(blueprintCommand.arguments);
-				this.parseJHipsterOptions(blueprintCommand.options);
+			async parseCommand() {
+				await this.parseCurrentJHipsterCommand();
 			},
 		});
 	}
