@@ -18,6 +18,7 @@
  */
 import CommonGenerator from 'generator-jhipster/generators/common';
 import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
+export { default as command } from './command.js';
 
 export default class extends CommonGenerator {
 	constructor(args, opts, features) {
