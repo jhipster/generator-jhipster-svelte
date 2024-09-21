@@ -42,10 +42,10 @@
 	},
 	"dependencies": {
 		"chalk": "5.3.0",
-		"generator-jhipster": "8.2.1",
-		"prettier": "3.2.5",
-		"prettier-plugin-organize-imports": "3.2.4",
-		"prettier-plugin-svelte": "3.2.3",
+		"generator-jhipster": "8.7.0",
+		"prettier": "3.3.3",
+		"prettier-plugin-organize-imports": "4.1.0",
+		"prettier-plugin-svelte": "3.2.6",
 		"semver": "7.6.3"
 	},
 	"devDependencies": {
@@ -59,7 +59,7 @@
 		"husky": "9.1.6",
 		"lint-staged": "15.2.10",
 		"yeoman-assert": "3.1.1",
-		"yeoman-test": "8.2.0"
+		"yeoman-test": "8.3.0"
 	},
 	"engines": {
 		"node": ">= 20.11.0"
