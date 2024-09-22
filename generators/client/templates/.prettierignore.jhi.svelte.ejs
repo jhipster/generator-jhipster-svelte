@@ -12,18 +12,18 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -%>
- <&_ if (!fragment.section) { -&>
- ######################
- # Cypress
- ######################
- /cypress/screenshots/
- /cypress/fixtures/example.json
- /cypress/downloads
- /cypress/videos
+<&_ if (!fragment.section) { -&>
+######################
+# Cypress
+######################
+/cypress/screenshots/
+/cypress/fixtures/example.json
+/cypress/downloads
+/cypress/videos
 
- ######################
- # SvelteKit
- ######################
- vite.config.js.timestamp-*
- vite.config.ts.timestamp-*
- <&_ } -&>
+######################
+# SvelteKit
+######################
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+<&_ } -&>

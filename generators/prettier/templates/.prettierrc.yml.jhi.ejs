@@ -1,0 +1,23 @@
+printWidth: 100
+tabWidth: <%= prettierTabWidth %>
+useTabs: true
+<%_ if (!skipClient) { _%>
+semi: false
+singleQuote: true
+arrowParens: "avoid"
+svelteSortOrder: "options-scripts-styles-markup"
+svelteStrictMode: true
+<%_ } _%>
+plugins:
+<%_
+	if (!skipClient) { _%>
+_%>
+    - prettier-plugin-organize-imports
+    - prettier-plugin-packagejson
+    - prettier-plugin-svelte
+<%_ } _%>
+overrides:
+    - files: "src/test/resources/**/*.html"
+      options:
+        printWidth: 140
+<&- fragments.render({ join: '\n\n' }) &>
