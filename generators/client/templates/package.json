@@ -4,7 +4,7 @@
 		"@fortawesome/free-solid-svg-icons": "6.6.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.10.0",
+		"@eslint/js": "9.11.0",
 		"@sveltejs/adapter-static": "3.0.5",
 		"@sveltejs/kit": "2.5.28",
 		"@testing-library/jest-dom": "6.5.0",
