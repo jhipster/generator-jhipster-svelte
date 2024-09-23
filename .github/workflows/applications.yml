@@ -553,7 +553,7 @@ jobs:
                   docker compose up -d
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   cd "$HOME/svelte-ms/gateway"
-                  # npm run e2e:ci
+                  npm run e2e:ci
     lighthouse-job:
         needs: svelte-image
         name: ${{ matrix.apps }}
