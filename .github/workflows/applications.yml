@@ -138,7 +138,7 @@ jobs:
               if: contains(matrix.apps , 'maven')
               run: |
                   cd "$HOME/svelte-app"
-                  docker run --rm -v $PWD:/app -v $HOME/.m2:/home/jsvelte/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/jhipster-svelte:$GITHUB_SHA -DskipTests
+                  docker run -d --rm -v $PWD:/app -v $HOME/.m2:/home/jsvelte/.m2 -p8080:8080 --entrypoint ./mvnw jhipster/jhipster-svelte:$GITHUB_SHA -DskipTests -Dspring-boot.run.jvmArguments="-Dspring.docker.compose.enabled=false"
                   timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/authenticate)" != "200" ]]; do sleep 5; done' || false
                   npm run e2e:ci
             - name: Gradle Cypress tests
