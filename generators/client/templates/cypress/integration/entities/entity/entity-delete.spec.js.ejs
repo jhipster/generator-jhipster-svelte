@@ -70,7 +70,7 @@ _%>)
 					.get('td:nth-child(1)')
 					.eq(index)
 					.parent().within($tr => {
-						cy.root().trigger('mouseenter')
+						cy.root().trigger('mouseenter', { force: true })
 						cy.root().get('td').children().getByName('deleteBtn').click()
 					})
 			}
