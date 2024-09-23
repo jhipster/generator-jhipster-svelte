@@ -16,59 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import CommonGenerator from 'generator-jhipster/generators/common';
+import PrettierGenerator from 'generator-jhipster/generators/javascript/generators/prettier';
 import BaseApplicationGenerator from 'generator-jhipster/generators/base-application';
 export { default as command } from './command.js';
 
-export default class extends CommonGenerator {
+export default class extends PrettierGenerator {
 	constructor(args, opts, features) {
 		super(args, opts, { ...features });
 	}
 
-	async beforeQueue() {
-		await this.dependsOnJHipster('bootstrap-application');
-		await this.dependsOnJHipster('git');
-	}
-
-	get [BaseApplicationGenerator.CONFIGURING]() {
-		return this.asConfiguringTaskGroup({
-			...super.configuring,
-		});
-	}
-
-	get [BaseApplicationGenerator.CONFIGURING_EACH_ENTITY]() {
-		return this.asConfiguringEachEntityTaskGroup({
-			...super.configuringEachEntity,
-		});
-	}
-
-	get [BaseApplicationGenerator.COMPOSING]() {
-		return this.asComposingTaskGroup({
-			async composing() {
-				await this.composeWith('jhipster-svelte:prettier');
-				if (!this.jhipsterConfig.skipCommitHook) {
-					await this.composeWith('jhipster-svelte:husky');
-				}
-			},
-		});
-	}
+	async beforeQueue() {}
 
 	get [BaseApplicationGenerator.LOADING]() {
 		return this.asLoadingTaskGroup({
 			...super.loading,
-			loadPackageJson: undefined,
+			loadNodeDependencies: undefined,
 		});
 	}
 
 	get [BaseApplicationGenerator.PREPARING]() {
 		return this.asPreparingTaskGroup({
 			...super.preparing,
-		});
-	}
-
-	get [BaseApplicationGenerator.DEFAULT]() {
-		return this.asDefaultTaskGroup({
-			...super.default,
 		});
 	}
 
@@ -81,6 +49,8 @@ export default class extends CommonGenerator {
 	get [BaseApplicationGenerator.POST_WRITING]() {
 		return this.asPostWritingTaskGroup({
 			...super.postWriting,
+			addPrettierDependencies: undefined,
+			addPrettierPackagejson: undefined,
 		});
 	}
 }
