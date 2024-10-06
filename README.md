@@ -95,6 +95,7 @@ npm update -g generator-jhipster-svelte
             applicationType monolith,
             authenticationType session,
             packageName tech.jhipster.samples.blog,
+            devDatabaseType h2Disk,
             prodDatabaseType postgresql,
             cacheProvider caffeine,
             buildTool maven
@@ -134,27 +135,28 @@ npm update -g generator-jhipster-svelte
     ```
     application {
       config {
-    	baseName gateway
-    	packageName tech.jhipster.samples.gateway
-    	applicationType gateway
-    	authenticationType oauth2
-    	prodDatabaseType postgresql
-    	serviceDiscoveryType eureka
-    	testFrameworks [cypress]
-    	reactive true
+        baseName gateway
+        packageName tech.jhipster.samples.gateway
+        applicationType gateway
+        authenticationType oauth2
+        devDatabaseType h2Disk,
+        prodDatabaseType postgresql
+        serviceDiscoveryType eureka
+        testFrameworks [cypress]
+        reactive true
       }
       entities Blog, Post, Tag
     }
 
     application {
       config {
-    	baseName blog
-    	packageName tech.jhipster.samples.blog
-    	applicationType microservice
-    	authenticationType oauth2
-    	prodDatabaseType mysql
-    	serverPort 8081
-    	serviceDiscoveryType eureka
+        baseName blog
+        packageName tech.jhipster.samples.blog
+        applicationType microservice
+        authenticationType oauth2
+        prodDatabaseType mysql
+        serverPort 8081
+        serviceDiscoveryType eureka
       }
       entities Blog, Post, Tag
     }
@@ -224,7 +226,8 @@ npm update -g generator-jhipster-svelte
 | `7.3.x`    | `0.6`             |
 | `7.4.x`    | `0.7` - `0.7.1`   |
 | `7.8.x`    | `0.8` - `0.9`     |
-| `7.9.x`    | >= `0.10.1`       |
+| `7.9.x`    | `0.10.1 - 1.1.0`  |
+| `8.7.x`    | >= `1.2.0`        |
 
 ## Docker development
 

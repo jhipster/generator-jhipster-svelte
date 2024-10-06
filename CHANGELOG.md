@@ -2,6 +2,21 @@
 
 > All notable changes to the "generator-jhipster-svelte" project will be documented in this file.
 
+## [1.2.0] - 2024-10-6
+
+### Added
+
+-   ✅ Support `vitest` as default unit tests framework [#1937](https://github.com/jhipster/generator-jhipster-svelte/pull/1937)
+-   ✅ Generate unit tests for user form component [#2063](https://github.com/jhipster/generator-jhipster-svelte/pull/2063)
+
+### Changed
+
+-   ✅ `JHipster` framework support upgraded to `v8.x` [#1996](https://github.com/jhipster/generator-jhipster-svelte/pull/1996) [#2265](https://github.com/jhipster/generator-jhipster-svelte/pull/2265) [#2266](https://github.com/jhipster/generator-jhipster-svelte/pull/2266)
+-   ✅ `Eslint` dependency and configuration support upgraded to `v9.x` [#2259](https://github.com/jhipster/generator-jhipster-svelte/pull/2259)
+-   ✅ Replaced `pretty-quick` with `lint-staged` package [#1927](https://github.com/jhipster/generator-jhipster-svelte/pull/1927)
+-   ✅ Jest unit tests framework support is moved behind the `--jest` option [#1865](https://github.com/jhipster/generator-jhipster-svelte/pull/1865)
+-   ✅ Upgraded `Svelte/Kit`, `Eslint`, `Cypress`, `Testing Library`, `Jest` and other third party dependencies [#1936](https://github.com/jhipster/generator-jhipster-svelte/pull/1936) [#2019](https://github.com/jhipster/generator-jhipster-svelte/pull/2019) [#2236](https://github.com/jhipster/generator-jhipster-svelte/pull/2236)
+
 ## [1.1.0] - 2023-10-1
 
 ### Fixed
