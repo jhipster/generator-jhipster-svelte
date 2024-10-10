@@ -17,7 +17,7 @@
 		"eslint-plugin-cypress": "3.5.0",
 		"eslint-plugin-jest-dom": "5.4.0",
 		"eslint-plugin-svelte": "2.44.1",
-		"globals": "15.10.0",
+		"globals": "15.11.0",
 		"husky": "9.1.6",
 		"jhipster-svelte-library": "0.13.0",
 		"postcss": "8.4.47",
