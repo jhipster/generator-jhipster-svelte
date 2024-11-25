@@ -45,7 +45,7 @@
 		"generator-jhipster": "8.7.1",
 		"prettier": "3.3.3",
 		"prettier-plugin-organize-imports": "4.1.0",
-		"prettier-plugin-svelte": "3.2.7",
+		"prettier-plugin-svelte": "3.3.2",
 		"semver": "7.6.3"
 	},
 	"devDependencies": {
