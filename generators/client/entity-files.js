@@ -55,33 +55,51 @@ export default {
 		{
 			templates: [
 				{
-					file: 'cypress/integration/entities/entity/entity-delete.spec.js',
+					file: generator => `${generator.testFramework}/integration/entities/entity/entity-delete.spec.js`,
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-delete.spec.js`,
+						`${generator.testFramework}/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-delete.spec.js`,
 				},
 				{
-					file: 'cypress/integration/entities/entity/entity-list.spec.js',
+					file: generator => `${generator.testFramework}/integration/entities/entity/entity-list.spec.js`,
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-list.spec.js`,
+						`${generator.testFramework}/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-list.spec.js`,
 				},
 				{
-					file: 'cypress/integration/entities/entity/entity-view.spec.js',
+					file: generator => `${generator.testFramework}/integration/entities/entity/entity-view.spec.js`,
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-view.spec.js`,
+						`${generator.testFramework}/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-view.spec.js`,
 				},
 				{
-					file: 'cypress/integration/entities/entity/entity-create.spec.js',
+					file: generator => `${generator.testFramework}/integration/entities/entity/entity-create.spec.js`,
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-create.spec.js`,
+						`${generator.testFramework}/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-create.spec.js`,
 				},
 				{
-					file: 'cypress/integration/entities/entity/entity-update.spec.js',
+					file: generator => `${generator.testFramework}/integration/entities/entity/entity-update.spec.js`,
 					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-update.spec.js`,
+						`${generator.testFramework}/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-update.spec.js`,
 				},
+			],
+		},
+	],
+	entityCypressUtils: [
+		{
+			condition: generator => generator.testFramework === 'cypress',
+			templates: [
 				{
 					file: 'cypress/support/entities/entity-util.js',
 					renameTo: generator => `cypress/support/entities/${generator.entityFileName}-util.js`,
+				},
+			],
+		},
+	],
+	entityPlaywrightUtils: [
+		{
+			condition: generator => generator.testFramework === 'playwright',
+			templates: [
+				{
+					file: 'playwright/utils/entities/entity-util.js',
+					renameTo: generator => `playwright/utils/entities/${generator.entityFileName}-utils.js`,
 				},
 			],
 		},

@@ -1,0 +1,91 @@
+import { expect, test } from '@playwright/test'
+import { unregisterServiceWorkers } from '../../utils/test-utils'
+
+test.describe('User Settings', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	test.beforeEach(async ({ page }) => {
+		unregisterServiceWorkers()
+		await page.goto('/account/settings')
+	})
+
+	test('should greet with User Settings title', async ({ page }) => {
+		await expect(page.getByTestId('settingsTitle')).toHaveText(
+			`User settings for [${process.env.ADMIN_USERNAME}]`,
+		)
+	})
+
+	test('should display current settings', async ({ page }) => {
+		const form = page.getByTestId('settingsForm')
+
+		const firstName = form.getByRole('textbox', { name: 'first name' })
+		await expect(firstName).toHaveValue(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ }_%>)
+
+		const lastName = form.getByRole('textbox', { name: 'last name' })
+		await expect(lastName).toHaveValue('Admin')
+
+		const email = form.getByRole('textbox', { name: 'email' })
+		await expect(email).toHaveValue('admin@localhost.org')
+	})
+
+	test('should display form control validation messages', async ({ page }) => {
+		const form = page.getByTestId('settingsForm')
+
+		const firstName = form.getByRole('textbox', { name: 'first name' })
+		await firstName.fill('AveryLongFirstNameThatExceedsTheMaximumLengthLimitToCheckValidation')
+		await firstName.blur()
+		const firstNameError = form.getByTestId('firstName-error')
+		await expect(firstNameError).toBeVisible()
+		await expect(firstNameError).toContainText('First name cannot be longer than 50 characters')
+
+		const lastName = form.getByRole('textbox', { name: 'last name' })
+		await lastName.fill('AveryLongLastNameThatExceedsTheMaximumLengthLimitToCheckValidation')
+		await lastName.blur()
+		const lastNameError = form.getByTestId('lastName-error')
+		await expect(lastNameError).toBeVisible()
+		await expect(lastNameError).toContainText('Last name cannot be longer than 50 characters')
+
+		const email = form.getByRole('textbox', { name: 'email' })
+		await email.clear()
+		await email.blur()
+		const emailRequiredError = form.getByTestId('email-error')
+		await expect(emailRequiredError).toBeVisible()
+		await expect(emailRequiredError).toContainText('Email is mandatory')
+
+		const email2 = form.getByRole('textbox', { name: 'email' })
+		await email2.fill('admin@localhost')
+		await email2.blur()
+		const emailFormatError = form.getByTestId('email-error')
+		await expect(emailFormatError).toBeVisible()
+		await expect(emailFormatError).toContainText('Email address is not valid')
+
+		const updateButton = form.getByText('Update Settings')
+		await expect(updateButton).toBeDisabled()
+	})
+
+	test('should update user settings', async ({ page }) => {
+		const form = page.getByTestId('settingsForm')
+
+		const firstName = form.getByRole('textbox', { name: 'first name' })
+		await firstName.clear()
+		await firstName.fill(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ }_%>)
+		await firstName.blur()
+
+		const lastName = form.getByRole('textbox', { name: 'last name' })
+		await lastName.clear()
+		await lastName.fill('Admin')
+		await lastName.blur()
+
+		const email = form.getByRole('textbox', { name: 'email' })
+		await email.clear()
+		await email.fill('admin@localhost.org')
+		await email.blur()
+
+		const updateButton = form.getByText('Update Settings')
+		await expect(updateButton).toBeEnabled()
+		await updateButton.click()
+
+		const successMsg = page.getByTestId('successMsg')
+		await expect(successMsg).toContainText('Settings changed!')
+	})
+})

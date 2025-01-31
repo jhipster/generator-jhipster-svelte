@@ -13,6 +13,7 @@
   limitations under the License.
  -%>
 <&_ if (!fragment.section) { -&>
+<%_ if (this.testFramework === 'cypress') { _%>
 ######################
 # Cypress
 ######################
@@ -20,6 +21,16 @@
 /cypress/fixtures/example.json
 /cypress/downloads
 /cypress/videos
+<%_ } else { _%>
+######################
+# Playwright
+######################
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.auth/
+/playwright/.cache/
+<%_ } _%>
 
 ######################
 # SvelteKit

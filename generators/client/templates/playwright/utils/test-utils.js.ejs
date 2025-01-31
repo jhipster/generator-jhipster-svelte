@@ -1,0 +1,277 @@
+import { expect } from '@playwright/test'
+import fs from 'node:fs';
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+export function unregisterServiceWorkers() {
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker
+			.getRegistrations()
+			.then(registrations => registrations.forEach(reg => reg.unregister()))
+	}
+}
+
+export function getByName(locator, selector) {
+	return locator.locator(`[name=${selector}]`);
+}
+
+<%_ if (authenticationType === 'session') { _%>
+export async function loginByApi(page, username, password) {
+	const response = await page.request.get(`/api/authenticate`)
+	expect(response.status()).toBe(200)
+
+	const cookies = await page.context().cookies()
+	const csrfCookie = cookies.find(cookie => cookie.name === 'XSRF-TOKEN')
+	expect(csrfCookie).toHaveProperty('value')
+
+	const loginResponse = await page.request.post('/api/authentication', {
+		form: {
+			username,
+			password,
+			'remember-me': true,
+		},
+		headers: {
+			'X-XSRF-TOKEN': csrfCookie.value,
+		},
+	})
+	expect(loginResponse.status()).toBe(200)
+
+	const accountResponse = await page.request.get(`/api/account`)
+	expect(accountResponse.status()).toBe(200)
+}
+<%_ } else if (authenticationType === 'jwt') { _%>
+export async function loginByApi(page, username, password) {
+	const response = await page.request.post(`/api/authenticate`, {
+		data: {
+			username,
+			password,
+			'remember-me': false,
+		},
+	})
+
+ 	expect(response.status()).toBe(200)
+ 	const body = await response.json()
+
+ 	await page.evaluate(token => {
+ 		localStorage.setItem('authToken', token)
+ 	}, body.id_token)
+
+ 	const accountResponse = await page.request.get(`/api/account`, {
+ 		headers: {
+ 			Authorization: `Bearer ${body.id_token}`,
+ 		},
+ 	})
+ 	expect(accountResponse.status()).toBe(200)
+}
+
+export async function save(page, url, body, status = 201) {
+	const token = await page.evaluate(() => {
+		return localStorage.getItem('authToken') || sessionStorage.getItem('authToken')
+	})
+
+	const response = await page.request.post(url, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+			'Content-Type': 'application/json',
+		},
+		data: body,
+	})
+
+	expect(response.status()).toBe(status)
+
+	return await response.json()
+}
+
+export async function deleteRequest(page, url, lenient = true) {
+	const token = await page.evaluate(() => {
+		return localStorage.getItem('authToken') || sessionStorage.getItem('authToken')
+	})
+
+	const response = await page.request.delete(url, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+		failOnStatusCode: !lenient,
+	})
+
+	if (!lenient) {
+		expect(response.status()).toBe(204)
+	}
+}
+
+export async function getById(page, url, status = 200) {
+	const token = await page.evaluate(() => {
+		return localStorage.getItem('authToken') || sessionStorage.getItem('authToken')
+	})
+
+	const response = await page.request.get(url, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	})
+
+	expect(response.status()).toBe(status)
+
+	return await response.json()
+}
+
+<%_ } else { _%>
+export async function loginByApi(page, username, password) {
+ 	const response = await page.request.get('/oauth2/authorization/oidc', {
+ 		maxRedirects: 0,
+ 	})
+
+ 	const location = response.headers()['location']
+ 	const url = new URL(location)
+ 	const origin = url.origin
+
+ 	if (origin.includes('okta')) {
+ 		await oktaLogin(page, location, origin, username, password)
+ 	} else if (origin.includes('auth0')) {
+ 		await auth0Login(page, origin, username, password)
+ 	} else {
+ 		await keycloakLogin(page, username, password)
+ 	}
+
+ 	const accountResponse = await page.request.get('api/account', {
+ 		failOnStatusCode: false,
+ 	})
+ 	expect(accountResponse.status()).toBe(200)
+}
+
+async function auth0Login(page, origin, username, password) {
+	const response = await page.request.get('/oauth2/authorization/oidc')
+	const html = await response.text()
+
+	const stateMatch = html.match(/name="state" value="([^"]+)"/)
+	const state = stateMatch ? stateMatch[1] : ''
+
+	await page.request.post(`${origin}/u/login`, {
+		form: {
+			state,
+			action: 'default',
+			username,
+			password,
+		},
+	})
+
+	await page.request.get('/oauth2/authorization/oidc')
+	await page.goto('/')
+}
+
+async function keycloakLogin(page, username, password) {
+	const response = await page.request.get('/oauth2/authorization/oidc')
+	const html = await response.text()
+
+	const formUrlMatch = html.match(/<form[^>]+action="([^"]+)"/)
+	const formUrl = formUrlMatch ? formUrlMatch[1] : ''
+
+	await page.request.post(formUrl, {
+		form: {
+			username,
+			password,
+		},
+		maxRedirects: 0,
+	})
+
+	await page.request.get('/oauth2/authorization/oidc')
+}
+
+async function oktaLogin(page, authorizeUrl, origin, username, password) {
+	const tokenResponse = await page.request.post(`${origin}/api/v1/authn`, {
+		data: {
+			username,
+			password,
+		},
+		maxRedirects: 0,
+	})
+
+	const sessionToken = (await tokenResponse.json()).sessionToken
+
+	await page.request.get(`${authorizeUrl}&sessionToken=${sessionToken}`)
+}
+
+export async function logoutByApi(page) {
+	const cookies = await page.context().cookies()
+	const csrfCookie = cookies.find(cookie => cookie.name === 'XSRF-TOKEN')
+	const origin = new URL(page.url()).origin
+
+	const logoutResponse = await page.request.post('api/logout', {
+		headers: {
+			'X-XSRF-TOKEN': csrfCookie.value,
+			origin: origin,
+		},
+	})
+	expect(logoutResponse.status()).toBe(200)
+
+	const responseBody = await logoutResponse.json()
+	const finalLogoutResponse = await page.request.get(responseBody.logoutUrl)
+	expect(finalLogoutResponse.status()).toBe(200)
+	await page.goto('/')
+}
+
+<%_ } if (authenticationType === 'session' || authenticationType === 'oauth2') { _%>
+export async function save(page, url, body, status = 201) {
+	const cookies = await page.context().cookies()
+	const csrfCookie = cookies.find(cookie => cookie.name === 'XSRF-TOKEN')
+
+	const response = await page.request.post(url, {
+		headers: {
+			'X-XSRF-TOKEN': csrfCookie.value,
+			'Content-Type': 'application/json',
+		},
+		data: body,
+	})
+
+	expect(response.status()).toBe(status)
+
+	return await response.json()
+}
+
+export async function deleteRequest(page, url, lenient = true) {
+	const cookies = await page.context().cookies()
+	const csrfCookie = cookies.find(cookie => cookie.name === 'XSRF-TOKEN')
+
+	const response = await page.request.delete(url, {
+		headers: {
+			'X-XSRF-TOKEN': csrfCookie.value,
+		},
+		failOnStatusCode: !lenient,
+	})
+
+	if (!lenient) {
+		expect(response.status()).toBe(204)
+	}
+}
+
+export async function getById(page, url, status = 200) {
+	const cookies = await page.context().cookies()
+	const csrfCookie = cookies.find(cookie => cookie.name === 'XSRF-TOKEN')
+
+	const response = await page.request.get(url, {
+		headers: {
+			'X-XSRF-TOKEN': csrfCookie.value,
+		},
+	})
+
+	expect(response.status()).toBe(status)
+
+	return await response.json()
+}
+
+<%_ } _%>
+export async function setFileInput(locator, testFile, mimeType) {
+	const testFilePath = path.join(__dirname, '../fixtures', testFile)
+	const fileContent = fs.readFileSync(testFilePath)
+
+	const file = {
+		name: path.basename(testFile),
+		mimeType: mimeType,
+		buffer: fileContent,
+	}
+
+	await locator.setInputFiles([file])
+}

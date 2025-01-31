@@ -1,0 +1,112 @@
+import { expect, test } from '@playwright/test'
+import { deleteRequest, unregisterServiceWorkers } from '../../../utils/test-utils'
+
+test.describe('Create user page', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	test.beforeEach(async ({ page }) => {
+		unregisterServiceWorkers()
+		await page.goto(`/admin/user-management/new`)
+	})
+
+	test('should greet with Create user title', async ({ page }) => {
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Create user account')
+	})
+
+	test('should require mandatory fields', async ({ page }) => {
+		const createButton = page.getByTestId('addUserForm').getByText('Create user account')
+		await expect(createButton).toBeDisabled()
+	})
+
+	test('should require username', async ({ page }) => {
+		const form = page.getByTestId('addUserForm')
+		const username = form.getByRole('textbox', { name: 'username' })
+
+		await username.fill('admin')
+		await username.clear()
+		await username.blur()
+
+		const error = form.getByTestId('username-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Username is mandatory')
+	})
+
+	test('should require email', async ({ page }) => {
+		const form = page.getByTestId('addUserForm')
+		const email = form.getByRole('textbox', { name: 'email' })
+
+		await email.fill('admin@localhost.org')
+		await email.clear()
+		await email.blur()
+
+		const error = form.getByTestId('email-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Email is mandatory')
+	})
+
+	test('should require roles', async ({ page }) => {
+		const form = page.getByTestId('addUserForm')
+
+		await form.getByRole('textbox', { name: 'roles' }).click()
+		const rolesOptions = page.getByTestId('roles-options')
+		const firstCheckbox = rolesOptions.getByRole('checkbox').first()
+
+		await firstCheckbox.check()
+		await firstCheckbox.uncheck()
+		await page.getByTestId('roles-bg').click()
+
+		const error = form.getByTestId('roles-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Select at least one role')
+	})
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.getByRole('button', { name: 'cancel' }).click()
+
+		await expect(page).toHaveURL('/admin/user-management')
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Users')
+	})
+
+	test.describe('create account', () => {
+		let randomUser
+
+		test.beforeEach(async ({ page }) => {
+			unregisterServiceWorkers()
+			randomUser = `test${new Date().getTime()}`
+			await page.goto(`/admin/user-management/new`)
+		})
+
+		test.afterEach(async ({ page }) => {
+			await deleteRequest(page, `api/admin/users/${randomUser}`)
+		})
+
+		test('should create a new user account', async ({ page }) => {
+			const form = page.getByTestId('addUserForm')
+
+			await form.getByRole('textbox', { name: 'username' }).fill(randomUser)
+			await form.getByRole('textbox', { name: 'first name' }).fill('john')
+			await form.getByRole('textbox', { name: 'last name' }).fill('doe')
+			await form.getByRole('textbox', { name: 'email' }).fill(`${randomUser}@localhost.org`)
+
+			await form.getByRole('textbox', { name: 'roles' }).click()
+			await page.getByTestId('roles-options').getByRole('checkbox').first().check()
+			await page.getByTestId('roles-bg').click()
+
+			const createButton = form.getByText('Create user account')
+			await expect(createButton).toBeEnabled()
+			await createButton.click()
+
+			const toast = page.getByTestId('toast-success')
+			await expect(toast).toContainText('A user is created with identifier')
+
+			await expect(page).toHaveURL('/admin/user-management')
+			const title = page.getByTestId('userMgmtTitle')
+			await expect(title).toBeVisible()
+			await expect(title).toContainText('Users')
+		})
+	})
+})

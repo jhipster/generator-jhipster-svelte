@@ -5,7 +5,7 @@
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
-		"format": "prettier --write \"{,src/**/,cypress/**/}*.{md,json,js,svelte,css,html,yml}\"",
+		"format": "prettier --write \"{,src/**/,<%= this.testFramework %>/**/}*.{md,json,js,svelte,css,html,yml}\"",
 		"lint": "eslint .",
 		"prepare": "husky",
 		"lint:fix": "npm run lint --fix",
@@ -14,9 +14,6 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
-		"e2e": "npm run e2e:ci -- --headed",
-		"e2e:ci": "cypress run --browser chrome",
-        "cy:open": "cypress open --e2e --browser chrome",
 		"build": "vite build",
 		"webapp:build": "npm run build",
 		"webapp:prod": "npm run build",

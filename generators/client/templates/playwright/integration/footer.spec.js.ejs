@@ -1,0 +1,16 @@
+import { expect, test } from '@playwright/test'
+import { unregisterServiceWorkers } from '../utils/test-utils'
+
+test.describe('Footer', () => {
+	test.beforeEach(async ({ page }) => {
+		unregisterServiceWorkers()
+		await page.goto('/')
+	})
+
+	test('should display copyright message', async ({ page }) => {
+		await expect(page.getByTestId('copyrightMsg')).toBeVisible()
+		await expect(page.getByTestId('copyrightMsg')).toContainText(
+			'Copyright © 2023 JHipster. All Rights Reserved',
+		)
+	})
+})

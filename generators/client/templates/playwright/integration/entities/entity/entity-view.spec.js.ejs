@@ -1,0 +1,104 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const relationshipFieldsWithSelfReferential = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { expect, test } from '@playwright/test'
+import { add<%= entityAngularName %>, prepare<%= entityAngularName %>PrerequisiteData } from '../../../<%= clientRootFolder !== '' ? '../' : '' %>utils/entities/<%= entityFileName %>-utils'
+import { deleteRequest, unregisterServiceWorkers } from '../../../<%= clientRootFolder !== '' ? '../' : '' %>utils/test-utils'
+
+test.describe('<%= entityAngularName %> view details page', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	let page
+	let dynamicId
+<%_ for (const relationship of relationshipFields) {
+	if (!relationship.otherEntityUser) {
+_%>
+	let <%= relationship.relationshipName %>Id
+	<%_
+	}
+}
+_%>
+
+	test.beforeAll(async ({ browser }) => {
+		page = await browser.newPage()
+<%_ if (containsRelationshipField || containsBinaryField ) { _%>
+		const data = await prepare<%= entityAngularName %>PrerequisiteData(page)
+<%_ } _%>
+		const <%= entityInstance %> = await add<%= entityAngularName %>(page<%_
+		if (containsBinaryField) {
+	_%>, data.binaryData<%_} _%><%_
+		if (containsBinaryField || containsRelationshipField) {
+	_%>,<%_} _%><%_
+			let fieldIndex = 0;
+			const fieldLength = relationshipFields.length;
+			for (const relationship of relationshipFields) {
+				if (relationship.otherEntityUser) {
+	_%>data.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+				} else {
+	_%>data.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+				}
+				fieldIndex++;
+			}
+	_%>)
+		dynamicId = <%= entityInstance %>.id
+		<%_ for (const relationship of relationshipFields) {
+			if (!relationship.otherEntityUser) {
+		_%>
+			<%= relationship.relationshipName %>Id = data.<%= relationship.relationshipName %>Id
+			<%_
+			}
+		}
+		_%>
+	})
+
+	test.beforeEach(async () => {
+		unregisterServiceWorkers()
+		await page.goto(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
+	})
+
+	test.afterAll(async () => {
+		await deleteRequest(page, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`)
+		<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+	_%>
+		await deleteRequest(page, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${<%= relationship.relationshipName %>Id}`, true)
+	<%_
+				}
+			}
+	_%>
+		await page.close()
+	})
+
+	test('should display <%= entityAngularName %> details', async () => {
+		const title = page.getByTestId('<%= entityInstance %>Title')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('<%= entityClassHumanized %> Details')
+
+		const table = page.locator('div.table')
+		const cells = table.locator('.table-cell')
+		await expect(cells).toHaveCount(<%= (fields.length - 1) * 2 + (relationshipFieldsWithSelfReferential.length * 2) %>)
+	})
+
+	test('should navigate back to the <%= entityAngularName %> list page', async () => {
+		await page.getByRole('button', { name: 'back' }).click()
+
+		const title = page.getByTestId('<%= entityInstance %>Title')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>')
+	})
+})

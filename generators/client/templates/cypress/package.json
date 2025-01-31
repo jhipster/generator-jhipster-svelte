@@ -1,0 +1,11 @@
+{
+    "scripts": {
+		"e2e": "npm run e2e:ci -- --headed",
+		"e2e:ci": "cypress run --browser chrome",
+		"cy:open": "cypress open --e2e --browser chrome"
+	},
+	"devDependencies": {
+		"cypress": "13.5.1",
+        "eslint-plugin-cypress": "4.0.0"
+	}
+}

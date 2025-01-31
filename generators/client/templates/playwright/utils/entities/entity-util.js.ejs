@@ -1,0 +1,242 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+
+	const oneToOneRelationship = relationshipFields.find(relationship => relationship.relationshipOneToOne);
+	const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { getById, save } from '../test-utils'
+<%_ if (containsBinaryField) { _%>
+import fs from 'node:fs';
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+<%_ } _%>
+export async function prepare<%= entityAngularName %>PrerequisiteData(page, listPage = false) {
+<%_ if (containsBinaryField) { _%>
+    const imagePath = path.join(__dirname, '../../fixtures/integration-test.png')
+	const binaryData = fs.readFileSync(imagePath, { encoding: 'base64' })
+<%_ } _%>
+<%_ for (const relationship of relationshipFields) { _%>
+	<%_ if (relationship.otherEntityUser) { _%>
+        const user = await getById(page, 'api/users')
+    <%_ } else { _%>
+        const <%= relationship.relationshipName %> = await save(page, '<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>', {
+            <%_ for (const relationshipField of relationship.otherEntity.fields.filter(field => !field.id)) {
+			    const fieldValue = relationshipField.generateFakeData('cypress');
+			    if (fieldValue === undefined) {
+				    warning(`Error generating a value for field ${relationshipField.fieldName}`);
+			    }
+	        _%>
+            <%_ if (relationshipField.fieldTypeBoolean) { _%>
+            <%= relationshipField.fieldName %>: true,
+            <%_ } else if (relationshipField.fieldTypeBinary && !relationshipField.blobContentTypeText) { _%>
+            // <%= relationshipField.fieldName %>: binaryData,
+            <%= relationshipField.fieldName %>ContentType: 'image/png',
+            <%_ } else if (relationshipField.fieldTypeString || relationshipField.fieldTypeUUID) { _%>
+            <%= relationshipField.fieldName %>: '<%= fieldValue %>',
+            <%_ } else if (relationshipField.fieldTypeLocalDate) { _%>
+            <%= relationshipField.fieldName %>: '<%= fieldValue %>' ,
+            <%_ } else if (relationshipField.fieldTypeTimed) { _%>
+            <%= relationshipField.fieldName %>: '<%= fieldValue %>:00.000Z' ,
+            <%_ } else if (relationshipField.fieldTypeDuration) { _%>
+            <%= relationshipField.fieldName %>: 'PT0.000052484S',
+            <%_ } else if (relationshipField.fieldTypeNumeric) { _%>
+            <%= relationshipField.fieldName %>: <%= fieldValue %>,
+            <%_ } else { _%>
+            <%= relationshipField.fieldName %>: '<%= fieldValue %>',
+            <%_ } _%>
+            <%_ } _%>
+        })
+<%_ } 
+} 
+    if (oneToOneRelationship) { _%>
+        if (listPage) {
+            const <%= oneToOneRelationship.relationshipName %>2 = await save(page, '<%= servicesApiPrefix %>api/<%= oneToOneRelationship.otherEntity.entityApiUrl %>', {
+                <%_ for (const relationshipField of oneToOneRelationship.otherEntity.fields.filter(field => !field.id)) {
+                    const fieldValue = relationshipField.generateFakeData('cypress');
+                    if (fieldValue === undefined) {
+                        warning(`Error generating a value for field ${relationshipField.fieldName}`);
+                    }
+	            _%>
+                <%_ if (relationshipField.fieldTypeBoolean) { _%>
+                <%= relationshipField.fieldName %>: true,
+                <%_ } else if (relationshipField.fieldTypeBinary && !relationshipField.blobContentTypeText) { _%>
+                // <%= relationshipField.fieldName %>: binaryData,
+                <%= relationshipField.fieldName %>ContentType: 'image/png',
+                <%_ } else if (relationshipField.fieldTypeString || relationshipField.fieldTypeUUID) { _%>
+                <%= relationshipField.fieldName %>: '<%= fieldValue %>',
+                <%_ } else if (relationshipField.fieldTypeLocalDate) { _%>
+                <%= relationshipField.fieldName %>: '<%= fieldValue %>' ,
+                <%_ } else if (relationshipField.fieldTypeTimed) { _%>
+                <%= relationshipField.fieldName %>: '<%= fieldValue %>:00.000Z' ,
+                <%_ } else if (relationshipField.fieldTypeDuration) { _%>
+                <%= relationshipField.fieldName %>: 'PT0.000052484S',
+                <%_ } else if (relationshipField.fieldTypeNumeric) { _%>
+                <%= relationshipField.fieldName %>: <%= fieldValue %>,
+                <%_ } else { _%>
+                <%= relationshipField.fieldName %>: '<%= fieldValue %>',
+                <%_ } _%>
+                <%_ } _%>
+            })
+        }
+<%_ } _%>
+    return {
+    <%_ if (containsBinaryField) { _%>
+        binaryData,
+    <%_ } _%>
+    <%_ for (const relationship of relationshipFields) { _%>
+    <%_ if (relationship.otherEntityUser) { _%>
+        user: user[0],
+    <%_ } else { _%>
+        <%= relationship.relationshipName %>Id: <%= relationship.relationshipName %>.id,
+    <%_ } _%>
+    <%_ } _%>
+    <%_ if (oneToOneRelationship && listPage) { _%>
+        <%= oneToOneRelationship.relationshipName %>Id2: <%= oneToOneRelationship.relationshipName %>.id,
+    <%_ } _%>
+    }
+}
+
+export async function add<%= entityAngularName %>(
+page
+<%_
+	if (containsBinaryField) {
+_%>, binaryData<%_ } _%><%_
+	if (containsBinaryField || containsRelationshipField) {
+_%>,<%_ } _%><%_
+		let fieldIndex = 0;
+		const fieldLength = relationshipFields.length;
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			} else {
+_%><%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			}
+			fieldIndex++;
+		}
+_%>) {
+    return await save(page, '<%= servicesApiPrefix %>api/<%= entityApiUrl %>', {
+<%_ for (field of fields.filter(field => !field.id)) {
+		const fieldValue = field.generateFakeData('cypress');
+		if (fieldValue === undefined) {
+			warning(`Error generating a value for field ${field.fieldName}`);
+		}
+_%>
+        <%_ if (field.fieldTypeBoolean) { _%>
+        <%= field.fieldName %>: true,
+        <%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+        <%= field.fieldName %>: binaryData,
+        <%= field.fieldName %>ContentType: 'image/png',
+        <%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+        <%= field.fieldName %>: '<%= fieldValue %>',
+        <%_ } else if (field.fieldTypeLocalDate) { _%>
+        <%= field.fieldName %>: '<%= fieldValue %>' ,
+        <%_ } else if (field.fieldTypeTimed) { _%>
+        <%= field.fieldName %>: '<%= fieldValue %>:00.000Z' ,
+        <%_ } else if (field.fieldTypeDuration) { _%>
+        <%= field.fieldName %>: 'PT0.000052484S',
+        <%_ } else if (field.fieldTypeNumeric) { _%>
+        <%= field.fieldName %>: <%= fieldValue %>,
+        <%_ } else { _%>
+        <%= field.fieldName %>: '<%= fieldValue %>',
+    <%_ } _%>
+<%_ } _%>
+<%_	for (const relationship of relationshipFields) {
+    if (relationship.otherEntityUser) {
+_%>
+    user: user,
+<%_
+		} else {
+			if (relationship.relationshipManyToMany) {
+_%>
+	<%= relationship.relationshipNamePlural %>: [{ id: <%= relationship.relationshipName %>Id }],
+<%_
+			} else {
+_%>
+	<%= relationship.relationshipName %>: { id: <%= relationship.relationshipName %>Id },
+<%_
+			}
+		}
+	}
+_%>
+    })
+}
+
+<%_ if (!paginationNo || searchEngineAny) { _%>
+export async function add<%= entityAngularName %>2(
+    page
+    <%_ if (containsBinaryField) {_%>
+    , binaryData<%_ } _%><%_
+	if (containsBinaryField && containsRelationshipField) {
+_%>,<%_ } _%><%_
+		let fieldIndex = 0;
+		const fieldLength = relationshipFields.length;
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			} else {
+_%><%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			}
+			fieldIndex++;
+		}
+_%>) {
+	return await save(page, '<%= servicesApiPrefix %>api/<%= entityApiUrl %>', {
+<%_
+	for (field of fields.filter(field => !field.id)) {
+		const fieldValue = field.generateFakeData('cypress');
+		if (fieldValue === undefined) {
+			warning(`Error generating a value for field ${field.fieldName}`);
+		}
+_%>
+		<%_ if (field.fieldTypeBoolean) { _%>
+		<%= field.fieldName %>: true,
+		<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+		<%= field.fieldName %>: binaryData,
+		<%= field.fieldName %>ContentType: 'image/png',
+		<%_ } else if (field.fieldTypeString || field.fieldTypeUUID) { _%>
+		<%= field.fieldName %>: '<%= fieldValue %>',
+		<%_ } else if (field.fieldTypeLocalDate) { _%>
+		<%= field.fieldName %>: '<%= fieldValue %>' ,
+		<%_ } else if (field.fieldTypeTimed) { _%>
+		<%= field.fieldName %>: '<%= fieldValue %>:00.000Z' ,
+		<%_ } else if (field.fieldTypeDuration) { _%>
+		<%= field.fieldName %>: 'PT0.000052484S',
+		<%_ } else if (field.fieldTypeNumeric) { _%>
+		<%= field.fieldName %>: <%= fieldValue %>,
+		<%_ } else { _%>
+		<%= field.fieldName %>: '<%= fieldValue %>',
+		<%_ } _%>
+	<%_ } _%>
+<%_		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>
+		user: user,
+<%_
+			} else {
+				if (relationship.relationshipManyToMany) {
+_%>
+		<%= relationship.relationshipNamePlural %>: [{ id: <%= relationship.relationshipName %>Id }],
+	<%_
+				} else {
+	_%>
+		<%= relationship.relationshipName %>: { id: <%= relationship.relationshipName %>Id },
+	<%_
+				}
+			}
+		}
+_%>
+	})
+}
+<%_
+	}
+_%>

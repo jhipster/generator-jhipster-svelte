@@ -1,0 +1,30 @@
+import { expect, test } from '@playwright/test'
+import { unregisterServiceWorkers } from '../../utils/test-utils'
+
+test.describe('Gateway page', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	test.beforeEach(async ({ page }) => {
+		unregisterServiceWorkers()
+		await page.goto('/admin/gateway')
+	})
+
+	test('should greet with Gateway page title', async ({ page }) => {
+		const title = page.getByTestId('gatewayTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Gateway routes')
+	})
+
+	test('should display Gateway routes table', async ({ page }) => {
+		const table = page.getByTestId('gatewayTable')
+		await expect(table).toBeVisible()
+
+		const headerRow = table.getByRole('row').first()
+		const headers = headerRow.getByRole('columnheader')
+
+		await expect(headers).toHaveCount(3)
+		await expect(headers.nth(0)).toContainText('Service')
+		await expect(headers.nth(1)).toContainText('Route')
+		await expect(headers.nth(2)).toContainText('Service Instances')
+	})
+})

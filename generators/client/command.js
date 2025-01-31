@@ -1,5 +1,6 @@
-const command = {
-	configs: {},
+import { asCommand } from 'generator-jhipster';
+
+export default asCommand({
 	options: {
 		jest: {
 			description: 'Jest JavaScript unit testing framework',
@@ -11,7 +12,10 @@ const command = {
 			type: Boolean,
 			scope: 'blueprint',
 		},
+		testFramework: {
+			description: 'E2E testing framework to use',
+			type: String,
+			scope: 'blueprint',
+		},
 	},
-};
-
-export default command;
+});
