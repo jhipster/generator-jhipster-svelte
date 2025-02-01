@@ -78,8 +78,8 @@ _%>
 	})
 
 	test.beforeEach(async () => {
-		unregisterServiceWorkers()
 		await page.goto(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
+		await unregisterServiceWorkers(page)
 	})
 
 	test.afterAll(async () => {

@@ -2,7 +2,10 @@ import svelte from "eslint-plugin-svelte";
 <%_ if (this.testFramework === 'cypress') { _%>
 import cypress from "eslint-plugin-cypress";
 <%_ } else { _%>
-import playwright from 'eslint-plugin-playwright'
+import playwright from 'eslint-plugin-playwright';
+<%_ } _%>
+<%_ if (!this.blueprintConfig.jest) { _%>
+import vitest from '@vitest/eslint-plugin';
 <%_ } _%>
 import jestDom from "eslint-plugin-jest-dom";
 import globals from "globals";
@@ -54,9 +57,9 @@ export default [{
             ...cypress.environments.globals.globals,
             <%_ } _%>
 		<%_ if (this.blueprintConfig.jest) { _%>
-		"jest": true,
+            ...globals.jest,
 		<%_ } else { _%>
-            vi: true,
+            ...vitest.environments.env.globals,
 		<%_ } _%>
         },
 

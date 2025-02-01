@@ -5,8 +5,8 @@ test.describe('Create user page', () => {
 	test.use({ storageState: 'playwright/.auth/admin.json' })
 
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		await page.goto(`/admin/user-management/new`)
+		await unregisterServiceWorkers(page)
 	})
 
 	test('should greet with Create user title', async ({ page }) => {
@@ -75,9 +75,9 @@ test.describe('Create user page', () => {
 		let randomUser
 
 		test.beforeEach(async ({ page }) => {
-			unregisterServiceWorkers()
 			randomUser = `test${new Date().getTime()}`
 			await page.goto(`/admin/user-management/new`)
+			await unregisterServiceWorkers(page)
 		})
 
 		test.afterEach(async ({ page }) => {

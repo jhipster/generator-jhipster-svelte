@@ -26,8 +26,8 @@ test.describe('Create <%= entityInstance %> page', () => {
 	test.use({ storageState: 'playwright/.auth/admin.json' })
 
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		await page.goto('/entities/<%= entityFolderName %>/new')
+		await unregisterServiceWorkers(page)
 	})
 
 	test('should greet with Create <%= entityInstance %> title', async ({ page }) => {

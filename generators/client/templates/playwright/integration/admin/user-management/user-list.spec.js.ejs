@@ -5,8 +5,8 @@ test.describe('User Management list page', () => {
 	test.use({ storageState: 'playwright/.auth/admin.json' })
 
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		await page.goto('/admin/user-management')
+		await unregisterServiceWorkers(page)
 	})
 
 	test('should greet with users page title', async ({ page }) => {

@@ -96,8 +96,8 @@ _%>
 	})
 
 	test.beforeEach(async () => {
-		unregisterServiceWorkers()
 		await page.goto('/entities/<%= entityFolderName %>')
+		await unregisterServiceWorkers(page)
 	})
 
 	test.afterAll(async () => {

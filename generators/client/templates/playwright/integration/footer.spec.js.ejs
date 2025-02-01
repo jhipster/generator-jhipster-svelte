@@ -3,8 +3,8 @@ import { unregisterServiceWorkers } from '../utils/test-utils'
 
 test.describe('Footer', () => {
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		await page.goto('/')
+		await unregisterServiceWorkers(page)
 	})
 
 	test('should display copyright message', async ({ page }) => {

@@ -2,8 +2,9 @@ import { expect, test } from '@playwright/test'
 import { unregisterServiceWorkers } from '../utils/test-utils'
 
 test.describe('Routes', () => {
-	test.beforeEach(async () => {
-		unregisterServiceWorkers()
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/')
+		await unregisterServiceWorkers(page)
 	})
 
 	test.describe('unauthenticated user', () => {
@@ -50,8 +51,8 @@ test.describe('Routes', () => {
 		test.use({ storageState: 'playwright/.auth/admin.json' })
 
 		test.beforeEach(async ({ page }) => {
-			unregisterServiceWorkers()
 			await page.goto('/')
+			await unregisterServiceWorkers(page)
 		})
 
 		test('should not allow navigation to login page', async ({ page }) => {

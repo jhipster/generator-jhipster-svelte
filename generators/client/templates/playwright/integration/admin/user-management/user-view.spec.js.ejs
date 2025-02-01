@@ -7,7 +7,6 @@ test.describe('User view details page', () => {
 	let randomUser
 
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		randomUser = `test${new Date().getTime()}`
 		const response = await save(page, 'api/admin/users', {
 			login: randomUser,
@@ -18,6 +17,7 @@ test.describe('User view details page', () => {
 			authorities: ['ROLE_USER'],
 		})
 		await page.goto(`/admin/user-management/${response.login}/view`)
+		await unregisterServiceWorkers(page)
 	})
 
 	test.afterEach(async ({ page }) => {

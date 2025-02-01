@@ -6,12 +6,15 @@ import { fileURLToPath } from 'node:url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-export function unregisterServiceWorkers() {
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker
-			.getRegistrations()
-			.then(registrations => registrations.forEach(reg => reg.unregister()))
-	}
+export async function unregisterServiceWorkers(page) {
+	await page.evaluate(async () => {
+		if ('serviceWorker' in navigator) {
+			const registrations = await navigator.serviceWorker.getRegistrations()
+			await Promise.all(
+				registrations.map(registration => registration.unregister())
+			);
+		}
+	});
 }
 
 export function getByName(locator, selector) {

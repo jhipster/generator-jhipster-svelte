@@ -3,8 +3,8 @@ import { loginByApi, unregisterServiceWorkers } from '../utils/test-utils'
 
 test.describe('Navbar', () => {
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		await page.goto('/')
+		await unregisterServiceWorkers(page)
 	})
 
 	test.describe('unauthenticated user', () => {
@@ -42,9 +42,9 @@ test.describe('Navbar', () => {
 
 	test.describe('authenticated user', () => {
 		test.beforeEach(async ({ page }) => {
-			unregisterServiceWorkers()
-			await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
 			await page.goto('/')
+			await unregisterServiceWorkers(page)
+			await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
 		})
 
 		<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
@@ -143,8 +143,8 @@ test.describe('Navbar', () => {
 			test.use({ storageState: 'playwright/.auth/user.json' })
 
 			test.beforeEach(async ({ page }) => {
-				unregisterServiceWorkers()
 				await page.goto('/')
+				await unregisterServiceWorkers(page)
 			})
 
 			test('should not display administrator menu', async ({ page }) => {
@@ -156,9 +156,9 @@ test.describe('Navbar', () => {
 	<%_ if (authenticationType === 'oauth2') { _%>
 		test.describe('Logout authenticated user', () => {
 			test.beforeEach(async ({ page }) => {
-				unregisterServiceWorkers()
-				await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
 				await page.goto('/')
+				await unregisterServiceWorkers(page)
+				await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
 			})
 
 			test('should logout user', async ({ page }) => {

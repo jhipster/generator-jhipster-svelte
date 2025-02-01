@@ -3,8 +3,8 @@ import { unregisterServiceWorkers } from '../utils/test-utils'
 
 test.describe('Home page', () => {
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		await page.goto('/')
+		await unregisterServiceWorkers(page)
 	})
 
 	test('should greet with welcome title', async ({ page }) => {

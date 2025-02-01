@@ -61,8 +61,8 @@ _%>
 	})
 
 	test.beforeEach(async () => {
-		unregisterServiceWorkers()
 		await page.goto('/entities/<%= entityFolderName %>')
+		await unregisterServiceWorkers(page)
 
 		const rows = page.getByTestId('<%= entityInstance %>Table').getByRole('row')
 		const targetRow = rows.filter({ hasText: dynamicId })

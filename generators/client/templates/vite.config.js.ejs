@@ -68,7 +68,8 @@ export default defineConfig({
 			reporter: ['text', 'html', 'lcov'],
  			reportsDirectory: '<%= temporaryDir %>test-results/js/',
  			exclude: ['<%= temporaryDir %>']
- 		}
+ 		},
+		 exclude: ['**/node_modules/**', '<%= this.testFramework %>/**'],
  	},
 	<%_ } _%>
 

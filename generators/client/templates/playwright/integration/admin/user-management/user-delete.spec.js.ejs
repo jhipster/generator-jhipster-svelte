@@ -7,7 +7,6 @@ test.describe('User delete dialog page', () => {
 	let randomUser
 
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		randomUser = `test${new Date().getTime()}`
 
 		await save(page, 'api/admin/users', {
@@ -20,6 +19,7 @@ test.describe('User delete dialog page', () => {
 		})
 
 		await page.goto('/admin/user-management')
+		await unregisterServiceWorkers(page)
 
 		const row = page.getByTestId('userMgmtTable').getByRole('row').filter({ hasText: randomUser })
 

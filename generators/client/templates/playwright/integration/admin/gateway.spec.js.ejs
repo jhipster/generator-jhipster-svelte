@@ -5,8 +5,8 @@ test.describe('Gateway page', () => {
 	test.use({ storageState: 'playwright/.auth/admin.json' })
 
 	test.beforeEach(async ({ page }) => {
-		unregisterServiceWorkers()
 		await page.goto('/admin/gateway')
+		await unregisterServiceWorkers(page)
 	})
 
 	test('should greet with Gateway page title', async ({ page }) => {
