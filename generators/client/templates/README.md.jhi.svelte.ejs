@@ -86,10 +86,14 @@
  npm test
  ```
 
- UI end-to-end tests are powered by [Cypress][]. They're located under cypress directory and can be run by starting Spring Boot in one terminal (`./mvnw spring-boot:run`) and running the tests (`npm run e2e`) in a second one.
+ UI end-to-end tests are powered by [<%_ this.testFramework === 'cypress' ? 'Cypress' : 'Playwright' _%>][]. They're located under <%= this.testFramework %> directory and can be run by starting Spring Boot in one terminal (`./mvnw spring-boot:run`) and running the tests (`npm run e2e`) in a second one.
 
  <&_ } -&>
  <&_ if (fragment.referenceSection) { -&>
  [Jest]: https://facebook.github.io/jest/
+ <%_ if (this.testFramework === 'cypress') { _%>
  [Cypress]: https://www.cypress.io/
+ <%_ } else { _%>
+ [Playwright]: https://playwright.dev/
+ <%_ } _%>
  <&_ } -&>

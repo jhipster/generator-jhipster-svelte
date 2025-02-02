@@ -1,0 +1,125 @@
+import { expect, test } from '@playwright/test'
+import { deleteRequest, save, unregisterServiceWorkers } from '../../../utils/test-utils'
+
+test.describe('Update user page', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	let randomUser
+
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/')
+		await unregisterServiceWorkers(page)
+		randomUser = `test${new Date().getTime()}`
+		const response = await save(page, 'api/admin/users', {
+			login: randomUser,
+			firstName: 'John',
+			lastName: 'Doe',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		})
+		await page.goto(`/admin/user-management/${response.login}/edit`)
+	})
+
+	test.afterEach(async ({ page }) => {
+		await deleteRequest(page, `api/admin/users/${randomUser}`)
+	})
+
+	test('should greet with update user title', async ({ page }) => {
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Update user account')
+	})
+
+	test('should be populated and have valid state', async ({ page }) => {
+		const form = page.getByTestId('addUserForm')
+
+		await expect(form.getByRole('textbox', { name: 'username' })).toHaveValue(randomUser)
+		await expect(form.getByRole('textbox', { name: 'first name' })).toHaveValue('John')
+		await expect(form.getByRole('textbox', { name: 'last name' })).toHaveValue('Doe')
+		await expect(form.getByRole('textbox', { name: 'email' })).toHaveValue(
+			`${randomUser}@localhost.org`,
+		)
+		await expect(form.getByRole('checkbox', { name: 'activate' })).toBeChecked()
+		await expect(form.getByRole('textbox', { name: 'roles' })).toHaveValue('ROLE_USER')
+
+		await expect(form.getByText('Update user account')).toBeEnabled()
+	})
+
+	test('should require username', async ({ page }) => {
+		const form = page.getByTestId('addUserForm')
+		const username = form.getByRole('textbox', { name: 'username' })
+
+		await username.clear()
+		await username.blur()
+
+		const error = form.getByTestId('username-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Username is mandatory')
+	})
+
+	test('should require email', async ({ page }) => {
+		const form = page.getByTestId('addUserForm')
+		const email = form.getByRole('textbox', { name: 'email' })
+
+		await email.clear()
+		await email.blur()
+
+		const error = form.getByTestId('email-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Email is mandatory')
+	})
+
+	test('should require roles', async ({ page }) => {
+		const form = page.getByTestId('addUserForm')
+
+		await form.getByRole('textbox', { name: 'roles' }).click()
+		const rolesOptions = page.getByTestId('roles-options')
+
+		await rolesOptions.getByRole('checkbox').first().uncheck()
+		await rolesOptions.getByRole('checkbox').nth(1).uncheck()
+		await page.getByTestId('roles-bg').click()
+
+		const error = form.getByTestId('roles-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Select at least one role')
+	})
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.getByRole('button', { name: 'cancel' }).click()
+
+		await expect(page).toHaveURL('/admin/user-management')
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Users')
+	})
+
+	test('should update user account details', async ({ page }) => {
+		const form = page.getByTestId('addUserForm')
+
+		await form.getByRole('textbox', { name: 'first name' }).fill('update')
+		await form.getByRole('textbox', { name: 'last name' }).fill('update')
+
+		const email = form.getByRole('textbox', { name: 'email' })
+		await email.clear()
+		await email.fill(`${randomUser}-update@localhost.org`)
+
+		await form.getByRole('textbox', { name: 'roles' }).click()
+		const rolesOptions = page.getByTestId('roles-options')
+		await rolesOptions.getByRole('checkbox').first().check()
+		await rolesOptions.getByRole('checkbox').nth(1).check()
+		await page.getByTestId('roles-bg').click()
+
+		const updateButton = form.getByText('Update user account')
+		await expect(updateButton).toBeEnabled()
+		await updateButton.click()
+
+		const toast = page.getByTestId('toast-success')
+		await expect(toast).toContainText('A user is updated with identifier')
+
+		await expect(page).toHaveURL('/admin/user-management')
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Users')
+	})
+})

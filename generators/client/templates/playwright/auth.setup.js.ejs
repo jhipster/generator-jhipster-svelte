@@ -1,0 +1,20 @@
+import { test as setup } from '@playwright/test'
+import { loginByApi } from './utils/test-utils'
+
+const adminFile = 'playwright/.auth/admin.json'
+
+setup('authenticate as admin', async ({ page }) => {
+	await page.goto('/')
+	await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
+	await page.context().storageState({ path: adminFile })
+})
+
+<%_ if (!skipUserManagement || authenticationType === 'oauth2') { _%>
+	const userFile = 'playwright/.auth/user.json'
+
+	setup('authenticate as user', async ({ page }) => {
+		await page.goto('/')
+		await loginByApi(page, process.env.USER_USERNAME, process.env.USER_PASSWORD)
+		await page.context().storageState({ path: userFile })
+	})
+<%_ } _%>

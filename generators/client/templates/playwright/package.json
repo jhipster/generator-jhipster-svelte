@@ -1,0 +1,12 @@
+{
+    "scripts": {
+		"e2e": "npm run e2e:ci -- --headed",
+		"e2e:ci": "playwright test",
+		"e2e:ui": "playwright test --ui"
+	},
+	"devDependencies": {
+		"@playwright/test": "1.49.1",
+        "dotenv": "16.4.7",
+        "eslint-plugin-playwright": "2.2.0"
+	}
+}

@@ -1,0 +1,53 @@
+import { expect, test } from '@playwright/test'
+import { deleteRequest, save, unregisterServiceWorkers } from '../../../utils/test-utils'
+
+test.describe('User view details page', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	let randomUser
+
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/')
+		await unregisterServiceWorkers(page)
+		randomUser = `test${new Date().getTime()}`
+		const response = await save(page, 'api/admin/users', {
+			login: randomUser,
+			firstName: 'John',
+			lastName: 'Doe',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		})
+		await page.goto(`/admin/user-management/${response.login}/view`)
+	})
+
+	test.afterEach(async ({ page }) => {
+		await deleteRequest(page, `api/admin/users/${randomUser}`)
+	})
+
+	test('should display user account details', async ({ page }) => {
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText(`User Details [ ${randomUser} ]`)
+
+		const table = page.locator('div.table')
+		const cells = table.locator('.table-cell')
+		await expect(cells).toHaveCount(18)
+
+		await expect(cells.nth(1)).toContainText(randomUser)
+		await expect(cells.nth(3)).toContainText('John')
+		await expect(cells.nth(5)).toContainText('Doe')
+		await expect(cells.nth(7)).toContainText(`${randomUser}@localhost.org`)
+		await expect(cells.nth(9)).toContainText('admin')
+		await expect(cells.nth(13)).toContainText('admin')
+		await expect(cells.nth(17)).toContainText('ROLE_USER')
+	})
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.getByRole('button', { name: 'back' }).click()
+
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Users')
+	})
+})

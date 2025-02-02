@@ -1,0 +1,50 @@
+import { expect, test } from '@playwright/test'
+import { unregisterServiceWorkers } from '../utils/test-utils'
+
+test.describe('Home page', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/')
+		await unregisterServiceWorkers(page)
+	})
+
+	test('should greet with welcome title', async ({ page }) => {
+		const welcomeTitle = page.getByTestId('welcomeTitle')
+		await expect(welcomeTitle).toBeVisible()
+		await expect(welcomeTitle).toContainText('Welcome, JHipster Svelte!')
+	})
+
+	test.describe('unauthenticated user', () => {
+		test('should have login instructions', async ({ page }) => {
+			const instructions = page.getByTestId('loginInstructions')
+			await expect(instructions).toBeVisible()
+			await expect(instructions).toContainText('you can try the default accounts')
+			await expect(instructions).toContainText('Administrator (login="admin" and password="admin")')
+			await expect(instructions).toContainText('User (login="user" and password="user").')
+		})
+
+		<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+			test('should have user registration link', async ({ page }) => {
+				const registerLink = page.getByTestId('svlRegisterHomeLink')
+				await expect(registerLink).toBeVisible()
+				await expect(registerLink).toHaveAttribute('href', '/account/register')
+				await expect(registerLink).toContainText('Register a new account')
+			})
+		<%_ } _%>
+	})
+
+	test.describe('authenticated user', () => {
+		test.use({ storageState: 'playwright/.auth/admin.json' })
+
+		test.beforeEach(async ({ page }) => {
+			await page.goto('/')
+			await unregisterServiceWorkers(page)
+		})
+
+		test('should greet logged in user', async ({ page }) => {
+			await expect(page.getByTestId('greetMsg')).toBeVisible()
+			await expect(page.getByTestId('greetMsg')).toContainText(
+				`You are logged in as user "${process.env.ADMIN_USERNAME}".`,
+			)
+		})
+	})
+})

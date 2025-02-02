@@ -1,0 +1,151 @@
+import { expect, test } from '@playwright/test'
+import { unregisterServiceWorkers } from '../../utils/test-utils'
+
+test.describe('Loggers page', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/admin/logger')
+		await unregisterServiceWorkers(page)
+	})
+
+	test('should greet with loggers page title and filter control', async ({ page }) => {
+		await expect(page.getByTestId('loggersTitle')).toBeVisible()
+		await expect(page.getByTestId('loggersTitle')).toContainText('Loggers')
+
+		const loggerInput = page
+			.getByTestId('loggerSearchForm')
+			.getByRole('searchbox', { name: 'Filter logger' })
+		await expect(loggerInput).toHaveValue('')
+	})
+
+	test('should display loggers table', async ({ page }) => {
+		const table = page.getByTestId('loggersTable')
+		await expect(table).toBeVisible()
+
+		const firstRow = table.locator('tr').first()
+		const headers = firstRow.locator('th')
+		await expect(headers).toHaveCount(1)
+		await expect(headers.first()).toContainText('Name')
+	})
+
+	test('should display logger name and the default enabled logger level in the table', async ({
+		page,
+	}) => {
+		await page
+			.getByTestId('loggerSearchForm')
+			.getByRole('searchbox', { name: 'Filter logger' })
+			.fill(<%_ if (databaseTypeSql) { _%>'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator'<%_ } else { _%>'org.mongodb.driver'<%_ }_%>)
+
+		const row = page
+			.getByTestId('loggersTable')
+			.getByRole('row')
+			.filter({ hasText: <%_ if (databaseTypeSql) { _%>'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator'<%_ } else { _%>'org.mongodb.driver'<%_ }_%> })
+			.first()
+
+		const buttons = row.locator('td').first().locator('button')
+		await expect(buttons).toHaveCount(6)
+
+		await expect(row.getByTestId('offLogLevelBtn')).toBeHidden()
+		await expect(row.getByTestId('offLogLevelBtn')).toBeEnabled()
+		await expect(row.getByTestId('errorLogLevelBtn')).toBeHidden()
+		await expect(row.getByTestId('errorLogLevelBtn')).toBeEnabled()
+		await expect(row.getByTestId('warnLogLevelBtn')).toBeVisible()
+		await expect(row.getByTestId('warnLogLevelBtn')).toBeDisabled()
+		await expect(row.getByTestId('infoLogLevelBtn')).toBeHidden()
+		await expect(row.getByTestId('infoLogLevelBtn')).toBeEnabled()
+		await expect(row.getByTestId('debugLogLevelBtn')).toBeHidden()
+		await expect(row.getByTestId('debugLogLevelBtn')).toBeEnabled()
+		await expect(row.getByTestId('traceLogLevelBtn')).toBeHidden()
+		await expect(row.getByTestId('traceLogLevelBtn')).toBeEnabled()
+	})
+
+	test('should display actions available on the current selected logger', async ({ page }) => {
+		await page
+			.getByTestId('loggerSearchForm')
+			.getByRole('searchbox', { name: 'Filter logger' })
+			.fill(<%_ if (databaseTypeSql) { _%>'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator'<%_ } else { _%>'org.mongodb.driver'<%_ }_%>)
+
+		const row = page
+			.getByTestId('loggersTable')
+			.getByRole('row')
+			.filter({ hasText: <%_ if (databaseTypeSql) { _%>'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator'<%_ } else { _%>'org.mongodb.driver'<%_ }_%> })
+			.first()
+
+		await row.hover()
+
+		const buttons = row.locator('td').first().locator('button')
+		await expect(buttons).toHaveCount(6)
+
+		await expect(row.getByTestId('offLogLevelBtn')).toBeVisible()
+		await expect(row.getByTestId('offLogLevelBtn')).toBeEnabled()
+		await expect(row.getByTestId('errorLogLevelBtn')).toBeVisible()
+		await expect(row.getByTestId('errorLogLevelBtn')).toBeEnabled()
+		await expect(row.getByTestId('warnLogLevelBtn')).toBeVisible()
+		await expect(row.getByTestId('warnLogLevelBtn')).toBeDisabled()
+		await expect(row.getByTestId('infoLogLevelBtn')).toBeVisible()
+		await expect(row.getByTestId('infoLogLevelBtn')).toBeEnabled()
+		await expect(row.getByTestId('debugLogLevelBtn')).toBeVisible()
+		await expect(row.getByTestId('debugLogLevelBtn')).toBeEnabled()
+		await expect(row.getByTestId('traceLogLevelBtn')).toBeVisible()
+		await expect(row.getByTestId('traceLogLevelBtn')).toBeEnabled()
+	})
+
+	test('should change logger level from WARN -> INFO, INFO -> WARN', async ({ page }) => {
+		await page
+			.getByTestId('loggerSearchForm')
+			.getByRole('searchbox', { name: 'Filter logger' })
+			.fill(<%_ if (databaseTypeSql) { _%>'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator'<%_ } else { _%>'org.mongodb.driver'<%_ }_%>)
+
+		const row = page
+			.getByTestId('loggersTable')
+			.getByRole('row')
+			.filter({ hasText: <%_ if (databaseTypeSql) { _%>'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator'<%_ } else { _%>'org.mongodb.driver'<%_ }_%> })
+			.first()
+
+		await row.hover()
+
+		const buttons = row.locator('td').first().locator('button')
+		await expect(buttons).toHaveCount(6)
+
+		await row.getByTestId('infoLogLevelBtn').click()
+		await expect(row.getByTestId('infoLogLevelBtn')).toBeVisible()
+		await expect(row.getByTestId('infoLogLevelBtn')).toBeDisabled()
+
+		await row.getByTestId('warnLogLevelBtn').click()
+	})
+
+	test('should filter loggers by name', async ({ page }) => {
+		const table = page.getByTestId('loggersTable')
+		await table.locator('tbody > tr').nth(1).waitFor()
+		const rowsBeforeFilter = await table.locator('tbody > tr').count()
+
+		await page
+			.getByTestId('loggerSearchForm')
+			.getByRole('searchbox', { name: 'Filter logger' })
+			.fill('ROOT')
+
+		const rowsAfterFilter = await table.locator('tbody > tr').count()
+		expect(rowsAfterFilter).not.toBe(rowsBeforeFilter)
+
+		await page
+			.getByTestId('loggerSearchForm')
+			.getByRole('searchbox', { name: 'Filter logger' })
+			.clear()
+
+		const rowsAfterClear = await table.locator('tbody > tr').count()
+		expect(rowsAfterClear).toBe(rowsBeforeFilter)
+	})
+
+	test('should validate the pagination controls', async ({ page }) => {
+		const pageControl = page.getByTestId('pageCtrl').first()
+		await expect(pageControl).toContainText(/1-\d+ of \d+/)
+
+		const prevButton = pageControl.getByTestId('prevPageCtrl')
+		await expect(prevButton).toBeDisabled()
+		await expect(pageControl).toContainText('1')
+
+		const nextButton = pageControl.getByTestId('nextPageCtrl')
+		await expect(nextButton).toBeEnabled()
+	})
+})

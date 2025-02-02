@@ -1,0 +1,124 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { expect, test } from '@playwright/test'
+import { add<%= entityAngularName %>, prepare<%= entityAngularName %>PrerequisiteData } from '../../../<%= clientRootFolder !== '' ? '../' : '' %>utils/entities/<%= entityFileName %>-utils'
+import { deleteRequest, unregisterServiceWorkers } from '../../../<%= clientRootFolder !== '' ? '../' : '' %>utils/test-utils'
+
+test.describe('<%= entityAngularName %> delete dialog page', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	let page
+	let dynamicId
+<%_ for (const relationship of relationshipFields) {
+	if (!relationship.otherEntityUser) {
+_%>
+	let <%= relationship.relationshipName %>Id
+	<%_
+	}
+}
+_%>
+
+	test.beforeAll(async ({ browser }) => {
+		page = await browser.newPage()
+		await page.goto('/')
+		<%_ if (containsRelationshipField || containsBinaryField ) { _%>
+		const data = await prepare<%= entityAngularName %>PrerequisiteData(page)
+		<%_ } _%>
+		const <%= entityInstance %> = await add<%= entityAngularName %>(page<%_
+		if (containsBinaryField) {
+	_%>, data.binaryData<%_} _%><%_
+	if (containsBinaryField || containsRelationshipField) {
+		_%>,<%_} _%><%_
+		let fieldIndex = 0;
+		const fieldLength = relationshipFields.length;
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+		_%>data.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			} else {
+		_%>data.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%>,<%_ } _%><%_
+			}
+			fieldIndex++;
+		}
+		_%>)
+		dynamicId = <%= entityInstance %>.id
+		<%_ for (const relationship of relationshipFields) {
+		if (!relationship.otherEntityUser) {
+		_%>
+			<%= relationship.relationshipName %>Id = data.<%= relationship.relationshipName %>Id
+			<%_
+			}
+		}
+_%>
+	})
+
+	test.beforeEach(async () => {
+		await page.goto('/entities/<%= entityFolderName %>')
+		await unregisterServiceWorkers(page)
+
+		const rows = page.getByTestId('<%= entityInstance %>Table').getByRole('row')
+		const targetRow = rows.filter({ hasText: dynamicId })
+		await targetRow.hover()
+		await targetRow.getByRole('button', { name: 'delete' }).click()
+	})
+
+	test.afterAll(async () => {
+		await deleteRequest(page, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`, true)
+		<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+		_%>
+		await deleteRequest(page, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${<%= relationship.relationshipName %>Id}`, true)
+		<%_
+				}
+			}
+	_%>
+		await page.close()
+	})
+
+	test('should display delete <%= entityAngularName %> dialog', async () => {
+		const modal = page.getByTestId('svlModal')
+		const heading = modal.getByRole('heading', { level: 1 })
+
+		await expect(heading).toBeVisible()
+		await expect(heading).toContainText('Confirm delete operation')
+
+		const text = modal.getByText('Are you sure you want to delete the <%= entityClassHumanized %>?')
+		await expect(text).toBeVisible()
+
+		await expect(modal.getByRole('button', { name: 'delete' })).toBeEnabled()
+		await expect(modal.getByRole('button', { name: 'cancel' })).toBeEnabled()
+	})
+
+	test('should close the dialog without deleting <%= entityAngularName %>', async () => {
+		const modal = page.getByTestId('svlModal')
+		await modal.getByRole('button', { name: 'cancel' }).click()
+
+		const title = page.getByTestId('<%= entityInstance %>Title')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>')
+	})
+
+	test('should delete the <%= entityAngularName %>', async () => {
+		const modal = page.getByTestId('svlModal')
+		await modal.getByRole('button', { name: 'delete' }).click()
+
+	<%_ if (!reactive) { _%>
+		const toast = page.getByTestId('toast-success')
+		await expect(toast).toContainText('is deleted with identifier')
+	<%_ } _%>
+
+		const title = page.getByTestId('<%= entityInstance %>Title')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>')
+	})
+})

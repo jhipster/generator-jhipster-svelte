@@ -12,7 +12,6 @@ const svelteFiles = {
 				'.npmrc',
 				'.gitignore.jhi.svelte',
 				'.prettierignore.jhi.svelte',
-				'cypress.config.cjs',
 				'eslint.config.js',
 				'README.md.jhi.svelte',
 				{
@@ -27,50 +26,69 @@ const svelteFiles = {
 			],
 		},
 	],
-	e2e: [
+	cypress: [
 		{
+			condition: generator => generator.testFramework === 'cypress',
 			templates: [
-				{
-					file: generator => `${FRONTEND_SRC_DIR}static/content/img/${generator.hipster}_head-192.png`,
-					renameTo: () => `cypress/fixtures/integration-test.png`,
-					method: 'copy',
-				},
-				'cypress/integration/footer.spec.js',
-				'cypress/integration/home.spec.js',
-				'cypress/integration/navbar.spec.js',
-				'cypress/integration/routes.spec.js',
-				'cypress/integration/admin/logger.spec.js',
+				'cypress.config.cjs',
 				'cypress/plugins/index.cjs',
 				'cypress/support/index.js',
 				'cypress/support/commands.js',
 			],
 		},
 	],
+	playwright: [
+		{
+			condition: generator => generator.testFramework === 'playwright',
+			templates: [
+				'playwright.config.cjs',
+				'.env.test',
+				'playwright/utils/test-utils.js',
+				'playwright/auth.setup.js',
+			],
+		},
+	],
+	e2e: [
+		{
+			templates: [
+				{
+					file: generator => `${FRONTEND_SRC_DIR}static/content/img/${generator.hipster}_head-192.png`,
+					renameTo: generator => `${generator.testFramework}/fixtures/integration-test.png`,
+					method: 'copy',
+				},
+				generator => `${generator.testFramework}/integration/footer.spec.js`,
+				generator => `${generator.testFramework}/integration/home.spec.js`,
+				generator => `${generator.testFramework}/integration/navbar.spec.js`,
+				generator => `${generator.testFramework}/integration/routes.spec.js`,
+				generator => `${generator.testFramework}/integration/admin/logger.spec.js`,
+			],
+		},
+	],
 	e2eGateway: [
 		{
 			condition: generator => generator.applicationType === 'gateway',
-			templates: ['cypress/integration/admin/gateway.spec.js'],
+			templates: [generator => `${generator.testFramework}/integration/admin/gateway.spec.js`],
 		},
 	],
 	e2eLogin: [
 		{
 			condition: generator => generator.authenticationType !== 'oauth2',
-			templates: ['cypress/integration/login.spec.js'],
+			templates: [generator => `${generator.testFramework}/integration/login.spec.js`],
 		},
 	],
 	e2eUserManagement: [
 		{
 			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
 			templates: [
-				'cypress/integration/account/change-password.spec.js',
-				'cypress/integration/account/register.spec.js',
-				'cypress/integration/account/settings.spec.js',
-				'cypress/integration/account/reset/init-password.spec.js',
-				'cypress/integration/admin/user-management/user-create.spec.js',
-				'cypress/integration/admin/user-management/user-delete.spec.js',
-				'cypress/integration/admin/user-management/user-list.spec.js',
-				'cypress/integration/admin/user-management/user-update.spec.js',
-				'cypress/integration/admin/user-management/user-view.spec.js',
+				generator => `${generator.testFramework}/integration/account/change-password.spec.js`,
+				generator => `${generator.testFramework}/integration/account/register.spec.js`,
+				generator => `${generator.testFramework}/integration/account/settings.spec.js`,
+				generator => `${generator.testFramework}/integration/account/reset/init-password.spec.js`,
+				generator => `${generator.testFramework}/integration/admin/user-management/user-create.spec.js`,
+				generator => `${generator.testFramework}/integration/admin/user-management/user-delete.spec.js`,
+				generator => `${generator.testFramework}/integration/admin/user-management/user-list.spec.js`,
+				generator => `${generator.testFramework}/integration/admin/user-management/user-update.spec.js`,
+				generator => `${generator.testFramework}/integration/admin/user-management/user-view.spec.js`,
 			],
 		},
 	],

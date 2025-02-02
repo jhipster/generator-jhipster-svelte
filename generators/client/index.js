@@ -32,11 +32,39 @@ export default class extends ClientGenerator {
 			async parseCommand() {
 				await this.parseCurrentJHipsterCommand();
 			},
+			loadConfigFromJHipster() {
+				if (this.options.testFramework) {
+					this.blueprintStorage.defaults({ testFramework: this.options.testFramework });
+				}
+			},
 		});
 	}
 
 	get [BaseApplicationGenerator.PROMPTING]() {
 		return this.asPromptingTaskGroup({
+			async promptForTestFramework() {
+				await this.prompt(
+					[
+						{
+							type: 'list',
+							name: 'testFramework',
+							message: 'Which E2E testing framework would you like to use?',
+							choices: [
+								{
+									name: 'Cypress',
+									value: 'cypress',
+								},
+								{
+									name: 'Playwright',
+									value: 'playwright',
+								},
+							],
+						},
+					],
+					this.blueprintStorage,
+				);
+				this.blueprintStorage.defaults({ testFramework: 'cypress' });
+			},
 			clientConfigurations() {
 				this.clientFramework = this.jhipsterConfig.clientFramework = 'svelte';
 				this.jhipsterConfig.clientTheme = this.clientTheme = 'none';
@@ -58,11 +86,15 @@ export default class extends ClientGenerator {
 					if (this.blueprintConfig.jest === undefined) {
 						this.blueprintConfig.jest = false;
 					}
+					if (this.blueprintConfig.testFramework === undefined) {
+						this.blueprintConfig.testFramework = 'cypress';
+					}
 				}
 			},
 			setLocalCommandOptions() {
 				this.jest = this.blueprintConfig.jest;
 				this.swaggerUi = this.blueprintConfig.swaggerUi;
+				this.testFramework = this.blueprintConfig.testFramework;
 			},
 		});
 	}
@@ -212,7 +244,12 @@ export default class extends ClientGenerator {
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
 					sections: svelteFiles,
-					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest },
+					context: {
+						...application,
+						swaggerUi: this.swaggerUi,
+						jest: this.jest,
+						testFramework: this.testFramework,
+					},
 				});
 			},
 		});
@@ -253,7 +290,13 @@ export default class extends ClientGenerator {
 				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
 					await this.writeFiles({
 						sections: entitySvelteFiles,
-						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest },
+						context: {
+							...application,
+							...entity,
+							swaggerUi: this.swaggerUi,
+							jest: this.jest,
+							testFramework: this.testFramework,
+						},
 					});
 				}
 			},
@@ -308,6 +351,9 @@ export default class extends ClientGenerator {
 
 				const unitPackageJson = JSON.parse(this.readTemplate(`${unitFrameworkType}/package.json`));
 				this.packageJson.merge(unitPackageJson);
+
+				const e2ePackageJson = JSON.parse(this.readTemplate(`${this.testFramework}/package.json`));
+				this.packageJson.merge(e2ePackageJson);
 
 				const javaPrettierPackageJson = JSON.parse(this.readTemplate(`java-prettier/package.json`));
 				this.packageJson.merge(javaPrettierPackageJson);

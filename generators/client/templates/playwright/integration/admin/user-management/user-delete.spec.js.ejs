@@ -1,0 +1,69 @@
+import { expect, test } from '@playwright/test'
+import { deleteRequest, save, unregisterServiceWorkers } from '../../../utils/test-utils'
+
+test.describe('User delete dialog page', () => {
+	test.use({ storageState: 'playwright/.auth/admin.json' })
+
+	let randomUser
+
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/')
+		await unregisterServiceWorkers(page)
+		randomUser = `test${new Date().getTime()}`
+
+		await save(page, 'api/admin/users', {
+			login: randomUser,
+			firstName: '',
+			lastName: '',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		})
+
+		await page.goto('/admin/user-management')
+
+		const row = page.getByTestId('userMgmtTable').getByRole('row').filter({ hasText: randomUser })
+
+		await row.hover()
+		await row.getByRole('button', { name: 'delete' }).click()
+	})
+
+	test.afterEach(async ({ page }) => {
+		await deleteRequest(page, `api/admin/users/${randomUser}`)
+	})
+
+	test('should display delete user dialog', async ({ page }) => {
+		const modal = page.getByTestId('svlModal')
+		const heading = modal.getByRole('heading', { level: 1 })
+
+		await expect(heading).toBeVisible()
+		await expect(heading).toContainText('Confirm delete operation')
+
+		const text = modal.getByText('Are you sure you want to delete the user?')
+		await expect(text).toBeVisible()
+
+		await expect(modal.getByRole('button', { name: 'delete' })).toBeEnabled()
+		await expect(modal.getByRole('button', { name: 'cancel' })).toBeEnabled()
+	})
+
+	test('should close the dialog without deleting user', async ({ page }) => {
+		const modal = page.getByTestId('svlModal')
+		await modal.getByRole('button', { name: 'cancel' }).click()
+
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Users')
+	})
+
+	test('should delete the user', async ({ page }) => {
+		const modal = page.getByTestId('svlModal')
+		await modal.getByRole('button', { name: 'delete' }).click()
+
+		const toast = page.getByTestId('toast-success')
+		await expect(toast).toContainText('A user is deleted with identifier')
+
+		const title = page.getByTestId('userMgmtTitle')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Users')
+	})
+})
