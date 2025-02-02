@@ -19,13 +19,13 @@ test.describe('User Settings', () => {
 		const form = page.getByTestId('settingsForm')
 
 		const firstName = form.getByRole('textbox', { name: 'first name' })
-		await expect(firstName).toContain(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ }_%>)
+		await expect(firstName).toHaveValue(<%_ if (databaseTypeSql) { _%>/^Admin/<%_ } else { _%>/^admin/<%_ }_%>)
 
 		const lastName = form.getByRole('textbox', { name: 'last name' })
-		await expect(lastName).toContain('Admin')
+		await expect(lastName).toHaveValue(/^Admin/)
 
 		const email = form.getByRole('textbox', { name: 'email' })
-		await expect(email).toContain('admin@localhost')
+		await expect(email).toHaveValue(/^admin@localhost/)
 	})
 
 	test('should display form control validation messages', async ({ page }) => {
