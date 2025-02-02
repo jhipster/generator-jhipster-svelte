@@ -30,6 +30,7 @@ _%>
 
 	test.beforeAll(async ({ browser }) => {
 		page = await browser.newPage()
+		await page.goto('/')
 		<%_ if (containsRelationshipField || containsBinaryField ) { _%>
 		const data = await prepare<%= entityAngularName %>PrerequisiteData(page)
 		<%_ } _%>

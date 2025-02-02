@@ -60,8 +60,10 @@ export async function prepare<%= entityAngularName %>PrerequisiteData(page, list
 <%_ } 
 } 
     if (oneToOneRelationship) { _%>
+
+        let <%= oneToOneRelationship.relationshipName %>2
         if (listPage) {
-            const <%= oneToOneRelationship.relationshipName %>2 = await save(page, '<%= servicesApiPrefix %>api/<%= oneToOneRelationship.otherEntity.entityApiUrl %>', {
+            <%= oneToOneRelationship.relationshipName %>2 = await save(page, '<%= servicesApiPrefix %>api/<%= oneToOneRelationship.otherEntity.entityApiUrl %>', {
                 <%_ for (const relationshipField of oneToOneRelationship.otherEntity.fields.filter(field => !field.id)) {
                     const fieldValue = relationshipField.generateFakeData('cypress');
                     if (fieldValue === undefined) {
@@ -90,6 +92,7 @@ export async function prepare<%= entityAngularName %>PrerequisiteData(page, list
             })
         }
 <%_ } _%>
+
     return {
     <%_ if (containsBinaryField) { _%>
         binaryData,
@@ -101,8 +104,8 @@ export async function prepare<%= entityAngularName %>PrerequisiteData(page, list
         <%= relationship.relationshipName %>Id: <%= relationship.relationshipName %>.id,
     <%_ } _%>
     <%_ } _%>
-    <%_ if (oneToOneRelationship && listPage) { _%>
-        <%= oneToOneRelationship.relationshipName %>Id2: <%= oneToOneRelationship.relationshipName %>.id,
+    <%_ if (oneToOneRelationship) { _%>
+        ...(listPage && { <%= oneToOneRelationship.relationshipName %>Id2: <%= oneToOneRelationship.relationshipName %>2.id }),
     <%_ } _%>
     }
 }

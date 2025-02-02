@@ -42,9 +42,9 @@ test.describe('Navbar', () => {
 
 	test.describe('authenticated user', () => {
 		test.beforeEach(async ({ page }) => {
+			await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
 			await page.goto('/')
 			await unregisterServiceWorkers(page)
-			await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
 		})
 
 		<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
@@ -65,17 +65,17 @@ test.describe('Navbar', () => {
 			await expect(accountLink).toBeEnabled()
 			await accountLink.click()
 
-			<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
-				const passwordLink = page.getByTestId('svlChgPwdLink')
-				await expect(passwordLink).toBeVisible()
-				await expect(passwordLink).toHaveAttribute('href', '/account/password')
-				await expect(passwordLink).toContainText('Change Password')
+		<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+			const passwordLink = page.getByTestId('svlChgPwdLink')
+			await expect(passwordLink).toBeVisible()
+			await expect(passwordLink).toHaveAttribute('href', '/account/password')
+			await expect(passwordLink).toContainText('Change Password')
 
-				const settingsLink = page.getByTestId('svlSettingsLink')
-				await expect(settingsLink).toBeVisible()
-				await expect(settingsLink).toHaveAttribute('href', '/account/settings')
-				await expect(settingsLink).toContainText('Settings')
-			<%_ } _%>
+			const settingsLink = page.getByTestId('svlSettingsLink')
+			await expect(settingsLink).toBeVisible()
+			await expect(settingsLink).toHaveAttribute('href', '/account/settings')
+			await expect(settingsLink).toContainText('Settings')
+		<%_ } _%>
 
 			const signoutLink = page.getByTestId('svlSignoutLink')
 			await expect(signoutLink).toBeVisible()
@@ -96,12 +96,12 @@ test.describe('Navbar', () => {
 			await expect(loggerLink).toHaveAttribute('href', '/admin/logger')
 			await expect(loggerLink).toContainText('Loggers')
 
-			<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
-				const userMgmtLink = page.getByTestId('svlUserMgmtLink')
-				await expect(userMgmtLink).toBeVisible()
-				await expect(userMgmtLink).toHaveAttribute('href', '/admin/user-management')
-				await expect(userMgmtLink).toContainText('User Management')
-			<%_ } _%>
+		<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+			const userMgmtLink = page.getByTestId('svlUserMgmtLink')
+			await expect(userMgmtLink).toBeVisible()
+			await expect(userMgmtLink).toHaveAttribute('href', '/admin/user-management')
+			await expect(userMgmtLink).toContainText('User Management')
+		<%_ } _%>
 		})
 
 		<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
@@ -156,9 +156,9 @@ test.describe('Navbar', () => {
 	<%_ if (authenticationType === 'oauth2') { _%>
 		test.describe('Logout authenticated user', () => {
 			test.beforeEach(async ({ page }) => {
+				await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
 				await page.goto('/')
 				await unregisterServiceWorkers(page)
-				await loginByApi(page, process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
 			})
 
 			test('should logout user', async ({ page }) => {

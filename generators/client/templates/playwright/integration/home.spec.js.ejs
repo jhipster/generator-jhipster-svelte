@@ -36,8 +36,8 @@ test.describe('Home page', () => {
 		test.use({ storageState: 'playwright/.auth/admin.json' })
 
 		test.beforeEach(async ({ page }) => {
-			unregisterServiceWorkers()
 			await page.goto('/')
+			await unregisterServiceWorkers(page)
 		})
 
 		test('should greet logged in user', async ({ page }) => {

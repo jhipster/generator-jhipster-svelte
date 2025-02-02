@@ -36,7 +36,7 @@ jobs:
             group: apps-dev-${{ matrix.apps }}-${{ matrix.test_framework }}-${{ github.head_ref || github.sha }}
             cancel-in-progress: true
         runs-on: ${{ matrix.os }}
-        timeout-minutes: 15
+        timeout-minutes: 20
         strategy:
             fail-fast: false
             matrix:
@@ -281,7 +281,7 @@ jobs:
             cancel-in-progress: true
         if: github.event.action != 'closed'
         runs-on: ${{ matrix.os }}
-        timeout-minutes: 15
+        timeout-minutes: 20
         strategy:
             fail-fast: false
             matrix:

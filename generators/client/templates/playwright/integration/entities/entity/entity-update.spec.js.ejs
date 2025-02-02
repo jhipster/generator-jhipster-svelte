@@ -47,6 +47,7 @@ _%>
 
 	test.beforeAll(async ({ browser }) => {
 		page = await browser.newPage()
+		await page.goto('/')
 <%_ if (containsRelationshipField || containsBinaryField ) { _%>
 		const data = await prepare<%= entityAngularName %>PrerequisiteData(page)
 <%_ } _%>
@@ -158,23 +159,23 @@ _%>
 <%_ } _%>
 
 <%_ if (field.fieldTypeNumeric && !field.fieldValidationRequired) { _%>
-		await <%= field.fieldName %>.fill('1')
+		await <%= field.fieldName %>.pressSequentially('1')
 		await <%= field.fieldName %>.clear()
-		await <%= field.fieldName %>.fill('-')
+		await <%= field.fieldName %>.pressSequentially('-')
 		await <%= field.fieldName %>.blur()
 		await expect(<%= field.fieldName %>Error).toBeVisible()
 		await expect(<%= field.fieldName %>Error).toContainText('<%= field.fieldNameHumanized %> should be numeric')
 <%_ } _%>
 
 <%_ if (field.fieldTypeNumeric && field.fieldValidationMin) { _%>
-		await <%= field.fieldName %>.fill('<%= Number(field.fieldValidateRulesMin) - 1 %>')
+		await <%= field.fieldName %>.pressSequentially('<%= Number(field.fieldValidateRulesMin) - 1 %>')
 		await <%= field.fieldName %>.blur()
 		await expect(<%= field.fieldName %>Error).toBeVisible()
 		await expect(<%= field.fieldName %>Error).toContainText('<%= field.fieldNameHumanized %> should be at least <%= field.fieldValidateRulesMin %>')
 <%_ } _%>
 
 <%_ if (field.fieldTypeNumeric && field.fieldValidationMax) { _%>
-		await <%= field.fieldName %>.fill('<%= Number(field.fieldValidateRulesMax) + 1 %>')
+		await <%= field.fieldName %>.pressSequentially('<%= Number(field.fieldValidateRulesMax) + 1 %>')
 		await <%= field.fieldName %>.blur()
 		await expect(<%= field.fieldName %>Error).toBeVisible()
 		await expect(<%= field.fieldName %>Error).toContainText('<%= field.fieldNameHumanized %> cannot be more than <%= field.fieldValidateRulesMax %>')
