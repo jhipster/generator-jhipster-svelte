@@ -1,0 +1,87 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import GatewayTable from './gateway-table.svelte'
+
+test('should render an empty table with no service routes message', () => {
+	render(GatewayTable, {})
+
+	expect(screen.getByRole('table')).toBeInTheDocument()
+	expect(screen.getByText(/no service routes available/i)).toBeInTheDocument()
+})
+
+test('should render table with correct headers', () => {
+	render(GatewayTable, {
+		routes: [],
+	})
+
+	expect(screen.getByRole('table')).toBeInTheDocument()
+	expect(screen.getAllByRole('columnheader')).toHaveLength(3)
+	expect(
+		screen.getByRole('columnheader', { name: /service/i })
+	).toBeInTheDocument()
+	expect(
+		screen.getByRole('columnheader', { name: /route/i })
+	).toBeInTheDocument()
+	expect(
+		screen.getByRole('columnheader', { name: /service instances/i })
+	).toBeInTheDocument()
+})
+
+test('should render table data for a gateway route', () => {
+	render(GatewayTable, {
+		routes: [
+			{
+				path: '/api/service-a/**',
+				serviceId: 'service-a',
+				serviceInstances: [],
+			},
+		],
+	})
+
+	expect(screen.getByRole('cell', { name: /service-a/i })).toBeInTheDocument()
+	expect(
+		screen.getByRole('cell', { name: /\/api\/service-a\/\*\*/i })
+	).toBeInTheDocument()
+})
+
+test('should render multiple gateway routes', () => {
+	render(GatewayTable, {
+		routes: [
+			{
+				path: '/api/service-a/**',
+				serviceId: 'service-a',
+				serviceInstances: [],
+			},
+			{
+				path: '/api/service-b/**',
+				serviceId: 'service-b',
+				serviceInstances: [],
+			},
+		],
+	})
+
+	expect(screen.getByRole('cell', { name: /service-a/i })).toBeInTheDocument()
+	expect(screen.getByRole('cell', { name: /service-b/i })).toBeInTheDocument()
+})
+
+test('should assert the table reactivity to changed inputs', async () => {
+	const { component } = render(GatewayTable, {
+		routes: [],
+	})
+
+	expect(screen.getByText(/no service routes available/i)).toBeInTheDocument()
+
+	await component.$set({
+		routes: [
+			{
+				path: '/api/service-c/**',
+				serviceId: 'service-c',
+				serviceInstances: [],
+			},
+		],
+	})
+
+	expect(screen.queryByText(/no service routes available/i)).not.toBeInTheDocument()
+	expect(screen.getByRole('cell', { name: /service-c/i })).toBeInTheDocument()
+})

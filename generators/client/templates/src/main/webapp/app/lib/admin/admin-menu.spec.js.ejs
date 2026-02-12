@@ -1,0 +1,34 @@
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import AdminMenu from './admin-menu.svelte'
+
+test('should render the administration menu button', () => {
+	render(AdminMenu)
+
+	expect(
+		screen.getByRole('button', { name: /administration menu/i })
+	).toBeInTheDocument()
+	expect(screen.getByTestId('svlAdminLink')).toBeInTheDocument()
+})
+
+test('should hide menu items by default', () => {
+	render(AdminMenu)
+
+	expect(screen.getByTestId('svlLoggerLink')).toBeInTheDocument()
+<%_ if (!skipUserManagement) { _%>
+	expect(screen.getByTestId('svlUserMgmtLink')).toBeInTheDocument()
+<%_ } _%>
+})
+
+test('should toggle menu visibility on button click', async () => {
+	render(AdminMenu)
+
+	const button = screen.getByRole('button', { name: /administration menu/i })
+
+	await fireEvent.click(button)
+	expect(screen.getByTestId('svlLoggerLink')).toBeInTheDocument()
+<%_ if (!skipUserManagement) { _%>
+	expect(screen.getByTestId('svlUserMgmtLink')).toBeInTheDocument()
+<%_ } _%>
+})
