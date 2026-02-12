@@ -1,0 +1,105 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import ServiceInstanceTable from './service-instance-table.svelte'
+
+test('should render an empty table', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [],
+	})
+
+	expect(screen.getByRole('table')).toBeInTheDocument()
+})
+
+test('should render service instance with UP status', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8081',
+				instanceInfo: { status: 'UP' },
+				metadata: {},
+			},
+		],
+	})
+
+	expect(
+		screen.getByRole('link', { name: /http:\/\/localhost:8081/i })
+	).toBeInTheDocument()
+	expect(screen.getByText(/UP/i)).toBeInTheDocument()
+	expect(screen.getByText(/UP/i)).toHaveClass('bg-green-600')
+})
+
+test('should render service instance with DOWN status', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8082',
+				instanceInfo: { status: 'DOWN' },
+				metadata: {},
+			},
+		],
+	})
+
+	expect(screen.getByText(/DOWN/i)).toBeInTheDocument()
+	expect(screen.getByText(/DOWN/i)).toHaveClass('bg-red-600')
+})
+
+test('should render UNKNOWN status when instanceInfo is not available', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8083',
+				metadata: {},
+			},
+		],
+	})
+
+	expect(screen.getByText(/UNKNOWN/i)).toBeInTheDocument()
+	expect(screen.getByText(/UNKNOWN/i)).toHaveClass('bg-gray-500')
+})
+
+test('should render service instance metadata', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8081',
+				instanceInfo: { status: 'UP' },
+				metadata: {
+					version: '1.0.0',
+					profile: 'prod',
+				},
+			},
+		],
+	})
+
+	expect(screen.getByText(/version/i)).toBeInTheDocument()
+	expect(screen.getByText(/1.0.0/i)).toBeInTheDocument()
+	expect(screen.getByText(/profile/i)).toBeInTheDocument()
+	expect(screen.getByText(/prod/i)).toBeInTheDocument()
+})
+
+test('should assert the table reactivity to changed inputs', async () => {
+	const { component } = render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8081',
+				instanceInfo: { status: 'UP' },
+				metadata: {},
+			},
+		],
+	})
+
+	expect(screen.getByText(/UP/i)).toHaveClass('bg-green-600')
+
+	await component.$set({
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8081',
+				instanceInfo: { status: 'DOWN' },
+				metadata: {},
+			},
+		],
+	})
+
+	expect(screen.getByText(/DOWN/i)).toHaveClass('bg-red-600')
+})

@@ -1,0 +1,42 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import RegisterUserForm from './register-user-form.svelte'
+
+test('should render the registration form', () => {
+	render(RegisterUserForm)
+
+	expect(screen.getByTestId('register')).toBeInTheDocument()
+	expect(screen.getByRole('textbox', { name: /username/i })).toBeInTheDocument()
+	expect(screen.getByRole('textbox', { name: /email/i })).toBeInTheDocument()
+	expect(
+		screen.getByRole('button', { name: /create account/i })
+	).toBeInTheDocument()
+})
+
+test('should render with empty fields by default', () => {
+	render(RegisterUserForm)
+
+	expect(screen.getByRole('textbox', { name: /username/i })).toHaveValue('')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue('')
+})
+
+test('should disable submit button when form is empty', () => {
+	render(RegisterUserForm)
+
+	expect(
+		screen.getByRole('button', { name: /create account/i })
+	).toBeDisabled()
+})
+
+test('should render with provided username and email values', () => {
+	render(RegisterUserForm, {
+		username: 'testUser',
+		email: 'test@localhost.org',
+	})
+
+	expect(screen.getByRole('textbox', { name: /username/i })).toHaveValue('testUser')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue(
+		'test@localhost.org'
+	)
+})

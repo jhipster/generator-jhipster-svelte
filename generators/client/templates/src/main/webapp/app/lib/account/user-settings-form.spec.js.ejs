@@ -1,0 +1,85 @@
+<%_
+	let mockFn
+	if (this.jest) {
+		mockFn = 'jest'
+_%>
+import { jest } from '@jest/globals'
+<%_
+	} else {
+		mockFn = 'vi'
+	}
+_%>
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import UserSettingsForm from './user-settings-form.svelte'
+
+test('should render the settings form', () => {
+	render(UserSettingsForm)
+
+	expect(screen.getByTestId('settings')).toBeInTheDocument()
+	expect(screen.getByRole('textbox', { name: /first name/i })).toBeInTheDocument()
+	expect(screen.getByRole('textbox', { name: /last name/i })).toBeInTheDocument()
+	expect(screen.getByRole('textbox', { name: /email/i })).toBeInTheDocument()
+	expect(
+		screen.getByRole('button', { name: /update settings/i })
+	).toBeInTheDocument()
+})
+
+test('should render with empty fields by default', () => {
+	render(UserSettingsForm)
+
+	expect(screen.getByRole('textbox', { name: /first name/i })).toHaveValue('')
+	expect(screen.getByRole('textbox', { name: /last name/i })).toHaveValue('')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue('')
+})
+
+test('should disable submit button when form is empty', () => {
+	render(UserSettingsForm)
+
+	expect(
+		screen.getByRole('button', { name: /update settings/i })
+	).toBeDisabled()
+})
+
+test('should render with provided user data', () => {
+	render(UserSettingsForm, {
+		user: {
+			firstName: 'John',
+			lastName: 'Doe',
+			email: 'john@localhost.org',
+		},
+	})
+
+	expect(screen.getByRole('textbox', { name: /first name/i })).toHaveValue('John')
+	expect(screen.getByRole('textbox', { name: /last name/i })).toHaveValue('Doe')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue(
+		'john@localhost.org'
+	)
+})
+
+test('should assert the form reactivity to changed inputs', async () => {
+	const { component } = render(UserSettingsForm, {
+		user: {
+			firstName: 'John',
+			lastName: 'Doe',
+			email: 'john@localhost.org',
+		},
+	})
+
+	expect(screen.getByRole('textbox', { name: /first name/i })).toHaveValue('John')
+
+	await component.$set({
+		user: {
+			firstName: 'Jane',
+			lastName: 'Smith',
+			email: 'jane@localhost.org',
+		},
+	})
+
+	expect(screen.getByRole('textbox', { name: /first name/i })).toHaveValue('Jane')
+	expect(screen.getByRole('textbox', { name: /last name/i })).toHaveValue('Smith')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue(
+		'jane@localhost.org'
+	)
+})
