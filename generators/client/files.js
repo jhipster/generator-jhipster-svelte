@@ -24,6 +24,21 @@ const svelteFiles = {
 				'svelte.config.js',
 				'tailwind.config.cjs',
 				'vite.config.js',
+				{
+					file: 'vite.microfrontend.config.js',
+					renameTo: () => 'vite.microfrontend.config.js',
+					condition: generator => generator.microfrontend,
+				},
+			],
+		},
+	],
+	microfrontend: [
+		{
+			condition: generator => generator.microfrontend,
+			templates: [
+				'webpack.microfrontend.config.js',
+				'src/app/lib/microfrontend/RemoteComponent.svelte',
+				'src/app/lib/microfrontend/ModuleFederationPlugin.js',
 			],
 		},
 	],
