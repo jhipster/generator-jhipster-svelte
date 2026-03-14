@@ -1,0 +1,114 @@
+import { test as setup, expect } from '@playwright/test';
+import path from 'path';
+
+const adminFile = path.join('playwright', '.auth', 'admin.json');
+const userFile = path.join('playwright', '.auth', 'user.json');
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+const USER_USERNAME = process.env.USER_USERNAME || 'user';
+const USER_PASSWORD = process.env.USER_PASSWORD || 'user';
+
+<%_ if (authenticationType === 'session') { _%>
+setup('authenticate as admin', async ({ request }) => {
+	const csrfResponse = await request.get('/api/authenticate');
+	expect(csrfResponse.ok()).toBeTruthy();
+
+	const cookies = await csrfResponse.headers()['set-cookie'] || '';
+	const csrfToken = cookies.match(/XSRF-TOKEN=([^;]+)/)?.[1] || '';
+
+	const loginResponse = await request.post('/api/authentication', {
+		form: {
+			username: ADMIN_USERNAME,
+			password: ADMIN_PASSWORD,
+			'remember-me': 'true',
+		},
+		headers: {
+			'X-XSRF-TOKEN': csrfToken,
+		},
+	});
+	expect(loginResponse.ok()).toBeTruthy();
+
+	const accountResponse = await request.get('/api/account');
+	expect(accountResponse.ok()).toBeTruthy();
+
+	await request.storageState({ path: adminFile });
+});
+
+setup('authenticate as user', async ({ request }) => {
+	const csrfResponse = await request.get('/api/authenticate');
+	expect(csrfResponse.ok()).toBeTruthy();
+
+	const cookies = await csrfResponse.headers()['set-cookie'] || '';
+	const csrfToken = cookies.match(/XSRF-TOKEN=([^;]+)/)?.[1] || '';
+
+	const loginResponse = await request.post('/api/authentication', {
+		form: {
+			username: USER_USERNAME,
+			password: USER_PASSWORD,
+			'remember-me': 'true',
+		},
+		headers: {
+			'X-XSRF-TOKEN': csrfToken,
+		},
+	});
+	expect(loginResponse.ok()).toBeTruthy();
+
+	await request.storageState({ path: userFile });
+});
+<%_ } else if (authenticationType === 'jwt') { _%>
+setup('authenticate as admin', async ({ request }) => {
+	const loginResponse = await request.post('/api/authenticate', {
+		data: {
+			username: ADMIN_USERNAME,
+			password: ADMIN_PASSWORD,
+			'remember-me': false,
+		},
+	});
+	expect(loginResponse.ok()).toBeTruthy();
+
+	const { id_token: token } = await loginResponse.json();
+
+	const accountResponse = await request.get('/api/account', {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+	expect(accountResponse.ok()).toBeTruthy();
+
+	await request.storageState({ path: adminFile });
+});
+
+setup('authenticate as user', async ({ request }) => {
+	const loginResponse = await request.post('/api/authenticate', {
+		data: {
+			username: USER_USERNAME,
+			password: USER_PASSWORD,
+			'remember-me': false,
+		},
+	});
+	expect(loginResponse.ok()).toBeTruthy();
+
+	await request.storageState({ path: userFile });
+});
+<%_ } else if (authenticationType === 'oauth2') { _%>
+setup('authenticate as admin', async ({ page }) => {
+	await page.goto('/');
+	await page.getByRole('link', { name: 'Sign in' }).click();
+	await page.getByLabel('Username').fill(ADMIN_USERNAME);
+	await page.getByLabel('Password').fill(ADMIN_PASSWORD);
+	await page.getByRole('button', { name: 'Sign In' }).click();
+	await page.waitForURL('/');
+	await page.context().storageState({ path: adminFile });
+});
+
+setup('authenticate as user', async ({ page }) => {
+	await page.goto('/');
+	await page.getByRole('link', { name: 'Sign in' }).click();
+	await page.getByLabel('Username').fill(USER_USERNAME);
+	await page.getByLabel('Password').fill(USER_PASSWORD);
+	await page.getByRole('button', { name: 'Sign In' }).click();
+	await page.waitForURL('/');
+	await page.context().storageState({ path: userFile });
+});
+<%_ } _%>

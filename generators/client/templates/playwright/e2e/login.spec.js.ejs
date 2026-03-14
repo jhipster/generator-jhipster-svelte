@@ -1,0 +1,73 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('User login', () => {
+	test.use({ storageState: { cookies: [], origins: [] } });
+
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/login');
+	});
+
+	test('should greets with Sign in', async ({ page }) => {
+		const signInTitle = page.getByTestId('signInTitle');
+		await expect(signInTitle).toBeVisible();
+		await expect(signInTitle).toContainText('Sign in to <%= baseName  %>');
+	});
+<%_ if (!skipUserManagement) { _%>
+
+	test('should display link to register', async ({ page }) => {
+		const registerLink = page.getByTestId('registerLink');
+		await expect(registerLink).toHaveText('Create an account');
+		await expect(registerLink).toHaveAttribute('href', '/account/register');
+	});
+
+	test('should display link to forgot password', async ({ page }) => {
+		const forgotPwdLink = page.getByTestId('forgotPwdLink');
+		await expect(forgotPwdLink).toHaveText('Forgot password?');
+		await expect(forgotPwdLink).toHaveAttribute('href', '/account/reset/init');
+	});
+<%_ } _%>
+
+	test('should require username and password', async ({ page }) => {
+		const submitBtn = page.getByTestId('loginForm').getByText('Sign in');
+		await expect(submitBtn).toBeDisabled();
+	});
+
+	test('should require username', async ({ page }) => {
+		const usernameField = page.locator('[name=username]');
+		await usernameField.fill('admin');
+		await usernameField.clear();
+		await usernameField.blur();
+
+		const usernameError = page.getByTestId('username-error');
+		await expect(usernameError).toBeVisible();
+		await expect(usernameError).toContainText('Username is mandatory');
+	});
+
+	test('should require password', async ({ page }) => {
+		const passwordField = page.locator('[name=password]');
+		await passwordField.fill('admin');
+		await passwordField.clear();
+		await passwordField.blur();
+
+		const passwordError = page.getByTestId('password-error');
+		await expect(passwordError).toBeVisible();
+		await expect(passwordError).toContainText('Password is mandatory');
+	});
+
+	test('should require a valid username and password', async ({ page }) => {
+		await page.locator('[name=username]').fill('admin');
+		await page.locator('[name=password]').fill('invalid');
+		await page.locator('[name=password]').press('Enter');
+
+		const errorMsg = page.getByTestId('errorMsg');
+		await expect(errorMsg).toContainText('Incorrect username or password.');
+	});
+
+	test('should navigate to / on successful login', async ({ page }) => {
+		await page.locator("input[type='checkbox']").first().check();
+		await page.locator('[name=username]').fill('admin');
+		await page.locator('[name=password]').fill('admin');
+		await page.locator('[name=password]').press('Enter');
+		await expect(page).toHaveURL(/\/$/);
+	});
+});

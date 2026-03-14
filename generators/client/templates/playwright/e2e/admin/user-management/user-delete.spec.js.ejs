@@ -1,0 +1,52 @@
+import { test, expect } from '@playwright/test';
+import { saveEntity, deleteEntity } from '../../../support/commands.js';
+
+test.use({ storageState: '.auth/admin.json' });
+
+test.describe('User delete dialog page', () => {
+	let randomUser;
+
+	test.beforeEach(async ({ page }) => {
+		randomUser = 'test' + Date.now();
+		await saveEntity(page, 'api/admin/users', {
+			login: randomUser,
+			firstName: '',
+			lastName: '',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		});
+
+		await page.goto('/admin/user-management');
+		const row = page.getByTestId('userMgmtTable').locator('td', { hasText: randomUser }).locator('..');
+		await row.hover();
+		await row.locator('[name="deleteBtn"]').click();
+	});
+
+	test.afterEach(async ({ page }) => {
+		await deleteEntity(page, `api/admin/users/${randomUser}`, true);
+	});
+
+	test('should display delete user dialog', async ({ page }) => {
+		const modal = page.getByTestId('svlModal');
+		await expect(modal.locator('h1')).toBeVisible();
+		await expect(modal.locator('h1')).toContainText('Confirm delete operation');
+		await expect(modal.locator('p')).toBeVisible();
+		await expect(modal.locator('p')).toContainText('Are you sure you want to delete the user?');
+		await expect(modal.locator('[name="confirmDeleteBtn"]')).toBeEnabled();
+		await expect(modal.locator('[name="cancelBtn"]')).toBeEnabled();
+	});
+
+	test('should close the dialog without deleting user', async ({ page }) => {
+		await page.getByTestId('svlModal').locator('[name="cancelBtn"]').click();
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Users');
+	});
+
+	test('should delete the user', async ({ page }) => {
+		await page.getByTestId('svlModal').locator('[name="confirmDeleteBtn"]').click();
+		await expect(page.getByTestId('toast-success')).toContainText('A user is deleted with identifier');
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Users');
+	});
+});

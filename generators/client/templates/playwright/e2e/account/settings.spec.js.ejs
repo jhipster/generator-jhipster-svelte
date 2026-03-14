@@ -1,0 +1,61 @@
+import { test, expect } from '@playwright/test';
+
+test.use({ storageState: '.auth/admin.json' });
+
+test.describe('User Settings', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/account/settings');
+	});
+
+	test('should greets with User Settings title', async ({ page }) => {
+		await expect(page.getByTestId('settingsTitle')).toHaveText(
+			`User settings for [${process.env.ADMIN_USERNAME}]`
+		);
+	});
+
+	test('should display current settings', async ({ page }) => {
+		const form = page.getByTestId('settingsForm');
+		await expect(form.locator('[name="firstName"]')).toHaveValue(<%_ if (databaseTypeSql) { _%>/Admin/<%_ } else { _%>/admin/<%_ } _%>);
+		await expect(form.locator('[name="lastName"]')).toHaveValue(/Admin/);
+		await expect(form.locator('[name="email"]')).toHaveValue(/admin@localhost/);
+	});
+
+	test('should display form control validation messages', async ({ page }) => {
+		const form = page.getByTestId('settingsForm');
+
+		await form.locator('[name="firstName"]').fill('AveryLongFirstNameThatExceedsTheMaximumLengthLimitToCheckValidation');
+		await form.locator('[name="firstName"]').blur();
+		await expect(page.getByTestId('firstName-error')).toBeVisible();
+		await expect(page.getByTestId('firstName-error')).toContainText('First name cannot be longer than 50 characters');
+
+		await form.locator('[name="lastName"]').fill('AveryLongLastNameThatExceedsTheMaximumLengthLimitToCheckValidation');
+		await form.locator('[name="lastName"]').blur();
+		await expect(page.getByTestId('lastName-error')).toBeVisible();
+		await expect(page.getByTestId('lastName-error')).toContainText('Last name cannot be longer than 50 characters');
+
+		await form.locator('[name="email"]').fill('');
+		await form.locator('[name="email"]').blur();
+		await expect(page.getByTestId('email-error')).toBeVisible();
+		await expect(page.getByTestId('email-error')).toContainText('Email is mandatory');
+
+		await form.locator('[name="email"]').fill('admin@localhost');
+		await form.locator('[name="email"]').blur();
+		await expect(page.getByTestId('email-error')).toBeVisible();
+		await expect(page.getByTestId('email-error')).toContainText('Email address is not valid');
+
+		await expect(form.getByRole('button', { name: 'Update Settings' })).toBeDisabled();
+	});
+
+	test('should update user settings', async ({ page }) => {
+		const form = page.getByTestId('settingsForm');
+		await form.locator('[name="firstName"]').fill(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ } _%>);
+		await form.locator('[name="firstName"]').blur();
+		await form.locator('[name="lastName"]').fill('Admin');
+		await form.locator('[name="lastName"]').blur();
+		await form.locator('[name="email"]').fill('admin@localhost.org');
+		await form.locator('[name="email"]').blur();
+		await expect(form.getByRole('button', { name: 'Update Settings' })).toBeEnabled();
+		await form.getByRole('button', { name: 'Update Settings' }).click();
+		await expect(page.getByTestId('successMsg')).toContainText('Settings changed!');
+	});
+});

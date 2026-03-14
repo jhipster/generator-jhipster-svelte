@@ -1,0 +1,119 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Loggers page', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/admin/logger');
+	});
+
+	test('should greets with loggers page title and filter control', async ({ page }) => {
+		const loggersTitle = page.getByTestId('loggersTitle');
+		await expect(loggersTitle).toBeVisible();
+		await expect(loggersTitle).toContainText('Loggers');
+
+		const loggerInput = page.getByTestId('loggerSearchForm').locator('[name=logger]');
+		await expect(loggerInput).toHaveValue('');
+	});
+
+	test('should display loggers table', async ({ page }) => {
+		const loggersTable = page.getByTestId('loggersTable');
+		await expect(loggersTable).toBeVisible();
+
+		const firstHeader = loggersTable.locator('th').first();
+		await expect(firstHeader).toContainText('Name');
+	});
+
+	test('should display logger name and default enabled logger level', async ({ page }) => {
+<%_ if (databaseTypeSql) { _%>
+		await page.getByTestId('loggerSearchForm').locator('[name=logger]')
+			.fill('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator');
+<%_ } else { _%>
+		await page.getByTestId('loggerSearchForm').locator('[name=logger]')
+			.fill('org.mongodb.driver');
+<%_ } _%>
+
+		const loggersTable = page.getByTestId('loggersTable');
+<%_ if (databaseTypeSql) { _%>
+		const targetRow = loggersTable.locator('td', { hasText: 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator' }).locator('..');
+<%_ } else { _%>
+		const targetRow = loggersTable.locator('td', { hasText: 'org.mongodb.driver' }).locator('..');
+<%_ } _%>
+
+		await expect(targetRow.locator('button')).toHaveCount(6);
+		await expect(targetRow.getByTestId('warnLogLevelBtn')).toBeVisible();
+		await expect(targetRow.getByTestId('warnLogLevelBtn')).toBeDisabled();
+	});
+
+	test('should display actions available on the current selected logger', async ({ page }) => {
+<%_ if (databaseTypeSql) { _%>
+		await page.getByTestId('loggerSearchForm').locator('[name=logger]')
+			.fill('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator');
+<%_ } else { _%>
+		await page.getByTestId('loggerSearchForm').locator('[name=logger]')
+			.fill('org.mongodb.driver');
+<%_ } _%>
+
+		const loggersTable = page.getByTestId('loggersTable');
+<%_ if (databaseTypeSql) { _%>
+		const targetRow = loggersTable.locator('td', { hasText: 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator' }).locator('..');
+<%_ } else { _%>
+		const targetRow = loggersTable.locator('td', { hasText: 'org.mongodb.driver' }).locator('..');
+<%_ } _%>
+
+		await targetRow.hover();
+		await expect(targetRow.locator('button')).toHaveCount(6);
+		await expect(targetRow.getByTestId('offLogLevelBtn')).toBeVisible();
+		await expect(targetRow.getByTestId('offLogLevelBtn')).toBeEnabled();
+		await expect(targetRow.getByTestId('warnLogLevelBtn')).toBeVisible();
+		await expect(targetRow.getByTestId('warnLogLevelBtn')).toBeDisabled();
+		await expect(targetRow.getByTestId('infoLogLevelBtn')).toBeVisible();
+		await expect(targetRow.getByTestId('infoLogLevelBtn')).toBeEnabled();
+	});
+
+	test('should change logger level from WARN -> INFO, INFO -> WARN', async ({ page }) => {
+<%_ if (databaseTypeSql) { _%>
+		await page.getByTestId('loggerSearchForm').locator('[name=logger]')
+			.fill('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator');
+		const targetRow = page.getByTestId('loggersTable').locator('td', { hasText: 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator' }).locator('..');
+<%_ } else { _%>
+		await page.getByTestId('loggerSearchForm').locator('[name=logger]')
+			.fill('org.mongodb.driver');
+		const targetRow = page.getByTestId('loggersTable').locator('td', { hasText: 'org.mongodb.driver' }).locator('..');
+<%_ } _%>
+
+		await targetRow.hover();
+
+		const changePromise = page.waitForResponse(resp => resp.url().includes('/management/loggers/') && resp.ok());
+		await targetRow.getByTestId('infoLogLevelBtn').click();
+		await changePromise;
+
+		await expect(targetRow.getByTestId('infoLogLevelBtn')).toBeDisabled();
+
+		const revertPromise = page.waitForResponse(resp => resp.url().includes('/management/loggers/') && resp.ok());
+		await targetRow.hover();
+		await targetRow.getByTestId('warnLogLevelBtn').click();
+		await revertPromise;
+	});
+
+	test('should filter loggers by name', async ({ page }) => {
+		const rows = page.getByTestId('loggersTable').locator('tbody > tr');
+		const countBefore = await rows.count();
+
+		await page.getByTestId('loggerSearchForm').locator('[name=logger]').fill('ROOT');
+
+		const countAfter = await rows.count();
+		expect(countAfter).not.toBe(countBefore);
+
+		await page.getByTestId('loggerSearchForm').locator('[name=logger]').clear();
+
+		const countAfterClear = await rows.count();
+		expect(countAfterClear).toBe(countBefore);
+	});
+
+	test('should validate the pagination controls', async ({ page }) => {
+		const pageCtrl = page.getByTestId('pageCtrl').first();
+		await expect(pageCtrl).toContainText(/1-\d+ of \d+/);
+
+		await expect(page.getByTestId('prevPageCtrl').first()).toBeDisabled();
+		await expect(page.getByTestId('nextPageCtrl').first()).toBeEnabled();
+	});
+});

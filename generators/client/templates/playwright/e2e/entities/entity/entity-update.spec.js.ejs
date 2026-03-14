@@ -1,0 +1,251 @@
+<%_
+	const entityFakeData = generateFakeData('playwright');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const containsMandatoryField = fields.find(field => field.fieldValidationRequired);
+	const containsFieldValidation = containsMandatoryField || fields.find(field => (field.fieldValidationMinLength
+			|| field.fieldValidationMaxLength
+			|| field.fieldValidationMin
+			|| field.fieldValidationMax
+			|| (!field.fieldValidationRequired && field.fieldTypeNumeric)));
+	const placeHolderText = 'lorem ipsum';
+	const getMinLengthText = function(len) {
+		return placeHolderText.substr(0, len > 1 ? len-1 : 0);
+	}
+	const getMaxLengthText = function(len) {
+		let maxLengthText = placeHolderText;
+		while(maxLengthText.length < len) {
+			maxLengthText+= placeHolderText;
+		}
+		return maxLengthText;
+	}
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { test, expect } from '@playwright/test';
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from '../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js';
+
+test.use({ storageState: '.auth/admin.json' });
+
+test.describe('Update <%= entityInstance %> page', () => {
+	let dynamicId;
+	let prerequisiteData;
+<%_
+	if (containsRelationshipField || containsBinaryField) {
+_%>
+
+	test.beforeAll(async ({ browser }) => {
+		const page = await browser.newPage();
+		prerequisiteData = await prepare<%= entityAngularName %>PrerequisiteData(page);
+		await page.close();
+	});
+<%_
+	}
+_%>
+
+	test.beforeAll(async ({ browser }) => {
+		const page = await browser.newPage();
+		const res = await add<%= entityAngularName %>(page<%_
+	if (containsBinaryField) {
+_%>, prerequisiteData.binaryData<%_} _%><%_
+		let fieldIndex = 0;
+		const fieldLength = relationshipFields.length;
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>, prerequisiteData.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%><%_ } _%><%_
+			} else {
+_%>, prerequisiteData.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%><%_ } _%><%_
+			}
+			fieldIndex++;
+		}
+_%>);
+		dynamicId = res.id;
+		await page.close();
+	});
+
+	test.beforeEach(async ({ page }) => {
+		await page.goto(`/entities/<%= entityFolderName %>/${dynamicId}/edit`);
+	});
+
+	test.afterAll(async ({ browser }) => {
+		const page = await browser.newPage();
+		await deleteEntity(page, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`);
+	<%_ if (authenticationType === 'oauth2') { _%>
+		await logoutByApi(page);
+	<%_ } _%>
+	<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+	_%>
+		await deleteEntity(page, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${prerequisiteData.<%= relationship.relationshipName %>Id}`, true);
+	<%_
+				}
+			}
+	_%>
+		await page.close();
+	});
+
+    <%_ if (authenticationType === 'oauth2') { _%>
+    test.afterEach(async ({ page }) => {
+        await logoutByApi(page);
+    });
+    <%_ } _%>
+
+	test('should greets with update <%= entityInstance %> title', async ({ page }) => {
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toBeVisible();
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toContainText('Update <%= entityClassHumanized %>');
+	});
+
+	test('should be populated and have valid state', async ({ page }) => {
+		const form = page.getByTestId('add<%= entityAngularName %>Form');
+	<%_
+		for (field of fields.filter(field => !field.id)) {
+	_%>
+		<%_ if (!field.fieldTypeTimed && !field.fieldTypeDuration && !field.fieldTypeBoolean) { _%>
+    	    <%_ if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+		await expect(page.getByTestId('<%= field.fieldName %>View')).toContainText('image/png');
+            <%_ } else { _%>
+		await expect(form.locator('[name="<%= field.fieldName %>"]')).not.toBeEmpty();
+            <%_ } _%>
+		<%_ } _%>
+	<%_ } _%>
+		await expect(form.getByRole('button', { name: 'Update <%= entityClassHumanized %>' })).toBeEnabled();
+	});
+
+<%_ if (containsFieldValidation) { _%>
+	test('should validate field values', async ({ page }) => {
+		const form = page.getByTestId('add<%= entityAngularName %>Form');
+<%_
+		for (field of fields.filter(field => !field.id)) {
+			const fieldValue = !entityFakeData ? field.generateFakeData('playwright') : entityFakeData[field.fieldName];
+			if (fieldValue === undefined) {
+				warning(`Error generating a value for field ${field.fieldName}`);
+			}
+_%>
+	<%_ if (field.fieldValidationRequired) { _%>
+		await form.locator('[name="<%= field.fieldName %>"]').fill('<%= fieldValue %>');
+		await form.locator('[name="<%= field.fieldName %>"]').fill('');
+		await form.locator('[name="<%= field.fieldName %>"]').blur();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toBeVisible();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toContainText('<%= field.fieldNameHumanized %> is mandatory');
+	<%_ } _%>
+	<%_ if (field.fieldValidationMinLength) { _%>
+
+		await form.locator('[name="<%= field.fieldName %>"]').fill('');
+		await form.locator('[name="<%= field.fieldName %>"]').fill('<%= getMinLengthText(field.fieldValidateRulesMinlength) %>');
+		await form.locator('[name="<%= field.fieldName %>"]').blur();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toBeVisible();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toContainText('<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters');
+	<%_ } _%>
+	<%_ if (field.fieldValidationMaxLength) { _%>
+
+		await form.locator('[name="<%= field.fieldName %>"]').fill('');
+		await form.locator('[name="<%= field.fieldName %>"]').fill('<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>');
+		await form.locator('[name="<%= field.fieldName %>"]').blur();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toBeVisible();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toContainText('<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters');
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && !field.fieldValidationRequired) { _%>
+
+		await form.locator('[name="<%= field.fieldName %>"]').fill('1');
+		await form.locator('[name="<%= field.fieldName %>"]').fill('');
+		await form.locator('[name="<%= field.fieldName %>"]').fill('-');
+		await form.locator('[name="<%= field.fieldName %>"]').blur();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toBeVisible();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toContainText('<%= field.fieldNameHumanized %> should be numeric');
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && field.fieldValidationMin) { _%>
+
+		await form.locator('[name="<%= field.fieldName %>"]').fill('<%= Number(field.fieldValidateRulesMin) - 1 %>');
+		await form.locator('[name="<%= field.fieldName %>"]').blur();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toBeVisible();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toContainText('<%= field.fieldNameHumanized %> should be at least <%= field.fieldValidateRulesMin %>');
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && field.fieldValidationMax) { _%>
+
+		await form.locator('[name="<%= field.fieldName %>"]').fill('<%= Number(field.fieldValidateRulesMax) + 1 %>');
+		await form.locator('[name="<%= field.fieldName %>"]').blur();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toBeVisible();
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toContainText('<%= field.fieldNameHumanized %> cannot be more than <%= field.fieldValidateRulesMax %>');
+	<%_ } _%>
+<% 	} _%>
+	});
+
+<%_ } _%>
+
+	test('should navigate back to the <%= entityInstance %> list page', async ({ page }) => {
+		await page.locator('[name="cancelBtn"]').click();
+		await expect(page).toHaveURL('/entities/<%= entityFolderName %>');
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toBeVisible();
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toContainText('<%= entityClassPluralHumanized %>');
+	});
+<%_
+	if (searchEngineAny) {
+_%>
+/*
+// Observed java.lang.StackOverflowError while updating an entity with elasticsearch integration
+<%_
+	}
+_%>
+	test('should update <%= entityInstance %> details', async ({ page }) => {
+		const form = page.getByTestId('add<%= entityAngularName %>Form');
+	<%_
+		for (field of fields.filter(field => !field.id)) {
+			const fieldValue = !entityFakeData ? field.generateFakeData('playwright') : entityFakeData[field.fieldName];
+	_%>
+		<%_ if (!field.fieldTypeDuration) {_%>
+			<%_ if (field.fieldTypeBoolean) {_%>
+				<%_ if (fieldValue === true ) { _%>
+		await form.locator('[name="<%= field.fieldName %>"]').uncheck();
+				<%_ } else { _%>
+		await form.locator('[name="<%= field.fieldName %>"]').check();
+				<%_ } _%>
+			<%_ } else if (field.fieldIsEnum) { _%>
+		await form.locator('[name="<%= field.fieldName %>"]').click();
+		await page.getByTestId('<%= field.fieldName %>-options').locator("input[type='checkbox']").nth(0).check();
+		await page.getByTestId('<%= field.fieldName %>-options').locator("input[type='checkbox']").nth(1).check();
+		await page.keyboard.press('Escape');
+			<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+		await page.locator('[name="<%= field.fieldName %>ClearBtn"]').click();
+		await form.locator('[name="<%= field.fieldName %>"]').setInputFiles('cypress/fixtures/integration-test.png');
+			<%_ } else { _%>
+		await form.locator('[name="<%= field.fieldName %>"]').fill('');
+		await form.locator('[name="<%= field.fieldName %>"]').fill('<%= fieldValue %>');
+			<%_ } _%>
+		<%_ } _%>
+	<%_ } _%>
+	<%_
+		for (const relationship of relationshipFields) {
+			let relationshipFieldKey;
+			if (relationship.relationshipManyToMany) {
+				relationshipFieldKey = relationship.relationshipNamePlural;
+			} else {
+				relationshipFieldKey = relationship.relationshipName;
+			}
+	_%>
+		await form.locator('[name="<%= relationshipFieldKey %>"]').click();
+		await page.keyboard.press('Escape');
+	<%_
+		}
+	_%>
+		await expect(form.getByRole('button', { name: 'Update <%= entityClassHumanized %>' })).toBeEnabled();
+		await form.getByRole('button', { name: 'Update <%= entityClassHumanized %>' }).click();
+
+		await expect(page.getByTestId('toast-success')).toContainText('is updated with identifier');
+		await expect(page).toHaveURL('/entities/<%= entityFolderName %>');
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toBeVisible();
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toContainText('<%= entityClassPluralHumanized %>');
+	});
+<%_
+	if (searchEngineAny) {
+_%>
+*/
+<%_
+	}
+_%>
+});

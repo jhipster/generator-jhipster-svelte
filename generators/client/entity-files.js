@@ -53,6 +53,7 @@ export default {
 	],
 	entityE2eTests: [
 		{
+			condition: generator => !generator.playwright,
 			templates: [
 				{
 					file: 'cypress/integration/entities/entity/entity-delete.spec.js',
@@ -82,6 +83,42 @@ export default {
 				{
 					file: 'cypress/support/entities/entity-util.js',
 					renameTo: generator => `cypress/support/entities/${generator.entityFileName}-util.js`,
+				},
+			],
+		},
+	],
+	entityE2ePlaywrightTests: [
+		{
+			condition: generator => generator.playwright,
+			templates: [
+				{
+					file: 'playwright/e2e/entities/entity/entity-delete.spec.js',
+					renameTo: generator =>
+						`playwright/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}-delete.spec.js`,
+				},
+				{
+					file: 'playwright/e2e/entities/entity/entity-list.spec.js',
+					renameTo: generator =>
+						`playwright/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}-list.spec.js`,
+				},
+				{
+					file: 'playwright/e2e/entities/entity/entity-view.spec.js',
+					renameTo: generator =>
+						`playwright/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}-view.spec.js`,
+				},
+				{
+					file: 'playwright/e2e/entities/entity/entity-create.spec.js',
+					renameTo: generator =>
+						`playwright/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}-create.spec.js`,
+				},
+				{
+					file: 'playwright/e2e/entities/entity/entity-update.spec.js',
+					renameTo: generator =>
+						`playwright/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}-update.spec.js`,
+				},
+				{
+					file: 'playwright/support/entities/entity-util.js',
+					renameTo: generator => `playwright/support/entities/${generator.entityFileName}-util.js`,
 				},
 			],
 		},

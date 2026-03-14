@@ -1,0 +1,133 @@
+import { expect } from '@playwright/test';
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+<%_ if (authenticationType === 'jwt') { _%>
+/**
+ * Perform API login and return the auth token.
+ */
+export async function loginByApi(request, username = ADMIN_USERNAME, password = ADMIN_PASSWORD) {
+	const response = await request.post('/api/authenticate', {
+		data: { username, password, 'remember-me': false },
+	});
+	expect(response.ok()).toBeTruthy();
+	const { id_token: token } = await response.json();
+	return token;
+}
+
+/**
+ * Save an entity via API and return the response body.
+ */
+export async function saveEntity(request, url, body, token, expectedStatus = 201) {
+	const response = await request.post(url, {
+		data: body,
+		headers: {
+			Authorization: `Bearer ${token}`,
+			'Content-Type': 'application/json',
+		},
+	});
+	expect(response.status()).toBe(expectedStatus);
+	return response.json();
+}
+
+/**
+ * Get entity by API and return the response body.
+ */
+export async function getEntity(request, url, token) {
+	const response = await request.get(url, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+	expect(response.ok()).toBeTruthy();
+	return response.json();
+}
+
+/**
+ * Delete an entity via API.
+ */
+export async function deleteEntity(request, url, token, ignoreError = false) {
+	const response = await request.delete(url, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+	if (!ignoreError) {
+		expect(response.ok()).toBeTruthy();
+	}
+}
+<%_ } else if (authenticationType === 'session') { _%>
+/**
+ * Perform API login via session.
+ */
+export async function loginByApi(request, username = ADMIN_USERNAME, password = ADMIN_PASSWORD) {
+	const csrfResponse = await request.get('/api/authenticate');
+	expect(csrfResponse.ok()).toBeTruthy();
+	const cookies = csrfResponse.headers()['set-cookie'] || '';
+	const csrfToken = cookies.match(/XSRF-TOKEN=([^;]+)/)?.[1] || '';
+
+	const loginResponse = await request.post('/api/authentication', {
+		form: {
+			username,
+			password,
+			'remember-me': 'true',
+		},
+		headers: {
+			'X-XSRF-TOKEN': csrfToken,
+		},
+	});
+	expect(loginResponse.ok()).toBeTruthy();
+}
+
+/**
+ * Save an entity via API and return the response body.
+ */
+export async function saveEntity(request, url, body, _token, expectedStatus = 201) {
+	const response = await request.post(url, {
+		data: body,
+	});
+	expect(response.status()).toBe(expectedStatus);
+	return response.json();
+}
+
+/**
+ * Get entity by API and return the response body.
+ */
+export async function getEntity(request, url) {
+	const response = await request.get(url);
+	expect(response.ok()).toBeTruthy();
+	return response.json();
+}
+
+/**
+ * Delete an entity via API.
+ */
+export async function deleteEntity(request, url, _token, ignoreError = false) {
+	const response = await request.delete(url);
+	if (!ignoreError) {
+		expect(response.ok()).toBeTruthy();
+	}
+}
+<%_ } else if (authenticationType === 'oauth2') { _%>
+/**
+ * Login via OAuth2 UI flow.
+ */
+export async function loginByUi(page, username = ADMIN_USERNAME, password = ADMIN_PASSWORD) {
+	await page.goto('/');
+	await page.getByRole('link', { name: 'Sign in' }).click();
+	await page.getByLabel('Username').fill(username);
+	await page.getByLabel('Password').fill(password);
+	await page.getByRole('button', { name: 'Sign In' }).click();
+	await page.waitForURL('/');
+}
+
+/**
+ * Logout via OAuth2.
+ */
+export async function logoutByApi(page) {
+	await page.getByTestId('svlAcctMenu').getByTestId('svlAccountLink').click();
+	await page.getByTestId('svlSignoutLink').click();
+	await page.waitForURL('/');
+}
+<%_ } _%>

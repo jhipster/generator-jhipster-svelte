@@ -1,0 +1,72 @@
+import { test, expect } from '@playwright/test';
+
+test.use({ storageState: '.auth/admin.json' });
+
+test.describe('User Management list page', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/admin/user-management');
+	});
+
+	test('should greets with users page title', async ({ page }) => {
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Users');
+	});
+
+	test('should display users table', async ({ page }) => {
+		const table = page.getByTestId('userMgmtTable');
+		await expect(table).toBeVisible();
+		const headers = table.locator('tr').first().locator('th');
+		await expect(headers).toHaveCount(7);
+		await expect(headers.nth(0)).toContainText('ID');
+		await expect(headers.nth(1)).toContainText('Login');
+		await expect(headers.nth(2)).toContainText('Email');
+		await expect(headers.nth(3)).toContainText('Roles');
+		await expect(headers.nth(4)).toContainText('Created At');
+		await expect(headers.nth(5)).toContainText('Modified By');
+		await expect(headers.nth(6)).toContainText('Modified At');
+	});
+
+	test('should display "user" user record in the table', async ({ page }) => {
+		const row = page.getByTestId('userMgmtTable').locator('td', { hasText: 'user@localhost' }).locator('..');
+		await expect(row.locator('td').nth(1)).toContainText('user');
+		await expect(row.locator('td').nth(2)).toContainText('user@localhost');
+		await expect(row.locator('td').nth(3)).toContainText('ROLE_USER');
+		await expect(row.locator('td').nth(5)).toContainText('system');
+	});
+
+	test('should not allow actions on the current logged in user', async ({ page }) => {
+		const row = page.getByTestId('userMgmtTable').locator('td', { hasText: 'admin@localhost' }).locator('..');
+		await row.hover();
+		const actions = row.locator('td').last();
+		await expect(actions.locator('[name="toggleUserAcctBtn"]')).toBeDisabled();
+		await expect(actions.locator('[name="viewBtn"]')).toBeEnabled();
+		await expect(actions.locator('[name="editBtn"]')).toBeDisabled();
+		await expect(actions.locator('[name="deleteBtn"]')).toBeDisabled();
+	});
+
+	test('should allow deactivation of "user" account record', async ({ page }) => {
+		const row = page.getByTestId('userMgmtTable').locator('td', { hasText: 'user@localhost' }).locator('..');
+		await row.hover();
+		await expect(row.locator('td').last().locator('[name="toggleUserAcctBtn"]')).toBeEnabled();
+	});
+
+	test('should validate the pagination controls', async ({ page }) => {
+		const pageCtrl = page.getByTestId('pageCtrl').first();
+		await expect(pageCtrl.locator('div').first()).toContainText(/1-\d+ of \d+/);
+		await expect(page.getByTestId('prevPageCtrl')).toBeDisabled();
+		await expect(page.getByTestId('nextPageCtrl')).toBeDisabled();
+	});
+
+	test('should sort the records by login field', async ({ page }) => {
+		const firstRow = page.getByTestId('userMgmtTable').locator('tbody>tr').first();
+		const loginBefore = await firstRow.locator('td').nth(1).textContent();
+
+		const responsePromise = page.waitForResponse(resp => resp.url().includes('/admin/users?'));
+		await page.getByTestId('userMgmtTable').locator('tr').first().locator('th').nth(1).locator('button').click();
+		await responsePromise;
+		await page.waitForTimeout(100);
+
+		const loginAfter = await page.getByTestId('userMgmtTable').locator('tbody>tr').first().locator('td').nth(1).textContent();
+		expect(loginAfter).not.toBe(loginBefore);
+	});
+});

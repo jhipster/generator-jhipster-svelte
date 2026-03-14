@@ -1,0 +1,101 @@
+<%_
+	const entityFakeData = generateFakeData('playwright');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const relationshipFieldsWithSelfReferential = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { test, expect } from '@playwright/test';
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from '../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js';
+
+test.use({ storageState: '.auth/admin.json' });
+
+test.describe('<%= entityAngularName %> view details page', () => {
+	let dynamicId;
+	let prerequisiteData;
+
+<%_
+	if (containsRelationshipField || containsBinaryField) {
+_%>
+
+	test.beforeAll(async ({ browser }) => {
+		const page = await browser.newPage();
+		prerequisiteData = await prepare<%= entityAngularName %>PrerequisiteData(page);
+		await page.close();
+	});
+<%_
+	}
+_%>
+
+	test.beforeAll(async ({ browser }) => {
+		const page = await browser.newPage();
+		const res = await add<%= entityAngularName %>(page<%_
+	if (containsBinaryField) {
+_%>, prerequisiteData.binaryData<%_} _%><%_
+		let fieldIndex = 0;
+		const fieldLength = relationshipFields.length;
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>, prerequisiteData.user<%_ if (fieldIndex !== (fieldLength - 1)) { _%><%_ } _%><%_
+			} else {
+_%>, prerequisiteData.<%= relationship.relationshipName %>Id<%_ if (fieldIndex !== (fieldLength - 1)) { _%><%_ } _%><%_
+			}
+			fieldIndex++;
+		}
+_%>);
+		dynamicId = res.id;
+		await page.close();
+	});
+
+	test.beforeEach(async ({ page }) => {
+		await page.goto(`/entities/<%= entityFolderName %>/${dynamicId}/view`);
+	});
+
+	test.afterAll(async ({ browser }) => {
+		const page = await browser.newPage();
+		await deleteEntity(page, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`);
+	<%_ if (authenticationType === 'oauth2') { _%>
+		await logoutByApi(page);
+	<%_ } _%>
+	<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+	_%>
+		await deleteEntity(page, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${prerequisiteData.<%= relationship.relationshipName %>Id}`, true);
+	<%_
+				}
+			}
+	_%>
+		await page.close();
+	});
+
+    <%_ if (authenticationType === 'oauth2') { _%>
+    test.afterEach(async ({ page }) => {
+        await logoutByApi(page);
+    });
+    <%_ } _%>
+
+	test('should display <%= entityAngularName %> details', async ({ page }) => {
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toBeVisible();
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toContainText('<%= entityClassHumanized %> Details');
+
+		const cells = page.locator('div.table .table-cell');
+		await expect(cells).toHaveCount(<%= (fields.length - 1) * 2 + (relationshipFieldsWithSelfReferential.length * 2) %>);
+	});
+
+	test('should navigate back to the <%= entityAngularName %> list page', async ({ page }) => {
+		await page.locator('[name="backBtn"]').click();
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toBeVisible();
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toContainText('<%= entityClassPluralHumanized %>');
+	});
+});

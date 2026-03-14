@@ -1,0 +1,93 @@
+import { test, expect } from '@playwright/test';
+import { saveEntity, deleteEntity } from '../../../support/commands.js';
+
+test.use({ storageState: '.auth/admin.json' });
+
+test.describe('Update user page', () => {
+	let randomUser;
+
+	test.beforeEach(async ({ page }) => {
+		randomUser = 'test' + Date.now();
+		const res = await saveEntity(page, 'api/admin/users', {
+			login: randomUser,
+			firstName: 'John',
+			lastName: 'Doe',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		});
+		await page.goto(`/admin/user-management/${res.login}/edit`);
+	});
+
+	test.afterEach(async ({ page }) => {
+		await deleteEntity(page, `api/admin/users/${randomUser}`);
+	});
+
+	test('should greets with update user title', async ({ page }) => {
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Update user account');
+	});
+
+	test('should be populated and have valid state', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		await expect(form.locator('[name="username"]')).toHaveValue(randomUser);
+		await expect(form.locator('[name="firstName"]')).toHaveValue('John');
+		await expect(form.locator('[name="lastName"]')).toHaveValue('Doe');
+		await expect(form.locator('[name="email"]')).toHaveValue(`${randomUser}@localhost.org`);
+		await expect(form.locator('[name="activated"]')).toBeChecked();
+		await expect(form.locator('[name="roles"]')).toHaveValue('ROLE_USER');
+		await expect(form.getByRole('button', { name: 'Update user account' })).toBeEnabled();
+	});
+
+	test('should require username', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		await form.locator('[name="username"]').fill('');
+		await form.locator('[name="username"]').blur();
+		await expect(page.getByTestId('username-error')).toBeVisible();
+		await expect(page.getByTestId('username-error')).toContainText('Username is mandatory');
+	});
+
+	test('should require email', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		await form.locator('[name="email"]').fill('');
+		await form.locator('[name="email"]').blur();
+		await expect(page.getByTestId('email-error')).toBeVisible();
+		await expect(page.getByTestId('email-error')).toContainText('Email is mandatory');
+	});
+
+	test('should require roles', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		await form.locator('[name="roles"]').click();
+		const options = page.getByTestId('roles-options');
+		await options.locator("input[type='checkbox']").nth(0).uncheck();
+		await options.locator("input[type='checkbox']").nth(1).uncheck();
+		await page.getByTestId('roles-bg').click();
+		await expect(page.getByTestId('roles-error')).toBeVisible();
+		await expect(page.getByTestId('roles-error')).toContainText('Select at least one role');
+	});
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.locator('[name="cancelBtn"]').click();
+		await expect(page).toHaveURL('/admin/user-management');
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Users');
+	});
+
+	test('should update user account details', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		await form.locator('[name="firstName"]').fill('Johnupdate');
+		await form.locator('[name="lastName"]').fill('Doeupdate');
+		await form.locator('[name="email"]').fill(`${randomUser}-update@localhost.org`);
+		await form.locator('[name="roles"]').click();
+		const options = page.getByTestId('roles-options');
+		await options.locator("input[type='checkbox']").nth(0).check();
+		await options.locator("input[type='checkbox']").nth(1).check();
+		await page.getByTestId('roles-bg').click();
+		await expect(form.getByRole('button', { name: 'Update user account' })).toBeEnabled();
+		await form.getByRole('button', { name: 'Update user account' }).click();
+		await expect(page.getByTestId('toast-success')).toContainText('A user is updated with identifier');
+		await expect(page).toHaveURL('/admin/user-management');
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Users');
+	});
+});

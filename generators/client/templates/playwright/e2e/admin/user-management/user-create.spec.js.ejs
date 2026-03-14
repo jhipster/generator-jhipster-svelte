@@ -1,0 +1,89 @@
+import { test, expect } from '@playwright/test';
+import { saveEntity, deleteEntity } from '../../../support/commands.js';
+
+test.use({ storageState: '.auth/admin.json' });
+
+test.describe('Create user page', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/admin/user-management/new');
+	});
+
+	test('should greets with Create user title', async ({ page }) => {
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Create user account');
+	});
+
+	test('should require mandatory fields', async ({ page }) => {
+		await expect(page.getByTestId('addUserForm').getByRole('button', { name: 'Create user account' })).toBeDisabled();
+	});
+
+	test('should require username', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		const field = form.locator('[name="username"]');
+		await field.fill('admin');
+		await field.fill('');
+		await field.blur();
+		await expect(page.getByTestId('username-error')).toBeVisible();
+		await expect(page.getByTestId('username-error')).toContainText('Username is mandatory');
+	});
+
+	test('should require email', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		const field = form.locator('[name="email"]');
+		await field.fill('admin@localhost.org');
+		await field.fill('');
+		await field.blur();
+		await expect(page.getByTestId('email-error')).toBeVisible();
+		await expect(page.getByTestId('email-error')).toContainText('Email is mandatory');
+	});
+
+	test('should require roles', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		await form.locator('[name="roles"]').click();
+		const options = page.getByTestId('roles-options');
+		const checkbox = options.locator("input[type='checkbox']").first();
+		await checkbox.check();
+		await checkbox.uncheck();
+		await page.getByTestId('roles-bg').click();
+		await expect(page.getByTestId('roles-error')).toBeVisible();
+		await expect(page.getByTestId('roles-error')).toContainText('Select at least one role');
+	});
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.locator('[name="cancelBtn"]').click();
+		await expect(page).toHaveURL('/admin/user-management');
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Users');
+	});
+
+	test.describe('create account', () => {
+		let randomUser;
+
+		test.beforeEach(async ({ page }) => {
+			randomUser = 'test' + Date.now();
+			await page.goto('/admin/user-management/new');
+		});
+
+		test.afterEach(async ({ page }) => {
+			await deleteEntity(page, `api/admin/users/${randomUser}`);
+		});
+
+		test('should create a new user account', async ({ page }) => {
+			const form = page.getByTestId('addUserForm');
+			await form.locator('[name="username"]').fill(randomUser);
+			await form.locator('[name="firstName"]').fill('john');
+			await form.locator('[name="lastName"]').fill('doe');
+			await form.locator('[name="email"]').fill(`${randomUser}@localhost.org`);
+			await form.locator('[name="roles"]').click();
+			const checkbox = page.getByTestId('roles-options').locator("input[type='checkbox']").first();
+			await checkbox.check();
+			await page.getByTestId('roles-bg').click();
+			await expect(form.getByRole('button', { name: 'Create user account' })).toBeEnabled();
+			await form.getByRole('button', { name: 'Create user account' }).click();
+			await expect(page.getByTestId('toast-success')).toContainText('A user is created with identifier');
+			await expect(page).toHaveURL('/admin/user-management');
+			await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+			await expect(page.getByTestId('userMgmtTitle')).toContainText('Users');
+		});
+	});
+});

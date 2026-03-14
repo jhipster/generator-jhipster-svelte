@@ -1,0 +1,24 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Gateway page', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/admin/gateway');
+	});
+
+	test('should greets with Gateway page title', async ({ page }) => {
+		const gatewayTitle = page.getByTestId('gatewayTitle');
+		await expect(gatewayTitle).toBeVisible();
+		await expect(gatewayTitle).toContainText('Gateway routes');
+	});
+
+	test('should display Gateway routes table', async ({ page }) => {
+		const gatewayTable = page.getByTestId('gatewayTable');
+		await expect(gatewayTable).toBeVisible();
+
+		const headers = gatewayTable.locator('th');
+		await expect(headers).toHaveCount(3);
+		await expect(headers.nth(0)).toContainText('Service');
+		await expect(headers.nth(1)).toContainText('Route');
+		await expect(headers.nth(2)).toContainText('Service Instances');
+	});
+});

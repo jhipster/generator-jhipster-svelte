@@ -1,0 +1,46 @@
+import { test, expect } from '@playwright/test';
+import { saveEntity, deleteEntity } from '../../../support/commands.js';
+
+test.use({ storageState: '.auth/admin.json' });
+
+test.describe('User view details page', () => {
+	let randomUser;
+
+	test.beforeEach(async ({ page }) => {
+		randomUser = 'test' + Date.now();
+		const res = await saveEntity(page, 'api/admin/users', {
+			login: randomUser,
+			firstName: 'John',
+			lastName: 'Doe',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		});
+		await page.goto(`/admin/user-management/${res.login}/view`);
+	});
+
+	test.afterEach(async ({ page }) => {
+		await deleteEntity(page, `api/admin/users/${randomUser}`);
+	});
+
+	test('should display user account details', async ({ page }) => {
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText(`User Details [ ${randomUser} ]`);
+
+		const cells = page.locator('div.table .table-cell');
+		await expect(cells).toHaveCount(18);
+		await expect(cells.nth(1)).toContainText(randomUser);
+		await expect(cells.nth(3)).toContainText('John');
+		await expect(cells.nth(5)).toContainText('Doe');
+		await expect(cells.nth(7)).toContainText(`${randomUser}@localhost.org`);
+		await expect(cells.nth(9)).toContainText('admin');
+		await expect(cells.nth(13)).toContainText('admin');
+		await expect(cells.nth(17)).toContainText('ROLE_USER');
+	});
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.locator('[name="backBtn"]').click();
+		await expect(page.getByTestId('userMgmtTitle')).toBeVisible();
+		await expect(page.getByTestId('userMgmtTitle')).toContainText('Users');
+	});
+});
