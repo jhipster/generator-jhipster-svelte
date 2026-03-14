@@ -1,0 +1,53 @@
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import AdminMenu from './admin-menu.svelte'
+
+test('should render the administration menu button', () => {
+	render(AdminMenu)
+
+	expect(
+		screen.getByRole('button', { name: /administration menu/i })
+	).toBeInTheDocument()
+})
+
+test('should render the administration label', () => {
+	render(AdminMenu)
+
+	expect(screen.getByText(/administration/i)).toBeInTheDocument()
+})
+
+test('should not show menu items when closed', () => {
+	render(AdminMenu)
+
+	expect(screen.getByTestId('svlLoggerLink')).not.toBeVisible()
+})
+
+test('should show menu items when menu button is clicked', async () => {
+	render(AdminMenu)
+
+	const menuBtn = screen.getByRole('button', { name: /administration menu/i })
+	await fireEvent.click(menuBtn)
+
+	expect(screen.getByTestId('svlLoggerLink')).toBeVisible()
+})
+
+test('should render the logger menu item', async () => {
+	render(AdminMenu)
+
+	const menuBtn = screen.getByRole('button', { name: /administration menu/i })
+	await fireEvent.click(menuBtn)
+
+	expect(screen.getByText(/loggers/i)).toBeInTheDocument()
+})
+<%_ if (!skipUserManagement) { _%>
+
+test('should render the user management menu item', async () => {
+	render(AdminMenu)
+
+	const menuBtn = screen.getByRole('button', { name: /administration menu/i })
+	await fireEvent.click(menuBtn)
+
+	expect(screen.getByText(/user management/i)).toBeInTheDocument()
+})
+<%_ } _%>

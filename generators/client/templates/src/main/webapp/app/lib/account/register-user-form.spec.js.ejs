@@ -1,0 +1,44 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import RegisterUserForm from './register-user-form.svelte'
+
+test('should render the registration form', () => {
+	render(RegisterUserForm)
+
+	expect(screen.getByTestId('register')).toBeInTheDocument()
+})
+
+test('should render the username field', () => {
+	render(RegisterUserForm)
+
+	expect(screen.getByLabelText(/username/i)).toBeInTheDocument()
+})
+
+test('should render the email field', () => {
+	render(RegisterUserForm)
+
+	expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
+})
+
+test('should render the password field', () => {
+	render(RegisterUserForm)
+
+	expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument()
+})
+
+test('should render the submit button', () => {
+	render(RegisterUserForm)
+
+	expect(
+		screen.getByRole('button', { name: /create account/i })
+	).toBeInTheDocument()
+})
+
+test('should disable the submit button by default', () => {
+	render(RegisterUserForm)
+
+	expect(
+		screen.getByRole('button', { name: /create account/i })
+	).toBeDisabled()
+})

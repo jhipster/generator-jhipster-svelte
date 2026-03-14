@@ -1,0 +1,28 @@
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import EntityMenu from './entity-menu.svelte'
+
+test('should render the entities menu button', () => {
+	render(EntityMenu)
+
+	expect(
+		screen.getByRole('button', { name: /entities menu/i })
+	).toBeInTheDocument()
+})
+
+test('should render the entities label', () => {
+	render(EntityMenu)
+
+	expect(screen.getByText(/entities/i)).toBeInTheDocument()
+})
+
+test('should toggle menu visibility on button click', async () => {
+	render(EntityMenu)
+
+	const menuBtn = screen.getByRole('button', { name: /entities menu/i })
+	await fireEvent.click(menuBtn)
+
+	const dropdown = screen.getByTestId('svlEntityLink').closest('div').parentElement
+	expect(dropdown).toBeInTheDocument()
+})

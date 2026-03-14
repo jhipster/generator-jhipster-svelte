@@ -1,0 +1,26 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import Footer from './footer.svelte'
+
+test('should render the footer', () => {
+	render(Footer)
+
+	expect(screen.getByTestId('copyrightMsg')).toBeInTheDocument()
+})
+
+test('should display the copyright message', () => {
+	render(Footer)
+
+	expect(screen.getByText(/copyright/i)).toBeInTheDocument()
+	expect(screen.getByText(/jhipster/i)).toBeInTheDocument()
+})
+
+test('should contain a link to the author', () => {
+	render(Footer)
+
+	const link = screen.getByRole('link', { name: /@vishal423/i })
+	expect(link).toBeInTheDocument()
+	expect(link).toHaveAttribute('href', 'https://twitter.com/vishal423')
+	expect(link).toHaveAttribute('target', 'tab')
+})
