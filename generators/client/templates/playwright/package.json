@@ -1,0 +1,10 @@
+{
+	"devDependencies": {
+		"@playwright/test": "1.49.0"
+	},
+	"scripts": {
+		"e2e": "playwright test --headed",
+		"e2e:ci": "playwright test",
+		"e2e:report": "playwright show-report"
+	}
+}

@@ -1,0 +1,88 @@
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '../../../support/auth.js';
+<%_ } else { _%>
+import { loginByApi } from '../../../support/auth.js';
+<%_ } _%>
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('User Management list page', () => {
+	test.beforeEach(async ({ page, request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await page.goto('/');
+		await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		await page.goto('/admin/user-management');
+	});
+
+	test('should greets with users page title', async ({ page }) => {
+		const title = page.getByTestId('userMgmtTitle');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('Users');
+	});
+
+	test('should display users table', async ({ page }) => {
+		const table = page.getByTestId('userMgmtTable');
+		await expect(table).toBeVisible();
+		const headerRow = table.locator('tr').first();
+		await expect(headerRow.locator('th, td')).toHaveCount(7);
+		await expect(headerRow.locator('th').nth(0)).toContainText('ID');
+		await expect(headerRow.locator('th').nth(1)).toContainText('Login');
+		await expect(headerRow.locator('th').nth(2)).toContainText('Email');
+		await expect(headerRow.locator('th').nth(3)).toContainText('Roles');
+		await expect(headerRow.locator('th').nth(4)).toContainText('Created At');
+		await expect(headerRow.locator('th').nth(5)).toContainText('Modified By');
+		await expect(headerRow.locator('th').nth(6)).toContainText('Modified At');
+	});
+
+	test('should display "user" user record in the table', async ({ page }) => {
+		const row = page.getByTestId('userMgmtTable').locator('td', { hasText: 'user@localhost' }).locator('..');
+		await expect(row.locator('td').nth(1)).toContainText('user');
+		await expect(row.locator('td').nth(2)).toContainText('user@localhost');
+		await expect(row.locator('td').nth(3)).toContainText('ROLE_USER');
+		await expect(row.locator('td').nth(5)).toContainText('system');
+	});
+
+	test('should not allow actions on the current logged in user', async ({ page }) => {
+		const row = page.getByTestId('userMgmtTable').locator('td', { hasText: 'admin@localhost' }).locator('..');
+		await row.hover();
+		const actionCell = row.locator('td').nth(6);
+		await expect(actionCell.locator('[name=toggleUserAcctBtn]')).toBeDisabled();
+		await expect(actionCell.locator('[name=viewBtn]')).not.toBeDisabled();
+		await expect(actionCell.locator('[name=editBtn]')).toBeDisabled();
+		await expect(actionCell.locator('[name=deleteBtn]')).toBeDisabled();
+	});
+
+	test('should allow deactivation of "user" account record', async ({ page }) => {
+		const row = page.getByTestId('userMgmtTable').locator('td', { hasText: 'user@localhost' }).locator('..');
+		await row.hover();
+		const actionCell = row.locator('td').nth(6);
+		await expect(actionCell.locator('[name=toggleUserAcctBtn]')).not.toBeDisabled();
+	});
+
+	test('should validate the pagination controls', async ({ page }) => {
+		const pageCtrl = page.getByTestId('pageCtrl').first();
+		await expect(pageCtrl.locator('div').filter({ hasText: /1-\d+ of \d+/ }).first()).toBeVisible();
+		await expect(page.getByTestId('prevPageCtrl').first()).toBeDisabled();
+		await expect(page.getByTestId('nextPageCtrl').first()).toBeDisabled();
+	});
+
+	test('should sort the records by login field', async ({ page }) => {
+		const table = page.getByTestId('userMgmtTable');
+		const firstLoginBefore = await table.locator('tbody > tr').first().locator('td').nth(1).textContent();
+
+		const getUsersPromise = page.waitForResponse(resp => resp.url().includes('/admin/users?'));
+		await table.locator('tr').first().locator('th').nth(1).locator('button').click();
+		await getUsersPromise;
+
+		await page.waitForTimeout(100);
+
+		const firstLoginAfter = await table.locator('tbody > tr').first().locator('td').nth(1).textContent();
+		expect(firstLoginAfter).not.toBe(firstLoginBefore);
+	});
+});

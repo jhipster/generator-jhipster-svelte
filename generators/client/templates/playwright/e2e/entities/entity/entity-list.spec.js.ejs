@@ -1,0 +1,193 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+	const oneToOneRelationship = relationshipFields.filter(relationship => relationship.relationshipOneToOne);
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/auth.js';
+import { deleteEntity } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/utils.js';
+<%_ } else { _%>
+import { loginByApi } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/auth.js';
+import { deleteEntity } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/utils.js';
+<%_ } _%>
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %><% if (!paginationNo || searchEngineAny) { %>, add<%= entityAngularName %>2<% } %> } from "<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/entities/<%= entityFileName %>-util.js";
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('<%= entityAngularName %> list page', () => {
+	let dynamicId;
+<%_ if (!paginationNo || searchEngineAny) { _%>
+	let dynamicId2;
+<%_ } _%>
+<%_ if (containsRelationshipField || containsBinaryField) { _%>
+	let prerequisiteData;
+<%_ } _%>
+
+	test.beforeAll(async ({ request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } else if (authenticationType === 'oauth2') { _%>
+		// OAuth2 setup
+<%_ } else { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+<%_ if (containsRelationshipField || containsBinaryField) { _%>
+		prerequisiteData = await prepare<%= entityAngularName %>PrerequisiteData(request, <%= !!(!paginationNo || searchEngineAny) %>);
+<%_ } _%>
+	<%_ if (!paginationNo || searchEngineAny) { _%>
+		const entity2 = await add<%= entityAngularName %>2(request<%_
+	if (containsRelationshipField) {
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>, prerequisiteData.user<%_
+			} else {
+_%>, prerequisiteData.<%= relationship.relationshipName %>Id<% if (relationship.relationshipOneToOne) { %>2<% } %><%_
+			}
+		}
+	}
+_%>);
+		dynamicId2 = entity2.id;
+	<%_ } _%>
+
+		const entity = await add<%= entityAngularName %>(request<%_
+	if (containsRelationshipField) {
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>, prerequisiteData.user<%_
+			} else {
+_%>, prerequisiteData.<%= relationship.relationshipName %>Id<%_
+			}
+		}
+	}
+_%>);
+		dynamicId = entity.id;
+	});
+
+	test.beforeEach(async ({ page, request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await page.goto('/');
+		await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else if (authenticationType === 'oauth2') { _%>
+		await loginByApi(request, page, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } else { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		const responsePromise = page.waitForResponse(resp => resp.url().includes('/api/<%= entityApiUrl %>'));
+		await page.goto('/entities/<%= entityFolderName %>');
+		await responsePromise;
+		await page.waitForTimeout(100);
+	});
+
+	test.afterAll(async ({ request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		await deleteEntity(request, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`);
+<%_
+	if (!paginationNo || searchEngineAny) {
+_%>
+		await deleteEntity(request, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId2}`);
+<%_
+	}
+	if (authenticationType === 'oauth2') {
+_%>
+		// OAuth2 logout placeholder
+<%_
+	}
+_%>
+	<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+	_%>
+		await deleteEntity(request, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${prerequisiteData.<%= relationship.relationshipName %>Id}`);
+<%_
+					if (relationship.relationshipOneToOne && (!paginationNo || searchEngineAny)) {
+_%>
+		await deleteEntity(request, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${prerequisiteData.<%= relationship.relationshipName %>Id2}`);
+<%_
+					}
+				}
+			}
+	_%>
+	});
+
+	test('should greets with <%= entityAngularName %> page title', async ({ page }) => {
+		const title = page.getByTestId('<%= entityInstance %>Title');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>');
+	});
+
+	test('should display <%= entityAngularName %> table', async ({ page }) => {
+		const table = page.getByTestId('<%= entityInstance %>Table');
+		await expect(table).toBeVisible();
+	});
+
+	test('should display <%= entityAngularName %> record in the table', async ({ page }) => {
+		const firstRow = page.getByTestId('<%= entityInstance %>Table').locator('tbody tr').first();
+		await expect(firstRow).toBeVisible();
+	});
+
+<%_ if (!paginationNo) { _%>
+	test('should validate the pagination controls', async ({ page }) => {
+		const pageCtrl = page.getByTestId('pageCtrl').first();
+		await expect(pageCtrl.locator('div').filter({ hasText: /1-\d+ of \d+/ }).first()).toBeVisible();
+		await expect(page.getByTestId('prevPageCtrl').first()).toBeDisabled();
+		await expect(page.getByTestId('nextPageCtrl').first()).toBeDisabled();
+	});
+
+	test('should sort the records by Id field', async ({ page }) => {
+		const table = page.getByTestId('<%= entityInstance %>Table');
+		const firstValueBefore = await table.locator('tbody > tr').first().locator('td').first().textContent();
+
+		const responsePromise = page.waitForResponse(resp => resp.url().includes('/api/<%= entityApiUrl %>?'));
+		await table.locator('tr').first().locator('th').first().locator('button').click();
+		await responsePromise;
+		await page.waitForTimeout(100);
+
+		const firstValueAfter = await table.locator('tbody > tr').first().locator('td').first().textContent();
+		expect(firstValueAfter).not.toBe(firstValueBefore);
+	});
+<%_ } _%>
+
+<%_ if (searchEngineAny) { _%>
+	test.skip('should search the records by valid Id field', async ({ page }) => {
+		const initialRowCount = await page.getByTestId('<%= entityInstance %>Table').locator('tr').count();
+
+		const searchPromise = page.waitForResponse(resp => resp.url().includes('/api/_search/<%= entityApiUrl %>?'));
+		await page.getByTestId('<%= entityInstance %>SearchForm').locator('[name=<%= entityInstance %>]').fill(`${dynamicId}`);
+		await page.getByTestId('<%= entityInstance %>SearchForm').locator('[name=<%= entityInstance %>]').press('Enter');
+		await searchPromise;
+		await page.waitForTimeout(100);
+
+		const filteredRowCount = await page.getByTestId('<%= entityInstance %>Table').locator('tr').count();
+		expect(filteredRowCount).not.toBe(initialRowCount);
+	});
+
+	test.skip('should search the records by invalid Id', async ({ page }) => {
+		const initialRowCount = await page.getByTestId('<%= entityInstance %>Table').locator('tr').count();
+
+		const searchPromise = page.waitForResponse(resp => resp.url().includes('/api/_search/<%= entityApiUrl %>?'));
+		await page.getByTestId('<%= entityInstance %>SearchForm').locator('[name=<%= entityInstance %>]').fill('99999999');
+		await page.getByTestId('<%= entityInstance %>SearchForm').locator('[name=<%= entityInstance %>]').press('Enter');
+		await searchPromise;
+		await page.waitForTimeout(100);
+
+		const filteredRowCount = await page.getByTestId('<%= entityInstance %>Table').locator('tr').count();
+		expect(filteredRowCount).not.toBe(initialRowCount);
+
+		const emptyRow = page.getByTestId('<%= entityInstance %>Table').locator('tbody > tr').first().locator('td').first();
+		await expect(emptyRow).toContainText('No <%= entityClassPluralHumanized %> found');
+	});
+<%_ } _%>
+});

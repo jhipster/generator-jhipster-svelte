@@ -1,0 +1,110 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const relationshipFieldsWithSelfReferential = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/auth.js';
+import { deleteEntity } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/utils.js';
+<%_ } else { _%>
+import { loginByApi } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/auth.js';
+import { deleteEntity } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/utils.js';
+<%_ } _%>
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/entities/<%= entityFileName %>-util.js";
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('<%= entityAngularName %> view details page', () => {
+	let dynamicId;
+<%_ if (containsRelationshipField || containsBinaryField) { _%>
+	let prerequisiteData;
+<%_ } _%>
+
+	test.beforeAll(async ({ request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } else if (authenticationType === 'oauth2') { _%>
+		// OAuth2 setup
+<%_ } else { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+<%_ if (containsRelationshipField || containsBinaryField) { _%>
+		prerequisiteData = await prepare<%= entityAngularName %>PrerequisiteData(request);
+<%_ } _%>
+		const entity = await add<%= entityAngularName %>(request<%_
+	if (containsRelationshipField) {
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>, prerequisiteData.user<%_
+			} else {
+_%>, prerequisiteData.<%= relationship.relationshipName %>Id<%_
+			}
+		}
+	}
+_%>);
+		dynamicId = entity.id;
+	});
+
+	test.beforeEach(async ({ page, request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await page.goto('/');
+		await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else if (authenticationType === 'oauth2') { _%>
+		await loginByApi(request, page, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } else { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		await page.goto(`/entities/<%= entityFolderName %>/${dynamicId}/view`);
+	});
+
+	test.afterAll(async ({ request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		await deleteEntity(request, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`);
+	<%_ if (authenticationType === 'oauth2') { _%>
+		// OAuth2 logout placeholder
+	<%_ } _%>
+	<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+	_%>
+		await deleteEntity(request, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${prerequisiteData.<%= relationship.relationshipName %>Id}`);
+	<%_
+				}
+			}
+	_%>
+	});
+
+	test('should display <%= entityAngularName %> details', async ({ page }) => {
+		const title = page.getByTestId('<%= entityInstance %>Title');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('<%= entityClassHumanized %> Details');
+
+		const tableDiv = page.locator('div.table');
+		const cells = tableDiv.locator('.table-cell');
+		await expect(cells).toHaveCount(<%= (fields.length - 1) * 2 + (relationshipFieldsWithSelfReferential.length * 2) %>);
+	});
+
+	test('should navigate back to the <%= entityAngularName %> list page', async ({ page }) => {
+		await page.locator('[name=backBtn]').click();
+		const title = page.getByTestId('<%= entityInstance %>Title');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>');
+	});
+});

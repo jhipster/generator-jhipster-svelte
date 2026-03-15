@@ -1,0 +1,116 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Register User', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/account/register');
+	});
+
+	test('should greets with Create user title', async ({ page }) => {
+		const registerTitle = page.getByTestId('registerTitle');
+		await expect(registerTitle).toBeVisible();
+		await expect(registerTitle).toContainText('Create user account');
+	});
+
+	test('should require mandatory fields', async ({ page }) => {
+		const createBtn = page.getByTestId('registerForm').getByRole('button', { name: 'Create account' });
+		await expect(createBtn).toBeDisabled();
+	});
+
+	test('should require username', async ({ page }) => {
+		const input = page.getByTestId('registerForm').locator('[name=username]');
+		await input.fill('admin');
+		await input.fill('');
+		await input.blur();
+
+		const error = page.getByTestId('username-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Username is mandatory');
+	});
+
+	test('should require email', async ({ page }) => {
+		const input = page.getByTestId('registerForm').locator('[name=email]');
+		await input.fill('admin@localhost.org');
+		await input.fill('');
+		await input.blur();
+
+		const error = page.getByTestId('email-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Email is mandatory');
+	});
+
+	test('should require valid email', async ({ page }) => {
+		const input = page.getByTestId('registerForm').locator('[name=email]');
+		await input.fill('admin@localhost');
+		await input.blur();
+
+		const error = page.getByTestId('email-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Email address is not valid');
+	});
+
+	test('should require password', async ({ page }) => {
+		const input = page.getByTestId('registerForm').locator('[name=password]');
+		await input.fill('password');
+		await input.fill('');
+		await input.blur();
+
+		const error = page.getByTestId('password-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Password is mandatory');
+	});
+
+	test('should require confirm password', async ({ page }) => {
+		const input = page.getByTestId('registerForm').locator('[name=passwordConfirm]');
+		await input.fill('password');
+		await input.fill('');
+		await input.blur();
+
+		const error = page.getByTestId('passwordConfirm-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Password is mandatory');
+	});
+
+	test('should require password and confirm password to match', async ({ page }) => {
+		await page.getByTestId('registerForm').locator('[name=password]').fill('abcd');
+		await page.getByTestId('registerForm').locator('[name=password]').blur();
+		await page.getByTestId('registerForm').locator('[name=passwordConfirm]').fill('defg');
+		await page.getByTestId('registerForm').locator('[name=passwordConfirm]').blur();
+
+		const error = page.getByTestId('passwordConfirm-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Password and its confirmation do not match');
+	});
+
+	test('should not allow user account creation with duplicate username', async ({ page }) => {
+		const form = page.getByTestId('registerForm');
+		await form.locator('[name=username]').fill('admin');
+		await form.locator('[name=email]').fill('joe@localhost.org');
+		await form.locator('[name=password]').fill('jondoe');
+		await form.locator('[name=passwordConfirm]').fill('jondoe');
+
+		const createBtn = form.getByRole('button', { name: 'Create account' });
+		await expect(createBtn).not.toBeDisabled();
+		await createBtn.click();
+
+		await expect(page.getByTestId('errorMsg')).toContainText(
+			'Login name already in use. Please choose another one.'
+		);
+	});
+
+	test('should create new user account', async ({ page }) => {
+		const form = page.getByTestId('registerForm');
+		await form.locator('[name=username]').fill('jon');
+		await form.locator('[name=email]').fill('joe@localhost.org');
+		await form.locator('[name=password]').fill('jondoe');
+		await form.locator('[name=passwordConfirm]').fill('jondoe');
+
+		const createBtn = form.getByRole('button', { name: 'Create account' });
+		await expect(createBtn).not.toBeDisabled();
+		await createBtn.click();
+
+		await expect(page.getByTestId('successMsg')).toContainText(
+			'User account successfully created. Please check your email for confirmation.'
+		);
+		await expect(page.getByTestId('registerForm')).toHaveCount(0);
+	});
+});

@@ -11,6 +11,11 @@ const command = {
 			type: Boolean,
 			scope: 'blueprint',
 		},
+		playwright: {
+			description: 'Playwright end-to-end test framework',
+			type: Boolean,
+			scope: 'blueprint',
+		},
 	},
 };
 

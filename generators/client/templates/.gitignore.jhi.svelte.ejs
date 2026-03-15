@@ -13,6 +13,13 @@
   limitations under the License.
  -%>
  <&_ if (!fragment.section) { -&>
+<%_ if (playwright) { _%>
+ ######################
+ # Playwright
+ ######################
+ /playwright-report/
+ /test-results/
+<%_ } else { _%>
  ######################
  # Cypress
  ######################
@@ -20,6 +27,7 @@
  /cypress/fixtures/example.json
  /cypress/downloads
  /cypress/videos
+<%_ } _%>
 
  ######################
  # SvelteKit

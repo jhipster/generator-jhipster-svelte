@@ -1,0 +1,112 @@
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi, authHeaders } from './auth.js';
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+const USER_USERNAME = process.env.USER_USERNAME || 'user';
+const USER_PASSWORD = process.env.USER_PASSWORD || 'user';
+
+let _authToken = null;
+
+export async function getAuthToken(request) {
+	if (!_authToken) {
+		_authToken = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+	}
+	return _authToken;
+}
+
+export function resetAuthToken() {
+	_authToken = null;
+}
+
+export async function save(request, url, body, expectedStatus = 201) {
+	const token = await getAuthToken(request);
+	const response = await request.post(url, {
+		data: body,
+		headers: {
+			...authHeaders(token),
+			'Content-Type': 'application/json',
+		},
+	});
+	if (response.status() !== expectedStatus) {
+		throw new Error(`Save failed: expected ${expectedStatus}, got ${response.status()}`);
+	}
+	return response.json();
+}
+
+export async function deleteEntity(request, url, lenient = true) {
+	const token = await getAuthToken(request);
+	const response = await request.delete(url, {
+		headers: authHeaders(token),
+		failOnStatusCode: !lenient,
+	});
+	if (!lenient && response.status() !== 204) {
+		throw new Error(`Delete failed: expected 204, got ${response.status()}`);
+	}
+}
+
+export async function getById(request, url, expectedStatus = 200) {
+	const token = await getAuthToken(request);
+	const response = await request.get(url, {
+		headers: authHeaders(token),
+	});
+	if (response.status() !== expectedStatus) {
+		throw new Error(`GetById failed: expected ${expectedStatus}, got ${response.status()}`);
+	}
+	return response.json();
+}
+<%_ } else { _%>
+import { loginByApi, getXsrfToken } from './auth.js';
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+const USER_USERNAME = process.env.USER_USERNAME || 'user';
+const USER_PASSWORD = process.env.USER_PASSWORD || 'user';
+
+export async function ensureLoggedIn(request<%_ if (authenticationType === 'oauth2') { _%>, page<%_ } _%>) {
+	await loginByApi(request, <%_ if (authenticationType === 'oauth2') { _%>page, <%_ } _%>ADMIN_USERNAME, ADMIN_PASSWORD);
+}
+
+export async function save(request, url, body, expectedStatus = 201) {
+	const xsrfToken = await getXsrfToken(request);
+	const response = await request.post(url, {
+		data: body,
+		headers: {
+			'X-XSRF-TOKEN': xsrfToken,
+			'Content-Type': 'application/json',
+		},
+	});
+	if (response.status() !== expectedStatus) {
+		throw new Error(`Save failed: expected ${expectedStatus}, got ${response.status()}`);
+	}
+	return response.json();
+}
+
+export async function deleteEntity(request, url, lenient = true) {
+	const xsrfToken = await getXsrfToken(request);
+	const response = await request.delete(url, {
+		headers: {
+			'X-XSRF-TOKEN': xsrfToken,
+		},
+		failOnStatusCode: !lenient,
+	});
+	if (!lenient && response.status() !== 204) {
+		throw new Error(`Delete failed: expected 204, got ${response.status()}`);
+	}
+}
+
+export async function getById(request, url, expectedStatus = 200) {
+	const xsrfToken = await getXsrfToken(request);
+	const response = await request.get(url, {
+		headers: {
+			'X-XSRF-TOKEN': xsrfToken,
+		},
+	});
+	if (response.status() !== expectedStatus) {
+		throw new Error(`GetById failed: expected ${expectedStatus}, got ${response.status()}`);
+	}
+	return response.json();
+}
+<%_ } _%>
+
+export { ADMIN_USERNAME, ADMIN_PASSWORD, USER_USERNAME, USER_PASSWORD };

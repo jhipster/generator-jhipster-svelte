@@ -1,0 +1,85 @@
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '../../support/auth.js';
+<%_ } else { _%>
+import { loginByApi } from '../../support/auth.js';
+<%_ } _%>
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('User Settings', () => {
+	test.beforeEach(async ({ page, request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await page.goto('/');
+		await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		await page.goto('/account/settings');
+	});
+
+	test('should greets with User Settings title', async ({ page }) => {
+		await expect(page.getByTestId('settingsTitle')).toHaveText(
+			`User settings for [${ADMIN_USERNAME}]`
+		);
+	});
+
+	test('should display current settings', async ({ page }) => {
+		const form = page.getByTestId('settingsForm');
+		await expect(form.locator('[name=firstName]')).toHaveValue(<%_ if (databaseTypeSql) { _%>/Admin/<%_ } else { _%>/admin/<%_ }_%>);
+		await expect(form.locator('[name=lastName]')).toHaveValue(/Admin/);
+		await expect(form.locator('[name=email]')).toHaveValue(/admin@localhost/);
+	});
+
+	test('should display form control validation messages', async ({ page }) => {
+		const form = page.getByTestId('settingsForm');
+
+		await form.locator('[name=firstName]').fill(
+			'AveryLongFirstNameThatExceedsTheMaximumLengthLimitToCheckValidation'
+		);
+		await form.locator('[name=firstName]').blur();
+		const firstNameError = page.getByTestId('firstName-error');
+		await expect(firstNameError).toBeVisible();
+		await expect(firstNameError).toContainText('First name cannot be longer than 50 characters');
+
+		await form.locator('[name=lastName]').fill(
+			'AveryLongLastNameThatExceedsTheMaximumLengthLimitToCheckValidation'
+		);
+		await form.locator('[name=lastName]').blur();
+		const lastNameError = page.getByTestId('lastName-error');
+		await expect(lastNameError).toBeVisible();
+		await expect(lastNameError).toContainText('Last name cannot be longer than 50 characters');
+
+		await form.locator('[name=email]').fill('');
+		await form.locator('[name=email]').blur();
+		const emailError = page.getByTestId('email-error');
+		await expect(emailError).toBeVisible();
+		await expect(emailError).toContainText('Email is mandatory');
+
+		await form.locator('[name=email]').fill('admin@localhost');
+		await form.locator('[name=email]').blur();
+		await expect(emailError).toBeVisible();
+		await expect(emailError).toContainText('Email address is not valid');
+
+		const updateBtn = form.getByRole('button', { name: 'Update Settings' });
+		await expect(updateBtn).toBeDisabled();
+	});
+
+	test('should update user settings', async ({ page }) => {
+		const form = page.getByTestId('settingsForm');
+		await form.locator('[name=firstName]').fill(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ }_%>);
+		await form.locator('[name=firstName]').blur();
+		await form.locator('[name=lastName]').fill('Admin');
+		await form.locator('[name=lastName]').blur();
+		await form.locator('[name=email]').fill('admin@localhost.org');
+		await form.locator('[name=email]').blur();
+
+		const updateBtn = form.getByRole('button', { name: 'Update Settings' });
+		await expect(updateBtn).not.toBeDisabled();
+		await updateBtn.click();
+
+		await expect(page.getByTestId('successMsg')).toContainText('Settings changed!');
+	});
+});
