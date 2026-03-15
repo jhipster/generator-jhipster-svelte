@@ -216,7 +216,12 @@ export default class extends ClientGenerator {
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
 					sections: svelteFiles,
-					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest, playwright: this.playwright },
+					context: {
+						...application,
+						swaggerUi: this.swaggerUi,
+						jest: this.jest,
+						playwright: this.playwright,
+					},
 				});
 			},
 		});
@@ -257,7 +262,13 @@ export default class extends ClientGenerator {
 				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
 					await this.writeFiles({
 						sections: entitySvelteFiles,
-						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest, playwright: this.playwright },
+						context: {
+							...application,
+							...entity,
+							swaggerUi: this.swaggerUi,
+							jest: this.jest,
+							playwright: this.playwright,
+						},
 					});
 				}
 			},

@@ -66,7 +66,8 @@ const svelteFiles = {
 	],
 	e2eUserManagement: [
 		{
-			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2' && !generator.playwright,
+			condition: generator =>
+				!generator.skipUserManagement && generator.authenticationType !== 'oauth2' && !generator.playwright,
 			templates: [
 				'cypress/integration/account/change-password.spec.js',
 				'cypress/integration/account/register.spec.js',
@@ -109,7 +110,8 @@ const svelteFiles = {
 	],
 	e2ePlaywrightUserManagement: [
 		{
-			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2' && generator.playwright,
+			condition: generator =>
+				!generator.skipUserManagement && generator.authenticationType !== 'oauth2' && generator.playwright,
 			templates: [
 				'playwright/e2e/account/change-password.spec.js',
 				'playwright/e2e/account/register.spec.js',
