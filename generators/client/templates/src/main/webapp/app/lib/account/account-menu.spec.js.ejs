@@ -1,0 +1,95 @@
+<%_
+	let mockFn
+	if (this.jest) {
+		mockFn = 'jest'
+_%>
+import { jest } from '@jest/globals'
+<%_
+	} else {
+		mockFn = 'vi'
+	}
+_%>
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import AccountMenu from './account-menu.svelte'
+
+<%= mockFn %>.mock('$lib/auth/auth-store', async () => {
+	const { writable } = await import('svelte/store')
+	const store = writable({ login: 'testuser', authorities: ['ROLE_USER'] })
+	store.logout = <%= mockFn %>.fn()
+	store.loadUserIfAuthenticated = <%= mockFn %>.fn()
+	store.getSavedRoute = <%= mockFn %>.fn()
+	store.saveRoute = <%= mockFn %>.fn()
+	return { default: store }
+})
+<%_ if (authenticationType === 'session' || authenticationType === 'oauth2') { _%>
+
+<%= mockFn %>.mock('$lib/auth/auth-service', () => ({
+	default: {
+		logout: <%= mockFn %>.fn().mockResolvedValue({ logoutUrl: '/' }),
+	},
+}))
+<%_ } _%>
+
+<%= mockFn %>.mock('$app/navigation', () => ({
+	goto: <%= mockFn %>.fn(),
+}))
+<%_ if (authenticationType === 'oauth2') { _%>
+
+<%= mockFn %>.mock('$app/environment', () => ({
+	browser: true,
+}))
+<%_ } _%>
+
+test('should render the account menu button', () => {
+	render(AccountMenu)
+
+	expect(
+		screen.getByRole('button', { name: /account menu/i })
+	).toBeInTheDocument()
+})
+
+test('should not show menu items when closed', () => {
+	render(AccountMenu)
+
+	expect(screen.getByTestId('svlSignoutLink')).not.toBeVisible()
+})
+
+test('should show menu items when menu button is clicked', async () => {
+	render(AccountMenu)
+
+	const menuBtn = screen.getByRole('button', { name: /account menu/i })
+	await fireEvent.click(menuBtn)
+
+	expect(screen.getByTestId('svlSignoutLink')).toBeVisible()
+})
+
+test('should render the sign out menu item', async () => {
+	render(AccountMenu)
+
+	const menuBtn = screen.getByRole('button', { name: /account menu/i })
+	await fireEvent.click(menuBtn)
+
+	expect(screen.getByText(/sign out/i)).toBeInTheDocument()
+})
+<%_ if (!skipUserManagement) { _%>
+
+test('should render the change password menu item', async () => {
+	render(AccountMenu)
+
+	const menuBtn = screen.getByRole('button', { name: /account menu/i })
+	await fireEvent.click(menuBtn)
+
+	expect(screen.getByText(/change password/i)).toBeInTheDocument()
+})
+
+test('should render the settings menu item', async () => {
+	render(AccountMenu)
+
+	const menuBtn = screen.getByRole('button', { name: /account menu/i })
+	await fireEvent.click(menuBtn)
+
+	expect(screen.getByText(/settings/i)).toBeInTheDocument()
+})
+<%_ } _%>

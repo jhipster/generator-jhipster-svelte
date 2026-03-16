@@ -1,0 +1,86 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import ServiceInstanceTable from './service-instance-table.svelte'
+
+test('should render an empty table when no instances provided', () => {
+	render(ServiceInstanceTable, { serviceInstances: [] })
+
+	expect(screen.getByRole('table')).toBeInTheDocument()
+})
+
+test('should render service instance URI as a link', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8080',
+				metadata: {},
+			},
+		],
+	})
+
+	const link = screen.getByRole('link', { name: /http:\/\/localhost:8080/i })
+	expect(link).toBeInTheDocument()
+	expect(link).toHaveAttribute('href', 'http://localhost:8080')
+	expect(link).toHaveAttribute('target', '_blank')
+})
+
+test('should render UP status badge when instance is up', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8080',
+				instanceInfo: { status: 'UP' },
+				metadata: {},
+			},
+		],
+	})
+
+	expect(screen.getByText('UP')).toBeInTheDocument()
+})
+
+test('should render DOWN status badge when instance is down', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8080',
+				instanceInfo: { status: 'DOWN' },
+				metadata: {},
+			},
+		],
+	})
+
+	expect(screen.getByText('DOWN')).toBeInTheDocument()
+})
+
+test('should render UNKNOWN when no instance info available', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8080',
+				metadata: {},
+			},
+		],
+	})
+
+	expect(screen.getByText('UNKNOWN')).toBeInTheDocument()
+})
+
+test('should render metadata key-value pairs', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://localhost:8080',
+				metadata: {
+					version: '1.0.0',
+					zone: 'us-east-1',
+				},
+			},
+		],
+	})
+
+	expect(screen.getByText('version')).toBeInTheDocument()
+	expect(screen.getByText('1.0.0')).toBeInTheDocument()
+	expect(screen.getByText('zone')).toBeInTheDocument()
+	expect(screen.getByText('us-east-1')).toBeInTheDocument()
+})

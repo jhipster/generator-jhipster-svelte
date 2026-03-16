@@ -1,0 +1,54 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import GatewayTable from './gateway-table.svelte'
+
+test('should render an empty table', () => {
+	render(GatewayTable, { routes: [] })
+
+	expect(screen.getByRole('table')).toBeInTheDocument()
+	expect(screen.getByText(/no service routes available/i)).toBeInTheDocument()
+})
+
+test('should render table with correct headers', () => {
+	render(GatewayTable, { routes: [] })
+
+	expect(screen.getByRole('columnheader', { name: /service/i })).toBeInTheDocument()
+	expect(screen.getByRole('columnheader', { name: /route/i })).toBeInTheDocument()
+	expect(screen.getByRole('columnheader', { name: /service instances/i })).toBeInTheDocument()
+})
+
+test('should render table data for routes', () => {
+	render(GatewayTable, {
+		routes: [
+			{
+				path: '/api/users/**',
+				serviceId: 'user-service',
+				serviceInstances: [],
+			},
+		],
+	})
+
+	expect(screen.getByText('user-service')).toBeInTheDocument()
+	expect(screen.getByText('/api/users/**')).toBeInTheDocument()
+})
+
+test('should render multiple routes', () => {
+	render(GatewayTable, {
+		routes: [
+			{
+				path: '/api/users/**',
+				serviceId: 'user-service',
+				serviceInstances: [],
+			},
+			{
+				path: '/api/orders/**',
+				serviceId: 'order-service',
+				serviceInstances: [],
+			},
+		],
+	})
+
+	expect(screen.getByText('user-service')).toBeInTheDocument()
+	expect(screen.getByText('order-service')).toBeInTheDocument()
+})

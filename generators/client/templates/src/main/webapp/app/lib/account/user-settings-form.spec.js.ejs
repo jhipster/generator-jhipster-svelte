@@ -1,0 +1,80 @@
+<%_
+	let mockFn
+	if (this.jest) {
+		mockFn = 'jest'
+_%>
+import { jest } from '@jest/globals'
+<%_
+	} else {
+		mockFn = 'vi'
+	}
+_%>
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import UserSettingsForm from './user-settings-form.svelte'
+
+test('should render the settings form', () => {
+	render(UserSettingsForm)
+
+	expect(screen.getByTestId('settings')).toBeInTheDocument()
+})
+
+test('should render the first name field', () => {
+	render(UserSettingsForm)
+
+	expect(screen.getByLabelText(/first name/i)).toBeInTheDocument()
+})
+
+test('should render the last name field', () => {
+	render(UserSettingsForm)
+
+	expect(screen.getByLabelText(/last name/i)).toBeInTheDocument()
+})
+
+test('should render the email field', () => {
+	render(UserSettingsForm)
+
+	expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
+})
+
+test('should render the submit button', () => {
+	render(UserSettingsForm)
+
+	expect(
+		screen.getByRole('button', { name: /update settings/i })
+	).toBeInTheDocument()
+})
+
+test('should populate form fields with provided user data', () => {
+	render(UserSettingsForm, {
+		user: {
+			firstName: 'John',
+			lastName: 'Doe',
+			email: 'john@example.com',
+		},
+	})
+
+	expect(screen.getByLabelText(/first name/i)).toHaveValue('John')
+	expect(screen.getByLabelText(/last name/i)).toHaveValue('Doe')
+	expect(screen.getByLabelText(/email/i)).toHaveValue('john@example.com')
+})
+
+test('should dispatch updatesettings event on form submit', async () => {
+	const { component } = render(UserSettingsForm, {
+		user: {
+			firstName: 'John',
+			lastName: 'Doe',
+			email: 'john@example.com',
+		},
+	})
+
+	const mockHandler = <%= mockFn %>.fn()
+	component.$on('updatesettings', mockHandler)
+
+	const submitBtn = screen.getByRole('button', { name: /update settings/i })
+	expect(submitBtn).not.toBeDisabled()
+
+	await fireEvent.click(submitBtn)
+	expect(mockHandler).toHaveBeenCalled()
+})
