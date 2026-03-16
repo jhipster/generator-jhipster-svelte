@@ -61,7 +61,7 @@ export function authHeaders(token) {
 	};
 }
 <%_ } else { _%>
-export async function loginByApi(request, page, username, password) {
+export async function loginByApi(request, username, password) {
 	const authResponse = await request.get('/oauth2/authorization/oidc', {
 		maxRedirects: 0,
 	});
@@ -75,15 +75,15 @@ export async function loginByApi(request, page, username, password) {
 	const origin = url.origin;
 
 	if (origin.includes('okta')) {
-		await oktaLogin(request, page, authorizeUrl, origin, username, password);
+		await oktaLogin(request, authorizeUrl, origin, username, password);
 	} else if (origin.includes('auth0')) {
-		await auth0Login(request, page, origin, username, password);
+		await auth0Login(request, origin, username, password);
 	} else {
-		await keycloakLogin(request, page, username, password);
+		await keycloakLogin(request, username, password);
 	}
 }
 
-async function keycloakLogin(request, page, username, password) {
+async function keycloakLogin(request, username, password) {
 	const authPageResponse = await request.get('/oauth2/authorization/oidc', {
 		maxRedirects: 5,
 	});
@@ -104,7 +104,7 @@ async function keycloakLogin(request, page, username, password) {
 	});
 }
 
-async function auth0Login(request, page, origin, username, password) {
+async function auth0Login(request, origin, username, password) {
 	const authPageResponse = await request.get('/oauth2/authorization/oidc', {
 		maxRedirects: 5,
 	});
@@ -129,7 +129,7 @@ async function auth0Login(request, page, origin, username, password) {
 	});
 }
 
-async function oktaLogin(request, page, authorizeUrl, origin, username, password) {
+async function oktaLogin(request, authorizeUrl, origin, username, password) {
 	const authnResponse = await request.post(`${origin}/api/v1/authn`, {
 		data: { username, password },
 		maxRedirects: 0,

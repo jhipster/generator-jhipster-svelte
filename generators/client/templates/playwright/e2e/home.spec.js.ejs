@@ -46,11 +46,8 @@ test.describe('Home page', () => {
 			await page.goto('/');
 			await page.evaluate(t => localStorage.setItem('authToken', t), token);
 			await page.goto('/');
-<%_ } else if (authenticationType === 'oauth2') { _%>
-			await loginByApi(request, page, ADMIN_USERNAME, ADMIN_PASSWORD);
-			await page.goto('/');
 <%_ } else { _%>
-			await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+			await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
 			await page.goto('/');
 <%_ } _%>
 		});

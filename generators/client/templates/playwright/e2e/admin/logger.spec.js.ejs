@@ -14,10 +14,8 @@ test.describe('Loggers page', () => {
 		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
 		await page.goto('/');
 		await page.evaluate(t => localStorage.setItem('authToken', t), token);
-<%_ } else if (authenticationType === 'oauth2') { _%>
-		await loginByApi(request, page, ADMIN_USERNAME, ADMIN_PASSWORD);
 <%_ } else { _%>
-		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
 <%_ } _%>
 		await page.goto('/admin/logger');
 	});

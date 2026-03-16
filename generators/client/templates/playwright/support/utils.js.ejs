@@ -63,11 +63,21 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
 const USER_USERNAME = process.env.USER_USERNAME || 'user';
 const USER_PASSWORD = process.env.USER_PASSWORD || 'user';
 
-export async function ensureLoggedIn(request<%_ if (authenticationType === 'oauth2') { _%>, page<%_ } _%>) {
-	await loginByApi(request, <%_ if (authenticationType === 'oauth2') { _%>page, <%_ } _%>ADMIN_USERNAME, ADMIN_PASSWORD);
+let _loggedIn = false;
+
+async function ensureLoggedIn(request) {
+	if (!_loggedIn) {
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		_loggedIn = true;
+	}
+}
+
+export function resetLogin() {
+	_loggedIn = false;
 }
 
 export async function save(request, url, body, expectedStatus = 201) {
+	await ensureLoggedIn(request);
 	const xsrfToken = await getXsrfToken(request);
 	const response = await request.post(url, {
 		data: body,
@@ -83,6 +93,7 @@ export async function save(request, url, body, expectedStatus = 201) {
 }
 
 export async function deleteEntity(request, url, lenient = true) {
+	await ensureLoggedIn(request);
 	const xsrfToken = await getXsrfToken(request);
 	const response = await request.delete(url, {
 		headers: {
@@ -96,6 +107,7 @@ export async function deleteEntity(request, url, lenient = true) {
 }
 
 export async function getById(request, url, expectedStatus = 200) {
+	await ensureLoggedIn(request);
 	const xsrfToken = await getXsrfToken(request);
 	const response = await request.get(url, {
 		headers: {

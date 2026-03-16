@@ -15,7 +15,7 @@ test.describe('User Settings', () => {
 		await page.goto('/');
 		await page.evaluate(t => localStorage.setItem('authToken', t), token);
 <%_ } else { _%>
-		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
 <%_ } _%>
 		await page.goto('/account/settings');
 	});

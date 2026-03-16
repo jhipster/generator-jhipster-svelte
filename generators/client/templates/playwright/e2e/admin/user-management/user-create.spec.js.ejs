@@ -13,11 +13,11 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
 test.describe('Create user page', () => {
 	test.beforeEach(async ({ page, request }) => {
 <%_ if (authenticationType === 'jwt') { _%>
-		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		const token = await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
 		await page.goto('/');
 		await page.evaluate(t => localStorage.setItem('authToken', t), token);
 <%_ } else { _%>
-		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
 <%_ } _%>
 		await page.goto('/admin/user-management/new');
 	});

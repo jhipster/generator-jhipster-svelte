@@ -16,11 +16,11 @@ test.describe('User view details page', () => {
 	test.beforeEach(async ({ page, request }) => {
 		randomUser = 'test' + Date.now();
 <%_ if (authenticationType === 'jwt') { _%>
-		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		const token = await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
 		await page.goto('/');
 		await page.evaluate(t => localStorage.setItem('authToken', t), token);
 <%_ } else { _%>
-		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
 <%_ } _%>
 
 		const res = await save(request, 'api/admin/users', {
