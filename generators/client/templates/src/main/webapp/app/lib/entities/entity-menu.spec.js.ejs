@@ -21,8 +21,11 @@ test('should toggle menu visibility on button click', async () => {
 	render(EntityMenu)
 
 	const menuBtn = screen.getByRole('button', { name: /entities menu/i })
+	const dropdown = menuBtn.closest('.relative').querySelector('.sm\\:absolute')
+
+	expect(dropdown).toHaveClass('hidden')
+
 	await fireEvent.click(menuBtn)
 
-	const dropdown = screen.getByTestId('svlEntityLink').closest('div').parentElement
-	expect(dropdown).toBeInTheDocument()
+	expect(dropdown).not.toHaveClass('hidden')
 })

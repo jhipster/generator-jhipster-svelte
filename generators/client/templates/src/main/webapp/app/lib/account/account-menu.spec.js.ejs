@@ -14,8 +14,8 @@ import { screen } from '@testing-library/dom'
 
 import AccountMenu from './account-menu.svelte'
 
-<%= mockFn %>.mock('$lib/auth/auth-store', () => {
-	const { writable } = require('svelte/store')
+<%= mockFn %>.mock('$lib/auth/auth-store', async () => {
+	const { writable } = await import('svelte/store')
 	const store = writable({ login: 'testuser', authorities: ['ROLE_USER'] })
 	store.logout = <%= mockFn %>.fn()
 	store.loadUserIfAuthenticated = <%= mockFn %>.fn()

@@ -73,9 +73,8 @@ test('should dispatch updatesettings event on form submit', async () => {
 	component.$on('updatesettings', mockHandler)
 
 	const submitBtn = screen.getByRole('button', { name: /update settings/i })
+	expect(submitBtn).not.toBeDisabled()
 
-	if (!submitBtn.disabled) {
-		await fireEvent.click(submitBtn)
-		expect(mockHandler).toHaveBeenCalled()
-	}
+	await fireEvent.click(submitBtn)
+	expect(mockHandler).toHaveBeenCalled()
 })
