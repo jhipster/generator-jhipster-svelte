@@ -1,0 +1,124 @@
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '../../../support/auth.js';
+import { save, deleteEntity } from '../../../support/utils.js';
+<%_ } else { _%>
+import { loginByApi } from '../../../support/auth.js';
+import { save, deleteEntity } from '../../../support/utils.js';
+<%_ } _%>
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('Update user page', () => {
+	let randomUser;
+
+	test.beforeEach(async ({ page, request }) => {
+		randomUser = 'test' + Date.now();
+<%_ if (authenticationType === 'jwt') { _%>
+		const token = await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await page.goto('/');
+		await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else { _%>
+		await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+
+		const res = await save(request, 'api/admin/users', {
+			login: randomUser,
+			firstName: 'John',
+			lastName: 'Doe',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		});
+
+		await page.goto(`/admin/user-management/${res.login}/edit`);
+	});
+
+	test.afterEach(async ({ request }) => {
+		await deleteEntity(request, `api/admin/users/${randomUser}`);
+	});
+
+	test('should greets with update user title', async ({ page }) => {
+		const title = page.getByTestId('userMgmtTitle');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('Update user account');
+	});
+
+	test('should be populated and have valid state', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		await expect(form.locator('[name=username]')).toHaveValue(randomUser);
+		await expect(form.locator('[name=firstName]')).toHaveValue('John');
+		await expect(form.locator('[name=lastName]')).toHaveValue('Doe');
+		await expect(form.locator('[name=email]')).toHaveValue(`${randomUser}@localhost.org`);
+		await expect(form.locator('[name=activated]')).toBeChecked();
+		await expect(form.locator('[name=roles]')).toHaveValue('ROLE_USER');
+		const updateBtn = form.getByRole('button', { name: 'Update user account' });
+		await expect(updateBtn).not.toBeDisabled();
+	});
+
+	test('should require username', async ({ page }) => {
+		const input = page.getByTestId('addUserForm').locator('[name=username]');
+		await input.fill('');
+		await input.blur();
+
+		const error = page.getByTestId('username-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Username is mandatory');
+	});
+
+	test('should require email', async ({ page }) => {
+		const input = page.getByTestId('addUserForm').locator('[name=email]');
+		await input.fill('');
+		await input.blur();
+
+		const error = page.getByTestId('email-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Email is mandatory');
+	});
+
+	test('should require roles', async ({ page }) => {
+		await page.getByTestId('addUserForm').locator('[name=roles]').click();
+		const rolesOptions = page.getByTestId('roles-options');
+		await rolesOptions.locator("input[type='checkbox']").nth(0).uncheck();
+		await rolesOptions.locator("input[type='checkbox']").nth(1).uncheck();
+		await page.getByTestId('roles-bg').click();
+
+		const error = page.getByTestId('roles-error');
+		await expect(error).toBeVisible();
+		await expect(error).toContainText('Select at least one role');
+	});
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.locator('[name=cancelBtn]').click();
+
+		await expect(page).toHaveURL('/admin/user-management');
+		const title = page.getByTestId('userMgmtTitle');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('Users');
+	});
+
+	test('should update user account details', async ({ page }) => {
+		const form = page.getByTestId('addUserForm');
+		await form.locator('[name=firstName]').fill('Johnupdate');
+		await form.locator('[name=lastName]').fill('Doeupdate');
+		await form.locator('[name=email]').fill(`${randomUser}-update@localhost.org`);
+		await form.locator('[name=roles]').click();
+		await page.getByTestId('roles-options').locator("input[type='checkbox']").nth(0).check();
+		await page.getByTestId('roles-options').locator("input[type='checkbox']").nth(1).check();
+		await page.getByTestId('roles-bg').click();
+
+		const updateBtn = form.getByRole('button', { name: 'Update user account' });
+		await expect(updateBtn).not.toBeDisabled();
+		await updateBtn.click();
+
+		await expect(page.getByTestId('toast-success')).toContainText(
+			'A user is updated with identifier'
+		);
+
+		await expect(page).toHaveURL('/admin/user-management');
+		const title = page.getByTestId('userMgmtTitle');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('Users');
+	});
+});

@@ -1,0 +1,38 @@
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '../../support/auth.js';
+<%_ } else { _%>
+import { loginByApi } from '../../support/auth.js';
+<%_ } _%>
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('Gateway page', () => {
+	test.beforeEach(async ({ page, request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await page.goto('/');
+		await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else { _%>
+		await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		await page.goto('/admin/gateway');
+	});
+
+	test('should greets with Gateway page title', async ({ page }) => {
+		const gatewayTitle = page.getByTestId('gatewayTitle');
+		await expect(gatewayTitle).toBeVisible();
+		await expect(gatewayTitle).toContainText('Gateway routes');
+	});
+
+	test('should display Gateway routes table', async ({ page }) => {
+		const gatewayTable = page.getByTestId('gatewayTable');
+		await expect(gatewayTable).toBeVisible();
+		const headerRow = gatewayTable.locator('tr').first();
+		await expect(headerRow.locator('th, td')).toHaveCount(3);
+		await expect(headerRow.locator('th').nth(0)).toContainText('Service');
+		await expect(headerRow.locator('th').nth(1)).toContainText('Route');
+		await expect(headerRow.locator('th').nth(2)).toContainText('Service Instances');
+	});
+});

@@ -1,0 +1,61 @@
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi, authHeaders } from '../support/auth.js';
+<%_ } else { _%>
+import { loginByApi } from '../support/auth.js';
+<%_ } _%>
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('Home page', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/');
+	});
+
+	test('should greets with welcome title', async ({ page }) => {
+		const welcomeTitle = page.getByTestId('welcomeTitle');
+		await expect(welcomeTitle).toBeVisible();
+		await expect(welcomeTitle).toContainText('Welcome, JHipster Svelte!');
+	});
+
+	test.describe('unauthenticated user', () => {
+		test('should have login instructions', async ({ page }) => {
+			const loginInstructions = page.getByTestId('loginInstructions');
+			await expect(loginInstructions).toBeVisible();
+			await expect(loginInstructions).toContainText('you can try the default accounts');
+			await expect(loginInstructions).toContainText(
+				'Administrator (login="admin" and password="admin")'
+			);
+			await expect(loginInstructions).toContainText('User (login="user" and password="user").');
+		});
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+		test('should have user registration link', async ({ page }) => {
+			const registerLink = page.getByTestId('svlRegisterHomeLink');
+			await expect(registerLink).toBeVisible();
+			await expect(registerLink).toHaveAttribute('href', '/account/register');
+			await expect(registerLink).toContainText('Register a new account');
+		});
+<%_ } _%>
+	});
+
+	test.describe('authenticated user', () => {
+		test.beforeEach(async ({ page, request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+			const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+			await page.goto('/');
+			await page.evaluate(t => localStorage.setItem('authToken', t), token);
+			await page.goto('/');
+<%_ } else { _%>
+			await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
+			await page.goto('/');
+<%_ } _%>
+		});
+
+		test('should greets logged in user', async ({ page }) => {
+			const greetMsg = page.getByTestId('greetMsg');
+			await expect(greetMsg).toBeVisible();
+			await expect(greetMsg).toContainText(`You are logged in as user "${ADMIN_USERNAME}".`);
+		});
+	});
+});

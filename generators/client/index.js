@@ -58,11 +58,15 @@ export default class extends ClientGenerator {
 					if (this.blueprintConfig.jest === undefined) {
 						this.blueprintConfig.jest = false;
 					}
+					if (this.blueprintConfig.playwright === undefined) {
+						this.blueprintConfig.playwright = false;
+					}
 				}
 			},
 			setLocalCommandOptions() {
 				this.jest = this.blueprintConfig.jest;
 				this.swaggerUi = this.blueprintConfig.swaggerUi;
+				this.playwright = this.blueprintConfig.playwright;
 			},
 		});
 	}
@@ -212,7 +216,12 @@ export default class extends ClientGenerator {
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
 					sections: svelteFiles,
-					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest },
+					context: {
+						...application,
+						swaggerUi: this.swaggerUi,
+						jest: this.jest,
+						playwright: this.playwright,
+					},
 				});
 			},
 		});
@@ -253,7 +262,13 @@ export default class extends ClientGenerator {
 				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
 					await this.writeFiles({
 						sections: entitySvelteFiles,
-						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest },
+						context: {
+							...application,
+							...entity,
+							swaggerUi: this.swaggerUi,
+							jest: this.jest,
+							playwright: this.playwright,
+						},
 					});
 				}
 			},
@@ -317,6 +332,10 @@ export default class extends ClientGenerator {
 						'prettier-plugin-java': application.nodeDependencies['prettier-plugin-java'],
 					},
 				});
+
+				const e2eFrameworkType = this.playwright ? 'playwright' : 'cypress';
+				const e2ePackageJson = JSON.parse(this.readTemplate(`${e2eFrameworkType}/package.json`));
+				this.packageJson.merge(e2ePackageJson);
 			},
 		});
 	}

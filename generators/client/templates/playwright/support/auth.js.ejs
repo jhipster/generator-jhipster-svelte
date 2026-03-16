@@ -1,0 +1,154 @@
+<%_ if (authenticationType === 'session') { _%>
+export async function loginByApi(request, username, password) {
+	const csrfResponse = await request.get('api/authenticate');
+	const cookies = (await csrfResponse.headersArray()).filter(h => h.name.toLowerCase() === 'set-cookie');
+	let xsrfToken = '';
+	for (const cookie of cookies) {
+		const match = cookie.value.match(/XSRF-TOKEN=([^;]+)/);
+		if (match) {
+			xsrfToken = match[1];
+			break;
+		}
+	}
+
+	const loginResponse = await request.post('api/authentication', {
+		form: {
+			username,
+			password,
+			'remember-me': 'true',
+		},
+		headers: {
+			'X-XSRF-TOKEN': xsrfToken,
+		},
+	});
+
+	if (loginResponse.status() !== 200) {
+		throw new Error(`Login failed with status ${loginResponse.status()}`);
+	}
+
+	const accountResponse = await request.get('api/account');
+	if (accountResponse.status() !== 200) {
+		throw new Error(`Account fetch failed with status ${accountResponse.status()}`);
+	}
+}
+
+export async function getXsrfToken(request) {
+	const cookies = (await request.storageState()).cookies;
+	const xsrfCookie = cookies.find(c => c.name === 'XSRF-TOKEN');
+	return xsrfCookie ? xsrfCookie.value : '';
+}
+<%_ } else if (authenticationType === 'jwt') { _%>
+export async function loginByApi(request, username, password) {
+	const response = await request.post('api/authenticate', {
+		data: {
+			username,
+			password,
+			'remember-me': false,
+		},
+	});
+
+	if (response.status() !== 200) {
+		throw new Error(`Login failed with status ${response.status()}`);
+	}
+
+	const body = await response.json();
+	return body.id_token;
+}
+
+export function authHeaders(token) {
+	return {
+		Authorization: `Bearer ${token}`,
+	};
+}
+<%_ } else { _%>
+export async function loginByApi(request, username, password) {
+	const authResponse = await request.get('/oauth2/authorization/oidc', {
+		maxRedirects: 0,
+	});
+	const authorizeUrl = authResponse.headers()['location'];
+
+	if (!authorizeUrl) {
+		throw new Error('No redirect location found for OAuth2 login');
+	}
+
+	const url = new URL(authorizeUrl);
+	const origin = url.origin;
+
+	if (origin.includes('okta')) {
+		await oktaLogin(request, authorizeUrl, origin, username, password);
+	} else if (origin.includes('auth0')) {
+		await auth0Login(request, origin, username, password);
+	} else {
+		await keycloakLogin(request, username, password);
+	}
+}
+
+async function keycloakLogin(request, username, password) {
+	const authPageResponse = await request.get('/oauth2/authorization/oidc', {
+		maxRedirects: 5,
+	});
+	const html = await authPageResponse.text();
+	const formActionMatch = html.match(/action="([^"]+)"/);
+	if (!formActionMatch) {
+		throw new Error('Could not find login form action URL');
+	}
+	const loginUrl = formActionMatch[1].replace(/&amp;/g, '&');
+
+	await request.post(loginUrl, {
+		form: { username, password },
+		maxRedirects: 0,
+	});
+
+	await request.get('/oauth2/authorization/oidc', {
+		maxRedirects: 5,
+	});
+}
+
+async function auth0Login(request, origin, username, password) {
+	const authPageResponse = await request.get('/oauth2/authorization/oidc', {
+		maxRedirects: 5,
+	});
+	const html = await authPageResponse.text();
+	const stateMatch = html.match(/name="state"\s+value="([^"]+)"/);
+	if (!stateMatch) {
+		throw new Error('Could not find state input in auth0 login form');
+	}
+
+	await request.post(`${origin}/u/login`, {
+		form: {
+			state: stateMatch[1],
+			action: 'default',
+			username,
+			password,
+		},
+		maxRedirects: 5,
+	});
+
+	await request.get('/oauth2/authorization/oidc', {
+		maxRedirects: 5,
+	});
+}
+
+async function oktaLogin(request, authorizeUrl, origin, username, password) {
+	const authnResponse = await request.post(`${origin}/api/v1/authn`, {
+		data: { username, password },
+		maxRedirects: 0,
+	});
+	const authnBody = await authnResponse.json();
+	const sessionToken = authnBody.sessionToken;
+
+	await request.get(`${authorizeUrl}&sessionToken=${sessionToken}`, {
+		maxRedirects: 5,
+	});
+}
+
+export async function logoutByApi(request) {
+	// OAuth2 logout - placeholder for provider-specific logout
+}
+
+export async function getXsrfToken(request) {
+	const cookies = (await request.storageState()).cookies;
+	const xsrfCookie = cookies.find(c => c.name === 'XSRF-TOKEN');
+	return xsrfCookie ? xsrfCookie.value : '';
+}
+<%_ } _%>

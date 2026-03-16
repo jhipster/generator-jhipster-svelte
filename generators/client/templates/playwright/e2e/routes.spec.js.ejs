@@ -1,0 +1,115 @@
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '../support/auth.js';
+<%_ } else { _%>
+import { loginByApi } from '../support/auth.js';
+<%_ } _%>
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('Routes', () => {
+
+	test.describe('unauthenticated user', () => {
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+		test('should not allow navigation to settings page', async ({ page }) => {
+			await page.goto('/account/settings');
+
+			await expect(page).toHaveURL('/login');
+			const signInTitle = page.getByTestId('signInTitle');
+			await expect(signInTitle).toBeVisible();
+			await expect(signInTitle).toContainText('Sign in to <%= baseName  %>');
+		});
+
+		test('should not allow navigation to user management page', async ({ page }) => {
+			await page.goto('/admin/user-management');
+
+			await expect(page).toHaveURL('/login');
+			const signInTitle = page.getByTestId('signInTitle');
+			await expect(signInTitle).toBeVisible();
+			await expect(signInTitle).toContainText('Sign in to <%= baseName  %>');
+		});
+<%_ } _%>
+<%_ if (authenticationType !== 'oauth2') { _%>
+		test('should not allow navigation to Loggers page', async ({ page }) => {
+			await page.goto('/admin/logger');
+
+			await expect(page).toHaveURL('/login');
+			const signInTitle = page.getByTestId('signInTitle');
+			await expect(signInTitle).toBeVisible();
+			await expect(signInTitle).toContainText('Sign in to <%= baseName  %>');
+		});
+<%_ } _%>
+
+		test('should allow navigation to home page', async ({ page }) => {
+			await page.goto('/');
+
+			await expect(page).toHaveURL('/');
+			const welcomeTitle = page.getByTestId('welcomeTitle');
+			await expect(welcomeTitle).toBeVisible();
+			await expect(welcomeTitle).toContainText('Welcome, JHipster Svelte!');
+		});
+	});
+
+	test.describe('authenticated user', () => {
+		test.beforeEach(async ({ page, request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+			const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+			await page.goto('/');
+			await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else { _%>
+			await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		});
+
+		test('should not allow navigation to login page', async ({ page }) => {
+<%_ if (authenticationType === 'oauth2') { _%>
+			await page.goto('/oauth2/authorization/oidc');
+<%_ } else { _%>
+			await page.goto('/login');
+<%_ } _%>
+			await expect(page).toHaveURL('/');
+			const welcomeTitle = page.getByTestId('welcomeTitle');
+			await expect(welcomeTitle).toBeVisible();
+			await expect(welcomeTitle).toContainText('Welcome, JHipster Svelte!');
+		});
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+		test('should not allow navigation to register page', async ({ page }) => {
+			await page.goto('/account/register');
+
+			await expect(page).toHaveURL('/');
+			const welcomeTitle = page.getByTestId('welcomeTitle');
+			await expect(welcomeTitle).toBeVisible();
+			await expect(welcomeTitle).toContainText('Welcome, JHipster Svelte!');
+		});
+<%_ } _%>
+		test('should allow navigation to home page', async ({ page }) => {
+			await page.goto('/');
+
+			await expect(page).toHaveURL('/');
+			const welcomeTitle = page.getByTestId('welcomeTitle');
+			await expect(welcomeTitle).toBeVisible();
+			await expect(welcomeTitle).toContainText('Welcome, JHipster Svelte!');
+		});
+	});
+<%_ if (authenticationType !== 'oauth2') { _%>
+
+	test.describe('navigation context', () => {
+
+		test('should navigate to saved context', async ({ page }) => {
+			await page.goto('/admin/logger');
+			await expect(page).toHaveURL('/login');
+
+			await page.getByTestId('loginForm').locator("input[type='checkbox']").first().check();
+			await page.getByTestId('loginForm').locator('[name=username]').fill(ADMIN_USERNAME);
+			await page.getByTestId('loginForm').locator('[name=password]').fill(ADMIN_PASSWORD);
+			await page.getByTestId('loginForm').locator('[name=password]').press('Enter');
+
+			await expect(page).toHaveURL('/admin/logger');
+			const loggersTitle = page.getByTestId('loggersTitle');
+			await expect(loggersTitle).toBeVisible();
+			await expect(loggersTitle).toContainText('Loggers');
+		});
+	});
+<%_ } _%>
+});

@@ -1,0 +1,132 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+    const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/auth.js';
+import { save, deleteEntity } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/utils.js';
+<%_ } else { _%>
+import { loginByApi } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/auth.js';
+import { save, deleteEntity } from '<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/utils.js';
+<%_ } _%>
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from "<%= clientRootFolder !== '' ? '../../../' : '../../' %>support/entities/<%= entityFileName %>-util.js";
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('<%= entityAngularName %> delete dialog page', () => {
+	let dynamicId;
+<%_ if (containsRelationshipField || containsBinaryField) { _%>
+	let prerequisiteData;
+<%_ } _%>
+
+	test.beforeAll(async ({ request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } else if (authenticationType === 'oauth2') { _%>
+		// OAuth2 setup handled per-test
+<%_ } else { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+<%_ if (containsRelationshipField || containsBinaryField) { _%>
+		prerequisiteData = await prepare<%= entityAngularName %>PrerequisiteData(request);
+<%_ } _%>
+		const entity = await add<%= entityAngularName %>(request<%_
+	if (containsRelationshipField) {
+		for (const relationship of relationshipFields) {
+			if (relationship.otherEntityUser) {
+_%>, prerequisiteData.user<%_
+			} else {
+_%>, prerequisiteData.<%= relationship.relationshipName %>Id<%_
+			}
+		}
+	}
+_%>);
+		dynamicId = entity.id;
+	});
+
+	test.beforeEach(async ({ page, request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		const token = await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await page.goto('/');
+		await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else { _%>
+		await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		const responsePromise = page.waitForResponse(resp => resp.url().includes('/api/<%= entityApiUrl %>'));
+		await page.goto('/entities/<%= entityFolderName %>');
+		await responsePromise;
+		await page.waitForTimeout(100);
+
+		const rows = page.getByTestId('<%= entityInstance %>Table').locator('td:nth-child(1)');
+		const count = await rows.count();
+		for (let i = 0; i < count; i++) {
+			const text = await rows.nth(i).textContent();
+			if (text.includes(dynamicId)) {
+				const row = rows.nth(i).locator('..');
+				await row.hover({ force: true });
+				await row.locator('[name=deleteBtn]').click();
+				break;
+			}
+		}
+	});
+
+	test.afterAll(async ({ request }) => {
+<%_ if (authenticationType === 'jwt') { _%>
+		await loginByApi(request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+		await deleteEntity(request, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`);
+	<%_ if (authenticationType === 'oauth2') { _%>
+		// OAuth2 logout placeholder
+	<%_ } _%>
+	<%_
+			for (const relationship of relationshipFields) {
+				if (!relationship.otherEntityUser) {
+	_%>
+		await deleteEntity(request, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${prerequisiteData.<%= relationship.relationshipName %>Id}`);
+	<%_
+				}
+			}
+	_%>
+	});
+
+	test('should display delete <%= entityAngularName %> dialog', async ({ page }) => {
+		const modal = page.getByTestId('svlModal');
+		await expect(modal.locator('h1')).toBeVisible();
+		await expect(modal.locator('h1')).toContainText('Confirm delete operation');
+		await expect(modal.locator('p')).toBeVisible();
+		await expect(modal.locator('p')).toContainText('Are you sure you want to delete the <%= entityClassHumanized %>?');
+		await expect(modal.locator('[name=confirmDeleteBtn]')).not.toBeDisabled();
+		await expect(modal.locator('[name=cancelBtn]')).not.toBeDisabled();
+	});
+
+	test('should close the dialog without deleting <%= entityAngularName %>', async ({ page }) => {
+		await page.getByTestId('svlModal').locator('[name=cancelBtn]').click();
+		const title = page.getByTestId('<%= entityInstance %>Title');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>');
+	});
+
+	test('should delete the <%= entityAngularName %>', async ({ page }) => {
+		await page.getByTestId('svlModal').locator('[name=confirmDeleteBtn]').click();
+<%_ if (!reactive) { _%>
+
+		await expect(page.getByTestId('toast-success')).toContainText(
+			'is deleted with identifier'
+		);
+
+<%_ } _%>
+		const title = page.getByTestId('<%= entityInstance %>Title');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>');
+	});
+});

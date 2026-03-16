@@ -1,0 +1,74 @@
+import { test, expect } from '@playwright/test';
+<%_ if (authenticationType === 'jwt') { _%>
+import { loginByApi } from '../../../support/auth.js';
+import { save, deleteEntity } from '../../../support/utils.js';
+<%_ } else { _%>
+import { loginByApi } from '../../../support/auth.js';
+import { save, deleteEntity } from '../../../support/utils.js';
+<%_ } _%>
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+test.describe('User delete dialog page', () => {
+	let randomUser;
+
+	test.beforeEach(async ({ page, request }) => {
+		randomUser = 'test' + Date.now();
+<%_ if (authenticationType === 'jwt') { _%>
+		const token = await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
+		await page.goto('/');
+		await page.evaluate(t => localStorage.setItem('authToken', t), token);
+<%_ } else { _%>
+		await loginByApi(page.request, ADMIN_USERNAME, ADMIN_PASSWORD);
+<%_ } _%>
+
+		await save(request, 'api/admin/users', {
+			login: randomUser,
+			firstName: '',
+			lastName: '',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		});
+
+		await page.goto('/admin/user-management');
+
+		const row = page.getByTestId('userMgmtTable').locator('td', { hasText: randomUser }).locator('..');
+		await row.hover();
+		await row.locator('[name=deleteBtn]').click();
+	});
+
+	test.afterEach(async ({ request }) => {
+		await deleteEntity(request, `api/admin/users/${randomUser}`);
+	});
+
+	test('should display delete user dialog', async ({ page }) => {
+		const modal = page.getByTestId('svlModal');
+		await expect(modal.locator('h1')).toBeVisible();
+		await expect(modal.locator('h1')).toContainText('Confirm delete operation');
+		await expect(modal.locator('p')).toBeVisible();
+		await expect(modal.locator('p')).toContainText('Are you sure you want to delete the user?');
+		await expect(modal.locator('[name=confirmDeleteBtn]')).not.toBeDisabled();
+		await expect(modal.locator('[name=cancelBtn]')).not.toBeDisabled();
+	});
+
+	test('should close the dialog without deleting user', async ({ page }) => {
+		await page.getByTestId('svlModal').locator('[name=cancelBtn]').click();
+		const title = page.getByTestId('userMgmtTitle');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('Users');
+	});
+
+	test('should delete the user', async ({ page }) => {
+		await page.getByTestId('svlModal').locator('[name=confirmDeleteBtn]').click();
+
+		await expect(page.getByTestId('toast-success')).toContainText(
+			'A user is deleted with identifier'
+		);
+
+		const title = page.getByTestId('userMgmtTitle');
+		await expect(title).toBeVisible();
+		await expect(title).toContainText('Users');
+	});
+});
