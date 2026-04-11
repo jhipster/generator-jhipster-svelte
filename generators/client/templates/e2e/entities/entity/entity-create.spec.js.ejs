@@ -1,0 +1,120 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const containsMandatoryField = fields.find(field => field.fieldValidationRequired);
+	const containsFieldValidation = containsMandatoryField || fields.find(field => (field.fieldValidationMinLength
+			|| field.fieldValidationMaxLength
+			|| field.fieldValidationMin
+			|| field.fieldValidationMax
+			|| (!field.fieldValidationRequired && field.fieldTypeNumeric)));
+	const placeHolderText = 'lorem ipsum';
+	const getMinLengthText = function(len) {
+		return placeHolderText.substr(0, len > 1 ? len-1 : 0);
+	}
+	const getMaxLengthText = function(len) {
+		let maxLengthText = placeHolderText;
+		while(maxLengthText.length < len) {
+			maxLengthText+= placeHolderText;
+		}
+		return maxLengthText;
+	}
+_%>
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from '<%= clientRootFolder !== '' ? '../../' : '../' %>../support/test-utils.js'
+import { loginByApi, ADMIN_USERNAME, ADMIN_PASSWORD } from '<%= clientRootFolder !== '' ? '../../' : '../' %>../support/auth-utils.js'
+
+test.describe('Create <%= entityInstance %> page', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+		await page.goto('/entities/<%= entityFolderName %>/new')
+	})
+
+	test('should greets with Create <%= entityInstance %> title', async ({ page }) => {
+		const title = getByTestId(page, '<%= entityInstance %>Title')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('Create <%= entityClassHumanized %>')
+	})
+
+<%_ if (containsMandatoryField) { _%>
+	test('should require mandatory fields', async ({ page }) => {
+		const form = getByTestId(page, 'add<%= entityAngularName %>Form')
+		const createBtn = form.locator('text=Create <%= entityClassHumanized %>')
+		await expect(createBtn).toBeDisabled()
+	})
+
+<%_ } _%>
+<%_ if (containsFieldValidation) { _%>
+	test('should validate field values', async ({ page }) => {
+		const form = getByTestId(page, 'add<%= entityAngularName %>Form')
+<%_
+		for (field of fields.filter(field => !field.id)) {
+			const fieldValue = !entityFakeData ? field.generateFakeData('cypress') : entityFakeData[field.fieldName];
+			if (fieldValue === undefined) {
+				warning(`Error generating a value for field ${field.fieldName}`);
+			}
+_%>
+	<%_ if (field.fieldValidationRequired) { _%>
+
+		await form.locator('[name=<%= field.fieldName %>]').fill('<%= fieldValue %>')
+		await form.locator('[name=<%= field.fieldName %>]').fill('')
+		await form.locator('[name=<%= field.fieldName %>]').blur()
+		const <%= field.fieldName %>ReqError = getByTestId(page, '<%= field.fieldName %>-error')
+		await expect(<%= field.fieldName %>ReqError).toBeVisible()
+		await expect(<%= field.fieldName %>ReqError).toContainText('<%= field.fieldNameHumanized %> is mandatory')
+	<%_ } _%>
+	<%_ if (field.fieldValidationMinLength) { _%>
+
+		await form.locator('[name=<%= field.fieldName %>]').fill('<%= getMinLengthText(field.fieldValidateRulesMinlength) %>')
+		await form.locator('[name=<%= field.fieldName %>]').blur()
+		const <%= field.fieldName %>MinError = getByTestId(page, '<%= field.fieldName %>-error')
+		await expect(<%= field.fieldName %>MinError).toBeVisible()
+		await expect(<%= field.fieldName %>MinError).toContainText('<%= field.fieldNameHumanized %> should be greater than <%= field.fieldValidateRulesMinlength %> characters')
+	<%_ } _%>
+	<%_ if (field.fieldValidationMaxLength) { _%>
+
+		await form.locator('[name=<%= field.fieldName %>]').fill('<%= getMaxLengthText(field.fieldValidateRulesMaxlength) %>')
+		await form.locator('[name=<%= field.fieldName %>]').blur()
+		const <%= field.fieldName %>MaxError = getByTestId(page, '<%= field.fieldName %>-error')
+		await expect(<%= field.fieldName %>MaxError).toBeVisible()
+		await expect(<%= field.fieldName %>MaxError).toContainText('<%= field.fieldNameHumanized %> cannot be longer than <%= field.fieldValidateRulesMaxlength %> characters')
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && !field.fieldValidationRequired) { _%>
+
+		await form.locator('[name=<%= field.fieldName %>]').fill('1')
+		await form.locator('[name=<%= field.fieldName %>]').fill('')
+		await form.locator('[name=<%= field.fieldName %>]').fill('-')
+		await form.locator('[name=<%= field.fieldName %>]').blur()
+		const <%= field.fieldName %>NumError = getByTestId(page, '<%= field.fieldName %>-error')
+		await expect(<%= field.fieldName %>NumError).toBeVisible()
+		await expect(<%= field.fieldName %>NumError).toContainText('<%= field.fieldNameHumanized %> should be numeric')
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && field.fieldValidationMin) { _%>
+
+		await form.locator('[name=<%= field.fieldName %>]').fill('<%= Number(field.fieldValidateRulesMin) - 1 %>')
+		await form.locator('[name=<%= field.fieldName %>]').blur()
+		const <%= field.fieldName %>MinValError = getByTestId(page, '<%= field.fieldName %>-error')
+		await expect(<%= field.fieldName %>MinValError).toBeVisible()
+		await expect(<%= field.fieldName %>MinValError).toContainText('<%= field.fieldNameHumanized %> should be at least <%= field.fieldValidateRulesMin %>')
+	<%_ } _%>
+	<%_ if (field.fieldTypeNumeric && field.fieldValidationMax) { _%>
+
+		await form.locator('[name=<%= field.fieldName %>]').fill('<%= Number(field.fieldValidateRulesMax) + 1 %>')
+		await form.locator('[name=<%= field.fieldName %>]').blur()
+		const <%= field.fieldName %>MaxValError = getByTestId(page, '<%= field.fieldName %>-error')
+		await expect(<%= field.fieldName %>MaxValError).toBeVisible()
+		await expect(<%= field.fieldName %>MaxValError).toContainText('<%= field.fieldNameHumanized %> cannot be more than <%= field.fieldValidateRulesMax %>')
+	<%_ } _%>
+<%_ 	} _%>
+	})
+
+<%_ } _%>
+	test('should navigate back to the <%= entityInstance %> list page', async ({ page }) => {
+		await page.locator('[name=cancelBtn]').click()
+
+		await expect(page).toHaveURL(/\/entities\/<%= entityFolderName %>/)
+		const title = getByTestId(page, '<%= entityInstance %>Title')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>')
+	})
+})

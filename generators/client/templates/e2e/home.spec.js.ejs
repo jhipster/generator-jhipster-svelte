@@ -1,0 +1,57 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, unregisterServiceWorkers } from './support/test-utils.js'
+import { loginByApi, ADMIN_USERNAME, ADMIN_PASSWORD<%_ if (authenticationType === 'oauth2') { _%>, logoutByApi<%_ } _%> } from './support/auth-utils.js'
+
+test.describe('Home page', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await page.goto('/')
+	})
+
+	test('should greets with welcome title', async ({ page }) => {
+		const welcomeTitle = getByTestId(page, 'welcomeTitle')
+		await expect(welcomeTitle).toBeVisible()
+		await expect(welcomeTitle).toContainText('Welcome, JHipster Svelte!')
+	})
+
+	test.describe('unauthenticated user', () => {
+		test('should have login instructions', async ({ page }) => {
+			const loginInstructions = getByTestId(page, 'loginInstructions')
+			await expect(loginInstructions).toBeVisible()
+			await expect(loginInstructions).toContainText('you can try the default accounts')
+			await expect(loginInstructions).toContainText(
+				'Administrator (login="admin" and password="admin")'
+			)
+			await expect(loginInstructions).toContainText('User (login="user" and password="user").')
+		})
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+
+		test('should have user registration link', async ({ page }) => {
+			const registerLink = getByTestId(page, 'svlRegisterHomeLink')
+			await expect(registerLink).toBeVisible()
+			await expect(registerLink).toHaveAttribute('href', '/account/register')
+			await expect(registerLink).toContainText('Register a new account')
+		})
+<%_ } _%>
+	})
+
+	test.describe('authenticated user', () => {
+		test.beforeEach(async ({ page }) => {
+			await unregisterServiceWorkers(page)
+			await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+			await page.goto('/')
+		})
+
+<%_ if (authenticationType === 'oauth2') { _%>
+		test.afterEach(async ({ page }) => {
+			await logoutByApi(page)
+		})
+
+<%_ } _%>
+		test('should greets logged in user', async ({ page }) => {
+			const greetMsg = getByTestId(page, 'greetMsg')
+			await expect(greetMsg).toBeVisible()
+			await expect(greetMsg).toContainText(`You are logged in as user "${ADMIN_USERNAME}".`)
+		})
+	})
+})
