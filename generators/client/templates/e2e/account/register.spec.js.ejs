@@ -1,0 +1,127 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from '../support/test-utils.js'
+
+test.describe('Register User', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await page.goto('/account/register')
+	})
+
+	test('should greets with Create user title', async ({ page }) => {
+		const registerTitle = getByTestId(page, 'registerTitle')
+		await expect(registerTitle).toBeVisible()
+		await expect(registerTitle).toContainText('Create user account')
+	})
+
+	test('should require mandatory fields', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		const createBtn = registerForm.locator('text=Create account')
+		await expect(createBtn).toBeDisabled()
+	})
+
+	test('should require username', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		const username = registerForm.locator('[name=username]')
+		await username.fill('admin')
+		await username.fill('')
+		await username.blur()
+
+		const error = getByTestId(page, 'username-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Username is mandatory')
+	})
+
+	test('should require email', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		const email = registerForm.locator('[name=email]')
+		await email.fill('admin@localhost.org')
+		await email.fill('')
+		await email.blur()
+
+		const error = getByTestId(page, 'email-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Email is mandatory')
+	})
+
+	test('should require valid email', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		const email = registerForm.locator('[name=email]')
+		await email.fill('admin@localhost')
+		await email.blur()
+
+		const error = getByTestId(page, 'email-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Email address is not valid')
+	})
+
+	test('should require password', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		const password = registerForm.locator('[name=password]')
+		await password.fill('password')
+		await password.fill('')
+		await password.blur()
+
+		const error = getByTestId(page, 'password-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Password is mandatory')
+	})
+
+	test('should require confirm password', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		const passwordConfirm = registerForm.locator('[name=passwordConfirm]')
+		await passwordConfirm.fill('password')
+		await passwordConfirm.fill('')
+		await passwordConfirm.blur()
+
+		const error = getByTestId(page, 'passwordConfirm-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Password is mandatory')
+	})
+
+	test('should require password and confirm password to match', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		await registerForm.locator('[name=password]').fill('abcd')
+		await registerForm.locator('[name=password]').blur()
+		await registerForm.locator('[name=passwordConfirm]').fill('defg')
+		await registerForm.locator('[name=passwordConfirm]').blur()
+
+		const error = getByTestId(page, 'passwordConfirm-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Password and its confirmation do not match')
+	})
+
+	test('should not allow user account creation with duplicate username', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		await registerForm.locator('[name=username]').fill('admin')
+		await registerForm.locator('[name=email]').fill('joe@localhost.org')
+		await registerForm.locator('[name=password]').fill('jondoe')
+		await registerForm.locator('[name=passwordConfirm]').fill('jondoe')
+
+		const createBtn = registerForm.locator('text=Create account')
+		await expect(createBtn).not.toBeDisabled()
+		await createBtn.click()
+
+		const errorMsg = getByTestId(page, 'errorMsg')
+		await expect(errorMsg).toContainText(
+			'Login name already in use. Please choose another one.'
+		)
+	})
+
+	test('should create new user account', async ({ page }) => {
+		const registerForm = getByTestId(page, 'registerForm')
+		await registerForm.locator('[name=username]').fill('jon')
+		await registerForm.locator('[name=email]').fill('joe@localhost.org')
+		await registerForm.locator('[name=password]').fill('jondoe')
+		await registerForm.locator('[name=passwordConfirm]').fill('jondoe')
+
+		const createBtn = registerForm.locator('text=Create account')
+		await expect(createBtn).not.toBeDisabled()
+		await createBtn.click()
+
+		const successMsg = getByTestId(page, 'successMsg')
+		await expect(successMsg).toContainText(
+			'User account successfully created. Please check your email for confirmation.'
+		)
+		await expect(registerForm).toHaveCount(0)
+	})
+})

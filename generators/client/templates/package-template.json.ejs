@@ -5,7 +5,11 @@
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
+<%_ if (playwright) { _%>
+		"format": "prettier --write \"{,src/**/,e2e/**/}*.{md,json,js,svelte,css,html,yml}\"",
+<%_ } else { _%>
 		"format": "prettier --write \"{,src/**/,cypress/**/}*.{md,json,js,svelte,css,html,yml}\"",
+<%_ } _%>
 		"lint": "eslint .",
 		"prepare": "husky",
 		"lint:fix": "npm run lint --fix",
@@ -14,9 +18,15 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+<%_ if (playwright) { _%>
+		"e2e": "npx playwright test",
+		"e2e:ci": "npx playwright test",
+		"e2e:ui": "npx playwright test --ui",
+<%_ } else { _%>
 		"e2e": "npm run e2e:ci -- --headed",
 		"e2e:ci": "cypress run --browser chrome",
         "cy:open": "cypress open --e2e --browser chrome",
+<%_ } _%>
 		"build": "vite build",
 		"webapp:build": "npm run build",
 		"webapp:prod": "npm run build",

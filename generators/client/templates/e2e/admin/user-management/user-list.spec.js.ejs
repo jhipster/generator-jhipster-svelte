@@ -1,0 +1,90 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from '../../support/test-utils.js'
+import { loginByApi, ADMIN_USERNAME, ADMIN_PASSWORD } from '../../support/auth-utils.js'
+
+test.describe('User Management list page', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+		await page.goto('/admin/user-management')
+	})
+
+	test('should greets with users page title', async ({ page }) => {
+		const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+		await expect(userMgmtTitle).toBeVisible()
+		await expect(userMgmtTitle).toContainText('Users')
+	})
+
+	test('should display users table', async ({ page }) => {
+		const userMgmtTable = getByTestId(page, 'userMgmtTable')
+		await expect(userMgmtTable).toBeVisible()
+
+		const headers = userMgmtTable.locator('th')
+		await expect(headers.nth(0)).toContainText('ID')
+		await expect(headers.nth(1)).toContainText('Login')
+		await expect(headers.nth(2)).toContainText('Email')
+		await expect(headers.nth(3)).toContainText('Roles')
+		await expect(headers.nth(4)).toContainText('Created At')
+		await expect(headers.nth(5)).toContainText('Modified By')
+		await expect(headers.nth(6)).toContainText('Modified At')
+	})
+
+	test('should display "user" user record in the table', async ({ page }) => {
+		const userMgmtTable = getByTestId(page, 'userMgmtTable')
+		const userRow = userMgmtTable.locator('td', { hasText: 'user@localhost' }).locator('..')
+
+		await expect(userRow.locator('td').nth(1)).toContainText('user')
+		await expect(userRow.locator('td').nth(2)).toContainText('user@localhost')
+		await expect(userRow.locator('td').nth(3)).toContainText('ROLE_USER')
+		await expect(userRow.locator('td').nth(5)).toContainText('system')
+	})
+
+	test('should not allow actions on the current logged in user', async ({ page }) => {
+		const userMgmtTable = getByTestId(page, 'userMgmtTable')
+		const adminRow = userMgmtTable.locator('td', { hasText: 'admin@localhost' }).locator('..')
+		await adminRow.hover()
+
+		const toggleBtn = adminRow.locator('[name=toggleUserAcctBtn]')
+		await expect(toggleBtn).toBeDisabled()
+		const viewBtn = adminRow.locator('[name=viewBtn]')
+		await expect(viewBtn).not.toBeDisabled()
+		const editBtn = adminRow.locator('[name=editBtn]')
+		await expect(editBtn).toBeDisabled()
+		const deleteBtn = adminRow.locator('[name=deleteBtn]')
+		await expect(deleteBtn).toBeDisabled()
+	})
+
+	test('should allow deactivation of "user" account record', async ({ page }) => {
+		const userMgmtTable = getByTestId(page, 'userMgmtTable')
+		const userRow = userMgmtTable.locator('td', { hasText: 'user@localhost' }).locator('..')
+		await userRow.hover()
+
+		const toggleBtn = userRow.locator('[name=toggleUserAcctBtn]')
+		await expect(toggleBtn).not.toBeDisabled()
+	})
+
+	test('should validate the pagination controls', async ({ page }) => {
+		const pageCtrl = getByTestId(page, 'pageCtrl').first()
+		await expect(pageCtrl).toContainText(/1-\d+ of \d+/)
+
+		const prevPageCtrl = getByTestId(page, 'prevPageCtrl').first()
+		await expect(prevPageCtrl).toBeDisabled()
+
+		const nextPageCtrl = getByTestId(page, 'nextPageCtrl').first()
+		await expect(nextPageCtrl).toBeDisabled()
+	})
+
+	test('should sort the records by login field', async ({ page }) => {
+		const userMgmtTable = getByTestId(page, 'userMgmtTable')
+		const firstLoginBefore = await userMgmtTable.locator('tbody > tr').first().locator('td').nth(1).textContent()
+
+		const responsePromise = page.waitForResponse(resp => resp.url().includes('/admin/users?'))
+		await userMgmtTable.locator('tr').first().locator('th').nth(1).locator('button').click()
+		await responsePromise
+
+		await page.waitForTimeout(100)
+
+		const firstLoginAfter = await userMgmtTable.locator('tbody > tr').first().locator('td').nth(1).textContent()
+		expect(firstLoginAfter).not.toBe(firstLoginBefore)
+	})
+})

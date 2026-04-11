@@ -1,0 +1,194 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, unregisterServiceWorkers } from './support/test-utils.js'
+import { loginByApi, ADMIN_USERNAME, ADMIN_PASSWORD, USER_USERNAME, USER_PASSWORD<%_ if (authenticationType === 'oauth2') { _%>, logoutByApi<%_ } _%> } from './support/auth-utils.js'
+
+test.describe('Navbar', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await page.goto('/')
+	})
+
+	test.describe('unauthenticated user', () => {
+		test('should display application name', async ({ page }) => {
+			const appName = getByTestId(page, 'svlAppName')
+			await expect(appName).toBeVisible()
+			await expect(appName).toContainText('<%= baseName %>')
+		})
+
+		test('should display application version', async ({ page }) => {
+			const appVersion = getByTestId(page, 'svlAppVersion')
+			await expect(appVersion).toBeVisible()
+			await expect(appVersion).toContainText('DEV')
+		})
+
+		test('should not display navigation toggle button', async ({ page }) => {
+			const navBtn = getByTestId(page, 'svlNavBtn')
+			await expect(navBtn).not.toBeVisible()
+		})
+
+		test('should not display account menu', async ({ page }) => {
+			const acctMenu = getByTestId(page, 'svlAcctMenu')
+			await expect(acctMenu).toHaveCount(0)
+		})
+
+		test('should display sign in link', async ({ page }) => {
+			const loginLink = getByTestId(page, 'svlLoginLink')
+			await expect(loginLink).toBeVisible()
+			await expect(loginLink).toContainText('Sign in')
+		})
+
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+		test('should display register link', async ({ page }) => {
+			const registerLink = getByTestId(page, 'svlRegisterLink')
+			await expect(registerLink).toBeVisible()
+			await expect(registerLink).toContainText('Sign up')
+		})
+<%_ } _%>
+	})
+
+	test.describe('authenticated user', () => {
+		test.beforeEach(async ({ page }) => {
+			await unregisterServiceWorkers(page)
+			await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+			await page.goto('/')
+		})
+
+<%_ if (authenticationType === 'oauth2') { _%>
+		test.afterEach(async ({ page }) => {
+			await logoutByApi(page)
+		})
+
+<%_ } _%>
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+		test('should not display register link', async ({ page }) => {
+			const registerLink = getByTestId(page, 'svlRegisterLink')
+			await expect(registerLink).toHaveCount(0)
+		})
+
+<%_ } _%>
+		test('should not display sign in link', async ({ page }) => {
+			const loginLink = getByTestId(page, 'svlLoginLink')
+			await expect(loginLink).toHaveCount(0)
+		})
+
+		test('should display account menu', async ({ page }) => {
+			const acctMenu = getByTestId(page, 'svlAcctMenu')
+			await expect(acctMenu).toBeVisible()
+
+			await getByTestId(page, 'svlAccountLink').click()
+
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+			const chgPwdLink = getByTestId(page, 'svlChgPwdLink')
+			await expect(chgPwdLink).toBeVisible()
+			await expect(chgPwdLink).toHaveAttribute('href', '/account/password')
+			await expect(chgPwdLink).toContainText('Change Password')
+
+			const settingsLink = getByTestId(page, 'svlSettingsLink')
+			await expect(settingsLink).toBeVisible()
+			await expect(settingsLink).toHaveAttribute('href', '/account/settings')
+			await expect(settingsLink).toContainText('Settings')
+<%_ } _%>
+
+			const signoutLink = getByTestId(page, 'svlSignoutLink')
+			await expect(signoutLink).toBeVisible()
+			await expect(signoutLink).toHaveAttribute('href', '/')
+			await expect(signoutLink).toContainText('Sign out')
+		})
+
+		test('should display administrator menu', async ({ page }) => {
+			const adminMenu = getByTestId(page, 'svlAdminMenu')
+			await expect(adminMenu).toBeVisible()
+
+			await getByTestId(page, 'svlAdminLink').click()
+
+			const loggerLink = getByTestId(page, 'svlLoggerLink')
+			await expect(loggerLink).toBeVisible()
+			await expect(loggerLink).toHaveAttribute('href', '/admin/logger')
+			await expect(loggerLink).toContainText('Loggers')
+
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+			const userMgmtLink = getByTestId(page, 'svlUserMgmtLink')
+			await expect(userMgmtLink).toBeVisible()
+			await expect(userMgmtLink).toHaveAttribute('href', '/admin/user-management')
+			await expect(userMgmtLink).toContainText('User Management')
+<%_ } _%>
+		})
+
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+		test('should navigate to change password page', async ({ page }) => {
+			await getByTestId(page, 'svlAccountLink').click()
+			const chgPwdLink = getByTestId(page, 'svlChgPwdLink')
+			await expect(chgPwdLink).toBeVisible()
+			await chgPwdLink.click()
+
+			await expect(page).toHaveURL(/\/account\/password/)
+		})
+
+		test('should navigate to settings page', async ({ page }) => {
+			await getByTestId(page, 'svlAccountLink').click()
+			const settingsLink = getByTestId(page, 'svlSettingsLink')
+			await expect(settingsLink).toBeVisible()
+			await settingsLink.click()
+
+			await expect(page).toHaveURL(/\/account\/settings/)
+		})
+<%_ } _%>
+<%_ if (authenticationType !== 'oauth2') { _%>
+
+		test('should logout user', async ({ page }) => {
+			await getByTestId(page, 'svlAccountLink').click()
+			const signoutLink = getByTestId(page, 'svlSignoutLink')
+			await expect(signoutLink).toBeVisible()
+			await signoutLink.click()
+
+			await expect(page).toHaveURL('/')
+			const loginLink = getByTestId(page, 'svlLoginLink')
+			await expect(loginLink).toBeVisible()
+			await expect(loginLink).toContainText('Sign in')
+		})
+<%_ } _%>
+	})
+
+<%_ if (!skipUserManagement || authenticationType === 'oauth2') { _%>
+	test.describe(`authenticated 'ROLE_USER' ROLE user`, () => {
+		test.beforeEach(async ({ page }) => {
+			await unregisterServiceWorkers(page)
+			await loginByApi(page, USER_USERNAME, USER_PASSWORD)
+			await page.goto('/')
+		})
+
+<%_ if (authenticationType === 'oauth2') { _%>
+		test.afterEach(async ({ page }) => {
+			await logoutByApi(page)
+		})
+
+<%_ } _%>
+		test('should not display administrator menu', async ({ page }) => {
+			const adminMenu = getByTestId(page, 'svlAdminMenu')
+			await expect(adminMenu).toHaveCount(0)
+		})
+	})
+<%_ } _%>
+<%_ if (authenticationType === 'oauth2') { _%>
+
+	test.describe('Logout authenticated user', () => {
+		test.beforeEach(async ({ page }) => {
+			await unregisterServiceWorkers(page)
+			await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+			await page.goto('/')
+		})
+
+		test('should logout user', async ({ page }) => {
+			await getByTestId(page, 'svlAccountLink').click()
+			const signoutLink = getByTestId(page, 'svlSignoutLink')
+			await expect(signoutLink).toBeVisible()
+			await signoutLink.click()
+
+			await expect(page).toHaveURL('/')
+			const loginLink = getByTestId(page, 'svlLoginLink')
+			await expect(loginLink).toBeVisible()
+			await expect(loginLink).toContainText('Sign in')
+		})
+	})
+<%_ } _%>
+})

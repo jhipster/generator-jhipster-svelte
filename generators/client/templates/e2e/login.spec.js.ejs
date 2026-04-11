@@ -1,0 +1,79 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from './support/test-utils.js'
+
+test.describe('User login', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await page.goto('/login')
+	})
+
+	test('should greets with Sign in', async ({ page }) => {
+		const signInTitle = getByTestId(page, 'signInTitle')
+		await expect(signInTitle).toBeVisible()
+		await expect(signInTitle).toContainText('Sign in to <%= baseName %>')
+	})
+
+<%_ if (!skipUserManagement) { _%>
+	test('should display link to register', async ({ page }) => {
+		const registerLink = getByTestId(page, 'registerLink')
+		await expect(registerLink).toHaveText('Create an account')
+		await expect(registerLink).toHaveAttribute('href', '/account/register')
+	})
+
+	test('should display link to forgot password', async ({ page }) => {
+		const forgotPwdLink = getByTestId(page, 'forgotPwdLink')
+		await expect(forgotPwdLink).toHaveText('Forgot password?')
+		await expect(forgotPwdLink).toHaveAttribute('href', '/account/reset/init')
+	})
+
+<%_ } _%>
+	test('should require username and password', async ({ page }) => {
+		const loginForm = getByTestId(page, 'loginForm')
+		const signInBtn = loginForm.locator('text=Sign in').first()
+		await expect(signInBtn).toBeDisabled()
+	})
+
+	test('should require username', async ({ page }) => {
+		const loginForm = getByTestId(page, 'loginForm')
+		const username = loginForm.locator('[name=username]')
+		await username.fill('admin')
+		await username.fill('')
+		await username.blur()
+
+		const usernameError = getByTestId(page, 'username-error')
+		await expect(usernameError).toBeVisible()
+		await expect(usernameError).toContainText('Username is mandatory')
+	})
+
+	test('should require password', async ({ page }) => {
+		const loginForm = getByTestId(page, 'loginForm')
+		const password = loginForm.locator('[name=password]')
+		await password.fill('admin')
+		await password.fill('')
+		await password.blur()
+
+		const passwordError = getByTestId(page, 'password-error')
+		await expect(passwordError).toBeVisible()
+		await expect(passwordError).toContainText('Password is mandatory')
+	})
+
+	test('should require a valid username and password', async ({ page }) => {
+		const loginForm = getByTestId(page, 'loginForm')
+		await loginForm.locator('[name=username]').fill('admin')
+		await loginForm.locator('[name=password]').fill('invalid')
+		await loginForm.locator('[name=password]').press('Enter')
+
+		const errorMsg = getByTestId(page, 'errorMsg')
+		await expect(errorMsg).toContainText('Incorrect username or password.')
+	})
+
+	test('should navigate to / on successful login', async ({ page }) => {
+		const loginForm = getByTestId(page, 'loginForm')
+		await loginForm.locator("input[type='checkbox']").first().check()
+		await loginForm.locator('[name=username]').fill('admin')
+		await loginForm.locator('[name=password]').fill('admin')
+		await loginForm.locator('[name=password]').press('Enter')
+
+		await expect(page).toHaveURL('/')
+	})
+})
