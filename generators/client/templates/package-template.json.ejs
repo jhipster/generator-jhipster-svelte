@@ -18,6 +18,9 @@
 		"e2e:ci": "cypress run --browser chrome",
         "cy:open": "cypress open --e2e --browser chrome",
 		"build": "vite build",
+		<%_ if (microfrontend) { _%>
+		"build-watch": "vite build --watch",
+		<%_ } _%>
 		"webapp:build": "npm run build",
 		"webapp:prod": "npm run build",
 		"webapp:test": "npm run test"
