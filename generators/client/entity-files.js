@@ -4,6 +4,11 @@ const FRONTEND_APP_DIR = `${TEMPLATES_WEBAPP_SOURCES_DIR}/app/`;
 const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/entities/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/entities/`;
 
+const getEntityRoute = generator =>
+	generator.applicationTypeMicroservice && generator.microfrontend
+		? `../${generator.entityPage}`
+		: generator.entityFolderName;
+
 export default {
 	entityRoutes: [
 		{
@@ -11,19 +16,19 @@ export default {
 			templates: [
 				{
 					file: 'entity/index.svelte',
-					renameTo: generator => `${generator.entityFolderName}/+page.svelte`,
+					renameTo: generator => `${getEntityRoute(generator)}/+page.svelte`,
 				},
 				{
 					file: 'entity/new.svelte',
-					renameTo: generator => `${generator.entityFolderName}/new/+page.svelte`,
+					renameTo: generator => `${getEntityRoute(generator)}/new/+page.svelte`,
 				},
 				{
 					file: 'entity/[id]/view.svelte',
-					renameTo: generator => `${generator.entityFolderName}/[id]/view/+page.svelte`,
+					renameTo: generator => `${getEntityRoute(generator)}/[id]/view/+page.svelte`,
 				},
 				{
 					file: 'entity/[id]/edit.svelte',
-					renameTo: generator => `${generator.entityFolderName}/[id]/edit/+page.svelte`,
+					renameTo: generator => `${getEntityRoute(generator)}/[id]/edit/+page.svelte`,
 				},
 			],
 		},

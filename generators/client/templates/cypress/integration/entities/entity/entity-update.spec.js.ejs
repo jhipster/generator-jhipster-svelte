@@ -1,5 +1,6 @@
 <%_
 	const entityFakeData = generateFakeData('cypress');
+	const entityRouteBase = `/${applicationTypeMicroservice && microfrontend ? entityPage : 'entities/' + entityFolderName}`;
 	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
 	const containsMandatoryField = fields.find(field => field.fieldValidationRequired);
 	const containsFieldValidation = containsMandatoryField || fields.find(field => (field.fieldValidationMinLength
@@ -75,7 +76,7 @@ _%>)
 			Cypress.env('ADMIN_USERNAME'),
 			Cypress.env('ADMIN_PASSWORD')
 		)
-        cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
+        cy.visit(`<%= entityRouteBase %>/${dynamicId}/edit`)
 	})
 
 	after(function () {
@@ -231,7 +232,7 @@ _%>
 		cy.getByName('cancelBtn').click()
 
 		cy.location('pathname')
-			.should('eq', '/entities/<%= entityFolderName %>')
+			.should('eq', '<%= entityRouteBase %>')
 			.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')
@@ -301,7 +302,7 @@ _%>
 		)
 
 		cy.location('pathname')
-			.should('eq', '/entities/<%= entityFolderName %>')
+			.should('eq', '<%= entityRouteBase %>')
 			.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')

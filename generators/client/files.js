@@ -215,6 +215,28 @@ const svelteFiles = {
 			],
 		},
 	],
+	microfrontendGateway: [
+		{
+			path: FRONTEND_COMPONENTS_DIR,
+			condition: generator => generator.applicationType === 'gateway' && generator.microfrontend,
+			templates: ['microfrontends/remote-entities.svelte', 'microfrontends/remote-entity-menu.svelte'],
+		},
+		{
+			path: FRONTEND_ROUTES_DIR,
+			condition: generator => generator.applicationType === 'gateway' && generator.microfrontend,
+			templates: [
+				{ file: () => `[...path].svelte`, renameTo: () => `[...path]/+page.svelte` },
+				{ file: () => `[...path].js`, renameTo: () => `[...path]/+page.js` },
+			],
+		},
+	],
+	microfrontendService: [
+		{
+			path: FRONTEND_COMPONENTS_DIR,
+			condition: generator => generator.applicationType === 'microservice' && generator.microfrontend,
+			templates: ['microfrontends/entities-menu.svelte', 'microfrontends/entities-routes.js'],
+		},
+	],
 	libGateway: [
 		{
 			path: FRONTEND_COMPONENTS_DIR,

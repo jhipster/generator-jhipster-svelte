@@ -1,3 +1,6 @@
+<%_
+const entityRouteBase = `/${applicationTypeMicroservice && microfrontend ? entityPage : 'entities/' + entityFolderName}`;
+_%>
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
@@ -21,7 +24,12 @@
 	}
 	_%>
 
-	$: id = $page && $page.params && $page.params.id
+	$: id =
+		$page && $page.params && $page.params.id
+			? $page.params.id
+			: $page && $page.params && $page.params.path
+				? $page.params.path.split('/').at(-2)
+				: undefined
 	onMount(() => {
 		fetch<%= entityAngularName %>Details()
 		<%_ for (const relationship of relationships.filter(rel => rel.otherEntity.primaryKey)) {
@@ -80,13 +88,13 @@
 	_%>
 
 	function cancelUpdate() {
-		goto(`/entities/<%= entityFolderName %>`)
+		goto('<%= entityRouteBase %>')
 	}
 
 	function update<%= entityAngularName %>(event) {
 		<%= entityInstance %>Service
 			.update(event.detail)
-			.then(() => goto(`/entities/<%= entityFolderName %>`))
+			.then(() => goto('<%= entityRouteBase %>'))
 			.catch(err => (error = err))
 	}
 </script>

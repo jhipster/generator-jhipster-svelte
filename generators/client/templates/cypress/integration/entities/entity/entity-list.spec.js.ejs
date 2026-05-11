@@ -1,5 +1,6 @@
 <%_
 	const entityFakeData = generateFakeData('cypress');
+	const entityRouteBase = `/${applicationTypeMicroservice && microfrontend ? entityPage : 'entities/' + entityFolderName}`;
 	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
 	const relationshipFields = relationships.filter(relationship => (
 		relationship.otherEntity.primaryKey
@@ -84,7 +85,7 @@ _%>)
 			Cypress.env('ADMIN_PASSWORD')
 		)
         cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
-        cy.visit('/entities/<%= entityFolderName %>')
+        cy.visit('<%= entityRouteBase %>')
         cy.wait('@get<%= entityClassPlural %>')
         // eslint-disable-next-line
         cy.wait(100)

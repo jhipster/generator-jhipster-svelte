@@ -1,0 +1,91 @@
+<script>
+	import { page } from '$app/stores'
+	import { onMount } from 'svelte'
+
+	const remotes = {
+<%_ for (const remote of microfrontends) { _%>
+		'<%= remote.lowercaseBaseName %>': () => import('<%= remote.lowercaseBaseName %>/entities-routes'),
+<%_ } _%>
+	}
+
+	const routeCache = new Map()
+	const componentCache = new Map()
+
+	let activePath
+	let Component
+	let error
+	let loading = false
+	let mounted = false
+
+	onMount(() => {
+		mounted = true
+	})
+
+	function matchRoute(routePath, pagePath) {
+		const routeSegments = routePath.split('/').filter(Boolean)
+		const pageSegments = pagePath.split('/').filter(Boolean)
+
+		if (routeSegments.length !== pageSegments.length) {
+			return false
+		}
+
+		return routeSegments.every((segment, index) => segment.startsWith(':') || segment === pageSegments[index])
+	}
+
+	async function loadRoutes(remoteName) {
+		if (!routeCache.has(remoteName)) {
+			routeCache.set(remoteName, remotes[remoteName]().then(module => module.default))
+		}
+		return routeCache.get(remoteName)
+	}
+
+	async function loadRemotePage(path) {
+		const pagePath = path || ''
+		const remoteName = pagePath.split('/').filter(Boolean)[0]
+		const remote = remotes[remoteName]
+
+		Component = undefined
+		error = undefined
+
+		if (!remote) {
+			error = new Error(`Unknown microfrontend ${remoteName}`)
+			return
+		}
+
+		loading = true
+
+		try {
+			const routes = await loadRoutes(remoteName)
+			const route = routes.find(candidate => matchRoute(candidate.path, pagePath))
+
+			if (!route) {
+				throw new Error(`No remote route found for ${pagePath}`)
+			}
+
+			const componentKey = `${remoteName}:${route.path}`
+
+			if (!componentCache.has(componentKey)) {
+				componentCache.set(componentKey, route.load().then(module => module.default))
+			}
+
+			Component = await componentCache.get(componentKey)
+		} catch (err) {
+			error = err
+		} finally {
+			loading = false
+		}
+	}
+
+	$: if (mounted && $page.params.path !== activePath) {
+		activePath = $page.params.path
+		void loadRemotePage(activePath)
+	}
+</script>
+
+{#if loading}
+	<div>loading ...</div>
+{:else if Component}
+	<svelte:component this="{Component}" />
+{:else if error}
+	<div>{error.message}</div>
+{/if}

@@ -1,5 +1,6 @@
 <%_
 	const entityFakeData = generateFakeData('cypress');
+	const entityRouteBase = `/${applicationTypeMicroservice && microfrontend ? entityPage : 'entities/' + entityFolderName}`;
 	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
 	const relationshipFields = relationships.filter(relationship => (
 		relationship.otherEntity.primaryKey
@@ -64,7 +65,7 @@ _%>)
 			Cypress.env('ADMIN_USERNAME'),
 			Cypress.env('ADMIN_PASSWORD')
 		)
-        cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
+        cy.visit(`<%= entityRouteBase %>/${dynamicId}/view`)
 	})
 
 	after(function () {
