@@ -1,0 +1,42 @@
+import auth from './auth-store'
+
+beforeEach(() => {
+	localStorage.clear()
+	sessionStorage.clear()
+})
+
+test('should save and consume a saved route', () => {
+	auth.saveRoute('/admin/logger')
+
+	expect(sessionStorage.getItem('savedRoute')).toBe('/admin/logger')
+	expect(auth.getSavedRoute()).toBe('/admin/logger')
+	expect(sessionStorage.getItem('savedRoute')).toBeNull()
+})
+
+test('should clear saved route on logout', () => {
+	auth.saveRoute('/admin/logger')
+
+	auth.logout()
+
+	expect(sessionStorage.getItem('savedRoute')).toBeNull()
+})
+<%_ if (authenticationType === 'jwt') { _%>
+
+test('should store jwt tokens according to remember-me preference', async () => {
+	await auth.storeToken('session-token', false)
+	await auth.storeToken('local-token', true)
+
+	expect(sessionStorage.getItem('authToken')).toBe('session-token')
+	expect(localStorage.getItem('authToken')).toBe('local-token')
+})
+
+test('should clear jwt tokens on logout', () => {
+	localStorage.setItem('authToken', 'local-token')
+	sessionStorage.setItem('authToken', 'session-token')
+
+	auth.logout()
+
+	expect(localStorage.getItem('authToken')).toBeNull()
+	expect(sessionStorage.getItem('authToken')).toBeNull()
+})
+<%_ } _%>

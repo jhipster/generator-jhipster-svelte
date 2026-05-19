@@ -1,0 +1,34 @@
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import Navbar from './navbar.svelte'
+
+test('should render branding and anonymous navigation', () => {
+	render(Navbar)
+
+	expect(screen.getByAltText(/application logo/i)).toBeInTheDocument()
+	expect(screen.getByTestId('svlAppName')).toHaveTextContent('<%= baseName %>')
+	expect(screen.getByTestId('svlAppVersion')).toHaveTextContent('DEV')
+	expect(screen.getByTestId('svlLoginLink')).toBeInTheDocument()
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+	expect(screen.getByTestId('svlRegisterLink')).toBeInTheDocument()
+<%_ } else { _%>
+	expect(screen.queryByTestId('svlRegisterLink')).not.toBeInTheDocument()
+<%_ } _%>
+	expect(screen.queryByTestId('svlEntityMenu')).not.toBeInTheDocument()
+	expect(screen.queryByTestId('svlAdminMenu')).not.toBeInTheDocument()
+	expect(screen.queryByTestId('svlAcctMenu')).not.toBeInTheDocument()
+})
+
+test('should toggle the mobile toolbar', async () => {
+	render(Navbar)
+
+	const toolbar = screen.getByTestId('svlLoginLink').parentElement
+	expect(toolbar).toHaveClass('hidden')
+
+	await fireEvent.click(screen.getByTestId('svlNavBtn'))
+	expect(toolbar).not.toHaveClass('hidden')
+
+	await fireEvent.click(screen.getByTestId('svlNavBtn'))
+	expect(toolbar).toHaveClass('hidden')
+})

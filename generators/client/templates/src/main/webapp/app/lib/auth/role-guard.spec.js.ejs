@@ -1,0 +1,22 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import RoleGuard from './role-guard.svelte'
+
+test('should hide access denied message by default', () => {
+	render(RoleGuard)
+
+	expect(
+		screen.queryByText(/user is not authorized to access the page/i)
+	).not.toBeInTheDocument()
+})
+
+test('should show access denied message when configured', () => {
+	render(RoleGuard, {
+		showAccessDeniedMessage: true,
+	})
+
+	expect(
+		screen.getByText(/user is not authorized to access the page/i)
+	).toBeInTheDocument()
+})
