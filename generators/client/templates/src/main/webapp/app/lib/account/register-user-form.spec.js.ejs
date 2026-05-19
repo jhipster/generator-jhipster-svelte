@@ -1,0 +1,41 @@
+import { render, screen } from '@testing-library/svelte'
+import userEvent from '@testing-library/user-event'
+
+import RegisterUserForm from './register-user-form.svelte'
+
+test('should render the register user form', () => {
+	render(RegisterUserForm, {})
+
+	expect(screen.getByRole('textbox', { name: /username/i })).toHaveValue('')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue('')
+	expect(screen.getByLabelText(/^password/i)).toHaveValue('')
+	expect(screen.getByLabelText(/^confirm password/i)).toHaveValue('')
+	expect(screen.getByRole('button', { name: /create account/i })).toBeDisabled()
+})
+
+test('should display username validation messages', async () => {
+	const user = userEvent.setup()
+	render(RegisterUserForm, {})
+
+	const usernameInput = screen.getByRole('textbox', { name: /username/i })
+
+	await user.type(usernameInput, 'invalid$#{esc}')
+	expect(
+		await screen.findByText('Username can only contain letters and digits'),
+	).toBeVisible()
+
+	await user.clear(usernameInput)
+	expect(await screen.findByText('Username is mandatory')).toBeVisible()
+})
+
+test('should display password confirmation mismatch', async () => {
+	const user = userEvent.setup()
+	render(RegisterUserForm, {})
+
+	await user.type(screen.getByLabelText(/^password/i), 'password')
+	await user.type(screen.getByLabelText(/^confirm password/i), 'different')
+
+	expect(
+		await screen.findByText('Password and its confirmation do not match'),
+	).toBeVisible()
+})

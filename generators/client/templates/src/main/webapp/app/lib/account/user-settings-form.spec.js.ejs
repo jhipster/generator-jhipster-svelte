@@ -1,0 +1,72 @@
+import { render, screen } from '@testing-library/svelte'
+import { waitFor } from '@testing-library/dom'
+import userEvent from '@testing-library/user-event'
+
+import UserSettingsForm from './user-settings-form.svelte'
+
+test('should render existing user settings', () => {
+	render(UserSettingsForm, {
+		user: {
+			firstName: 'Jane',
+			lastName: 'Doe',
+			email: 'jane.doe@localhost.org',
+		},
+	})
+
+	expect(screen.getByRole('textbox', { name: /first name/i })).toHaveValue('Jane')
+	expect(screen.getByRole('textbox', { name: /last name/i })).toHaveValue('Doe')
+	expect(screen.getByRole('textbox', { name: /email/i })).toHaveValue(
+		'jane.doe@localhost.org',
+	)
+	expect(screen.getByRole('button', { name: /update settings/i })).toBeInTheDocument()
+})
+
+test('should display email validation messages', async () => {
+	const user = userEvent.setup()
+	render(UserSettingsForm, {})
+
+	const emailInput = screen.getByRole('textbox', { name: /email/i })
+
+	await user.type(emailInput, 'invalid{esc}')
+	expect(await screen.findByText('Email address is not valid')).toBeVisible()
+
+	await user.clear(emailInput)
+	expect(await screen.findByText('Email is mandatory')).toBeVisible()
+})
+
+test('should dispatch updated user settings', async () => {
+	const user = userEvent.setup()
+	const events = []
+	const { component } = render(UserSettingsForm, {
+		user: {
+			firstName: 'Jane',
+			lastName: 'Doe',
+			email: 'jane.doe@localhost.org',
+		},
+	})
+	component.$on('updatesettings', event => events.push(event.detail))
+
+	const firstNameInput = screen.getByRole('textbox', { name: /first name/i })
+	const lastNameInput = screen.getByRole('textbox', { name: /last name/i })
+	const emailInput = screen.getByRole('textbox', { name: /email/i })
+
+	await user.clear(firstNameInput)
+	await user.type(firstNameInput, 'Janet')
+	await user.clear(lastNameInput)
+	await user.type(lastNameInput, 'Roe')
+	await user.clear(emailInput)
+	await user.type(emailInput, 'janet.roe@localhost.org')
+
+	await waitFor(() =>
+		expect(screen.getByRole('button', { name: /update settings/i })).toBeEnabled(),
+	)
+	await user.click(screen.getByRole('button', { name: /update settings/i }))
+
+	expect(events).toStrictEqual([
+		{
+			firstName: 'Janet',
+			lastName: 'Roe',
+			email: 'janet.roe@localhost.org',
+		},
+	])
+})
