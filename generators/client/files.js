@@ -12,7 +12,6 @@ const svelteFiles = {
 				'.npmrc',
 				'.gitignore.jhi.svelte',
 				'.prettierignore.jhi.svelte',
-				'cypress.config.cjs',
 				'eslint.config.js',
 				'README.md.jhi.svelte',
 				{
@@ -29,7 +28,9 @@ const svelteFiles = {
 	],
 	e2e: [
 		{
+			condition: generator => generator.cypressTests,
 			templates: [
+				'cypress.config.cjs',
 				{
 					file: generator => `${FRONTEND_SRC_DIR}static/content/img/${generator.hipster}_head-192.png`,
 					renameTo: () => `cypress/fixtures/integration-test.png`,
@@ -48,19 +49,20 @@ const svelteFiles = {
 	],
 	e2eGateway: [
 		{
-			condition: generator => generator.applicationType === 'gateway',
+			condition: generator => generator.cypressTests && generator.applicationType === 'gateway',
 			templates: ['cypress/integration/admin/gateway.spec.js'],
 		},
 	],
 	e2eLogin: [
 		{
-			condition: generator => generator.authenticationType !== 'oauth2',
+			condition: generator => generator.cypressTests && generator.authenticationType !== 'oauth2',
 			templates: ['cypress/integration/login.spec.js'],
 		},
 	],
 	e2eUserManagement: [
 		{
-			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
+			condition: generator =>
+				generator.cypressTests && !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
 			templates: [
 				'cypress/integration/account/change-password.spec.js',
 				'cypress/integration/account/register.spec.js',
@@ -72,6 +74,25 @@ const svelteFiles = {
 				'cypress/integration/admin/user-management/user-update.spec.js',
 				'cypress/integration/admin/user-management/user-view.spec.js',
 			],
+		},
+	],
+	playwrightE2e: [
+		{
+			condition: generator => generator.playwrightTests,
+			templates: ['playwright.config.js', 'playwright/tests/home.spec.js'],
+		},
+	],
+	playwrightE2eLogin: [
+		{
+			condition: generator => generator.playwrightTests && generator.authenticationType !== 'oauth2',
+			templates: ['playwright/tests/login.spec.js'],
+		},
+	],
+	playwrightE2eUserManagement: [
+		{
+			condition: generator =>
+				generator.playwrightTests && !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
+			templates: ['playwright/tests/account/register.spec.js'],
 		},
 	],
 	swagger: [

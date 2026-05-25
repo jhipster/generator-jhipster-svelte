@@ -24,6 +24,7 @@ Following integrations are supported:
     ✅ Tailwind CSS
     ✅ Prettier, EsLint integration
     ✅ Cypress integration for end to end tests
+    ✅ Playwright integration as an alternative for end to end tests
     ✅ Jest and Testing Library integration for unit tests
     ✅ JHipster application JDL
     ✅ JHipster entity JDL
@@ -82,6 +83,12 @@ npm update -g generator-jhipster-svelte
 
     ```bash
     jsvelte
+    ```
+
+-   To generate Playwright UI end-to-end tests instead of Cypress, pass the `--playwright` option:
+
+    ```bash
+    jsvelte --playwright
     ```
 
 -   Alternatively, you can also use the application `JDL` to generate new applications (`config` approach). Refer to [JDL application](https://www.jhipster.tech/jdl/applications) documentation for all supported options.

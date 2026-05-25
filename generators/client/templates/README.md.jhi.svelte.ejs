@@ -86,10 +86,20 @@
  npm test
  ```
 
+ <%_ if (cypressTests) { _%>
  UI end-to-end tests are powered by [Cypress][]. They're located under cypress directory and can be run by starting Spring Boot in one terminal (`./mvnw spring-boot:run`) and running the tests (`npm run e2e`) in a second one.
+ <%_ } _%>
+ <%_ if (playwrightTests) { _%>
+ UI end-to-end tests are powered by [Playwright][]. They're located under playwright directory and can be run by starting Spring Boot in one terminal (`./mvnw spring-boot:run`) and running the tests (`npm run e2e`) in a second one. Override the target server with `PLAYWRIGHT_BASE_URL` when needed.
+ <%_ } _%>
 
  <&_ } -&>
  <&_ if (fragment.referenceSection) { -&>
  [Jest]: https://facebook.github.io/jest/
+ <%_ if (cypressTests) { _%>
  [Cypress]: https://www.cypress.io/
+ <%_ } _%>
+ <%_ if (playwrightTests) { _%>
+ [Playwright]: https://playwright.dev/
+ <%_ } _%>
  <&_ } -&>

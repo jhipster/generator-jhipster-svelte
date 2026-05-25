@@ -1,0 +1,36 @@
+import { expect, test } from '@playwright/test'
+
+test.beforeEach(async ({ page }) => {
+	await page.addInitScript(async () => {
+		if ('serviceWorker' in navigator) {
+			const registrations = await navigator.serviceWorker.getRegistrations()
+			await Promise.all(registrations.map(registration => registration.unregister()))
+		}
+	})
+})
+
+test.describe('Home page', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/')
+	})
+
+	test('greets with welcome title', async ({ page }) => {
+		await expect(page.getByTestId('welcomeTitle')).toBeVisible()
+		await expect(page.getByTestId('welcomeTitle')).toContainText('Welcome, JHipster Svelte!')
+	})
+
+	test('shows login instructions for unauthenticated users', async ({ page }) => {
+		await expect(page.getByTestId('loginInstructions')).toBeVisible()
+		await expect(page.getByTestId('loginInstructions')).toContainText('you can try the default accounts')
+		await expect(page.getByTestId('loginInstructions')).toContainText('Administrator (login="admin" and password="admin")')
+		await expect(page.getByTestId('loginInstructions')).toContainText('User (login="user" and password="user").')
+	})
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+
+	test('links to user registration', async ({ page }) => {
+		await expect(page.getByTestId('svlRegisterHomeLink')).toBeVisible()
+		await expect(page.getByTestId('svlRegisterHomeLink')).toHaveAttribute('href', '/account/register')
+		await expect(page.getByTestId('svlRegisterHomeLink')).toContainText('Register a new account')
+	})
+<%_ } _%>
+})

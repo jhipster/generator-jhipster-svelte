@@ -58,11 +58,19 @@ export default class extends ClientGenerator {
 					if (this.blueprintConfig.jest === undefined) {
 						this.blueprintConfig.jest = false;
 					}
+					if (this.blueprintConfig.playwright === undefined) {
+						this.blueprintConfig.playwright = false;
+					}
 				}
 			},
 			setLocalCommandOptions() {
 				this.jest = this.blueprintConfig.jest;
 				this.swaggerUi = this.blueprintConfig.swaggerUi;
+				this.playwrightTests =
+					this.blueprintConfig.playwright ||
+					this.jhipsterConfig.testFrameworks?.includes('playwright') ||
+					false;
+				this.cypressTests = this.jhipsterConfig.testFrameworks?.includes('cypress') || !this.playwrightTests;
 			},
 		});
 	}
@@ -80,6 +88,8 @@ export default class extends ClientGenerator {
 			async loadingTemplateTask({ application }) {
 				application.oldSvelteBlueprintVersion = this.blueprintConfig.version;
 				application.svelteBlueprintVersion = this.blueprintConfig.version = getPackageJson().version;
+				application.cypressTests = this.cypressTests;
+				application.playwrightTests = this.playwrightTests;
 			},
 		});
 	}
@@ -212,7 +222,13 @@ export default class extends ClientGenerator {
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
 					sections: svelteFiles,
-					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest },
+					context: {
+						...application,
+						swaggerUi: this.swaggerUi,
+						jest: this.jest,
+						cypressTests: this.cypressTests,
+						playwrightTests: this.playwrightTests,
+					},
 				});
 			},
 		});
@@ -253,7 +269,14 @@ export default class extends ClientGenerator {
 				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
 					await this.writeFiles({
 						sections: entitySvelteFiles,
-						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest },
+						context: {
+							...application,
+							...entity,
+							swaggerUi: this.swaggerUi,
+							jest: this.jest,
+							cypressTests: this.cypressTests,
+							playwrightTests: this.playwrightTests,
+						},
 					});
 				}
 			},
@@ -298,6 +321,17 @@ export default class extends ClientGenerator {
 
 				const packageTemplate = JSON.parse(this.readTemplate('package.json'));
 				this.packageJson.merge(packageTemplate);
+				this.packageJson.merge({
+					devDependencies: {
+						...(this.cypressTests
+							? {
+									cypress: '13.5.1',
+									'eslint-plugin-cypress': '4.0.0',
+								}
+							: {}),
+						...(this.playwrightTests ? { '@playwright/test': '1.60.0' } : {}),
+					},
+				});
 
 				if (this.swaggerUi) {
 					const swaggerPackageJson = JSON.parse(this.readTemplate('swagger/package.json'));
