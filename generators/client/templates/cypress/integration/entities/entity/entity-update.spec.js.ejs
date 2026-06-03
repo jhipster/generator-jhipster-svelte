@@ -75,7 +75,7 @@ _%>)
 			Cypress.env('ADMIN_USERNAME'),
 			Cypress.env('ADMIN_PASSWORD')
 		)
-        cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/edit`)
+        cy.visit(`/<%= svelteEntityRoute %>/${dynamicId}/edit`)
 	})
 
 	after(function () {
@@ -231,7 +231,7 @@ _%>
 		cy.getByName('cancelBtn').click()
 
 		cy.location('pathname')
-			.should('eq', '/entities/<%= entityFolderName %>')
+			.should('eq', '/<%= svelteEntityRoute %>')
 			.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')
@@ -301,7 +301,7 @@ _%>
 		)
 
 		cy.location('pathname')
-			.should('eq', '/entities/<%= entityFolderName %>')
+			.should('eq', '/<%= svelteEntityRoute %>')
 			.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')

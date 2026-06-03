@@ -158,6 +158,13 @@ const svelteFiles = {
 			templates: [{ file: () => `admin/gateway.svelte`, renameTo: () => `admin/gateway/+page.svelte` }],
 		},
 	],
+	microfrontendGatewayRoute: [
+		{
+			condition: generator => generator.applicationTypeGateway && generator.microfrontend,
+			path: FRONTEND_ROUTES_DIR,
+			templates: [{ file: () => `[...remotePath]/+page.svelte` }],
+		},
+	],
 	loginRoutes: [
 		{
 			condition: generator => generator.authenticationType !== 'oauth2',
@@ -224,6 +231,20 @@ const svelteFiles = {
 				'admin/gateway/gateway-table.svelte',
 				'admin/gateway/service-instance-table.svelte',
 			],
+		},
+	],
+	libGatewayMicrofrontends: [
+		{
+			path: FRONTEND_COMPONENTS_DIR,
+			condition: generator => generator.applicationTypeGateway && generator.microfrontend,
+			templates: ['microfrontends/remote-entity-menu.svelte'],
+		},
+	],
+	libMicroserviceMicrofrontends: [
+		{
+			path: FRONTEND_COMPONENTS_DIR,
+			condition: generator => generator.applicationTypeMicroservice && generator.microfrontend,
+			templates: ['microfrontends/entities-menu.svelte', 'microfrontends/entities-routes.js'],
 		},
 	],
 	libUserManagement: [

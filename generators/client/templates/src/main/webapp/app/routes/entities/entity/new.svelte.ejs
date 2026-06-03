@@ -84,13 +84,13 @@ _%>
 	_%>
 
 	function cancelSave() {
-		goto(`/entities/<%= entityFolderName %>`)
+		goto('/<%= svelteEntityRoute %>')
 	}
 
 	function save<%= entityAngularName %>(event) {
 		<%= entityInstance %>Service
 			.create(event.detail)
-			.then(() => goto(`/entities/<%= entityFolderName %>`))
+			.then(() => goto('/<%= svelteEntityRoute %>'))
 			.catch(err => (error = err))
 	}
 </script>

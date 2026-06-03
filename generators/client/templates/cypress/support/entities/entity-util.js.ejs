@@ -10,7 +10,11 @@
 	const containsRelationshipField = relationshipFields && relationshipFields.length;
 
 	const oneToOneRelationship = relationshipFields.find(relationship => relationship.relationshipOneToOne);
-	const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+	const servicesApiPrefix = (applicationTypeMicroservice && microfrontend)
+		? 'services/' + lowercaseBaseName + '/'
+		: clientRootFolder !== ''
+			? 'services/' + clientRootFolder + '/'
+			: '';
 _%>
 
 export function prepare<%= entityAngularName %>PrerequisiteData(listPage = false) {

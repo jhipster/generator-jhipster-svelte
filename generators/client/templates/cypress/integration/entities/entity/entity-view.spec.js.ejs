@@ -64,7 +64,7 @@ _%>)
 			Cypress.env('ADMIN_USERNAME'),
 			Cypress.env('ADMIN_PASSWORD')
 		)
-        cy.visit(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
+        cy.visit(`/<%= svelteEntityRoute %>/${dynamicId}/view`)
 	})
 
 	after(function () {

@@ -1,8 +1,9 @@
 import { TEMPLATES_WEBAPP_SOURCES_DIR } from 'generator-jhipster';
 
 const FRONTEND_APP_DIR = `${TEMPLATES_WEBAPP_SOURCES_DIR}/app/`;
-const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/entities/`;
+const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/entities/`;
+const entityRoute = generator => generator.svelteEntityRoute ?? `entities/${generator.entityFolderName}`;
 
 export default {
 	entityRoutes: [
@@ -10,20 +11,20 @@ export default {
 			path: FRONTEND_ROUTES_DIR,
 			templates: [
 				{
-					file: 'entity/index.svelte',
-					renameTo: generator => `${generator.entityFolderName}/+page.svelte`,
+					file: 'entities/entity/index.svelte',
+					renameTo: generator => `${entityRoute(generator)}/+page.svelte`,
 				},
 				{
-					file: 'entity/new.svelte',
-					renameTo: generator => `${generator.entityFolderName}/new/+page.svelte`,
+					file: 'entities/entity/new.svelte',
+					renameTo: generator => `${entityRoute(generator)}/new/+page.svelte`,
 				},
 				{
-					file: 'entity/[id]/view.svelte',
-					renameTo: generator => `${generator.entityFolderName}/[id]/view/+page.svelte`,
+					file: 'entities/entity/[id]/view.svelte',
+					renameTo: generator => `${entityRoute(generator)}/[id]/view/+page.svelte`,
 				},
 				{
-					file: 'entity/[id]/edit.svelte',
-					renameTo: generator => `${generator.entityFolderName}/[id]/edit/+page.svelte`,
+					file: 'entities/entity/[id]/edit.svelte',
+					renameTo: generator => `${entityRoute(generator)}/[id]/edit/+page.svelte`,
 				},
 			],
 		},

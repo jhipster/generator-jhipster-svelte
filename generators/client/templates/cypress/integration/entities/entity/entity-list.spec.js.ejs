@@ -84,7 +84,7 @@ _%>)
 			Cypress.env('ADMIN_PASSWORD')
 		)
         cy.intercept('**/api/<%= entityApiUrl %>*').as('get<%= entityClassPlural %>')
-        cy.visit('/entities/<%= entityFolderName %>')
+        cy.visit('/<%= svelteEntityRoute %>')
         cy.wait('@get<%= entityClassPlural %>')
         // eslint-disable-next-line
         cy.wait(100)
