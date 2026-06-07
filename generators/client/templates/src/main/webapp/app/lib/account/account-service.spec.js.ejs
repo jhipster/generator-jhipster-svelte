@@ -1,0 +1,114 @@
+<%_
+	let testFramework
+	if (this.jest) {
+		testFramework = 'jest'
+_%>
+import { jest } from '@jest/globals'
+
+const request = jest.fn()
+jest.unstable_mockModule('jhipster-svelte-library/utils', () => ({ request }))
+
+const { default: accountService } = await import('./account-service')
+<%_
+	} else {
+		testFramework = 'vi'
+_%>
+import { vi } from 'vitest'
+import { request } from 'jhipster-svelte-library/utils'
+
+import accountService from './account-service'
+
+vi.mock('jhipster-svelte-library/utils', () => ({ request: vi.fn() }))
+<%_
+	}
+_%>
+
+beforeEach(() => {
+	<%= testFramework %>.clearAllMocks()
+})
+
+test('should create an account with registration payload', () => {
+	accountService.createAccount('user1', 'user1@example.com', 'secret')
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/register',
+		'POST',
+		JSON.stringify({
+			login: 'user1',
+			email: 'user1@example.com',
+			password: 'secret',
+			langKey: 'en',
+		}),
+		{
+			'Content-Type': 'application/json',
+		},
+		false
+	)
+})
+
+test('should update account details with JSON content type', () => {
+	const updatedAccount = { firstName: 'Jane', lastName: 'Doe' }
+
+	accountService.updateAccount(updatedAccount)
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/account',
+		'POST',
+		JSON.stringify(updatedAccount),
+		{
+			'Content-Type': 'application/json',
+		},
+		false
+	)
+})
+
+test('should request account activation by key', () => {
+	accountService.activateAccount('activation-key')
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/activate?key=activation-key'
+	)
+})
+
+test('should initiate password reset with the email body', () => {
+	accountService.initiateResetAccountPassword('user1@example.com')
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/account/reset-password/init',
+		'POST',
+		'user1@example.com',
+		{},
+		false
+	)
+})
+
+test('should finish password reset with the reset key and new password', () => {
+	accountService.resetAccountPassword('reset-key', 'new-secret')
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/account/reset-password/finish',
+		'POST',
+		JSON.stringify({ key: 'reset-key', newPassword: 'new-secret' }),
+		{
+			'Content-Type': 'application/json',
+		},
+		false
+	)
+})
+
+test('should change password with current and new password payload', () => {
+	accountService.changeAccountPassword('old-secret', 'new-secret')
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/account/change-password',
+		'POST',
+		JSON.stringify({
+			currentPassword: 'old-secret',
+			newPassword: 'new-secret',
+		}),
+		{
+			'Content-Type': 'application/json',
+		},
+		false
+	)
+})
