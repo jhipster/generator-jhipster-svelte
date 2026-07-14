@@ -1,0 +1,13 @@
+import <%= enumName %> from './<%= enumFileName %>'
+
+test('should expose every configured <%= enumName %> value', () => {
+	expect(<%= enumName %>).toEqual({
+<%_ enumValues.forEach(enumValue => { _%>
+		<%= enumValue.name %>: '<%= enumValue.value %>',
+<%_ }) _%>
+	})
+})
+
+test('should prevent generated enum values from being changed at runtime', () => {
+	expect(Object.isFrozen(<%= enumName %>)).toBe(true)
+})

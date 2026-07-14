@@ -1,0 +1,72 @@
+<%_
+	let testFramework
+	if (this.jest) {
+		testFramework = 'jest'
+_%>
+import { jest } from '@jest/globals'
+
+const <%= entityInstance %>Service = {
+	findAll: jest.fn(),
+<%_ if (searchEngineAny) { _%>
+	search: jest.fn(),
+<%_ } _%>
+	delete: jest.fn(),
+}
+
+jest.unstable_mockModule('$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service', () => ({
+	default: <%= entityInstance %>Service,
+}))
+
+const { goto } = await import('$app/navigation')
+const { fireEvent, render } = await import('@testing-library/svelte')
+const { screen } = await import('@testing-library/dom')
+const { default: <%= entityAngularName %>Page } = await import('./+page.svelte')
+<%_
+	} else {
+		testFramework = 'vi'
+_%>
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import { vi } from 'vitest'
+import { goto } from '$app/navigation'
+
+import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
+import <%= entityAngularName %>Page from './+page.svelte'
+
+vi.mock('$app/navigation', () => ({ goto: vi.fn() }))
+vi.mock('$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service', () => ({
+	default: {
+		findAll: vi.fn(),
+<%_ if (searchEngineAny) { _%>
+		search: vi.fn(),
+<%_ } _%>
+		delete: vi.fn(),
+	},
+}))
+<%_
+	}
+_%>
+
+beforeEach(() => {
+	<%= testFramework %>.clearAllMocks()
+	<%= entityInstance %>Service.findAll.mockResolvedValue(<% if (paginationNo) { %>[]<% } else { %>{ data: [], totalCount: '0' }<% } %>)
+})
+
+test('should render the generated list page', () => {
+	render(<%= entityAngularName %>Page)
+
+	expect(screen.getByTestId('<%= entityInstance %>Title')).toHaveTextContent('<%= entityClassPluralHumanized %>')
+	expect(
+		screen.getByRole('button', { name: /create <%= entityClassHumanized.toLowerCase() %>/i })
+	).toBeEnabled()
+})
+
+test('should navigate to the generated create route', async () => {
+	render(<%= entityAngularName %>Page)
+
+	await fireEvent.click(
+		screen.getByRole('button', { name: /create <%= entityClassHumanized.toLowerCase() %>/i })
+	)
+
+	expect(goto).toHaveBeenCalledWith('/entities/<%= entityFolderName %>/new')
+})
