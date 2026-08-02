@@ -1,0 +1,86 @@
+<%_ if (this.jest) { _%>
+import { beforeAll, jest } from '@jest/globals'
+import { render, waitFor } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import userEvent from '@testing-library/user-event'
+
+import { problemBaseUrl } from '$lib/utils/env'
+
+const accountService = {
+	createAccount: jest.fn(),
+}
+
+jest.unstable_mockModule('$lib/account/account-service', () => ({
+	default: accountService,
+}))
+
+let RegisterPage
+
+beforeAll(async () => {
+	RegisterPage = (await import('./+page.svelte')).default
+})
+<%_ } else { _%>
+import { render, waitFor } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import userEvent from '@testing-library/user-event'
+import { vi } from 'vitest'
+
+import accountService from '$lib/account/account-service'
+import { problemBaseUrl } from '$lib/utils/env'
+import RegisterPage from './+page.svelte'
+
+vi.mock('$lib/account/account-service', () => ({
+	default: {
+		createAccount: vi.fn(),
+	},
+}))
+<%_ } _%>
+
+async function submitRegistrationForm(user) {
+	await user.type(document.querySelector('input[name="username"]'), 'new-user')
+	await user.type(document.querySelector('input[name="email"]'), 'new-user@example.com')
+	await user.type(document.querySelector('input[name="password"]'), 'new-secret')
+	await user.type(document.querySelector('input[name="passwordConfirm"]'), 'new-secret')
+	await user.click(screen.getByRole('button', { name: /create account/i }))
+}
+
+beforeEach(() => {
+	accountService.createAccount.mockReset()
+})
+
+test('should create an account and replace the form with a confirmation', async () => {
+	accountService.createAccount.mockResolvedValue()
+	const user = userEvent.setup()
+	render(RegisterPage)
+
+	await submitRegistrationForm(user)
+
+	expect(accountService.createAccount).toHaveBeenCalledWith('new-user', 'new-user@example.com', 'new-secret')
+	await waitFor(() => expect(screen.getByTestId('successMsg')).toBeVisible())
+	expect(screen.queryByRole('button', { name: /create account/i })).not.toBeInTheDocument()
+})
+
+test.each([
+	['email-already-used', 'Email is already in use'],
+	['login-already-used', 'Login name already in use'],
+])('should show the specific %s registration error', async (problemType, message) => {
+	accountService.createAccount.mockRejectedValue({ type: `${problemBaseUrl}/${problemType}` })
+	const user = userEvent.setup()
+	render(RegisterPage)
+
+	await submitRegistrationForm(user)
+
+	await waitFor(() => expect(screen.getByTestId('errorMsg')).toHaveTextContent(message))
+})
+
+test('should show the general registration error for an unexpected failure', async () => {
+	accountService.createAccount.mockRejectedValue(new Error('request failed'))
+	const user = userEvent.setup()
+	render(RegisterPage)
+
+	await submitRegistrationForm(user)
+
+	await waitFor(() =>
+		expect(screen.getByTestId('errorMsg')).toHaveTextContent('User account creation failed')
+	)
+})
