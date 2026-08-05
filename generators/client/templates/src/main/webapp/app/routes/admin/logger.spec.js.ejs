@@ -1,0 +1,53 @@
+<%_ if (this.jest) { _%>
+import { beforeAll, jest } from '@jest/globals'
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+const loggerService = {
+	fetchLoggers: jest.fn(),
+	changeLogLevel: jest.fn(),
+}
+
+jest.unstable_mockModule('$lib/admin/logger/logger-service', () => ({
+	default: loggerService,
+}))
+
+let LoggerPage
+
+beforeAll(async () => {
+	LoggerPage = (await import('./+page.svelte')).default
+})
+<%_ } else { _%>
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import { vi } from 'vitest'
+
+import loggerService from '$lib/admin/logger/logger-service'
+
+vi.mock('$lib/admin/logger/logger-service', () => ({
+	default: {
+		fetchLoggers: vi.fn(),
+		changeLogLevel: vi.fn(),
+	},
+}))
+
+let LoggerPage
+
+beforeAll(async () => {
+	LoggerPage = (await import('./+page.svelte')).default
+})
+<%_ } _%>
+
+beforeEach(() => {
+	loggerService.fetchLoggers.mockReset().mockResolvedValue(
+		JSON.stringify({ loggers: {}, levels: [] }),
+	)
+	loggerService.changeLogLevel.mockReset()
+})
+
+test('should render the loggers page and its search form', () => {
+	render(LoggerPage)
+
+	expect(screen.getByTestId('loggersTitle')).toHaveTextContent('Loggers')
+	expect(screen.getByRole('search')).toBeInTheDocument()
+})
