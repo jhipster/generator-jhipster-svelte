@@ -141,6 +141,7 @@ const svelteFiles = {
 				{ file: () => `index.svelte`, renameTo: () => `+page.svelte` },
 				{ file: () => `admin/__layout.svelte`, renameTo: () => `admin/+layout.svelte` },
 				{ file: () => `admin/logger.svelte`, renameTo: () => `admin/logger/+page.svelte` },
+				{ file: () => `admin/logger.spec.js`, renameTo: () => `admin/logger/page.spec.js` },
 			],
 		},
 	],
@@ -148,7 +149,10 @@ const svelteFiles = {
 		{
 			condition: generator => generator.swaggerUi,
 			path: FRONTEND_ROUTES_DIR,
-			templates: [{ file: () => `admin/docs.svelte`, renameTo: () => `admin/docs/+page.svelte` }],
+			templates: [
+				{ file: () => `admin/docs.svelte`, renameTo: () => `admin/docs/+page.svelte` },
+				{ file: () => `admin/docs.spec.js`, renameTo: () => `admin/docs/page.spec.js` },
+			],
 		},
 	],
 	gatewayRoute: [
@@ -176,6 +180,7 @@ const svelteFiles = {
 				{ file: () => `account/settings.svelte`, renameTo: () => `account/settings/+page.svelte` },
 				{ file: () => `account/reset/finish.svelte`, renameTo: () => `account/reset/finish/+page.svelte` },
 				{ file: () => `account/reset/init.svelte`, renameTo: () => `account/reset/init/+page.svelte` },
+				{ file: () => `account/reset/init.spec.js`, renameTo: () => `account/reset/init/page.spec.js` },
 				{
 					file: () => `admin/user-management/index.svelte`,
 					renameTo: () => `admin/user-management/+page.svelte`,
