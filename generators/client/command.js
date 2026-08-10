@@ -1,17 +1,25 @@
+
 const command = {
-	configs: {},
-	options: {
-		jest: {
-			description: 'Jest JavaScript unit testing framework',
-			type: Boolean,
-			scope: 'blueprint',
+	configs: {
+		microfrontend: {
+			description: 'Enable microfrontend support',
+			cli: {
+				type: Boolean,
+			},
+			default: false,
+			scope: 'storage',
 		},
-		swaggerUi: {
-			description: 'Generate Swagger UI',
-			type: Boolean,
-			scope: 'blueprint',
+		microfrontendPreview: {
+			description: 'Enable microfrontend preview support',
+			cli: {
+				type: Boolean,
+				hide: true,
+			},
+			default: false,
+			scope: 'storage',
 		},
 	},
+	options: {},
 };
 
 export default command;
