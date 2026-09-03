@@ -36,6 +36,7 @@
 		"generators"
 	],
 	"scripts": {
+		"test:playwright": "node --test test/playwright.test.js",
 		"format": "prettier --write \"{,generators/**/,.github/**/}*.{md,json,js,svelte,css,html,yml}\"",
 		"lint": "eslint .",
 		"prepare": "husky"

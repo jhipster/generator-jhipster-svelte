@@ -25,6 +25,10 @@ export default [{
         "**/pnpm-lock.yaml",
         "**/package-lock.json",
         "**/yarn.lock",
+<%_ if (playwright) { _%>
+        "playwright-report/",
+        "test-results/",
+<%_ } _%>
     ],
 }, ...compat.extends(
     "eslint:recommended",
@@ -58,4 +62,3 @@ export default [{
         "no-unused-vars": "off",
     },
 }];
-

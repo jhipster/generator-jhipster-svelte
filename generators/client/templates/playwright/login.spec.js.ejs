@@ -1,0 +1,27 @@
+import { expect, test } from '@playwright/test'
+import { adminPassword, adminUsername } from './support/auth.js'
+
+test.describe('login', () => {
+	test.beforeEach(async ({ page }) => page.goto('/login'))
+
+	test('validates credentials and signs in', async ({ page }) => {
+		const form = page.getByTestId('loginForm')
+		await expect(form.getByRole('button', { name: 'Sign in', exact: true })).toBeDisabled()
+		await form.locator('[name="username"]').fill(adminUsername)
+		await form.locator('[name="password"]').fill('wrong-password')
+		await form.getByRole('button', { name: 'Sign in', exact: true }).click()
+		await expect(page.getByTestId('errorMsg')).toContainText('Incorrect username or password')
+		await form.locator('[name="password"]').fill(adminPassword)
+		await form.getByRole('button', { name: 'Sign in', exact: true }).click()
+		await expect(page).toHaveURL('/')
+		await expect(page.getByTestId('svlAcctMenu')).toBeVisible()
+	})
+
+	test('returns to a saved protected route', async ({ page }) => {
+		await page.goto('/admin/logger')
+		await page.locator('[name="username"]').fill(adminUsername)
+		await page.locator('[name="password"]').fill(adminPassword)
+		await page.getByTestId('loginForm').getByRole('button', { name: 'Sign in', exact: true }).click()
+		await expect(page).toHaveURL('/admin/logger')
+	})
+})

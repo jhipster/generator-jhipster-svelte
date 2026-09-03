@@ -14,7 +14,7 @@ const compat = new FlatCompat({
 
 export default [
 	{
-		ignores: ['**/coverage', 'generators/**/templates', '**/node_modules', '**/travis', '**/docs'],
+		ignores: ['**/coverage', 'generators/**/templates', '**/node_modules', '**/travis', '**/docs', 'test/temp/'],
 	},
 	...compat.extends('plugin:prettier/recommended'),
 	{

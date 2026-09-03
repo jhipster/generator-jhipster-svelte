@@ -1,0 +1,158 @@
+<%_
+const editableFields = fields.filter(field => !field.id);
+let updatedField;
+const relationshipFields = relationships.filter(relationship => relationship.otherEntity.primaryKey
+	&& entityInstance !== relationship.otherEntity.entityInstance
+	&& (relationship.relationshipManyToOne || ((relationship.relationshipOneToOne || relationship.relationshipManyToMany) && relationship.ownerSide)));
+const prefix = clientRootFolder ? `services/${clientRootFolder}/` : '';
+const fixture = entityFields => Object.fromEntries(entityFields.filter(field => !field.id).flatMap(field => {
+	let value = field.generateFakeData('cypress');
+	if (field.fieldTypeBoolean) value = true;
+	if (field.fieldTypeDuration) value = 'PT1S';
+	if (field.fieldTypeTimed) value = `${value}:00.000Z`;
+	if (field.fieldTypeBinary && !field.blobContentTypeText) return [[field.fieldName, 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a9YkAAAAASUVORK5CYII='], [`${field.fieldName}ContentType`, 'image/png']];
+	return [[field.fieldName, value]];
+}));
+_%>
+import { expect, test } from '@playwright/test'
+import { api, login } from '<%= clientRootFolder ? '../../' : '../' %>support/auth.js'
+
+const endpoint = '/<%= prefix %>api/<%= entityApiUrl %>'
+const route = '/entities/<%= entityFolderName %>'
+
+async function fillForm(page, relatedRecords, update = false) {
+	const form = page.getByTestId('add<%= entityAngularName %>Form')
+<%_ for (const field of editableFields) {
+const value = field.fieldTypeDuration ? 'PT1S' : field.generateFakeData('cypress');
+const updatedValue = field.fieldTypeDuration ? 'PT2S' : field.generateFakeData('cypress');
+if (!updatedField && !field.fieldTypeBinary && !field.fieldIsEnum && String(value) !== String(updatedValue)) updatedField = field;
+_%>
+<%_ if (field.fieldTypeBoolean) { _%>
+	await form.locator('[name="<%= field.fieldName %>"]').setChecked(!update)
+<%_ } else if (field.fieldIsEnum) { _%>
+	await form.locator('[name="<%= field.fieldName %>"]').click()
+	await page.getByTestId('<%= field.fieldName %>-options').locator('input[type="checkbox"]').first().check()
+	await page.keyboard.press('Escape')
+<%_ } else if (field.fieldTypeBinary && !field.blobContentTypeText) { _%>
+	if (await form.locator('[name="<%= field.fieldName %>ClearBtn"]').count()) {
+		await form.locator('[name="<%= field.fieldName %>ClearBtn"]').click()
+	}
+	await form.locator('[name="<%= field.fieldName %>"]').setInputFiles('playwright/fixtures/integration-test.png')
+<%_ } else { _%>
+	await form.locator('[name="<%= field.fieldName %>"]').fill(update ? <%- JSON.stringify(String(updatedValue)) %> : <%- JSON.stringify(String(value)) %>)
+<%_ } _%>
+<%_ } _%>
+<%_ for (const relationship of relationshipFields) {
+const name = relationship.relationshipManyToMany ? relationship.relationshipNamePlural : relationship.relationshipName; _%>
+	await form.locator('[name="<%= name %>"]').click()
+	{
+		const options = page.getByTestId('<%= name %>-options').getByRole('checkbox')
+		await expect(options.first()).toBeVisible()
+		const ids = await options.evaluateAll(inputs => inputs.map(input => JSON.parse(input.value).id))
+		const index = ids.indexOf(relatedRecords.<%= relationship.relationshipName %>.id)
+		expect(index).toBeGreaterThanOrEqual(0)
+		await options.nth(index).check()
+	}
+	await page.keyboard.press('Escape')
+<%_ } _%>
+}
+
+test.describe('<%= entityClassHumanized %>', () => {
+	test.beforeEach(async ({ page }) => login(page))
+
+	test('validates required fields and cancels creation', async ({ page }) => {
+		await page.goto(`${route}/new`)
+		await expect(page.getByTestId('<%= entityInstance %>Title')).toContainText('Create <%= entityClassHumanized %>')
+<%_ for (const field of editableFields.filter(field => field.fieldValidationRequired && !field.fieldTypeBoolean && !field.fieldIsEnum && !field.fieldTypeBinary)) { _%>
+		await page.locator('[name="<%= field.fieldName %>"]').fill(<%- JSON.stringify(String(field.generateFakeData('cypress'))) %>)
+		await page.locator('[name="<%= field.fieldName %>"]').fill('')
+		await page.locator('[name="<%= field.fieldName %>"]').blur()
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toContainText('mandatory')
+<%_ } _%>
+<%_ for (const field of editableFields) {
+const invalidValues = [];
+if (field.fieldValidationMinLength && Number(field.fieldValidateRulesMinlength) > 1) invalidValues.push(['x'.repeat(Number(field.fieldValidateRulesMinlength) - 1), 'should be greater than']);
+if (field.fieldValidationMaxLength) invalidValues.push(['x'.repeat(Number(field.fieldValidateRulesMaxlength) + 1), 'cannot be longer than']);
+if (field.fieldTypeNumeric && field.fieldValidationMin) invalidValues.push([String(Number(field.fieldValidateRulesMin) - 1), 'should be at least']);
+if (field.fieldTypeNumeric && field.fieldValidationMax) invalidValues.push([String(Number(field.fieldValidateRulesMax) + 1), 'cannot be more than']);
+for (const [value, message] of invalidValues) { _%>
+		await page.locator('[name="<%= field.fieldName %>"]').fill(<%- JSON.stringify(value) %>)
+		await page.locator('[name="<%= field.fieldName %>"]').blur()
+		await expect(page.getByTestId('<%= field.fieldName %>-error')).toContainText('<%= message %>')
+<%_ } } _%>
+		await page.locator('[name="cancelBtn"]').click()
+		await expect(page).toHaveURL(route)
+	})
+
+	test('creates, lists, views, updates, and deletes a record', async ({ page }) => {
+		const cleanup = []
+		const relatedRecords = {}
+		try {
+<%_ for (const relationship of relationshipFields.filter(relationship => relationship.otherEntityUser)) { _%>
+			{
+				const response = await api(page, '/api/users')
+				expect(response.ok()).toBeTruthy()
+				relatedRecords.<%= relationship.relationshipName %> = (await response.json())[0]
+			}
+<%_ } _%>
+<%_ for (const relationship of relationshipFields.filter(relationship => !relationship.otherEntityUser)) { _%>
+			{
+				const response = await api(page, '/<%= prefix %>api/<%= relationship.otherEntity.entityApiUrl %>', 'POST', <%- JSON.stringify(fixture(relationship.otherEntity.fields)) %>)
+				expect(response.status()).toBe(201)
+				const related = await response.json()
+				relatedRecords.<%= relationship.relationshipName %> = related
+				cleanup.unshift(`/<%= prefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${related.id}`)
+			}
+<%_ } _%>
+			await page.goto(`${route}/new`)
+			await fillForm(page, relatedRecords)
+			const createdResponse = page.waitForResponse(response => response.url().endsWith(endpoint) && response.request().method() === 'POST')
+			await page.getByTestId('add<%= entityAngularName %>Form').getByRole('button', { name: 'Create <%= entityClassHumanized %>', exact: true }).click()
+			const response = await createdResponse
+			expect(response.status()).toBe(201)
+			const created = await response.json()
+			cleanup.unshift(`${endpoint}/${created.id}`)
+			await expect(page).toHaveURL(route)
+			await expect(page.getByTestId('<%= entityInstance %>Table')).toBeVisible()
+
+			await page.goto(`${route}/${created.id}/view`)
+			await expect(page.getByTestId('<%= entityInstance %>Title')).toContainText('<%= entityClassHumanized %> Details')
+			await page.locator('[name="backBtn"]').click()
+			await expect(page).toHaveURL(route)
+
+			await page.goto(`${route}/${created.id}/edit`)
+			await fillForm(page, relatedRecords, true)
+			const updatedResponse = page.waitForResponse(response => response.url().endsWith(`${endpoint}/${created.id}`) && response.request().method() === 'PUT')
+			await page.getByTestId('add<%= entityAngularName %>Form').getByRole('button', { name: 'Update <%= entityClassHumanized %>', exact: true }).click()
+			const updateResponse = await updatedResponse
+			expect(updateResponse.status()).toBe(200)
+<%_ if (updatedField) { _%>
+			const updated = await updateResponse.json()
+			expect(updated.<%= updatedField.fieldName %>).not.toEqual(created.<%= updatedField.fieldName %>)
+			expect((await (await api(page, `${endpoint}/${created.id}`)).json()).<%= updatedField.fieldName %>).toEqual(updated.<%= updatedField.fieldName %>)
+<%_ } _%>
+			await expect(page).toHaveURL(route)
+			const row = page.getByTestId('<%= entityInstance %>Table').locator('tbody tr').filter({ has: page.locator('td:first-child').getByText(String(created.id), { exact: true }) })
+<%_ if (!paginationNo) { _%>
+			await expect(page.getByTestId('<%= entityInstance %>Table')).toBeVisible()
+			while (!(await row.count()) && await page.getByTestId('nextPageCtrl').first().isEnabled()) {
+				const loaded = page.waitForResponse(response => response.url().includes(endpoint) && response.request().method() === 'GET')
+				await page.getByTestId('nextPageCtrl').first().click()
+				await loaded
+				await expect(page.getByTestId('<%= entityInstance %>Table')).toBeVisible()
+			}
+<%_ } _%>
+			await row.hover()
+			await row.locator('[name="deleteBtn"]').click()
+			await page.getByTestId('svlModal').locator('[name="cancelBtn"]').click()
+			await expect(row).toBeVisible()
+			await row.hover()
+			await row.locator('[name="deleteBtn"]').click()
+			await page.getByTestId('svlModal').locator('[name="confirmDeleteBtn"]').click()
+			await expect(row).toHaveCount(0)
+			expect((await api(page, `${endpoint}/${created.id}`)).status()).toBe(404)
+		} finally {
+			for (const path of cleanup) await api(page, path, 'DELETE')
+		}
+	})
+})

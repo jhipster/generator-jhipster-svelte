@@ -2,7 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite'
 <%_ if (this.jest) { _%>
 import { defineConfig } from 'vite'
 <%_ } else { _%>
-import { defineConfig } from 'vitest/config'
+import { <%= playwright ? 'configDefaults, ' : '' %>defineConfig } from 'vitest/config'
 <%_ } _%>
 <%_
 if(this.swaggerUi) { _%>
@@ -57,6 +57,9 @@ export default defineConfig({
 	},
 	<%_ if (!this.jest) { _%>
 	test: {
+<%_ if (playwright) { _%>
+		exclude: [...configDefaults.exclude, 'playwright/**'],
+<%_ } _%>
  		globals: true,
  		environment: 'jsdom',
  		setupFiles: './vitest-setup.js',

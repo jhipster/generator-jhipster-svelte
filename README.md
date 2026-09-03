@@ -84,6 +84,10 @@ npm update -g generator-jhipster-svelte
     jsvelte
     ```
 
+    To also generate Playwright end-to-end tests, use `jsvelte --playwright` (or `jsvelte import-jdl app.jdl --playwright`). This choice is saved for subsequent generation, including entities. Cypress remains available through its existing commands.
+
+    In the generated application, run `npx playwright install chromium`, start the application, then run `npm run e2e:playwright`. The tests target `http://localhost:8080`; set `PLAYWRIGHT_BASE_URL` to use another URL. See the generated README for credentials, OAuth2 and CI setup.
+
 -   Alternatively, you can also use the application `JDL` to generate new applications (`config` approach). Refer to [JDL application](https://www.jhipster.tech/jdl/applications) documentation for all supported options.
 
     Create a new application JDL like below and save it in a file (`app.jdl` in this example):

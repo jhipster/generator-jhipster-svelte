@@ -1,0 +1,47 @@
+import { expect, test } from '@playwright/test'
+import { api, login } from './support/auth.js'
+
+test('creates, views, updates, and deletes a user', async ({ page }) => {
+	const username = `pw-${crypto.randomUUID()}`
+	await login(page)
+	try {
+		await page.goto('/admin/user-management/new')
+		const form = page.getByTestId('addUserForm')
+		await form.locator('[name="username"]').fill(username)
+		await form.locator('[name="firstName"]').fill('Playwright')
+		await form.locator('[name="lastName"]').fill('Test')
+		await form.locator('[name="email"]').fill(`${username}@localhost.org`)
+		await form.locator('[name="roles"]').click()
+		await page.getByTestId('roles-options').getByRole('checkbox', { name: 'ROLE_USER', exact: true }).check()
+		await page.keyboard.press('Escape')
+		await form.getByRole('button', { name: 'Create user account' }).click()
+		await expect(page.getByTestId('toast-success')).toContainText('A user is created')
+
+		await page.goto(`/admin/user-management/${username}/view`)
+		await expect(page.getByTestId('userMgmtTitle')).toContainText(username)
+		await expect(page.locator('div.table')).toContainText('Playwright')
+		await page.locator('[name="backBtn"]').click()
+		await expect(page).toHaveURL('/admin/user-management')
+
+		await page.goto(`/admin/user-management/${username}/edit`)
+		await expect(page.getByTestId('addUserForm').locator('[name="username"]')).toHaveValue(username)
+		await page.getByTestId('addUserForm').locator('[name="firstName"]').fill('Updated')
+		await page.getByTestId('addUserForm').getByRole('button', { name: 'Update user account' }).click()
+		await expect(page.getByTestId('toast-success')).toContainText('A user is updated')
+		expect((await (await api(page, `/api/admin/users/${username}`)).json()).firstName).toBe('Updated')
+
+		await page.goto('/admin/user-management')
+		const row = page.getByTestId('userMgmtTable').locator('tr').filter({ hasText: username })
+		await row.hover()
+		const toggled = page.waitForResponse(response => response.url().endsWith('/api/admin/users') && response.request().method() === 'PUT')
+		await row.locator('[name="toggleUserAcctBtn"]').click()
+		expect((await toggled).ok()).toBeTruthy()
+		expect((await (await api(page, `/api/admin/users/${username}`)).json()).activated).toBe(false)
+		await row.hover()
+		await row.locator('[name="deleteBtn"]').click()
+		await page.getByTestId('svlModal').locator('[name="confirmDeleteBtn"]').click()
+		await expect(page.getByTestId('toast-success').filter({ hasText: 'A user is deleted' })).toBeVisible()
+	} finally {
+		await api(page, `/api/admin/users/${username}`, 'DELETE')
+	}
+})

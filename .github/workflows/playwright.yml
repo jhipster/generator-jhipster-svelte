@@ -1,0 +1,98 @@
+name: Playwright
+on:
+    pull_request:
+        branches: [main]
+    push:
+        branches: [main]
+
+jobs:
+    generation:
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 21
+            - run: npm ci
+            - run: npm run test:playwright
+
+    end-to-end:
+        runs-on: ubuntu-latest
+        timeout-minutes: 40
+        strategy:
+            fail-fast: false
+            matrix:
+                authentication: [jwt, session, oauth2]
+        env:
+            CYPRESS_INSTALL_BINARY: '0'
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 21
+                  cache: maven
+                  cache-dependency-path: package-lock.json
+            - run: npm ci
+            - name: Generate application
+              run: |
+                  mkdir -p test/temp/playwright
+                  sed 's/authenticationType session/authenticationType ${{ matrix.authentication }}/' .github/workflows/scripts/monolithic-session-maven.jdl > test/temp/playwright/app.jdl
+                  cd test/temp/playwright
+                  node "$GITHUB_WORKSPACE/cli/jsvelte.cjs" import-jdl app.jdl --playwright --skip-install --skip-git --no-insight --force
+            - name: Install and build application
+              working-directory: test/temp/playwright
+              run: |
+                  npm install
+                  npx playwright install --with-deps chromium
+                  npm run build
+            - name: Start Keycloak
+              if: matrix.authentication == 'oauth2'
+              working-directory: test/temp/playwright
+              run: |
+                  docker compose -f src/main/docker/keycloak.yml up -d
+                  for attempt in $(seq 1 90); do
+                      if curl --fail --silent http://localhost:9080/realms/jhipster/.well-known/openid-configuration; then
+                          exit 0
+                      fi
+                      sleep 2
+                  done
+                  docker compose -f src/main/docker/keycloak.yml logs
+                  exit 1
+            - name: Start backend and run browser tests
+              working-directory: test/temp/playwright
+              run: |
+                  ./mvnw -ntp -Pdev,-webapp -DskipTests -Dspring-boot.run.jvmArguments="-Dspring.docker.compose.enabled=false" spring-boot:run > application.log 2>&1 &
+                  backend=$!
+                  trap 'kill "$backend"' EXIT
+                  for attempt in $(seq 1 120); do
+                      if curl --fail --silent http://localhost:8080/management/health; then
+                          npm run e2e:playwright
+                          exit $?
+                      fi
+                      if ! kill -0 "$backend" 2>/dev/null; then
+                          cat application.log
+                          exit 1
+                      fi
+                      sleep 5
+                  done
+                  cat application.log
+                  exit 1
+            - uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: playwright-${{ matrix.authentication }}
+                  path: |
+                      test/temp/playwright/test-results/
+                      test/temp/playwright/playwright-report/
+                      test/temp/playwright/application.log

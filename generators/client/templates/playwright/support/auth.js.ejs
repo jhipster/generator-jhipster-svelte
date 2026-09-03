@@ -1,0 +1,34 @@
+import { expect } from '@playwright/test'
+
+export const adminUsername = process.env.ADMIN_USERNAME || 'admin'
+export const adminPassword = process.env.ADMIN_PASSWORD || 'admin'
+
+export async function login(page, username = adminUsername, password = adminPassword) {
+<%_ if (authenticationType === 'oauth2') { _%>
+	await page.goto('/')
+	await page.getByTestId('svlLoginLink').click()
+	// The generated application uses Keycloak by default.
+	await page.locator('input[name="username"]').fill(username)
+	await page.locator('input[name="password"]').fill(password)
+	await page.locator('input[type="submit"], button[type="submit"]').click()
+<%_ } else { _%>
+	await page.goto('/login')
+	await page.locator('[name="username"]').fill(username)
+	await page.locator('[name="password"]').fill(password)
+	await page.getByTestId('loginForm').getByRole('button', { name: 'Sign in', exact: true }).click()
+<%_ } _%>
+	await expect(page.getByTestId('svlAcctMenu')).toBeVisible()
+}
+
+// Use the browser's session for fixture setup and cleanup, including CSRF protection.
+export async function api(page, path, method = 'GET', data) {
+	const headers = {}
+<%_ if (authenticationType === 'jwt') { _%>
+	const token = await page.evaluate(() => localStorage.getItem('authToken') || sessionStorage.getItem('authToken'))
+	headers.Authorization = `Bearer ${token}`
+<%_ } else { _%>
+	const cookie = (await page.context().cookies()).find(value => value.name === 'XSRF-TOKEN')
+	if (cookie) headers['X-XSRF-TOKEN'] = decodeURIComponent(cookie.value)
+<%_ } _%>
+	return page.request.fetch(path, { method, data, headers })
+}
