@@ -1,0 +1,9 @@
+<script>
+	import RoleGuard from './role-guard.svelte'
+	export let role = 'USER'
+	export let showAccessDeniedMessage = true
+</script>
+
+<RoleGuard {role} {showAccessDeniedMessage}>
+	<p>Protected content</p>
+</RoleGuard>

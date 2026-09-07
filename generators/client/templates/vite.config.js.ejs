@@ -56,6 +56,8 @@ export default defineConfig({
 		noExternal: ['jhipster-svelte-library'],
 	},
 	<%_ if (!this.jest) { _%>
+	// Exercise browser lifecycle hooks such as onMount in component tests.
+	resolve: process.env.VITEST ? { conditions: ['browser'] } : undefined,
 	test: {
  		globals: true,
  		environment: 'jsdom',

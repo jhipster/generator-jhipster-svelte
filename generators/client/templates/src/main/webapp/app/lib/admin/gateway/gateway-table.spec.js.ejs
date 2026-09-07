@@ -1,0 +1,21 @@
+import { render, screen } from '@testing-library/svelte'
+import GatewayTable from './gateway-table.svelte'
+
+test('explains when no service routes are available', () => {
+	render(GatewayTable)
+	expect(screen.getByText('No service routes available')).toBeInTheDocument()
+	expect(screen.getAllByRole('columnheader')).toHaveLength(3)
+})
+
+test('renders a route and its service instance', async () => {
+	const { component } = render(GatewayTable, {
+		routes: [{ serviceId: 'catalog', path: '/services/catalog/**', serviceInstances: [{ uri: 'http://catalog:8080', metadata: {} }] }],
+	})
+	expect(screen.queryByText('No service routes available')).not.toBeInTheDocument()
+	expect(screen.getByRole('cell', { name: 'catalog' })).toBeInTheDocument()
+	expect(screen.getByRole('cell', { name: '/services/catalog/**' })).toBeInTheDocument()
+	expect(screen.getByRole('link', { name: 'http://catalog:8080' })).toBeInTheDocument()
+	await component.$set({ routes: [] })
+	expect(screen.getByText('No service routes available')).toBeInTheDocument()
+	expect(screen.queryByRole('link')).not.toBeInTheDocument()
+})

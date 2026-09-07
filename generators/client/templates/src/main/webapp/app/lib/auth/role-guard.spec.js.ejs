@@ -1,0 +1,42 @@
+<%_ const mockFn = this.jest ? 'jest' : 'vi'; _%>
+<%_ if (this.jest) { _%>
+import { jest } from '@jest/globals'
+<%_ } _%>
+import { render, screen, waitFor } from '@testing-library/svelte'
+import auth from './auth-store'
+import authService from './auth-service'
+import RoleGuardFixture from './role-guard.test.svelte'
+
+beforeEach(() => auth.logout())
+afterEach(() => {
+	<%= mockFn %>.restoreAllMocks()
+	auth.logout()
+})
+
+test('hides protected content from a logged-out user', () => {
+	render(RoleGuardFixture)
+	expect(screen.queryByText('Protected content')).not.toBeInTheDocument()
+	expect(screen.getByText('User is not authorized to access the page')).toBeInTheDocument()
+})
+
+test('reacts to role grants and logout', async () => {
+	<%= mockFn %>.spyOn(authService, 'fetchAuthenticatedUserDetails').mockResolvedValue({ login: 'reader', authorities: ['ROLE_ADMIN'] })
+	const { component } = render(RoleGuardFixture, { role: 'ADMIN' })
+	await auth.loadUser()
+	await waitFor(() => expect(screen.getByText('Protected content')).toBeInTheDocument())
+	expect(screen.queryByText('User is not authorized to access the page')).not.toBeInTheDocument()
+	await component.$set({ role: 'USER' })
+	expect(screen.queryByText('Protected content')).not.toBeInTheDocument()
+	await component.$set({ role: 'ADMIN' })
+	expect(screen.getByText('Protected content')).toBeInTheDocument()
+	auth.logout()
+	await waitFor(() => expect(screen.queryByText('Protected content')).not.toBeInTheDocument())
+})
+
+test.each([{}, { authorities: [] }, { authorities: ['ADMIN'] }])('denies incomplete or incorrectly prefixed roles: %j', async account => {
+	<%= mockFn %>.spyOn(authService, 'fetchAuthenticatedUserDetails').mockResolvedValue(account)
+	await auth.loadUser()
+	render(RoleGuardFixture, { role: 'ADMIN', showAccessDeniedMessage: false })
+	expect(screen.queryByText('Protected content')).not.toBeInTheDocument()
+	expect(screen.queryByText('User is not authorized to access the page')).not.toBeInTheDocument()
+})

@@ -1,0 +1,18 @@
+import { fireEvent, render, screen } from '@testing-library/svelte'
+import RegisterUserForm from './register-user-form.svelte'
+
+test('requires valid identity fields and matching passwords', async () => {
+	const { container } = render(RegisterUserForm)
+	const submit = screen.getByRole('button', { name: 'Create account' })
+	expect(submit).toBeDisabled()
+	await fireEvent.input(screen.getByLabelText(/^Username/), { target: { value: 'reader' } })
+	await fireEvent.input(screen.getByLabelText(/^Email/), { target: { value: 'reader@example.com' } })
+	expect(submit).toBeDisabled()
+	const passwords = container.querySelectorAll('input[type="password"]')
+	expect(passwords).toHaveLength(2)
+	await fireEvent.input(passwords[0], { target: { value: 'ValidPassword123!' } })
+	await fireEvent.input(passwords[1], { target: { value: 'ValidPassword123!' } })
+	expect(submit).toBeEnabled()
+	await fireEvent.input(screen.getByLabelText(/^Username/), { target: { value: 'invalid name' } })
+	expect(submit).toBeDisabled()
+})

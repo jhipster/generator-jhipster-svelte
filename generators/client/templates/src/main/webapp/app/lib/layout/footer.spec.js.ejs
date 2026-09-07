@@ -1,0 +1,9 @@
+import { render, screen } from '@testing-library/svelte'
+import Footer from './footer.svelte'
+
+test('provides copyright information and an attribution link', () => {
+	render(Footer)
+	expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+	expect(screen.getByTestId('copyrightMsg')).toHaveTextContent('JHipster')
+	expect(screen.getByRole('link', { name: '@vishal423' })).toHaveAttribute('href', 'https://twitter.com/vishal423')
+})

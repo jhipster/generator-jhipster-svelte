@@ -3,11 +3,12 @@ module.exports = {
 	transform: {
 		'^.+\\.svelte$': 'svelte-jester',
 	},
-	testMatch: ['<rootDir>/(<%= clientSrcDir %>**/*.spec.js)'],
+	testMatch: ['<rootDir>/<%= clientSrcDir %>**/*.spec.js'],
 	transformIgnorePatterns: ['node_modules/(?!(jhipster-svelte-library))'],
 	moduleFileExtensions: ['js', 'svelte'],
 	extensionsToTreatAsEsm: [".svelte"],
 	moduleNameMapper: {
+		'^\\$app/(.*)$': '<rootDir>/test/mocks/app/$1.js',
 		'^\\$lib(.*)$': '<rootDir>/<%= clientSrcDir %>app/lib$1',
 	},
 	setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],

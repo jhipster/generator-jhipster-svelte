@@ -1,0 +1,71 @@
+<%_ const mockFn = this.jest ? 'jest' : 'vi'; _%>
+<%_ if (this.jest) { _%>
+import { jest } from '@jest/globals'
+<%_ } _%>
+import { fireEvent, render, screen, waitFor } from '@testing-library/svelte'
+import { writable } from 'svelte/store'
+import auth from '$lib/auth/auth-store'
+import authService from '$lib/auth/auth-service'
+
+const goto = <%= mockFn %>.fn()
+const page = writable({ url: new URL('http://localhost/') })
+<%_ if (this.jest) { _%>
+jest.unstable_mockModule('$app/navigation', () => ({ goto }), { virtual: true })
+jest.unstable_mockModule('$app/stores', () => ({ page }), { virtual: true })
+jest.unstable_mockModule('$app/environment', () => ({ browser: false }), { virtual: true })
+<%_ } else { _%>
+vi.doMock('$app/navigation', () => ({ goto }))
+vi.doMock('$app/stores', () => ({ page }))
+vi.doMock('$app/environment', () => ({ browser: false }))
+<%_ } _%>
+
+beforeEach(() => {
+	auth.logout()
+	goto.mockClear()
+	page.set({ url: new URL('http://localhost/') })
+})
+afterEach(() => {
+	<%= mockFn %>.restoreAllMocks()
+	auth.logout()
+})
+
+async function login(authorities = ['ROLE_USER']) {
+	<%= mockFn %>.spyOn(authService, 'fetchAuthenticatedUserDetails').mockResolvedValue({ login: 'reader', authorities })
+	await auth.loadUser()
+}
+
+const { default: Navbar } = await import('./navbar.svelte')
+
+test('shows guest navigation and toggles the toolbar', async () => {
+	render(Navbar)
+	expect(screen.getByTestId('svlAppName')).toHaveTextContent('<%= baseName %>')
+	expect(screen.getByAltText('Application logo')).toHaveAttribute('src', '/content/img/logo-jhipster.png')
+	const loginLink = screen.getByRole('link', { name: /sign in/i })
+	expect(loginLink).toHaveAttribute('href', '<%= authenticationType === 'oauth2' ? 'oauth2/authorization/oidc' : '/login' %>')
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+	expect(screen.getByRole('link', { name: /sign up/i })).toHaveAttribute('href', '/account/register')
+<%_ } else { _%>
+	expect(screen.queryByRole('link', { name: /sign up/i })).not.toBeInTheDocument()
+<%_ } _%>
+	const toolbar = screen.getByTestId('svlLoginLink').parentElement
+	expect(toolbar).toHaveClass('hidden')
+	await fireEvent.click(screen.getByRole('button', { name: 'Toggle Navigation' }))
+	expect(toolbar).not.toHaveClass('hidden')
+	await fireEvent.click(screen.getByRole('button', { name: 'Toggle Navigation' }))
+	expect(toolbar).toHaveClass('hidden')
+})
+
+test('updates account and administration navigation when authentication changes', async () => {
+	render(Navbar)
+	await login()
+	await waitFor(() => expect(screen.getByTestId('svlAcctMenu')).toBeInTheDocument())
+	expect(screen.getByTestId('svlEntityMenu')).toBeInTheDocument()
+	expect(screen.queryByTestId('svlLoginLink')).not.toBeInTheDocument()
+	expect(screen.queryByTestId('svlAdminMenu')).not.toBeInTheDocument()
+	await login(['ROLE_ADMIN'])
+	await waitFor(() => expect(screen.getByTestId('svlAdminMenu')).toBeInTheDocument())
+	auth.logout()
+	await waitFor(() => expect(screen.getByTestId('svlLoginLink')).toBeInTheDocument())
+	expect(screen.queryByTestId('svlAcctMenu')).not.toBeInTheDocument()
+	expect(screen.queryByTestId('svlAdminMenu')).not.toBeInTheDocument()
+})

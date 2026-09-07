@@ -1,0 +1,24 @@
+import { fireEvent, render, screen } from '@testing-library/svelte'
+import AdminMenu from './admin-menu.svelte'
+
+test('opens administration links and closes after selecting a destination', async () => {
+	render(AdminMenu)
+	const toggle = screen.getByRole('button', { name: 'Administration Menu' })
+	expect(screen.getByRole('link', { name: /loggers/i }).parentElement).toHaveClass('hidden')
+	await fireEvent.click(toggle)
+	const loggers = screen.getByRole('link', { name: /loggers/i })
+	expect(loggers.parentElement).not.toHaveClass('hidden')
+	expect(loggers).toHaveAttribute('href', '/admin/logger')
+<%_ if (!skipUserManagement) { _%>
+	expect(screen.getByRole('link', { name: /user management/i })).toHaveAttribute('href', '/admin/user-management')
+<%_ } _%>
+<%_ if (applicationType === 'gateway') { _%>
+	expect(screen.getByRole('link', { name: /gateway/i })).toHaveAttribute('href', '/admin/gateway')
+<%_ } _%>
+<%_ if (this.swaggerUi) { _%>
+	expect(screen.getByRole('link', { name: /api/i })).toHaveAttribute('href', '/admin/docs')
+<%_ } _%>
+	loggers.addEventListener('click', event => event.preventDefault())
+	await fireEvent.click(loggers)
+	expect(loggers.parentElement).toHaveClass('hidden')
+})

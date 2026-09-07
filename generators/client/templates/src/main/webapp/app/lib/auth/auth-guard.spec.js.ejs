@@ -1,0 +1,87 @@
+<%_ const mockFn = this.jest ? 'jest' : 'vi'; _%>
+<%_ if (this.jest) { _%>
+import { jest } from '@jest/globals'
+<%_ } _%>
+import { fireEvent, render, screen, waitFor } from '@testing-library/svelte'
+import { writable } from 'svelte/store'
+import auth from '$lib/auth/auth-store'
+import authService from '$lib/auth/auth-service'
+
+const goto = <%= mockFn %>.fn()
+const page = writable({ url: new URL('http://localhost/') })
+<%_ if (this.jest) { _%>
+jest.unstable_mockModule('$app/navigation', () => ({ goto }), { virtual: true })
+jest.unstable_mockModule('$app/stores', () => ({ page }), { virtual: true })
+jest.unstable_mockModule('$app/environment', () => ({ browser: false }), { virtual: true })
+<%_ } else { _%>
+vi.doMock('$app/navigation', () => ({ goto }))
+vi.doMock('$app/stores', () => ({ page }))
+vi.doMock('$app/environment', () => ({ browser: false }))
+<%_ } _%>
+
+beforeEach(() => {
+	auth.logout()
+	goto.mockClear()
+	page.set({ url: new URL('http://localhost/') })
+})
+afterEach(() => {
+	<%= mockFn %>.restoreAllMocks()
+	auth.logout()
+})
+
+async function login(authorities = ['ROLE_USER']) {
+	<%= mockFn %>.spyOn(authService, 'fetchAuthenticatedUserDetails').mockResolvedValue({ login: 'reader', authorities })
+	await auth.loadUser()
+}
+
+const { default: AuthGuardFixture } = await import('./auth-guard.test.svelte')
+
+test('allows the public home page without redirecting', () => {
+	render(AuthGuardFixture)
+	expect(screen.getByText('Protected route content')).toBeInTheDocument()
+	expect(goto).not.toHaveBeenCalled()
+})
+
+test('saves an unauthenticated protected destination', async () => {
+	page.set({ url: new URL('http://localhost/entities/book') })
+	render(AuthGuardFixture)
+	expect(screen.queryByText('Protected route content')).not.toBeInTheDocument()
+	await waitFor(() => expect(sessionStorage.getItem('savedRoute')).toBe('/entities/book'))
+<%_ if (authenticationType !== 'oauth2') { _%>
+	expect(goto).toHaveBeenCalledWith('/login')
+<%_ } else { _%>
+	expect(goto).not.toHaveBeenCalled()
+<%_ } _%>
+})
+
+test('allows an authenticated protected destination', async () => {
+	await login()
+	page.set({ url: new URL('http://localhost/entities/book') })
+	render(AuthGuardFixture)
+	expect(screen.getByText('Protected route content')).toBeInTheDocument()
+	expect(goto).not.toHaveBeenCalled()
+})
+
+test('restores and consumes a saved destination after authentication', async () => {
+	await login()
+	auth.saveRoute('/entities/book')
+	render(AuthGuardFixture)
+	await waitFor(() => expect(goto).toHaveBeenCalledWith('/entities/book'))
+	expect(sessionStorage.getItem('savedRoute')).toBeNull()
+})
+<%_ if (authenticationType !== 'oauth2') { _%>
+
+test.each(['/login'<% if (!skipUserManagement) { %>, '/account/register', '/account/activate', '/account/reset/init', '/account/reset/finish'<% } %>])('allows guests to access %s', pathname => {
+	page.set({ url: new URL(pathname, 'http://localhost') })
+	render(AuthGuardFixture)
+	expect(screen.getByText('Protected route content')).toBeInTheDocument()
+	expect(goto).not.toHaveBeenCalled()
+})
+
+test('redirects an authenticated user away from login', async () => {
+	await login()
+	page.set({ url: new URL('http://localhost/login') })
+	render(AuthGuardFixture)
+	await waitFor(() => expect(goto).toHaveBeenCalledWith('/'))
+})
+<%_ } _%>

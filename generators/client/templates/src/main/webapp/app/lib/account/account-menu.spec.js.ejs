@@ -1,0 +1,76 @@
+<%_ const mockFn = this.jest ? 'jest' : 'vi'; _%>
+<%_ if (this.jest) { _%>
+import { jest } from '@jest/globals'
+<%_ } _%>
+import { fireEvent, render, screen, waitFor } from '@testing-library/svelte'
+import { writable } from 'svelte/store'
+import auth from '$lib/auth/auth-store'
+import authService from '$lib/auth/auth-service'
+
+const goto = <%= mockFn %>.fn()
+const page = writable({ url: new URL('http://localhost/') })
+<%_ if (this.jest) { _%>
+jest.unstable_mockModule('$app/navigation', () => ({ goto }), { virtual: true })
+jest.unstable_mockModule('$app/stores', () => ({ page }), { virtual: true })
+jest.unstable_mockModule('$app/environment', () => ({ browser: false }), { virtual: true })
+<%_ } else { _%>
+vi.doMock('$app/navigation', () => ({ goto }))
+vi.doMock('$app/stores', () => ({ page }))
+vi.doMock('$app/environment', () => ({ browser: false }))
+<%_ } _%>
+
+beforeEach(() => {
+	auth.logout()
+	goto.mockClear()
+	page.set({ url: new URL('http://localhost/') })
+})
+afterEach(() => {
+	<%= mockFn %>.restoreAllMocks()
+	auth.logout()
+})
+
+async function login(authorities = ['ROLE_USER']) {
+	<%= mockFn %>.spyOn(authService, 'fetchAuthenticatedUserDetails').mockResolvedValue({ login: 'reader', authorities })
+	await auth.loadUser()
+}
+
+const { default: AccountMenu } = await import('./account-menu.svelte')
+
+test('opens and closes the account menu', async () => {
+	await login()
+	render(AccountMenu)
+	const toggle = screen.getByRole('button', { name: 'Account Menu' })
+	const signOut = screen.getByRole('link', { name: /sign out/i })
+	expect(signOut.parentElement).toHaveClass('hidden')
+	await fireEvent.click(toggle)
+	expect(signOut.parentElement).not.toHaveClass('hidden')
+<%_ if (!skipUserManagement) { _%>
+	expect(screen.getByRole('link', { name: /change password/i })).toHaveAttribute('href', '/account/password')
+	expect(screen.getByRole('link', { name: /settings/i })).toHaveAttribute('href', '/account/settings')
+<%_ } _%>
+	await fireEvent.click(toggle)
+	expect(signOut.parentElement).toHaveClass('hidden')
+})
+
+test('requests logout and invokes account cleanup', async () => {
+	await login()
+<%_ if (authenticationType !== 'jwt') { _%>
+	const logout = <%= mockFn %>.spyOn(authService, 'logout').mockResolvedValue({ logoutUrl: '/' })
+<%_ } _%>
+<%_ if (authenticationType === 'session') { _%>
+	<%= mockFn %>.spyOn(authService, 'fetchAuthenticatedUsername').mockResolvedValue(null)
+<%_ } _%>
+	// The menu is normally unmounted by the navbar after the store is cleared.
+	const clearAccount = <%= mockFn %>.spyOn(auth, 'logout').mockImplementation(() => {})
+	render(AccountMenu)
+	const signOut = screen.getByRole('link', { name: /sign out/i })
+	signOut.addEventListener('click', event => event.preventDefault())
+	await fireEvent.click(signOut)
+	await waitFor(() => expect(clearAccount).toHaveBeenCalledTimes(1))
+<%_ if (authenticationType !== 'jwt') { _%>
+	expect(logout).toHaveBeenCalledTimes(1)
+<%_ } _%>
+<%_ if (authenticationType !== 'oauth2') { _%>
+	await waitFor(() => expect(goto).toHaveBeenCalledWith('/'))
+<%_ } _%>
+})

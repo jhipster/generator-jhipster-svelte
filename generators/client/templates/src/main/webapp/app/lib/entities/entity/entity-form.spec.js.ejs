@@ -1,0 +1,47 @@
+<%_ const mockFn = this.jest ? 'jest' : 'vi'; _%>
+<%_ if (this.jest) { _%>
+import { jest } from '@jest/globals'
+<%_ } _%>
+import { fireEvent, render, screen, waitFor } from '@testing-library/svelte'
+import <%= entityAngularName %>Form from './<%= entityFileName %>-form.svelte'
+
+test('cancels without submitting an entity', async () => {
+	const { component } = render(<%= entityAngularName %>Form)
+	const cancel = <%= mockFn %>.fn()
+	const save = <%= mockFn %>.fn()
+	component.$on('cancel', cancel)
+	component.$on('saveorupdate', save)
+	await fireEvent.click(screen.getByRole('button', { name: /cancel/i }))
+	expect(cancel).toHaveBeenCalledTimes(1)
+	expect(save).not.toHaveBeenCalled()
+})
+
+test('distinguishes creating from updating an existing entity', async () => {
+	const { component } = render(<%= entityAngularName %>Form)
+	expect(screen.getByRole('button', { name: /create <%= entityClassHumanized.toLowerCase() %>/i })).toBeInTheDocument()
+	await component.$set({ <%= entityInstance %>: { id: 42 } })
+	expect(screen.getByRole('button', { name: /update <%= entityClassHumanized.toLowerCase() %>/i })).toBeInTheDocument()
+})
+<%_ for (const field of fields.filter(field => !field.id && field.fieldValidationRequired && (field.fieldTypeString || field.fieldTypeNumeric || field.fieldTypeLocalDate))) { _%>
+
+test('rejects an empty <%= field.fieldName %>', async () => {
+	render(<%= entityAngularName %>Form)
+	const input = document.querySelector('[name="<%= field.fieldName %>"]')
+	await fireEvent.input(input, { target: { value: '' } })
+	await fireEvent.blur(input)
+	await waitFor(() => expect(screen.getByRole('button', { name: /create <%= entityClassHumanized.toLowerCase() %>/i })).toBeDisabled())
+	expect(screen.getByText('<%= field.fieldNameHumanized %> is mandatory')).toBeInTheDocument()
+})
+<%_ } _%>
+<%_ for (const field of fields.filter(field => !field.id && field.fieldTypeBoolean)) { _%>
+
+test('updates the <%= field.fieldName %> checkbox', async () => {
+	const entity = { id: null, <%= field.fieldName %>: false }
+	render(<%= entityAngularName %>Form, { <%= entityInstance %>: entity })
+	const checkbox = screen.getByRole('checkbox', { name: '<%= field.fieldNameHumanized %>' })
+	expect(checkbox).not.toBeChecked()
+	await fireEvent.click(checkbox)
+	expect(checkbox).toBeChecked()
+	expect(entity.<%= field.fieldName %>).toBe(true)
+})
+<%_ } _%>

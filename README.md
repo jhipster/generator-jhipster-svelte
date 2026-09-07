@@ -312,6 +312,14 @@ jsvelte
 
 ```
 
+### Generated component tests
+
+Run `npm test` in a generated application to execute its component tests with coverage. The blueprint emits Vitest or Jest tests according to the selected runner, and includes gateway and account tests only when those components are generated. Entity generation also emits form tests alongside the existing table tests.
+
+The tests exercise form validation, emitted events, menu interactions, authentication redirects, and changes to role-based access. SvelteKit navigation and page state are isolated in the routed-component tests; the forms use the actual UI library. OAuth2 tests use the non-browser branch and do not contact an identity provider.
+
+When editing test templates, validate generated applications with session, JWT gateway, and OAuth2 authentication, and exercise both runners. Generate at least one entity with required, numeric, date, and boolean fields to check the entity templates.
+
 ## License
 
 Apache-2.0 © [Vishal Mahajan](https://twitter.com/vishal423)

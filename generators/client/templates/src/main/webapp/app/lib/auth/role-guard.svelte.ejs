@@ -4,18 +4,18 @@
 	export let role = 'USER'
 	export let showAccessDeniedMessage = false
 
-	function hasRole() {
+	function hasRole(account, requiredRole) {
 		return (
-			$auth &&
-			$auth.authorities &&
-			$auth.authorities.length &&
-			$auth.authorities.includes('ROLE_' + role)
+			account &&
+			account.authorities &&
+			account.authorities.length &&
+			account.authorities.includes('ROLE_' + requiredRole)
 		)
 	}
 </script>
 
 <div>
-	{#if hasRole()}
+	{#if hasRole($auth, role)}
 		<slot />
 	{:else if showAccessDeniedMessage}
 		<div class="text-red-300 text-xl text-center mt-4">

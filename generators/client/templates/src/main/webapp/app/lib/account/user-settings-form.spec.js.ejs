@@ -1,0 +1,28 @@
+import { fireEvent, render, screen } from '@testing-library/svelte'
+import UserSettingsForm from './user-settings-form.svelte'
+
+test('requires a valid email and emits a copy of the edited settings', async () => {
+	const settings = { firstName: '', lastName: '', email: '' }
+	const { component } = render(UserSettingsForm, { user: settings })
+	const updates = []
+	component.$on('updatesettings', event => updates.push(event.detail))
+	const submit = screen.getByRole('button', { name: 'Update Settings' })
+	expect(submit).toBeDisabled()
+	await fireEvent.input(screen.getByLabelText(/^First Name/), { target: { value: 'Alex' } })
+	await fireEvent.input(screen.getByLabelText(/^Last Name/), { target: { value: 'Reader' } })
+	await fireEvent.input(screen.getByLabelText(/^Email/), { target: { value: 'alex@example.com' } })
+	expect(submit).toBeEnabled()
+	await fireEvent.click(submit)
+	expect(updates).toEqual([{ firstName: 'Alex', lastName: 'Reader', email: 'alex@example.com' }])
+	expect(updates[0]).not.toBe(settings)
+	await fireEvent.input(screen.getByLabelText(/^Email/), { target: { value: 'invalid' } })
+	expect(submit).toBeDisabled()
+})
+
+test('rejects overlong names', async () => {
+	render(UserSettingsForm)
+	await fireEvent.input(screen.getByLabelText(/^First Name/), { target: { value: 'x'.repeat(51) } })
+	await fireEvent.input(screen.getByLabelText(/^Last Name/), { target: { value: 'Reader' } })
+	await fireEvent.input(screen.getByLabelText(/^Email/), { target: { value: 'alex@example.com' } })
+	expect(screen.getByRole('button', { name: 'Update Settings' })).toBeDisabled()
+})

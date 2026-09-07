@@ -1,0 +1,32 @@
+import { render, screen } from '@testing-library/svelte'
+import ServiceInstanceTable from './service-instance-table.svelte'
+
+test('renders an empty instance list without links', () => {
+	render(ServiceInstanceTable)
+	expect(screen.queryAllByRole('link')).toHaveLength(0)
+})
+
+test('shows instance URLs, health states and metadata', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{ uri: 'http://service-a:8080', instanceInfo: { status: 'UP' }, metadata: { zone: 'east' } },
+			{ uri: 'http://service-b:8080', instanceInfo: { status: 'DOWN' }, metadata: {} },
+			{ uri: 'http://service-c:8080', metadata: {} },
+		],
+	})
+	expect(screen.getByRole('link', { name: 'http://service-a:8080' })).toHaveAttribute('href', 'http://service-a:8080')
+	expect(screen.getByText('UP')).toHaveClass('bg-green-600')
+	expect(screen.getByText('DOWN')).toHaveClass('bg-red-600')
+	expect(screen.getByText('UNKNOWN')).toBeInTheDocument()
+	expect(screen.getByText('zone')).toBeInTheDocument()
+	expect(screen.getByText('east')).toBeInTheDocument()
+})
+
+test('removes stale instances when the input changes', async () => {
+	const { component } = render(ServiceInstanceTable, {
+		serviceInstances: [{ uri: 'http://old:8080', metadata: {} }],
+	})
+	await component.$set({ serviceInstances: [{ uri: 'http://new:8080', metadata: {} }] })
+	expect(screen.queryByRole('link', { name: 'http://old:8080' })).not.toBeInTheDocument()
+	expect(screen.getByRole('link', { name: 'http://new:8080' })).toBeInTheDocument()
+})

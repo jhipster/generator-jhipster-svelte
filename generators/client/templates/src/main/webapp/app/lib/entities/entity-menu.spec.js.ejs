@@ -1,0 +1,12 @@
+import { fireEvent, render, screen } from '@testing-library/svelte'
+import EntityMenu from './entity-menu.svelte'
+
+test('opens and closes the entity menu', async () => {
+	render(EntityMenu)
+	const toggle = screen.getByRole('button', { name: 'Entities Menu' })
+	expect(screen.getAllByRole('button')).toHaveLength(1)
+	await fireEvent.click(toggle)
+	expect(screen.getAllByRole('button')).toHaveLength(2)
+	await fireEvent.click(toggle)
+	expect(screen.getAllByRole('button')).toHaveLength(1)
+})
