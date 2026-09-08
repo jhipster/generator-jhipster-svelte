@@ -1,3 +1,6 @@
+🚧 JHipster Svelte codebase is out of sync with latest Svelte and JHipster releases and is not in a state to accept new contributions. 
+🚧 Hopefully by the year end, I shall be bringing it back to a working state.
+
 # JHipster Svelte
 
 [![NPM version][npm-image]][npm-url] [![code style: prettier][prettier-image]][prettier-url] [![Generated applications build status][github-actions-generated-applications]][github-actions-url]
