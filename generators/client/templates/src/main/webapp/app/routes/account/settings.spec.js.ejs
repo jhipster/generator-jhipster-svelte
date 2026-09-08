@@ -1,0 +1,112 @@
+<%_ if (this.jest) { _%>
+import { beforeAll, jest } from '@jest/globals'
+import { fireEvent, render, waitFor } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+const authenticatedUser = {
+	login: 'test-user',
+	firstName: 'Test',
+	lastName: 'User',
+	email: 'test-user@example.com',
+	langKey: 'en',
+}
+const auth = {
+	subscribe: callback => {
+		callback(authenticatedUser)
+		return () => {}
+	},
+	loadUser: jest.fn(),
+}
+const accountService = {
+	updateAccount: jest.fn(),
+}
+
+jest.unstable_mockModule('$lib/auth/auth-store', () => ({ default: auth }))
+jest.unstable_mockModule('$lib/account/account-service', () => ({ default: accountService }))
+
+let SettingsPage
+
+beforeAll(async () => {
+	SettingsPage = (await import('./+page.svelte')).default
+})
+<%_ } else { _%>
+import { fireEvent, render, waitFor } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import { vi } from 'vitest'
+
+import accountService from '$lib/account/account-service'
+import auth from '$lib/auth/auth-store'
+import SettingsPage from './+page.svelte'
+
+vi.mock('$lib/auth/auth-store', async () => {
+	const { writable } = await import('svelte/store')
+	const auth = writable({
+		login: 'test-user',
+		firstName: 'Test',
+		lastName: 'User',
+		email: 'test-user@example.com',
+		langKey: 'en',
+	})
+	auth.loadUser = vi.fn()
+	return { default: auth }
+})
+vi.mock('$lib/account/account-service', () => ({
+	default: {
+		updateAccount: vi.fn(),
+	},
+}))
+<%_ } _%>
+
+async function submitUpdatedSettings() {
+	await fireEvent.input(document.querySelector('input[name="firstName"]'), {
+		target: { value: 'Updated' },
+	})
+	await fireEvent.input(document.querySelector('input[name="lastName"]'), {
+		target: { value: 'Person' },
+	})
+	await fireEvent.input(document.querySelector('input[name="email"]'), {
+		target: { value: 'updated@example.com' },
+	})
+	await fireEvent.click(screen.getByRole('button', { name: /update settings/i }))
+}
+
+beforeEach(() => {
+	accountService.updateAccount.mockReset()
+	auth.loadUser.mockReset()
+})
+
+<%_ if (this.jest) { _%>
+test('should initialize the form with the authenticated user settings', async () => {
+	render(SettingsPage)
+
+	await waitFor(() => expect(document.querySelector('input[name="email"]')).toHaveValue('test-user@example.com'))
+})
+<%_ } _%>
+
+test('should update the authenticated user settings', async () => {
+	accountService.updateAccount.mockResolvedValue()
+	auth.loadUser.mockResolvedValue()
+	render(SettingsPage)
+
+	await submitUpdatedSettings()
+
+	expect(accountService.updateAccount).toHaveBeenCalledWith({
+		login: 'test-user',
+		firstName: 'Updated',
+		lastName: 'Person',
+		email: 'updated@example.com',
+		langKey: 'en',
+	})
+	await waitFor(() => expect(auth.loadUser).toHaveBeenCalledTimes(1))
+	expect(screen.getByTestId('successMsg')).toBeVisible()
+})
+
+test('should show an error and not reload the user when the update fails', async () => {
+	accountService.updateAccount.mockRejectedValue(new Error('request failed'))
+	render(SettingsPage)
+
+	await submitUpdatedSettings()
+
+	await waitFor(() => expect(screen.getByTestId('errorMsg')).toBeVisible())
+	expect(auth.loadUser).not.toHaveBeenCalled()
+})

@@ -172,8 +172,11 @@ const svelteFiles = {
 			templates: [
 				{ file: () => `account/activate.svelte`, renameTo: () => `account/activate/+page.svelte` },
 				{ file: () => `account/password.svelte`, renameTo: () => `account/password/+page.svelte` },
+				{ file: () => `account/password.spec.js`, renameTo: () => `account/password/page.spec.js` },
 				{ file: () => `account/register.svelte`, renameTo: () => `account/register/+page.svelte` },
+				{ file: () => `account/register.spec.js`, renameTo: () => `account/register/page.spec.js` },
 				{ file: () => `account/settings.svelte`, renameTo: () => `account/settings/+page.svelte` },
+				{ file: () => `account/settings.spec.js`, renameTo: () => `account/settings/page.spec.js` },
 				{ file: () => `account/reset/finish.svelte`, renameTo: () => `account/reset/finish/+page.svelte` },
 				{ file: () => `account/reset/init.svelte`, renameTo: () => `account/reset/init/+page.svelte` },
 				{
