@@ -5,6 +5,17 @@ const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/entities/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/entities/`;
 
 export default {
+	playwright: [
+		{
+			condition: generator => generator.playwright,
+			templates: [
+				{
+					file: 'playwright/entities/entity.spec.js',
+					renameTo: generator => `playwright/entities/${generator.entityFolderName}.spec.js`,
+				},
+			],
+		},
+	],
 	entityRoutes: [
 		{
 			path: FRONTEND_ROUTES_DIR,

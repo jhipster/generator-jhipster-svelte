@@ -1,0 +1,45 @@
+import { expect, test } from '@playwright/test'
+import { login } from './support/auth.js'
+
+test.describe('home and navigation', () => {
+	test('shows the application shell to a guest', async ({ page }) => {
+		await page.goto('/')
+		await expect(page.getByTestId('welcomeTitle')).toContainText('Welcome, JHipster Svelte!')
+		await expect(page.getByTestId('svlAppName')).toContainText('<%= baseName %>')
+		await expect(page.getByTestId('svlLoginLink')).toBeVisible()
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+		await expect(page.getByTestId('svlRegisterLink').getByRole('link')).toHaveAttribute('href', '/account/register')
+<%_ } _%>
+		await expect(page.getByTestId('copyrightMsg')).toContainText('Copyright © 2023 JHipster')
+	})
+
+	test('shows account and administration navigation after login', async ({ page }) => {
+		await login(page)
+		await expect(page.getByTestId('greetMsg')).toContainText('You are logged in as user')
+		await page.getByTestId('svlAdminLink').click()
+		await expect(page.getByTestId('svlLoggerLink')).toHaveAttribute('href', '/admin/logger')
+		await page.getByTestId('svlLoggerLink').click()
+		await expect(page).toHaveURL('/admin/logger')
+		await page.getByTestId('svlAccountLink').click()
+		await page.getByTestId('svlSignoutLink').click()
+		await expect(page.getByTestId('svlLoginLink')).toBeVisible()
+	})
+
+<%_ if (authenticationType !== 'oauth2') { _%>
+	test('protects authenticated and administrator routes', async ({ page }) => {
+<%_ if (!skipUserManagement) { _%>
+		await page.goto('/account/settings')
+		await expect(page).toHaveURL(/\/login$/)
+<%_ } _%>
+		await page.goto('/admin/logger')
+		await expect(page).toHaveURL(/\/login$/)
+	})
+<%_ } _%>
+<%_ if (!skipUserManagement || authenticationType === 'oauth2') { _%>
+
+	test('hides administration navigation from a regular user', async ({ page }) => {
+		await login(page, process.env.USER_USERNAME || 'user', process.env.USER_PASSWORD || 'user')
+		await expect(page.getByTestId('svlAdminMenu')).toHaveCount(0)
+	})
+<%_ } _%>
+})

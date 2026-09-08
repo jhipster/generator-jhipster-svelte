@@ -1,0 +1,9 @@
+import { expect, test } from '@playwright/test'
+import { login } from './support/auth.js'
+
+test('shows gateway routes', async ({ page }) => {
+	await login(page)
+	await page.goto('/admin/gateway')
+	await expect(page.getByTestId('gatewayTitle')).toContainText('Gateway routes')
+	await expect(page.getByTestId('gatewayTable').locator('th')).toHaveText(['Service', 'Route', 'Service Instances'])
+})

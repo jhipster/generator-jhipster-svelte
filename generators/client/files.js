@@ -6,6 +6,35 @@ const FRONTEND_ROUTES_DIR = `${FRONTEND_APP_DIR}/routes/`;
 const FRONTEND_COMPONENTS_DIR = `${FRONTEND_APP_DIR}/lib/`;
 
 const svelteFiles = {
+	playwright: [
+		{
+			condition: generator => generator.playwright,
+			templates: [
+				'playwright.config.js',
+				'playwright/support/auth.js',
+				'playwright/home.spec.js',
+				'playwright/admin.spec.js',
+				{
+					file: generator => `${FRONTEND_SRC_DIR}static/content/img/${generator.hipster}_head-192.png`,
+					renameTo: () => 'playwright/fixtures/integration-test.png',
+					method: 'copy',
+				},
+			],
+		},
+		{
+			condition: generator => generator.playwright && generator.authenticationType !== 'oauth2',
+			templates: ['playwright/login.spec.js'],
+		},
+		{
+			condition: generator =>
+				generator.playwright && !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
+			templates: ['playwright/account.spec.js', 'playwright/users.spec.js'],
+		},
+		{
+			condition: generator => generator.playwright && generator.applicationType === 'gateway',
+			templates: ['playwright/gateway.spec.js'],
+		},
+	],
 	base: [
 		{
 			templates: [

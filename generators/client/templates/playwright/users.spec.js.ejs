@@ -1,0 +1,168 @@
+import { expect, test } from '@playwright/test'
+import { api, login } from './support/auth.js'
+
+async function findUserRow(page, username) {
+	const table = page.getByTestId('userMgmtTable')
+	const row = table
+		.locator('tbody tr')
+		.filter({ has: page.locator('td:nth-child(2)').getByText(username, { exact: true }) })
+	await expect(table.locator('tbody tr').first()).toBeVisible()
+	while (!(await row.count())) {
+		const next = page.getByTestId('nextPageCtrl').first()
+		await expect(next, `User ${username} was not found in the user list`).toBeEnabled()
+		const loaded = page.waitForResponse(
+			response =>
+				new URL(response.url()).pathname === '/api/admin/users' &&
+				response.request().method() === 'GET',
+		)
+		await next.click()
+		const response = await loaded
+		expect(response.ok()).toBeTruthy()
+		const users = await response.json()
+		await expect(table.locator('tbody tr td:nth-child(2)')).toHaveText(
+			users.map(user => user.login),
+		)
+	}
+	return row
+}
+
+test('paginates and sorts users with a deterministic list fixture', async ({ page }) => {
+	await login(page)
+	// Keep this UI test independent of the number and names of existing accounts.
+	// The CRUD test below continues to exercise the real user-management API.
+	const users = Array.from({ length: 16 }, (_, index) => ({
+		id: index + 1,
+		login: `pw-user-${String(16 - index).padStart(2, '0')}`,
+		email: `pw-user-${index + 1}@localhost.org`,
+		activated: true,
+		authorities: ['ROLE_USER'],
+		createdDate: '2024-01-01T00:00:00Z',
+		lastModifiedDate: '2024-01-01T00:00:00Z',
+		lastModifiedBy: 'system',
+	}))
+	await page.route('**/api/admin/users?*', async route => {
+		const params = new URL(route.request().url()).searchParams
+		const [field, direction] = params.get('sort').split(',')
+		const sorted = [...users].sort((left, right) => {
+			const order = field === 'login' ? left.login.localeCompare(right.login) : left.id - right.id
+			return direction === 'desc' ? -order : order
+		})
+		const size = Number(params.get('size'))
+		const start = Number(params.get('page')) * size
+		await route.fulfill({
+			json: sorted.slice(start, start + size),
+			headers: { 'x-total-count': String(users.length) },
+		})
+	})
+	const listRequest = () =>
+		page.waitForRequest(
+			request =>
+				new URL(request.url()).pathname === '/api/admin/users' && request.method() === 'GET',
+		)
+	const table = page.getByTestId('userMgmtTable')
+	const logins = table.locator('tbody tr td:nth-child(2)')
+	const controls = page.getByTestId('pageCtrl').first()
+	const previous = controls.getByTestId('prevPageCtrl')
+	const next = controls.getByTestId('nextPageCtrl')
+	const initialRequest = listRequest()
+	await page.goto('/admin/user-management')
+	const initialParams = new URL((await initialRequest).url()).searchParams
+	expect(initialParams.get('page')).toBe('0')
+	expect(initialParams.get('size')).toBe('15')
+	expect(initialParams.get('sort')).toBe('id,asc')
+	await expect(logins).toHaveText(users.slice(0, 15).map(user => user.login))
+	await expect(controls).toContainText('1-15 of 16')
+	await expect(previous).toBeDisabled()
+	await expect(next).toBeEnabled()
+
+	const nextRequest = listRequest()
+	await expect(await findUserRow(page, 'pw-user-01')).toBeVisible()
+	expect(new URL((await nextRequest).url()).searchParams.get('page')).toBe('1')
+	await expect(logins).toHaveText(['pw-user-01'])
+	await expect(controls).toContainText('16-16 of 16')
+	await expect(previous).toBeEnabled()
+	await expect(next).toBeDisabled()
+
+	const previousRequest = listRequest()
+	await previous.click()
+	expect(new URL((await previousRequest).url()).searchParams.get('page')).toBe('0')
+	await expect(logins).toHaveText(users.slice(0, 15).map(user => user.login))
+	await expect(previous).toBeDisabled()
+	await expect(next).toBeEnabled()
+
+	// Sorting preserves the selected page; check both directions on the last page.
+	const lastPageRequest = listRequest()
+	await next.click()
+	expect(new URL((await lastPageRequest).url()).searchParams.get('page')).toBe('1')
+	await expect(logins).toHaveText(['pw-user-01'])
+
+	const sortButton = table.getByRole('button', { name: 'login', exact: true })
+	for (const direction of ['desc', 'asc']) {
+		const sortedRequest = listRequest()
+		await sortButton.click()
+		const params = new URL((await sortedRequest).url()).searchParams
+		expect(params.get('page')).toBe('1')
+		expect(params.get('sort')).toBe(`login,${direction}`)
+		const orderedLogins = users.map(user => user.login).sort()
+		if (direction === 'desc') orderedLogins.reverse()
+		await expect(logins).toHaveText(orderedLogins.slice(15))
+		await expect(controls).toContainText('16-16 of 16')
+	}
+	const sortedPreviousRequest = listRequest()
+	await previous.click()
+	const sortedPreviousParams = new URL((await sortedPreviousRequest).url()).searchParams
+	expect(sortedPreviousParams.get('page')).toBe('0')
+	expect(sortedPreviousParams.get('sort')).toBe('login,asc')
+	await expect(logins).toHaveText(
+		users
+			.map(user => user.login)
+			.sort()
+			.slice(0, 15),
+	)
+	await expect(controls).toContainText('1-15 of 16')
+})
+
+test('creates, views, updates, and deletes a user', async ({ page }) => {
+	const username = `pw-${crypto.randomUUID()}`
+	await login(page)
+	try {
+		await page.goto('/admin/user-management/new')
+		const form = page.getByTestId('addUserForm')
+		await form.locator('[name="username"]').fill(username)
+		await form.locator('[name="firstName"]').fill('Playwright')
+		await form.locator('[name="lastName"]').fill('Test')
+		await form.locator('[name="email"]').fill(`${username}@localhost.org`)
+		await form.locator('[name="roles"]').click()
+		await page.getByTestId('roles-options').getByRole('checkbox', { name: 'ROLE_USER', exact: true }).check()
+		await page.keyboard.press('Escape')
+		await form.getByRole('button', { name: 'Create user account' }).click()
+		await expect(page.getByTestId('toast-success')).toContainText('A user is created')
+
+		await page.goto(`/admin/user-management/${username}/view`)
+		await expect(page.getByTestId('userMgmtTitle')).toContainText(username)
+		await expect(page.locator('div.table')).toContainText('Playwright')
+		await page.locator('[name="backBtn"]').click()
+		await expect(page).toHaveURL('/admin/user-management')
+
+		await page.goto(`/admin/user-management/${username}/edit`)
+		await expect(page.getByTestId('addUserForm').locator('[name="username"]')).toHaveValue(username)
+		await page.getByTestId('addUserForm').locator('[name="firstName"]').fill('Updated')
+		await page.getByTestId('addUserForm').getByRole('button', { name: 'Update user account' }).click()
+		await expect(page.getByTestId('toast-success')).toContainText('A user is updated')
+		expect((await (await api(page, `/api/admin/users/${username}`)).json()).firstName).toBe('Updated')
+
+		await page.goto('/admin/user-management')
+		const row = await findUserRow(page, username)
+		await row.hover()
+		const toggled = page.waitForResponse(response => response.url().endsWith('/api/admin/users') && response.request().method() === 'PUT')
+		await row.locator('[name="toggleUserAcctBtn"]').click()
+		expect((await toggled).ok()).toBeTruthy()
+		expect((await (await api(page, `/api/admin/users/${username}`)).json()).activated).toBe(false)
+		await row.hover()
+		await row.locator('[name="deleteBtn"]').click()
+		await page.getByTestId('svlModal').locator('[name="confirmDeleteBtn"]').click()
+		await expect(page.getByTestId('toast-success').filter({ hasText: 'A user is deleted' })).toBeVisible()
+	} finally {
+		await api(page, `/api/admin/users/${username}`, 'DELETE')
+	}
+})

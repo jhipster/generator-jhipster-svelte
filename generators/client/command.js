@@ -1,6 +1,11 @@
 const command = {
 	configs: {},
 	options: {
+		playwright: {
+			description: 'Generate Playwright end-to-end tests alongside Cypress',
+			type: Boolean,
+			scope: 'blueprint',
+		},
 		jest: {
 			description: 'Jest JavaScript unit testing framework',
 			type: Boolean,
