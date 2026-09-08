@@ -52,6 +52,9 @@ export default class extends ClientGenerator {
 			...super.configuring,
 			setDefaultBlueprintConfig() {
 				if (this.blueprintConfig) {
+					if (this.blueprintConfig.playwright === undefined) {
+						this.blueprintConfig.playwright = false;
+					}
 					if (this.blueprintConfig.swaggerUi === undefined) {
 						this.blueprintConfig.swaggerUi = false;
 					}
@@ -78,6 +81,7 @@ export default class extends ClientGenerator {
 	get [BaseApplicationGenerator.LOADING]() {
 		return this.asLoadingTaskGroup({
 			async loadingTemplateTask({ application }) {
+				application.playwright = this.blueprintConfig.playwright;
 				application.oldSvelteBlueprintVersion = this.blueprintConfig.version;
 				application.svelteBlueprintVersion = this.blueprintConfig.version = getPackageJson().version;
 			},
@@ -298,6 +302,10 @@ export default class extends ClientGenerator {
 
 				const packageTemplate = JSON.parse(this.readTemplate('package.json'));
 				this.packageJson.merge(packageTemplate);
+
+				if (application.playwright) {
+					this.packageJson.merge(JSON.parse(this.readTemplate('playwright/package.json')));
+				}
 
 				if (this.swaggerUi) {
 					const swaggerPackageJson = JSON.parse(this.readTemplate('swagger/package.json'));

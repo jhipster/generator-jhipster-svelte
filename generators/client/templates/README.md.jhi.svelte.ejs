@@ -88,6 +88,18 @@
 
  UI end-to-end tests are powered by [Cypress][]. They're located under cypress directory and can be run by starting Spring Boot in one terminal (`./mvnw spring-boot:run`) and running the tests (`npm run e2e`) in a second one.
 
+<%_ if (playwright) { _%>
+ ### Playwright end-to-end tests
+
+ Playwright tests are in `playwright/`. Install Chromium once with `npx playwright install chromium` (use `--with-deps` on Linux CI), start the application, then run `npm run e2e:playwright`.
+
+ The default application URL is `http://localhost:8080`. Set `PLAYWRIGHT_BASE_URL` to test another running instance, such as the Vite server on port 9000. Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` when the default admin account has changed. OAuth2 tests use the generated Keycloak login page; adapt `playwright/support/auth.js` for another identity provider.
+
+ Regular-user navigation tests use `USER_USERNAME` and `USER_PASSWORD`, both defaulting to `user`.
+
+ `npm run e2e:playwright:ui` opens Playwright's interactive runner. Tests use isolated browser contexts, block service workers and retain traces and screenshots on failure. Run them against a development or test database: tests create and delete records and exercise account settings. Cypress and its existing `e2e` commands remain available.
+<%_ } _%>
+
  <&_ } -&>
  <&_ if (fragment.referenceSection) { -&>
  [Jest]: https://facebook.github.io/jest/

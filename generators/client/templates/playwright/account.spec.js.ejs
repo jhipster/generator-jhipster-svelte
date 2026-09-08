@@ -1,0 +1,98 @@
+import { expect, test } from '@playwright/test'
+import { adminPassword, adminUsername, api, login } from './support/auth.js'
+
+test.describe('account', () => {
+	test('registers a new account', async ({ page }) => {
+		const username = `pw-${crypto.randomUUID()}`
+		try {
+			await page.goto('/account/register')
+			const form = page.getByTestId('registerForm')
+			await form.locator('[name="username"]').fill(username)
+			await form.locator('[name="email"]').fill(`${username}@localhost.org`)
+			await form.locator('[name="password"]').fill('playwright')
+			await form.locator('[name="passwordConfirm"]').fill('playwright')
+			await form.getByRole('button', { name: 'Create account' }).click()
+			await expect(page.getByTestId('successMsg')).toContainText('User account successfully created')
+			await expect(form).toHaveCount(0)
+		} finally {
+			await login(page)
+			await api(page, `/api/admin/users/${username}`, 'DELETE')
+		}
+	})
+
+	test('validates registration and rejects a duplicate login', async ({ page }) => {
+		await page.goto('/account/register')
+		const form = page.getByTestId('registerForm')
+		await expect(form.getByRole('button', { name: 'Create account' })).toBeDisabled()
+		await form.locator('[name="username"]').fill(adminUsername)
+		await form.locator('[name="email"]').fill('invalid')
+		await form.locator('[name="email"]').blur()
+		await expect(page.getByTestId('email-error')).toContainText('Email address is not valid')
+		await form.locator('[name="email"]').fill('playwright@localhost.org')
+		await form.locator('[name="password"]').fill('playwright')
+		await form.locator('[name="passwordConfirm"]').fill('playwright')
+		await form.getByRole('button', { name: 'Create account' }).click()
+		await expect(page.getByTestId('errorMsg')).toContainText('Login name already in use')
+	})
+
+	test('validates password reset', async ({ page }) => {
+		await page.goto('/account/reset/init')
+		const form = page.getByTestId('forgotPwdForm')
+		await expect(form.getByRole('button', { name: 'Send password reset email' })).toBeDisabled()
+		await form.locator('[name="email"]').fill('admin@localhost.org')
+		await form.getByRole('button', { name: 'Send password reset email' }).click()
+		await expect(page.getByTestId('successMsg')).toContainText('Check your email')
+	})
+
+	test('loads and validates account settings', async ({ page }) => {
+		await login(page)
+		await page.goto('/account/settings')
+		const form = page.getByTestId('settingsForm')
+		await expect(form.locator('[name="email"]')).toHaveValue(/@/)
+		await form.locator('[name="email"]').fill('invalid')
+		await form.locator('[name="email"]').blur()
+		await expect(page.getByTestId('email-error')).toContainText('Email address is not valid')
+	})
+
+	test('updates and restores account settings', async ({ page }) => {
+		await login(page)
+		const response = await api(page, '/api/account')
+		expect(response.ok()).toBeTruthy()
+		const account = await response.json()
+		try {
+			await page.goto('/account/settings')
+			await expect(page.getByTestId('settingsForm').locator('[name="email"]')).toHaveValue(account.email)
+			await page.getByTestId('settingsForm').locator('[name="firstName"]').fill('Playwright')
+			await page.getByTestId('settingsForm').locator('[name="email"]').fill('playwright@localhost.org')
+			const saved = page.waitForResponse(response => response.url().endsWith('/api/account') && response.request().method() === 'POST')
+			await page.getByTestId('settingsForm').getByRole('button', { name: 'Update Settings' }).click()
+			expect((await saved).ok()).toBeTruthy()
+			await expect(page.getByTestId('successMsg')).toContainText('Settings changed!')
+			expect((await (await api(page, '/api/account')).json()).firstName).toBe('Playwright')
+		} finally {
+			expect((await api(page, '/api/account', 'POST', account)).ok()).toBeTruthy()
+		}
+	})
+
+	test('validates password confirmation', async ({ page }) => {
+		await login(page)
+		await page.goto('/account/password')
+		const form = page.getByTestId('passwordForm')
+		await form.locator('[name="currentPassword"]').fill('admin')
+		await form.locator('[name="newPassword"]').fill('abcd')
+		await form.locator('[name="newPasswordConfirm"]').fill('different')
+		await form.locator('[name="newPasswordConfirm"]').blur()
+		await expect(page.getByTestId('newPasswordConfirm-error')).toContainText('do not match')
+	})
+
+	test('submits a password change using the configured password', async ({ page }) => {
+		await login(page)
+		await page.goto('/account/password')
+		const form = page.getByTestId('passwordForm')
+		await form.locator('[name="currentPassword"]').fill(adminPassword)
+		await form.locator('[name="newPassword"]').fill(adminPassword)
+		await form.locator('[name="newPasswordConfirm"]').fill(adminPassword)
+		await form.getByRole('button', { name: 'Update password' }).click()
+		await expect(page.getByTestId('successMsg')).toContainText('Password changed!')
+	})
+})

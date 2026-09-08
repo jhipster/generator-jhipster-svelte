@@ -1,0 +1,23 @@
+import { expect, test } from '@playwright/test'
+import { api, login } from './support/auth.js'
+
+test('filters loggers and changes a level', async ({ page }) => {
+	await login(page)
+	await page.goto('/admin/logger')
+	await expect(page.getByTestId('loggersTitle')).toContainText('Loggers')
+	await page.getByTestId('loggerSearchForm').locator('[name="logger"]').fill('ROOT')
+	const row = page.getByTestId('loggersTable').locator('tbody tr').filter({ has: page.getByText('ROOT', { exact: true }) })
+	await expect(row).toHaveCount(1)
+	await row.hover()
+	const response = await api(page, '/management/loggers/ROOT')
+	expect(response.ok()).toBeTruthy()
+	const original = await response.json()
+	const target = original.effectiveLevel === 'INFO' ? 'WARN' : 'INFO'
+	try {
+		await row.getByRole('button', { name: target, exact: true }).click()
+		await expect(row.getByRole('button', { name: target, exact: true })).toBeDisabled()
+	} finally {
+		const restored = await api(page, '/management/loggers/ROOT', 'POST', { configuredLevel: original.configuredLevel })
+		expect(restored.ok()).toBeTruthy()
+	}
+})
