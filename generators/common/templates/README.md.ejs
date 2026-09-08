@@ -159,7 +159,7 @@ security:
 
 Create an OIDC App in Okta to get a `{clientId}` and `{clientSecret}`. To do this, log in to your Okta Developer account and navigate to **Applications** > **Add Application**. Click **Web** and click the **Next** button. Give the app a name you’ll remember, specify `http://localhost:8080` as a Base URI, and `http://localhost:8080/login/oauth2/code/oidc` as a Login Redirect URI. Click **Done**, then Edit and add `http://localhost:8080` as a Logout redirect URI. Copy and paste the client ID and secret into your `application.yml` file.
 
-Create a `ROLE_ADMIN` and `ROLE_USER` group and add users into them. Modify e2e tests to use this account when running integration tests. You'll need to change Cypress environment credentials in `cypress.json` or override defaults with OS [environment variables](https://docs.cypress.io/guides/guides/environment-variables#Setting).
+Create a `ROLE_ADMIN` and `ROLE_USER` group and add users into them. Modify e2e tests to use this account when running integration tests. <% if (this.blueprintConfig.playwright) { %>Override the default Playwright credentials with the `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `USER_USERNAME`, and `USER_PASSWORD` environment variables.<% } else { %>You'll need to change Cypress environment credentials in `cypress.json` or override defaults with OS [environment variables](https://docs.cypress.io/guides/guides/environment-variables#Setting).<% } %>
 
 Navigate to **API** > **Authorization Servers**, click the **Authorization Servers** tab and edit the default one. Click the **Claims** tab and **Add Claim**. Name it "groups", and include it in the ID Token. Set the value type to "Groups" and set the filter to be a Regex of `.*`.
 
@@ -245,7 +245,7 @@ Unit tests are run by <% if (this.blueprintConfig.jest) { %>[Jest][]<% } %>. The
 ```
 <%= clientPackageManager %> test
 ```
-UI end-to-end tests are powered by [Cypress][]. They're located under cypress directory and can be run by starting Spring Boot in one terminal (`<% if (buildToolMaven) { %>./mvnw spring-boot:run<% } else { %>./gradlew bootRun<% } %>`) and running the tests (`<%= clientPackageManager %> run e2e`) in a second one.
+UI end-to-end tests are powered by <% if (this.blueprintConfig.playwright) { %>[Playwright][]<% } else { %>[Cypress][]<% } %>. They're located under <% if (this.blueprintConfig.playwright) { %>playwright<% } else { %>cypress<% } %> directory and can be run by starting Spring Boot in one terminal (`<% if (buildToolMaven) { %>./mvnw spring-boot:run<% } else { %>./gradlew bootRun<% } %>`) and running the tests (`<%= clientPackageManager %> run e2e`) in a second one.
 
 <%_ if (gatlingTests) { _%>
 ### Other tests
@@ -327,7 +327,11 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 <%_ if (this.blueprintConfig.jest) { _%>
 [Jest]: https://facebook.github.io/jest/
 <%_ } _%>
+<%_ if (this.blueprintConfig.playwright) { _%>
+[Playwright]: https://playwright.dev/
+<%_ } else { _%>
 [Cypress]: https://www.cypress.io/
+<%_ } _%>
 <%_ if (enableSwaggerCodegen) { _%>
 [OpenAPI-Generator]: https://openapi-generator.tech
 [Swagger-Editor]: https://editor.swagger.io

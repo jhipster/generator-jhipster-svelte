@@ -1,5 +1,7 @@
 import svelte from "eslint-plugin-svelte";
+<%_ if (!playwright) { _%>
 import cypress from "eslint-plugin-cypress";
+<%_ } _%>
 import jestDom from "eslint-plugin-jest-dom";
 import globals from "globals";
 import path from "node:path";
@@ -29,12 +31,16 @@ export default [{
 }, ...compat.extends(
     "eslint:recommended",
     "plugin:svelte/recommended",
+<%_ if (!playwright) { _%>
     "plugin:cypress/recommended",
+<%_ } _%>
     "plugin:jest-dom/recommended",
 ), {
     plugins: {
         svelte,
+<%_ if (!playwright) { _%>
         cypress,
+<%_ } _%>
         "jest-dom": jestDom,
     },
 
@@ -42,7 +48,9 @@ export default [{
         globals: {
             ...globals.browser,
             ...globals.node,
+<%_ if (!playwright) { _%>
             ...cypress.environments.globals.globals,
+<%_ } _%>
 		<%_ if (this.blueprintConfig.jest) { _%>
 		"jest": true,
 		<%_ } else { _%>
@@ -58,4 +66,3 @@ export default [{
         "no-unused-vars": "off",
     },
 }];
-

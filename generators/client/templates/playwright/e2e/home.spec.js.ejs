@@ -1,0 +1,44 @@
+import { expect, test } from '@playwright/test'
+import { adminPassword, adminUsername, loginByApi } from '../support/test-utils'
+
+test.describe('Home page', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/')
+	})
+
+	test('greets with welcome title', async ({ page }) => {
+		await expect(page.getByTestId('welcomeTitle')).toBeVisible()
+		await expect(page.getByTestId('welcomeTitle')).toContainText('Welcome, JHipster Svelte!')
+	})
+
+	test.describe('unauthenticated user', () => {
+		test('has login instructions', async ({ page }) => {
+			await expect(page.getByTestId('loginInstructions')).toBeVisible()
+			await expect(page.getByTestId('loginInstructions')).toContainText('you can try the default accounts')
+			await expect(page.getByTestId('loginInstructions')).toContainText('Administrator (login="admin" and password="admin")')
+			await expect(page.getByTestId('loginInstructions')).toContainText('User (login="user" and password="user").')
+		})
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+
+		test('has user registration link', async ({ page }) => {
+			await expect(page.getByTestId('svlRegisterHomeLink')).toBeVisible()
+			await expect(page.getByTestId('svlRegisterHomeLink')).toHaveAttribute('href', '/account/register')
+			await expect(page.getByTestId('svlRegisterHomeLink')).toContainText('Register a new account')
+		})
+<%_ } _%>
+	})
+<%_ if (authenticationType !== 'oauth2') { _%>
+
+	test.describe('authenticated user', () => {
+		test.beforeEach(async ({ page }) => {
+			await loginByApi(page, adminUsername, adminPassword)
+			await page.goto('/')
+		})
+
+		test('greets logged in user', async ({ page }) => {
+			await expect(page.getByTestId('greetMsg')).toBeVisible()
+			await expect(page.getByTestId('greetMsg')).toContainText(`You are logged in as user "${adminUsername}".`)
+		})
+	})
+<%_ } _%>
+})

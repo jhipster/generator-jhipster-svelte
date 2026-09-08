@@ -1,0 +1,59 @@
+import { expect } from '@playwright/test'
+
+export const adminUsername = process.env.ADMIN_USERNAME ?? 'admin'
+export const adminPassword = process.env.ADMIN_PASSWORD ?? 'admin'
+export const userUsername = process.env.USER_USERNAME ?? 'user'
+export const userPassword = process.env.USER_PASSWORD ?? 'user'
+
+export const byName = (scope, name) => scope.locator(`[name="${name}"]`)
+
+export async function loginByApi(page, username = adminUsername, password = adminPassword) {
+<%_ if (authenticationType === 'session') { _%>
+	const csrfResponse = await page.request.get('/api/authenticate')
+	expect(csrfResponse.ok()).toBeTruthy()
+
+	const xsrfCookie = (await page.context().cookies()).find(cookie => cookie.name === 'XSRF-TOKEN')
+	expect(xsrfCookie?.value).toBeTruthy()
+
+	const loginResponse = await page.request.post('/api/authentication', {
+		form: {
+			username,
+			password,
+			'remember-me': 'true',
+		},
+		headers: {
+			'X-XSRF-TOKEN': xsrfCookie.value,
+		},
+	})
+	expect(loginResponse.ok()).toBeTruthy()
+<%_ } else if (authenticationType === 'jwt') { _%>
+	const loginResponse = await page.request.post('/api/authenticate', {
+		data: {
+			username,
+			password,
+			'remember-me': false,
+		},
+	})
+	expect(loginResponse.ok()).toBeTruthy()
+
+	const { id_token: token } = await loginResponse.json()
+	expect(token).toBeTruthy()
+
+	await page.addInitScript(authToken => {
+		window.localStorage.setItem('authToken', authToken)
+	}, token)
+	await page.goto('/')
+	await page.evaluate(authToken => {
+		window.localStorage.setItem('authToken', authToken)
+	}, token)
+<%_ } else { _%>
+	throw new Error('Playwright API login is not configured for OAuth2 authentication yet.')
+<%_ } _%>
+
+	const accountResponse = await page.request.get('/api/account'<% if (authenticationType === 'jwt') { %>, {
+		headers: {
+			Authorization: `Bearer ${await page.evaluate(() => window.localStorage.getItem('authToken'))}`,
+		},
+	}<% } %>)
+	expect(accountResponse.ok()).toBeTruthy()
+}

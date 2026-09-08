@@ -53,6 +53,7 @@ export default {
 	],
 	entityE2eTests: [
 		{
+			condition: generator => !generator.playwright,
 			templates: [
 				{
 					file: 'cypress/integration/entities/entity/entity-delete.spec.js',

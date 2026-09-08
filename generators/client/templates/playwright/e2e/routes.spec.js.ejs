@@ -1,0 +1,86 @@
+import { expect, test } from '@playwright/test'
+import { adminPassword, adminUsername, byName, loginByApi } from '../support/test-utils'
+
+test.describe('Routes', () => {
+	test.describe('unauthenticated user', () => {
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+		test('does not allow navigation to settings page', async ({ page }) => {
+			await page.goto('/account/settings')
+			await expect(page).toHaveURL('/login')
+			await expect(page.getByTestId('signInTitle')).toBeVisible()
+			await expect(page.getByTestId('signInTitle')).toContainText('Sign in to <%= baseName %>')
+		})
+
+		test('does not allow navigation to user management page', async ({ page }) => {
+			await page.goto('/admin/user-management')
+			await expect(page).toHaveURL('/login')
+			await expect(page.getByTestId('signInTitle')).toBeVisible()
+			await expect(page.getByTestId('signInTitle')).toContainText('Sign in to <%= baseName %>')
+		})
+<%_ } _%>
+<%_ if (authenticationType !== 'oauth2') { _%>
+		test('does not allow navigation to Loggers page', async ({ page }) => {
+			await page.goto('/admin/logger')
+			await expect(page).toHaveURL('/login')
+			await expect(page.getByTestId('signInTitle')).toBeVisible()
+			await expect(page.getByTestId('signInTitle')).toContainText('Sign in to <%= baseName %>')
+		})
+<%_ } _%>
+
+		test('allows navigation to home page', async ({ page }) => {
+			await page.goto('/')
+			await expect(page).toHaveURL('/')
+			await expect(page.getByTestId('welcomeTitle')).toBeVisible()
+			await expect(page.getByTestId('welcomeTitle')).toContainText('Welcome, JHipster Svelte!')
+		})
+	})
+<%_ if (authenticationType !== 'oauth2') { _%>
+
+	test.describe('authenticated user', () => {
+		test.beforeEach(async ({ page }) => {
+			await loginByApi(page, adminUsername, adminPassword)
+		})
+
+		test('does not allow navigation to login page', async ({ page }) => {
+			await page.goto('/login')
+			await expect(page).toHaveURL('/')
+			await expect(page.getByTestId('welcomeTitle')).toBeVisible()
+			await expect(page.getByTestId('welcomeTitle')).toContainText('Welcome, JHipster Svelte!')
+		})
+<%_ if (!skipUserManagement) { _%>
+
+		test('does not allow navigation to register page', async ({ page }) => {
+			await page.goto('/account/register')
+			await expect(page).toHaveURL('/')
+			await expect(page.getByTestId('welcomeTitle')).toBeVisible()
+			await expect(page.getByTestId('welcomeTitle')).toContainText('Welcome, JHipster Svelte!')
+		})
+<%_ } _%>
+
+		test('allows navigation to home page', async ({ page }) => {
+			await page.goto('/')
+			await expect(page).toHaveURL('/')
+			await expect(page.getByTestId('welcomeTitle')).toBeVisible()
+			await expect(page.getByTestId('welcomeTitle')).toContainText('Welcome, JHipster Svelte!')
+		})
+	})
+
+	test.describe('navigation context', () => {
+		test.beforeEach(async ({ page }) => {
+			await page.goto('/admin/logger')
+			await expect(page).toHaveURL('/login')
+		})
+
+		test('navigates to saved context', async ({ page }) => {
+			const form = page.getByTestId('loginForm')
+			await form.locator("input[type='checkbox']").first().check()
+			await byName(form, 'username').fill(adminUsername)
+			await byName(form, 'password').fill(adminPassword)
+			await byName(form, 'password').press('Enter')
+			await expect(page).toHaveURL('/admin/logger')
+			await expect(page.getByTestId('loggersTitle')).toBeVisible()
+			await expect(page.getByTestId('loggersTitle')).toContainText('Loggers')
+		})
+	})
+<%_ } _%>
+})
