@@ -52,6 +52,10 @@ export default defineConfig({
         }),
     <%_ } _%>
     ],
+	<%_ if (!this.jest) { _%>
+	// Component tests need Svelte's browser lifecycle hooks (including afterUpdate).
+	resolve: process.env.VITEST ? { conditions: ['browser'] } : undefined,
+	<%_ } _%>
 	ssr: {
 		noExternal: ['jhipster-svelte-library'],
 	},

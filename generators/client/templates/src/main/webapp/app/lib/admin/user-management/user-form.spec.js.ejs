@@ -350,10 +350,139 @@ describe('Roles validations', () => {
 		const roleUserInput = screen.getByRole('checkbox', { name: /role_user/i })
 		await user.click(roleUserInput)
 		await user.click(roleUserInput)
-		// await user.type(rolesInput, '{esc}')
-		// await user.tab()
+		await user.type(rolesInput, '{esc}')
+		await user.tab()
 
-		// expect(await screen.findByText('Select at least one role')).toBeVisible()
+		expect(await screen.findByText('Select at least one role')).toBeVisible()
 	})
 })
 
+describe('user form events', () => {
+	test.each([
+		['create', null],
+		['update', 11],
+	])('should save the edited values when users %s an account', async (action, id) => {
+		const user = userEvent.setup()
+		const { component } = render(UserForm, {
+			user: id
+				? {
+						id,
+						login: 'original',
+						firstName: 'Original',
+						lastName: 'Name',
+						email: 'original@example.org',
+						activated: true,
+						authorities: ['ROLE_USER'],
+					}
+				: undefined,
+			authorities: [{ name: 'ROLE_USER' }, { name: 'ROLE_ADMIN' }],
+		})
+		const savedUsers = []
+		component.$on('saveorupdate', event => savedUsers.push(event.detail))
+
+		for (const [name, value] of [
+			[/username/i, 'edited'],
+			[/first name/i, 'Edited'],
+			[/last name/i, 'Account'],
+			[/email/i, 'edited@example.org'],
+		]) {
+			const input = screen.getByRole('textbox', { name })
+			await user.clear(input)
+			await user.type(input, value)
+			await user.tab()
+		}
+		await user.click(screen.getByRole('checkbox', { name: /activate/i }))
+		await user.click(screen.getByRole('textbox', { name: /roles/i }))
+		await user.click(screen.getByRole('checkbox', { name: /role_admin/i }))
+		if (id) {
+			await user.click(screen.getByRole('checkbox', { name: /role_user/i }))
+		}
+		await user.keyboard('{Escape}')
+		await user.tab()
+
+		const saveButton = screen.getByRole('button', {
+			name: new RegExp(`${action} user account`, 'i'),
+		})
+		expect(saveButton).toBeEnabled()
+		await user.click(saveButton)
+
+		expect(savedUsers).toStrictEqual([
+			{
+				id,
+				login: 'edited',
+				firstName: 'Edited',
+				lastName: 'Account',
+				email: 'edited@example.org',
+				activated: false,
+				authorities: ['ROLE_ADMIN'],
+			},
+		])
+	})
+
+	test('should dispatch cancel without saving an incomplete account', async () => {
+		const user = userEvent.setup()
+		const { component } = render(UserForm)
+		const events = []
+		component.$on('cancel', () => events.push('cancel'))
+		component.$on('saveorupdate', () => events.push('saveorupdate'))
+
+		await user.type(screen.getByRole('textbox', { name: /username/i }), 'unfinished')
+		await user.click(screen.getByRole('button', { name: /create user account/i }))
+		expect(events).toEqual([])
+
+		await user.click(screen.getByRole('button', { name: /cancel/i }))
+		expect(events).toEqual(['cancel'])
+	})
+})
+
+describe('save validation after editing a valid account', () => {
+	test.each([
+		[/username/i, 'invalid#', 'Username can only contain letters and digits'],
+		[/first name/i, 'a'.repeat(51), 'First name cannot be longer than 50 characters'],
+		[/last name/i, 'a'.repeat(51), 'Last name cannot be longer than 50 characters'],
+		[/email/i, 'invalid', 'Email address is not valid'],
+	])(
+		'should prevent saving an invalid %s and allow correction',
+		async (name, invalidValue, message) => {
+			const user = userEvent.setup()
+			const { component } = render(UserForm, {
+				user: {
+					id: 11,
+					login: 'original',
+					firstName: 'Original',
+					lastName: 'Name',
+					email: 'original@example.org',
+					activated: true,
+					authorities: ['ROLE_USER'],
+				},
+				authorities: [{ name: 'ROLE_USER' }],
+			})
+			const savedUsers = []
+			component.$on('saveorupdate', event => savedUsers.push(event.detail))
+			const saveButton = screen.getByRole('button', { name: /update user account/i })
+			// Let initial validation settle through normal user interaction.
+			for (const field of [/username/i, /first name/i, /last name/i, /email/i]) {
+				await user.click(screen.getByRole('textbox', { name: field }))
+				await user.tab()
+			}
+			expect(saveButton).toBeEnabled()
+
+			const input = screen.getByRole('textbox', { name })
+			const originalValue = input.value
+			await user.clear(input)
+			await user.type(input, invalidValue)
+			await user.tab()
+			expect(await screen.findByText(message)).toBeVisible()
+			expect(saveButton).toBeDisabled()
+			await user.click(saveButton)
+			expect(savedUsers).toEqual([])
+
+			await user.clear(input)
+			await user.type(input, originalValue)
+			await user.tab()
+			expect(saveButton).toBeEnabled()
+			await user.click(saveButton)
+			expect(savedUsers).toHaveLength(1)
+		},
+	)
+})
