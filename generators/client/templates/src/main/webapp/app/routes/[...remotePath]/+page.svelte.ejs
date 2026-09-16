@@ -1,0 +1,113 @@
+<script>
+	import { page } from '$app/stores'
+	import { onMount } from 'svelte'
+	import { importRemote } from '@module-federation/utilities'
+
+	const remotes = {
+<%_ for (const remote of microfrontends) { _%>
+		'<%= remote.lowercaseBaseName %>': {
+			url: './<%= remote.endpointPrefix %>',
+			scope: '<%= remote.lowercaseBaseName %>',
+			module: './entities-routes',
+		},
+<%_ } _%>
+	}
+
+	const routeCache = new Map()
+	const componentCache = new Map()
+
+	let activePath
+	let Component
+	let error
+	let loading = false
+	let mounted = false
+	let routeParams = {}
+
+	onMount(() => {
+		mounted = true
+	})
+
+	function normalizePath(path = '') {
+		return path.split('/').filter(Boolean).join('/')
+	}
+
+	function matchRoute(routePath, pagePath) {
+		const routeSegments = normalizePath(routePath).split('/').filter(Boolean)
+		const pageSegments = normalizePath(pagePath).split('/').filter(Boolean)
+
+		if (routeSegments.length !== pageSegments.length) {
+			return false
+		}
+
+		return routeSegments.reduce((params, segment, index) => {
+			if (params === false) {
+				return false
+			}
+			if (segment.startsWith(':')) {
+				return { ...params, [segment.slice(1)]: decodeURIComponent(pageSegments[index]) }
+			}
+			return segment === pageSegments[index] ? params : false
+		}, {})
+	}
+
+	async function loadRoutes(remoteName) {
+		if (!routeCache.has(remoteName)) {
+			routeCache.set(remoteName, importRemote(remotes[remoteName]).then(module => module.default))
+		}
+		return routeCache.get(remoteName)
+	}
+
+	async function loadRemotePage(path) {
+		const pagePath = normalizePath(path)
+		const remoteName = pagePath.split('/')[0]
+		const remote = remotes[remoteName]
+
+		Component = undefined
+		error = undefined
+		routeParams = {}
+
+		if (!remote) {
+			error = new Error(`Unknown microfrontend ${remoteName}`)
+			return
+		}
+
+		loading = true
+
+		try {
+			const routes = await loadRoutes(remoteName)
+			const matched = routes
+				.map(route => ({ route, params: matchRoute(route.path, pagePath) }))
+				.find(({ params }) => params !== false)
+
+			if (!matched) {
+				throw new Error(`No remote route found for ${pagePath}`)
+			}
+
+			const componentKey = `${remoteName}:${matched.route.path}`
+
+			if (!componentCache.has(componentKey)) {
+				componentCache.set(componentKey, matched.route.load().then(module => module.default))
+			}
+
+			routeParams = matched.params
+			Component = await componentCache.get(componentKey)
+		} catch (err) {
+			error = err
+		} finally {
+			loading = false
+		}
+	}
+
+	$: if (mounted && $page.params.remotePath !== activePath) {
+		activePath = $page.params.remotePath
+		void loadRemotePage(activePath)
+	}
+</script>
+
+{#if loading}
+	<div>loading ...</div>
+{:else if Component}
+	<svelte:component this="{Component}" routeParams="{routeParams}" />
+{:else if error}
+	<div>{error.message}</div>
+{/if}

@@ -26,7 +26,9 @@ _%>
 	import { BinaryRecord } from 'jhipster-svelte-library/page'
 <%_ } _%>
 
-	$: id = $page && $page.params && $page.params.id
+	export let routeParams = {}
+
+	$: id = routeParams.id ?? ($page && $page.params && $page.params.id)
 	onMount(() => fetch<%= entityAngularName %>Details())
 
 	let error
@@ -97,7 +99,7 @@ _%>
 		</div>
 	{/if}
 	<div class="flex mt-4 flex-row justify-center items-center leading-none">
-		<Button name="backBtn" on:click="{() => goto(`/entities/<%= entityFolderName %>`)}">
+		<Button name="backBtn" on:click="{() => goto('/<%= svelteEntityRoute %>')}">
 			<Icon classes="mr-2" icon="{faArrowLeft}" />
 			Back
 		</Button>

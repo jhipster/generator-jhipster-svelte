@@ -26,7 +26,7 @@ describe('Create <%= entityInstance %> page', () => {
 			Cypress.env('ADMIN_USERNAME'),
 			Cypress.env('ADMIN_PASSWORD')
 		)
-		cy.visit('/entities/<%= entityFolderName %>/new')
+		cy.visit('/<%= svelteEntityRoute %>/new')
 	})
 
 	it('should greets with Create <%= entityInstance %> title', () => {
@@ -142,7 +142,7 @@ _%>
 		cy.getByName('cancelBtn').click()
 
 		cy.location('pathname')
-			.should('eq', '/entities/<%= entityFolderName %>')
+			.should('eq', '/<%= svelteEntityRoute %>')
 			.getByTestId('<%= entityInstance %>Title')
 			.should('be.visible')
 			.should('contain', '<%= entityClassPluralHumanized %>')

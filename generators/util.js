@@ -6,6 +6,22 @@ export const getPackageJson = () => {
 	return JSON.parse(readFileSync(join(fileURLToPath(import.meta.url), '../../package.json')).toString());
 };
 
+export const getSvelteEntityRoute = (application, entity) =>
+	application.applicationTypeMicroservice && application.microfrontend
+		? entity.entityPage
+		: `entities/${entity.entityFolderName}`;
+
+export const isRemoteMicrofrontendEntity = (application, entity) =>
+	application.applicationTypeGateway &&
+	application.microfrontend &&
+	entity.microserviceName &&
+	application.microfrontends?.some(
+		({ baseName }) => baseName.toLowerCase() === entity.microserviceName.toLowerCase(),
+	);
+
+export const shouldWriteSvelteEntityClient = (application, entity) =>
+	!entity.skipClient && !entity.builtIn && !isRemoteMicrofrontendEntity(application, entity);
+
 //
 // const jhipsterUtils = require('generator-jhipster/generators/utils');
 // const constants = require('generator-jhipster/generators/generator-constants');

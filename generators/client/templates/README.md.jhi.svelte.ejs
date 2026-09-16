@@ -76,6 +76,24 @@
 
  For further instructions on how to develop with JHipster and SvelteKit, have a look at [Using JHipster in development][] and [kit.svelte.dev](https://kit.svelte.dev/).
 
+ <%_ if (microfrontend) { _%>
+ ### Developing Svelte microfrontends
+
+ <%_ if (applicationTypeGateway) { _%>
+ This gateway loads remote Svelte entity menus and entity routes from:
+
+ <%_ for (const remote of microfrontends) { _%>
+ - `<%= remote.lowercaseBaseName %>` through `/<%= remote.endpointPrefix %>/remoteEntry.js`
+ <%_ } _%>
+
+ Start the gateway backend normally, then build or run each remote microservice frontend so the gateway can fetch its exposed modules.
+ <%_ } _%>
+ <%_ if (applicationTypeMicroservice) { _%>
+ This microservice exposes its generated Svelte entity menu and entity routes as a Vite federation remote. Its generated entity client calls the backend through `/services/<%= lowercaseBaseName %>/api`, so run it together with a gateway during local development.
+ <%_ } _%>
+
+ <%_ } _%>
+
  <&_ } -&>
  <&_ if (fragment.testingSection) { -&>
  ### Svelte tests

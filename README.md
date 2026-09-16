@@ -200,6 +200,34 @@ npm update -g generator-jhipster-svelte
     }
     ```
 
+    To generate Svelte entity screens as microfrontends, enable `microfrontend` on the gateway, list the remote apps in `microfrontends`, and keep `skipClient false` on the Svelte microservice so it can expose its entity menu and routes:
+
+    ```
+    application {
+      config {
+        baseName gateway
+        applicationType gateway
+        clientFramework svelte
+        authenticationType oauth2
+        microfrontend true
+        microfrontends [blog]
+      }
+      entities Blog, Post, Tag
+    }
+
+    application {
+      config {
+        baseName blog
+        applicationType microservice
+        clientFramework svelte
+        authenticationType oauth2
+        serverPort 8081
+        skipClient false
+      }
+      entities Blog, Post, Tag
+    }
+    ```
+
     Refer to [JDL entity fields](https://www.jhipster.tech/jdl/entities-fields) documentation for all supported entity data types and constraints. Refer to [JDL relationships](https://www.jhipster.tech/managing-relationships/) documentation for supported relationships and syntax. Refer [JHipster micro-services](https://www.jhipster.tech/microservices-architecture/) documentation for all supported components.
 
     Pass `import-jdl` option along the file path to `jsvelte` cli to generate new application:

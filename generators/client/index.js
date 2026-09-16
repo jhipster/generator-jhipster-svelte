@@ -5,7 +5,7 @@ import ClientGenerator from 'generator-jhipster/generators/client';
 import { TEMPLATES_WEBAPP_SOURCES_DIR } from 'generator-jhipster';
 import { getEnumInfo } from 'generator-jhipster/generators/base-application/support';
 import { createNeedleCallback } from 'generator-jhipster/generators/base/support';
-import { getPackageJson } from '../util.js';
+import { getPackageJson, getSvelteEntityRoute, shouldWriteSvelteEntityClient } from '../util.js';
 import svelteFiles from './files.js';
 import entitySvelteFiles from './entity-files.js';
 
@@ -90,19 +90,70 @@ export default class extends ClientGenerator {
 				if (!application.prettierExtensions.includes(',svelte')) {
 					application.prettierExtensions = `${application.prettierExtensions},svelte`;
 				}
+				const entityMenuItem = ({ entityClass, entityRoute, entityName, closeAction }) => `\t\t<MenuItem
+\t\t\ttestId="svl${entityClass}MgmtLink"
+\t\t\tlink="/${entityRoute}"
+\t\t\ton:click="{${closeAction}}"
+\t\t>
+\t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
+\t\t\t${entityName}
+\t\t</MenuItem>
+`;
 				source.addEntityToMenu = ({ entityClass, entityRoute, entityName }) => {
 					this.editFile(
 						`${application.clientSrcDir}/app/lib/entities/entity-menu.svelte`,
 						createNeedleCallback({
 							needle: 'add-entity-to-menu',
-							contentToAdd: `\t\t<MenuItem
-\t\t\ttestId="svl${entityClass}MgmtLink"
-\t\t\tlink="/entities/${entityRoute}"
-\t\t\ton:click="{() => (isOpen = false)}"
-\t\t>
-\t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
-\t\t\t${entityName}
-\t\t</MenuItem>
+							contentToAdd: entityMenuItem({
+								entityClass,
+								entityRoute,
+								entityName,
+								closeAction: '() => (isOpen = false)',
+							}),
+						}),
+					);
+
+					if (application.applicationTypeMicroservice && application.microfrontend) {
+						this.editFile(
+							`${application.clientSrcDir}/app/lib/microfrontends/entities-menu.svelte`,
+							createNeedleCallback({
+								needle: 'add-entity-to-microfrontend-menu',
+								contentToAdd: entityMenuItem({
+									entityClass,
+									entityRoute,
+									entityName,
+									closeAction: 'closeMenu',
+								}),
+							}),
+						);
+					}
+				};
+				source.addEntityToMicrofrontendRoutes = ({ entityRoute }) => {
+					if (!application.applicationTypeMicroservice || !application.microfrontend) {
+						return;
+					}
+
+					this.editFile(
+						`${application.clientSrcDir}/app/lib/microfrontends/entities-routes.js`,
+						createNeedleCallback({
+							needle: 'add-microfrontend-entity-route',
+							contentToCheck: `path: '${entityRoute}'`,
+							contentToAdd: `\t{
+\t\tpath: '${entityRoute}',
+\t\tload: () => import('../../routes/${entityRoute}/+page.svelte'),
+\t},
+\t{
+\t\tpath: '${entityRoute}/new',
+\t\tload: () => import('../../routes/${entityRoute}/new/+page.svelte'),
+\t},
+\t{
+\t\tpath: '${entityRoute}/:id/view',
+\t\tload: () => import('../../routes/${entityRoute}/[id]/view/+page.svelte'),
+\t},
+\t{
+\t\tpath: '${entityRoute}/:id/edit',
+\t\tload: () => import('../../routes/${entityRoute}/[id]/edit/+page.svelte'),
+\t},
 `,
 						}),
 					);
@@ -250,15 +301,25 @@ export default class extends ClientGenerator {
 				}
 			},
 			async writeEntityFiles({ application, entities }) {
-				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+				for (const entity of entities.filter(entity => shouldWriteSvelteEntityClient(application, entity))) {
 					await this.writeFiles({
 						sections: entitySvelteFiles,
-						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest },
+						context: {
+							...application,
+							...entity,
+							svelteEntityRoute: getSvelteEntityRoute(application, entity),
+							swaggerUi: this.swaggerUi,
+							jest: this.jest,
+						},
 					});
 				}
 			},
 			async writeUserService({ application, entities }) {
-				if (entities.some(entity => entity.relationships.some(rel => rel.otherEntity.builtInUser))) {
+				if (
+					entities
+						.filter(entity => shouldWriteSvelteEntityClient(application, entity))
+						.some(entity => entity.relationships.some(rel => rel.otherEntity.builtInUser))
+				) {
 					this.writeFile(
 						`${TEMPLATES_WEBAPP_SOURCES_DIR}app/lib/entities/user/user-service.js.ejs`,
 						`${application.clientSrcDir}app/lib/entities/user/user-service.js`,
@@ -267,7 +328,7 @@ export default class extends ClientGenerator {
 				}
 			},
 			writeEnumerations({ application, entities }) {
-				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+				for (const entity of entities.filter(entity => shouldWriteSvelteEntityClient(application, entity))) {
 					for (const field of entity.fields) {
 						if (field.fieldIsEnum === true) {
 							const enumInfo = {
@@ -317,19 +378,34 @@ export default class extends ClientGenerator {
 						'prettier-plugin-java': application.nodeDependencies['prettier-plugin-java'],
 					},
 				});
+
+				if (application.microfrontend) {
+					const devDependencies = {};
+					if (application.applicationTypeGateway) {
+						devDependencies['@module-federation/utilities'] = '3.1.12';
+					}
+					if (application.applicationTypeMicroservice) {
+						devDependencies['@module-federation/vite'] = '1.16.2';
+					}
+					this.packageJson.merge({
+						devDependencies,
+					});
+				}
 			},
 		});
 	}
 
 	get [BaseApplicationGenerator.POST_WRITING_ENTITIES]() {
 		return this.asPostWritingEntitiesTaskGroup({
-			async postWritingEntitiesTemplateTask({ entities, source }) {
-				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+			async postWritingEntitiesTemplateTask({ application, entities, source }) {
+				for (const entity of entities.filter(entity => shouldWriteSvelteEntityClient(application, entity))) {
+					const entityRoute = getSvelteEntityRoute(application, entity);
 					source.addEntityToMenu({
 						entityClass: entity.entityAngularName,
-						entityRoute: entity.entityFolderName,
+						entityRoute,
 						entityName: entity.entityClassHumanized,
 					});
+					source.addEntityToMicrofrontendRoutes({ entityRoute });
 				}
 			},
 		});

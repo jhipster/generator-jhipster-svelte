@@ -93,11 +93,11 @@
 <%_ } _%>
 
 	function view<%= entityAngularName %>(event) {
-		goto(`/entities/<%= entityFolderName %>/${event.detail.id}/view`)
+		goto(`/<%= svelteEntityRoute %>/${event.detail.id}/view`)
 	}
 
 	function update<%= entityAngularName %>(event) {
-		goto(`/entities/<%= entityFolderName %>/${event.detail.id}/edit`)
+		goto(`/<%= svelteEntityRoute %>/${event.detail.id}/edit`)
 	}
 
 	function showDelete<%= entityAngularName %>Modal(event) {
@@ -153,7 +153,7 @@
 		<div class="flex flex-row justify-end text-base">
 			<Button
 				classes="sm:my-0"
-				on:click="{() => goto(`/entities/<%= entityFolderName %>/new`)}"
+				on:click="{() => goto('/<%= svelteEntityRoute %>/new')}"
 			>
 				<Icon classes="mr-2" icon="{faPlus}" />
 				Create <%= entityClassHumanized %>

@@ -2,7 +2,11 @@ import { request } from 'jhipster-svelte-library/utils'
 
 import { serverUrl } from '$lib/utils/env'
 <%_
-const baseApi = (applicationTypeGateway && locals.microserviceName) ? 'services/' + microserviceName.toLowerCase() + '/api/' : 'api/';
+const baseApi = (applicationTypeMicroservice && microfrontend)
+	? 'services/' + lowercaseBaseName + '/api/'
+	: (applicationTypeGateway && locals.microserviceName)
+		? 'services/' + microserviceName.toLowerCase() + '/api/'
+		: 'api/';
 const eagerLoadRelationships = relationships.some(relationship => relationship.relationshipEagerLoad);
 _%>
 export default {
