@@ -8,6 +8,7 @@ module.exports = {
 	moduleFileExtensions: ['js', 'svelte'],
 	extensionsToTreatAsEsm: [".svelte"],
 	moduleNameMapper: {
+		'^\\$app/navigation$': '<rootDir>/jest-mocks/app-navigation.js',
 		'^\\$lib(.*)$': '<rootDir>/<%= clientSrcDir %>app/lib$1',
 	},
 	setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],

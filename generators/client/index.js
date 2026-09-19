@@ -264,6 +264,11 @@ export default class extends ClientGenerator {
 						`${application.clientSrcDir}app/lib/entities/user/user-service.js`,
 						application,
 					);
+					this.writeFile(
+						`${TEMPLATES_WEBAPP_SOURCES_DIR}app/lib/entities/user/user-service.spec.js.ejs`,
+						`${application.clientSrcDir}app/lib/entities/user/user-service.spec.js`,
+						{ ...application, jest: this.jest },
+					);
 				}
 			},
 			writeEnumerations({ application, entities }) {
@@ -272,12 +277,18 @@ export default class extends ClientGenerator {
 						if (field.fieldIsEnum === true) {
 							const enumInfo = {
 								...getEnumInfo(field, application.clientRootFolder),
+								enumFileName: field.fieldType.toLowerCase(),
 								frontendAppName: application.frontendAppName,
 								packageName: application.packageName,
 							};
 							this.writeFile(
 								`${TEMPLATES_WEBAPP_SOURCES_DIR}app/lib/entities/enums/enum.js.ejs`,
 								`${application.clientSrcDir}app/lib/entities/enums/${field.fieldType.toLowerCase()}.js`,
+								enumInfo,
+							);
+							this.writeFile(
+								`${TEMPLATES_WEBAPP_SOURCES_DIR}app/lib/entities/enums/enum.spec.js.ejs`,
+								`${application.clientSrcDir}app/lib/entities/enums/${field.fieldType.toLowerCase()}.spec.js`,
 								enumInfo,
 							);
 						}

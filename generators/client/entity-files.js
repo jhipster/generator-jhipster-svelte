@@ -14,6 +14,10 @@ export default {
 					renameTo: generator => `${generator.entityFolderName}/+page.svelte`,
 				},
 				{
+					file: 'entity/index.spec.js',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-page.spec.js`,
+				},
+				{
 					file: 'entity/new.svelte',
 					renameTo: generator => `${generator.entityFolderName}/new/+page.svelte`,
 				},

@@ -85,6 +85,7 @@ const svelteFiles = {
 		{
 			condition: generator => generator.jest,
 			templates: [
+				{ file: `jest/app-navigation.js`, renameTo: () => `jest-mocks/app-navigation.js` },
 				{ file: `jest/jest-setup.js`, renameTo: () => `jest-setup.js` },
 				{ file: `jest/jest.config.cjs`, renameTo: () => `jest.config.cjs` },
 			],
