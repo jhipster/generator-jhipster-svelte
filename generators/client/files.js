@@ -221,6 +221,7 @@ const svelteFiles = {
 			condition: generator => generator.applicationType === 'gateway',
 			templates: [
 				'admin/gateway/gateway-service.js',
+				'admin/gateway/gateway-service.spec.js',
 				'admin/gateway/gateway-table.svelte',
 				'admin/gateway/service-instance-table.svelte',
 			],
@@ -232,6 +233,7 @@ const svelteFiles = {
 			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
 			templates: [
 				'account/account-service.js',
+				'account/account-service.spec.js',
 				'account/change-password-form.svelte',
 				'account/forgot-password-form.svelte',
 				'account/register-user-form.svelte',
@@ -244,6 +246,7 @@ const svelteFiles = {
 				'admin/user-management/user-table.spec.js',
 				'admin/user-management/user-table.svelte',
 				'admin/user-management/user-service.js',
+				'admin/user-management/user-service.spec.js',
 			],
 		},
 	],
