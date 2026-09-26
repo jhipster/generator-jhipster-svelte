@@ -1,0 +1,56 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import RoleGuard from './role-guard.svelte'
+import auth from './auth-store'
+
+afterEach(() => {
+	auth.logout()
+})
+
+test('should not render access denied message when the current user has the role', () => {
+	auth.authenticate({
+		login: 'admin',
+		authorities: ['ROLE_ADMIN'],
+	})
+
+	render(RoleGuard, {
+		props: {
+			role: 'ADMIN',
+			showAccessDeniedMessage: true,
+		},
+	})
+
+	expect(screen.queryByText(/not authorized/i)).not.toBeInTheDocument()
+})
+
+test('should hide guarded content when the current user does not have the role', () => {
+	auth.authenticate({
+		login: 'user',
+		authorities: ['ROLE_USER'],
+	})
+
+	render(RoleGuard, {
+		props: {
+			role: 'ADMIN',
+		},
+	})
+
+	expect(screen.queryByText(/not authorized/i)).not.toBeInTheDocument()
+})
+
+test('should render access denied message when requested', () => {
+	auth.authenticate({
+		login: 'user',
+		authorities: ['ROLE_USER'],
+	})
+
+	render(RoleGuard, {
+		props: {
+			role: 'ADMIN',
+			showAccessDeniedMessage: true,
+		},
+	})
+
+	expect(screen.getByText(/not authorized/i)).toBeInTheDocument()
+})

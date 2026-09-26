@@ -1,0 +1,15 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import Footer from './footer.svelte'
+
+test('should render copyright and attribution link', () => {
+	render(Footer)
+
+	expect(screen.getByTestId('copyrightMsg')).toHaveTextContent(
+		'Copyright © 2023 JHipster. All Rights Reserved'
+	)
+	expect(
+		screen.getByRole('link', { name: /@vishal423/i })
+	).toHaveAttribute('href', 'https://twitter.com/vishal423')
+})

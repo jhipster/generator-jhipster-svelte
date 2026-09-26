@@ -1,0 +1,49 @@
+<%_
+	let testFramework
+	if (this.jest) {
+		testFramework = 'jest'
+_%>
+import { jest } from '@jest/globals'
+
+const request = jest.fn()
+jest.unstable_mockModule('jhipster-svelte-library/utils', () => ({ request }))
+
+const { default: loggerService } = await import('./logger-service')
+<%_
+	} else {
+		testFramework = 'vi'
+_%>
+import { vi } from 'vitest'
+import { request } from 'jhipster-svelte-library/utils'
+
+import loggerService from './logger-service'
+
+vi.mock('jhipster-svelte-library/utils', () => ({ request: vi.fn() }))
+<%_
+	}
+_%>
+
+beforeEach(() => {
+	<%= testFramework %>.clearAllMocks()
+})
+
+test('should fetch loggers from the management endpoint', () => {
+	loggerService.fetchLoggers()
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/management/loggers'
+	)
+})
+
+test('should post log level changes with JSON body', () => {
+	loggerService.changeLogLevel('org.springframework', 'DEBUG')
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/management/loggers/org.springframework',
+		'POST',
+		JSON.stringify({ configuredLevel: 'DEBUG' }),
+		{
+			'Content-Type': 'application/json',
+		}
+	)
+})

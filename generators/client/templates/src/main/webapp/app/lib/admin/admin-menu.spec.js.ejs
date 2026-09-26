@@ -1,0 +1,34 @@
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import AdminMenu from './admin-menu.svelte'
+
+test('should toggle the administration menu', async () => {
+	const { container } = render(AdminMenu)
+
+	const menuButton = screen.getByRole('button', {
+		name: /administration menu/i,
+	})
+	const dropdown = container.querySelector('div[class*="sm:absolute"]')
+
+	expect(menuButton).toBeInTheDocument()
+	expect(dropdown).toHaveClass('hidden')
+
+	await fireEvent.click(menuButton)
+
+	expect(dropdown).not.toHaveClass('hidden')
+<%_ if (applicationType === 'gateway') { _%>
+	expect(screen.getByText('Gateway')).toBeInTheDocument()
+<%_ } _%>
+<%_ if (!skipUserManagement) { _%>
+	expect(screen.getByText('User Management')).toBeInTheDocument()
+<%_ } _%>
+	expect(screen.getByText('Loggers')).toBeInTheDocument()
+<%_ if (this.swaggerUi) { _%>
+	expect(screen.getByText('API')).toBeInTheDocument()
+<%_ } _%>
+
+	await fireEvent.click(container.querySelector('button[tabindex="-1"]'))
+
+	expect(dropdown).toHaveClass('hidden')
+})

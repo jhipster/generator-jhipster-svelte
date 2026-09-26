@@ -1,0 +1,22 @@
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import EntityMenu from './entity-menu.svelte'
+
+test('should toggle the entities menu', async () => {
+	const { container } = render(EntityMenu)
+
+	const menuButton = screen.getByRole('button', { name: /entities menu/i })
+	const dropdown = container.querySelector('div[class*="sm:absolute"]')
+
+	expect(menuButton).toBeInTheDocument()
+	expect(dropdown).toHaveClass('hidden')
+
+	await fireEvent.click(menuButton)
+
+	expect(dropdown).not.toHaveClass('hidden')
+
+	await fireEvent.click(container.querySelector('button[tabindex="-1"]'))
+
+	expect(dropdown).toHaveClass('hidden')
+})

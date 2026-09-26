@@ -1,0 +1,130 @@
+<%_
+	let testFramework
+	if (this.jest) {
+		testFramework = 'jest'
+_%>
+import { jest } from '@jest/globals'
+
+const authService = {
+	fetchAuthenticatedUsername: jest.fn(),
+	fetchAuthenticatedUserDetails: jest.fn(),
+}
+jest.unstable_mockModule('./auth-service', () => ({ default: authService }))
+
+const { default: auth } = await import('./auth-store')
+<%_
+	} else {
+		testFramework = 'vi'
+_%>
+import { vi } from 'vitest'
+import authService from './auth-service'
+
+import auth from './auth-store'
+
+vi.mock('./auth-service', () => ({
+	default: {
+		fetchAuthenticatedUsername: vi.fn(),
+		fetchAuthenticatedUserDetails: vi.fn(),
+	},
+}))
+<%_
+	}
+_%>
+
+const currentUser = () => {
+	let user
+	const unsubscribe = auth.subscribe(value => {
+		user = value
+	})
+	unsubscribe()
+	return user
+}
+
+beforeEach(() => {
+	<%= testFramework %>.clearAllMocks()
+	auth.logout()
+	sessionStorage.clear()
+	localStorage.clear()
+})
+
+test('should save and consume a route from session storage', () => {
+	auth.saveRoute('/admin/logger')
+
+	expect(sessionStorage.getItem('savedRoute')).toBe('/admin/logger')
+	expect(auth.getSavedRoute()).toBe('/admin/logger')
+	expect(sessionStorage.getItem('savedRoute')).toBeNull()
+})
+<%_ if (authenticationType === 'jwt') { _%>
+
+test('should store JWT token in local storage when remember me is enabled', async () => {
+	await auth.storeToken('jwt-token', true)
+
+	expect(localStorage.getItem('authToken')).toBe('jwt-token')
+	expect(sessionStorage.getItem('authToken')).toBeNull()
+})
+
+test('should store JWT token in session storage by default', async () => {
+	await auth.storeToken('jwt-token', false)
+
+	expect(sessionStorage.getItem('authToken')).toBe('jwt-token')
+	expect(localStorage.getItem('authToken')).toBeNull()
+})
+<%_ } _%>
+
+test('should load authenticated user details into the store', async () => {
+	const user = { login: 'admin' }
+	authService.fetchAuthenticatedUserDetails.mockResolvedValue(user)
+
+	await auth.loadUser()
+
+	expect(authService.fetchAuthenticatedUserDetails).toHaveBeenCalled()
+	expect(currentUser()).toEqual(user)
+})
+
+test('should ignore loadUser failures and leave the user unset', async () => {
+	authService.fetchAuthenticatedUserDetails.mockRejectedValue(new Error('401'))
+
+	await auth.loadUser()
+
+	expect(currentUser()).toBeUndefined()
+})
+
+test('should load user details when authenticated username exists', async () => {
+	const user = { login: 'user' }
+	authService.fetchAuthenticatedUsername.mockResolvedValue('user')
+	authService.fetchAuthenticatedUserDetails.mockResolvedValue(user)
+
+	await auth.loadUserIfAuthenticated()
+
+	expect(authService.fetchAuthenticatedUsername).toHaveBeenCalled()
+	expect(authService.fetchAuthenticatedUserDetails).toHaveBeenCalled()
+	expect(currentUser()).toEqual(user)
+})
+
+test('should not load user details when username lookup is empty', async () => {
+	authService.fetchAuthenticatedUsername.mockResolvedValue(undefined)
+
+	await auth.loadUserIfAuthenticated()
+
+	expect(authService.fetchAuthenticatedUserDetails).not.toHaveBeenCalled()
+	expect(currentUser()).toBeUndefined()
+})
+
+test('should clear user state and authentication storage on logout', async () => {
+	authService.fetchAuthenticatedUserDetails.mockResolvedValue({ login: 'admin' })
+	await auth.loadUser()
+	sessionStorage.setItem('savedRoute', '/admin')
+<%_ if (authenticationType === 'jwt') { _%>
+	localStorage.setItem('authToken', 'local-token')
+	sessionStorage.setItem('authToken', 'session-token')
+<%_ } _%>
+
+	auth.logout()
+
+	expect(currentUser()).toBeUndefined()
+	expect(sessionStorage.getItem('savedRoute')).toBeNull()
+<%_ if (authenticationType === 'jwt') { _%>
+	expect(localStorage.getItem('authToken')).toBeNull()
+	expect(sessionStorage.getItem('authToken')).toBeNull()
+<%_ } _%>
+})

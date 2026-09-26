@@ -1,0 +1,98 @@
+<%_
+	let testFramework
+	if (this.jest) {
+		testFramework = 'jest'
+_%>
+import { jest } from '@jest/globals'
+
+const request = jest.fn()
+jest.unstable_mockModule('jhipster-svelte-library/utils', () => ({ request }))
+
+const { default: authService } = await import('./auth-service')
+<%_
+	} else {
+		testFramework = 'vi'
+_%>
+import { vi } from 'vitest'
+import { request } from 'jhipster-svelte-library/utils'
+
+import authService from './auth-service'
+
+vi.mock('jhipster-svelte-library/utils', () => ({ request: vi.fn() }))
+<%_
+	}
+_%>
+
+beforeEach(() => {
+	<%= testFramework %>.clearAllMocks()
+})
+
+test('should fetch the authenticated username without redirecting on 401', () => {
+	authService.fetchAuthenticatedUsername()
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/authenticate',
+		'GET',
+		undefined,
+		{},
+		false
+	)
+})
+
+test('should fetch authenticated user details', () => {
+	authService.fetchAuthenticatedUserDetails()
+
+	expect(request).toHaveBeenCalledWith('http://localhost:8080/api/account')
+})
+<%_ if (authenticationType === 'session') { _%>
+
+test('should submit session login as a URL encoded form', () => {
+	authService.login('user@example.com', 'p@ss word&more', true)
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/authentication',
+		'POST',
+		'username=user%40example.com&password=p%40ss%20word%26more&remember-me=true',
+		{
+			'Content-Type': 'application/x-www-form-urlencoded',
+		}
+	)
+})
+
+test('should send session logout request', () => {
+	authService.logout()
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/logout',
+		'POST'
+	)
+})
+<%_ } else if (authenticationType === 'jwt') { _%>
+
+test('should submit JWT login as JSON', () => {
+	authService.login('user@example.com', 'secret', false)
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/authenticate',
+		'POST',
+		JSON.stringify({
+			username: 'user@example.com',
+			password: 'secret',
+			rememberMe: false,
+		}),
+		{
+			'Content-Type': 'application/json',
+		}
+	)
+})
+<%_ } else if (authenticationType === 'oauth2') { _%>
+
+test('should send OAuth2 logout request', () => {
+	authService.logout()
+
+	expect(request).toHaveBeenCalledWith(
+		'http://localhost:8080/api/logout',
+		'POST'
+	)
+})
+<%_ } _%>
