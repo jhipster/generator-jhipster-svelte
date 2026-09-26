@@ -1,0 +1,32 @@
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import EntityMenu from './entity-menu.svelte'
+
+test('should render entities menu button', () => {
+	render(EntityMenu)
+	expect(
+		screen.getByRole('button', { name: /entities menu/i })
+	).toBeInTheDocument()
+	expect(screen.getByText(/entities/i)).toBeInTheDocument()
+})
+
+test('should not render menu backdrop when closed', () => {
+	const { container } = render(EntityMenu)
+	expect(container.querySelector('button[tabindex="-1"]')).not.toBeInTheDocument()
+})
+
+test('should render menu backdrop after opening menu', async () => {
+	const { container } = render(EntityMenu)
+	await fireEvent.click(screen.getByRole('button', { name: /entities menu/i }))
+	expect(container.querySelector('button[tabindex="-1"]')).toBeInTheDocument()
+})
+
+test('should close menu when backdrop is clicked', async () => {
+	const { container } = render(EntityMenu)
+	await fireEvent.click(screen.getByRole('button', { name: /entities menu/i }))
+	const backdrop = container.querySelector('button[tabindex="-1"]')
+	expect(backdrop).toBeInTheDocument()
+	await fireEvent.click(backdrop)
+	expect(container.querySelector('button[tabindex="-1"]')).not.toBeInTheDocument()
+})

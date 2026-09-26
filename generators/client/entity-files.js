@@ -45,8 +45,16 @@ export default {
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-form.svelte`,
 				},
 				{
+					file: 'entity/entity-form.spec.js',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-form.spec.js`,
+				},
+				{
 					file: 'entity/entity-service.js',
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-service.js`,
+				},
+				{
+					file: 'entity/entity-service.spec.js',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-service.spec.js`,
 				},
 			],
 		},

@@ -1,0 +1,67 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import userEvent from '@testing-library/user-event'
+
+import RegisterUserForm from './register-user-form.svelte'
+
+test('should render register user form with disabled submit button', () => {
+	render(RegisterUserForm)
+
+	expect(screen.getByRole('button', { name: /create account/i })).toBeDisabled()
+})
+
+test('should accept username, email, and password props', () => {
+	const { component } = render(RegisterUserForm, {
+		username: 'testuser',
+		email: 'test@example.com',
+		password: 'pass123',
+	})
+
+	expect(component.username).toBe('testuser')
+	expect(component.email).toBe('test@example.com')
+	expect(component.password).toBe('pass123')
+})
+
+test('should display username mandatory validation message', async () => {
+	const user = userEvent.setup()
+	render(RegisterUserForm)
+
+	const usernameInput = screen.getByRole('textbox', { name: /username/i })
+	await user.type(usernameInput, 'a{Escape}')
+	await user.clear(usernameInput)
+
+	expect(await screen.findByText('Username is mandatory')).toBeVisible()
+})
+
+test('should display username max length validation message', async () => {
+	const user = userEvent.setup()
+	render(RegisterUserForm)
+
+	const usernameInput = screen.getByRole('textbox', { name: /username/i })
+	await user.type(usernameInput, 'loremipsumloremipsumloremipsumloremipsumloremipsumlorem{Escape}')
+
+	expect(
+		await screen.findByText('Username cannot be longer than 50 characters')
+	).toBeVisible()
+})
+
+test('should display email mandatory validation message', async () => {
+	const user = userEvent.setup()
+	render(RegisterUserForm)
+
+	const emailInput = screen.getByRole('textbox', { name: /email/i })
+	await user.type(emailInput, 'test@example.com{Escape}')
+	await user.clear(emailInput)
+
+	expect(await screen.findByText('Email is mandatory')).toBeVisible()
+})
+
+test('should display invalid email format validation message', async () => {
+	const user = userEvent.setup()
+	render(RegisterUserForm)
+
+	const emailInput = screen.getByRole('textbox', { name: /email/i })
+	await user.type(emailInput, 'not-an-email{Escape}')
+
+	expect(await screen.findByText('Email address is not valid')).toBeVisible()
+})

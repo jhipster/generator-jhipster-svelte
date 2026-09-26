@@ -1,0 +1,48 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import GatewayTable from './gateway-table.svelte'
+
+test('should render table with correct headers', () => {
+	render(GatewayTable, { routes: [] })
+
+	expect(screen.getByRole('table')).toBeInTheDocument()
+	expect(screen.getByRole('columnheader', { name: /service/i })).toBeInTheDocument()
+	expect(screen.getByRole('columnheader', { name: /route/i })).toBeInTheDocument()
+	expect(
+		screen.getByRole('columnheader', { name: /service instances/i })
+	).toBeInTheDocument()
+})
+
+test('should show empty message when no routes are provided', () => {
+	render(GatewayTable)
+
+	expect(screen.getByText(/no service routes available/i)).toBeInTheDocument()
+})
+
+test('should render table data for a route', () => {
+	render(GatewayTable, {
+		routes: [
+			{
+				path: '/api/**',
+				serviceId: 'backend-service',
+				serviceInstances: [],
+			},
+		],
+	})
+
+	expect(screen.getByRole('cell', { name: /backend-service/i })).toBeInTheDocument()
+	expect(screen.getByRole('cell', { name: /\/api\/\*\*/i })).toBeInTheDocument()
+})
+
+test('should render multiple routes', () => {
+	render(GatewayTable, {
+		routes: [
+			{ path: '/service-a/**', serviceId: 'service-a', serviceInstances: [] },
+			{ path: '/service-b/**', serviceId: 'service-b', serviceInstances: [] },
+		],
+	})
+
+	expect(screen.getByRole('cell', { name: /service-a/ })).toBeInTheDocument()
+	expect(screen.getByRole('cell', { name: /service-b/ })).toBeInTheDocument()
+})

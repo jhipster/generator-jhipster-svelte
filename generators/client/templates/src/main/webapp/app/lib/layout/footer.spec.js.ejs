@@ -1,0 +1,22 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import Footer from './footer.svelte'
+
+test('should render copyright notice', () => {
+	render(Footer)
+	expect(screen.getByTestId('copyrightMsg')).toBeInTheDocument()
+	expect(screen.getByTestId('copyrightMsg')).toHaveTextContent('JHipster')
+})
+
+test('should render footer attribution link', () => {
+	render(Footer)
+	const link = screen.getByRole('link', { name: /@vishal423/i })
+	expect(link).toBeInTheDocument()
+	expect(link).toHaveAttribute('target', 'tab')
+})
+
+test('should render footer as a landmark region', () => {
+	render(Footer)
+	expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+})

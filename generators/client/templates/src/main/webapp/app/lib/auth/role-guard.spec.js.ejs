@@ -1,0 +1,37 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import RoleGuard from './role-guard.svelte'
+
+test('should show access denied message when user is unauthenticated and showAccessDeniedMessage is true', () => {
+	render(RoleGuard, { role: 'ADMIN', showAccessDeniedMessage: true })
+
+	expect(
+		screen.getByText(/user is not authorized to access the page/i)
+	).toBeInTheDocument()
+})
+
+test('should not show access denied message by default when user is unauthenticated', () => {
+	render(RoleGuard, { role: 'ADMIN' })
+
+	expect(
+		screen.queryByText(/user is not authorized to access the page/i)
+	).not.toBeInTheDocument()
+})
+
+test('should not show access denied message when showAccessDeniedMessage is false', () => {
+	render(RoleGuard, { role: 'ADMIN', showAccessDeniedMessage: false })
+
+	expect(
+		screen.queryByText(/user is not authorized to access the page/i)
+	).not.toBeInTheDocument()
+})
+
+test('should default role prop to USER', () => {
+	const { component } = render(RoleGuard, { showAccessDeniedMessage: true })
+
+	expect(component.role).toBe('USER')
+	expect(
+		screen.getByText(/user is not authorized to access the page/i)
+	).toBeInTheDocument()
+})

@@ -1,0 +1,39 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import { vi } from 'vitest'
+
+vi.mock('$app/stores', async () => {
+	const { readable } = await import('svelte/store')
+	return {
+		page: readable({ url: new URL('http://localhost/'), params: {} }),
+	}
+})
+vi.mock('$app/environment', () => ({ browser: false }))
+
+import Navbar from './navbar.svelte'
+
+test('should render app name', () => {
+	render(Navbar)
+
+	expect(screen.getByTestId('svlAppName')).toBeInTheDocument()
+})
+
+test('should render nav toggle button', () => {
+	render(Navbar)
+
+	expect(screen.getByRole('button', { name: /toggle navigation/i })).toBeInTheDocument()
+})
+
+test('should render sign-in link when unauthenticated', () => {
+	render(Navbar)
+
+	expect(screen.getByTestId('svlLoginLink')).toBeInTheDocument()
+})
+
+<%_ if (authenticationType !== 'oauth2' && !skipUserManagement) { _%>
+test('should render sign-up link when unauthenticated', () => {
+	render(Navbar)
+
+	expect(screen.getByTestId('svlRegisterLink')).toBeInTheDocument()
+})
+<%_ } _%>

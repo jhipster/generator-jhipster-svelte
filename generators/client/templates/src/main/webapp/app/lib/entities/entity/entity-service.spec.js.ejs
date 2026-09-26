@@ -1,0 +1,89 @@
+<%_
+let mockFn
+if (this.jest) {
+    mockFn = 'jest'
+_%>
+import { jest } from '@jest/globals'
+<%_
+} else {
+    mockFn = 'vi'
+_%>
+import { vi } from 'vitest'
+<%_
+}
+const baseApi = (applicationTypeGateway && locals.microserviceName) ? 'services/' + microserviceName.toLowerCase() + '/api/' : 'api/';
+_%>
+
+<%= mockFn %>.mock('jhipster-svelte-library/utils', () => ({
+	request: <%= mockFn %>.fn().mockResolvedValue({}),
+}))
+
+<%= mockFn %>.mock('$lib/utils/env', () => ({
+	serverUrl: 'http://localhost:8080',
+}))
+
+import { request } from 'jhipster-svelte-library/utils'
+import <%= entityAngularName %>Service from './<%= entityFileName %>-service'
+
+beforeEach(() => {
+	<%= mockFn %>.clearAllMocks()
+})
+
+test('should call findAll with correct URL', () => {
+	<%= entityAngularName %>Service.findAll()
+
+	expect(request).toHaveBeenCalledWith(
+		expect.stringContaining('<%= baseApi + entityApiUrl %>'),
+	)
+})
+
+test('should call findById with correct URL', () => {
+	<%= entityAngularName %>Service.findById(1)
+
+	expect(request).toHaveBeenCalledWith(
+		expect.stringContaining('<%= baseApi + entityApiUrl %>/1'),
+	)
+})
+
+test('should call search with correct URL and criteria', () => {
+	<%= entityAngularName %>Service.search('test')
+
+	expect(request).toHaveBeenCalledWith(
+		expect.stringContaining('test'),
+	)
+})
+
+<%_ if (!readOnly) { _%>
+test('should call create with POST method and entity data', () => {
+	const entity = { id: null }
+	<%= entityAngularName %>Service.create(entity)
+
+	expect(request).toHaveBeenCalledWith(
+		expect.stringContaining('<%= baseApi + entityApiUrl %>'),
+		'POST',
+		JSON.stringify(entity),
+		expect.objectContaining({ 'Content-Type': 'application/json' }),
+	)
+})
+
+test('should call update with PUT method and entity data', () => {
+	const entity = { id: 1 }
+	<%= entityAngularName %>Service.update(entity)
+
+	expect(request).toHaveBeenCalledWith(
+		expect.stringContaining('<%= baseApi + entityApiUrl %>/1'),
+		'PUT',
+		JSON.stringify(entity),
+		expect.objectContaining({ 'Content-Type': 'application/json' }),
+	)
+})
+
+test('should call delete with DELETE method and id', () => {
+	<%= entityAngularName %>Service.delete(1)
+
+	expect(request).toHaveBeenCalledWith(
+		expect.stringContaining('<%= baseApi + entityApiUrl %>/1'),
+		'DELETE',
+	)
+})
+<%_ } _%>

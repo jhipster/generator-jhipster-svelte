@@ -1,0 +1,38 @@
+import { render } from '@testing-library/svelte'
+import { vi } from 'vitest'
+import { tick } from 'svelte'
+
+const mockGoto = vi.fn()
+
+vi.mock('$app/navigation', () => ({ goto: mockGoto }))
+vi.mock('$app/stores', async () => {
+	const { readable } = await import('svelte/store')
+	return {
+		page: readable({ url: new URL('http://localhost/'), params: {} }),
+	}
+})
+<%_ if (authenticationType === 'oauth2') { _%>
+vi.mock('$app/environment', () => ({ browser: false }))
+<%_ } _%>
+
+import AuthGuard from './auth-guard.svelte'
+
+beforeEach(() => {
+	mockGoto.mockClear()
+})
+
+test('should not redirect when URL is home route', async () => {
+	render(AuthGuard)
+	await tick()
+
+	expect(mockGoto).not.toHaveBeenCalled()
+})
+
+<%_ if (authenticationType !== 'oauth2') { _%>
+test('should not redirect when URL is an allowed unauthenticated route', async () => {
+	render(AuthGuard)
+	await tick()
+
+	expect(mockGoto).not.toHaveBeenCalledWith('/login')
+})
+<%_ } _%>

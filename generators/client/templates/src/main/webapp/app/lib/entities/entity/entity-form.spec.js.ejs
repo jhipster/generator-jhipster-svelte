@@ -1,0 +1,71 @@
+<%_
+let mockFn
+if (this.jest) {
+    mockFn = 'jest'
+_%>
+import { jest } from '@jest/globals'
+<%_
+} else {
+    mockFn = 'vi'
+}
+const hasRequiredFields = fields.filter(field => !field.id && !field.fieldTypeBoolean && field.fieldValidationRequired).length > 0
+_%>
+import { render, fireEvent } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import <%= entityAngularName %>Form from './<%= entityFileName %>-form.svelte'
+
+test('should render form with cancel and save buttons', () => {
+	render(<%= entityAngularName %>Form)
+
+	expect(screen.getByRole('button', { name: /cancel/i })).toBeEnabled()
+	expect(screen.getByRole('button', { name: /create/i })).toBeInTheDocument()
+})
+
+test('should render update button text when editing an existing <%= entityClassHumanized.toLowerCase() %>', () => {
+	render(<%= entityAngularName %>Form, {
+		<%= entityInstance %>: { id: 1 },
+	})
+
+	expect(screen.getByRole('button', { name: /update/i })).toBeInTheDocument()
+})
+
+<%_ if (hasRequiredFields) { _%>
+test('should disable save button when required fields are empty', () => {
+	render(<%= entityAngularName %>Form)
+
+	expect(screen.getByRole('button', { name: /create/i })).toBeDisabled()
+})
+
+<%_ } _%>
+test('should dispatch cancel event when cancel button is clicked', async () => {
+	const { component } = render(<%= entityAngularName %>Form)
+	const button = screen.getByRole('button', { name: /cancel/i })
+
+	const mockHandler = <%= mockFn %>.fn()
+	component.$on('cancel', mockHandler)
+
+	fireEvent.click(button)
+
+	expect(mockHandler).toHaveBeenCalled()
+})
+
+<%_ if (!hasRequiredFields) { _%>
+test('should dispatch saveorupdate event with entity data on save click', async () => {
+	const testEntity = {
+		id: null,
+	}
+	const { component } = render(<%= entityAngularName %>Form, {
+		<%= entityInstance %>: testEntity,
+	})
+	const button = screen.getByRole('button', { name: /create/i })
+
+	const mockHandler = <%= mockFn %>.fn()
+	component.$on('saveorupdate', mockHandler)
+
+	fireEvent.click(button)
+
+	expect(mockHandler).toHaveBeenCalled()
+	expect(mockHandler.mock.calls[0][0].detail).toMatchObject({ id: null })
+})
+<%_ } _%>

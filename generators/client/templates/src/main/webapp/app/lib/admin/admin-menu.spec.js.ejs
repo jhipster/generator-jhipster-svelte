@@ -1,0 +1,58 @@
+import { fireEvent, render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import AdminMenu from './admin-menu.svelte'
+
+test('should render administration menu button', () => {
+	render(AdminMenu)
+	expect(
+		screen.getByRole('button', { name: /administration menu/i })
+	).toBeInTheDocument()
+	expect(screen.getByText(/administration/i)).toBeInTheDocument()
+})
+
+test('should not render menu backdrop when closed', () => {
+	const { container } = render(AdminMenu)
+	expect(container.querySelector('button[tabindex="-1"]')).not.toBeInTheDocument()
+})
+
+test('should render menu backdrop after opening menu', async () => {
+	const { container } = render(AdminMenu)
+	await fireEvent.click(screen.getByRole('button', { name: /administration menu/i }))
+	expect(container.querySelector('button[tabindex="-1"]')).toBeInTheDocument()
+})
+
+test('should always render loggers menu item', () => {
+	render(AdminMenu)
+	expect(screen.getByTestId('svlLoggerLink')).toBeInTheDocument()
+})
+
+<%_ if (!skipUserManagement) { _%>
+test('should render user management menu item', () => {
+	render(AdminMenu)
+	expect(screen.getByTestId('svlUserMgmtLink')).toBeInTheDocument()
+})
+<%_ } _%>
+
+<%_ if (this.swaggerUi) { _%>
+test('should render API docs menu item', () => {
+	render(AdminMenu)
+	expect(screen.getByTestId('svlDocsLink')).toBeInTheDocument()
+})
+<%_ } _%>
+
+<%_ if (applicationType === 'gateway') { _%>
+test('should render gateway menu item', () => {
+	render(AdminMenu)
+	expect(screen.getByTestId('svlGatewayLink')).toBeInTheDocument()
+})
+<%_ } _%>
+
+test('should close menu when backdrop is clicked', async () => {
+	const { container } = render(AdminMenu)
+	await fireEvent.click(screen.getByRole('button', { name: /administration menu/i }))
+	const backdrop = container.querySelector('button[tabindex="-1"]')
+	expect(backdrop).toBeInTheDocument()
+	await fireEvent.click(backdrop)
+	expect(container.querySelector('button[tabindex="-1"]')).not.toBeInTheDocument()
+})

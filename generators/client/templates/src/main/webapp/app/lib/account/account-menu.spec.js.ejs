@@ -1,0 +1,54 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import userEvent from '@testing-library/user-event'
+import { vi } from 'vitest'
+
+vi.mock('$app/navigation', () => ({ goto: vi.fn() }))
+<%_ if (authenticationType === 'oauth2') { _%>
+vi.mock('$app/environment', () => ({ browser: false }))
+<%_ } _%>
+vi.mock('$lib/auth/auth-store', async () => {
+	const { readable } = await import('svelte/store')
+	return {
+		default: {
+			subscribe: readable({ login: 'testuser', authorities: ['ROLE_USER'] }).subscribe,
+			saveRoute: vi.fn(),
+			getSavedRoute: vi.fn(),
+			logout: vi.fn(),
+		},
+	}
+})
+<%_ if (authenticationType === 'session' || authenticationType === 'oauth2') { _%>
+vi.mock('$lib/auth/auth-service', () => ({
+	default: { logout: vi.fn().mockResolvedValue({}) },
+}))
+<%_ } _%>
+
+import AccountMenu from './account-menu.svelte'
+
+test('should render account menu toggle button', () => {
+	render(AccountMenu)
+
+	expect(screen.getByRole('button', { name: /account menu/i })).toBeInTheDocument()
+})
+
+test('should show backdrop when account menu is opened', async () => {
+	const user = userEvent.setup()
+	const { container } = render(AccountMenu)
+
+	expect(container.querySelector('button[tabindex="-1"]')).not.toBeInTheDocument()
+
+	await user.click(screen.getByRole('button', { name: /account menu/i }))
+
+	expect(container.querySelector('button[tabindex="-1"]')).toBeInTheDocument()
+})
+
+test('should close account menu when backdrop is clicked', async () => {
+	const user = userEvent.setup()
+	const { container } = render(AccountMenu)
+
+	await user.click(screen.getByRole('button', { name: /account menu/i }))
+	await user.click(container.querySelector('button[tabindex="-1"]'))
+
+	expect(container.querySelector('button[tabindex="-1"]')).not.toBeInTheDocument()
+})

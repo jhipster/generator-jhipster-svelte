@@ -1,0 +1,88 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import ServiceInstanceTable from './service-instance-table.svelte'
+
+test('should render nothing for empty service instances', () => {
+	const { container } = render(ServiceInstanceTable, { serviceInstances: [] })
+	expect(container.querySelector('table')).toBeInTheDocument()
+	expect(screen.queryAllByRole('row')).toHaveLength(0)
+})
+
+test('should render service instance URI as a link', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://service-host:8080',
+				metadata: {},
+			},
+		],
+	})
+
+	const link = screen.getByRole('link', { name: /http:\/\/service-host:8080/i })
+	expect(link).toBeInTheDocument()
+	expect(link).toHaveAttribute('href', 'http://service-host:8080')
+})
+
+test('should render UP status badge for an active instance', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://service-host:8080',
+				instanceInfo: { status: 'UP' },
+				metadata: {},
+			},
+		],
+	})
+
+	const badge = screen.getByText('UP')
+	expect(badge).toBeInTheDocument()
+	expect(badge).toHaveClass('bg-green-600')
+})
+
+test('should render DOWN status badge for an inactive instance', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://service-host:8080',
+				instanceInfo: { status: 'DOWN' },
+				metadata: {},
+			},
+		],
+	})
+
+	const badge = screen.getByText('DOWN')
+	expect(badge).toBeInTheDocument()
+	expect(badge).toHaveClass('bg-red-600')
+})
+
+test('should render UNKNOWN badge when instanceInfo is absent', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://service-host:8080',
+				metadata: {},
+			},
+		],
+	})
+
+	const badge = screen.getByText('UNKNOWN')
+	expect(badge).toBeInTheDocument()
+	expect(badge).toHaveClass('bg-gray-500')
+})
+
+test('should render metadata key-value pairs', () => {
+	render(ServiceInstanceTable, {
+		serviceInstances: [
+			{
+				uri: 'http://service-host:8080',
+				metadata: { zone: 'us-east', version: '1.0.0' },
+			},
+		],
+	})
+
+	expect(screen.getByText('zone')).toBeInTheDocument()
+	expect(screen.getByText('us-east')).toBeInTheDocument()
+	expect(screen.getByText('version')).toBeInTheDocument()
+	expect(screen.getByText('1.0.0')).toBeInTheDocument()
+})
