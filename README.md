@@ -21,6 +21,7 @@ Refer to the [changelog](./CHANGELOG.md) to gain more insights into each release
 Following integrations are supported:
 
     ✅ Monolithic, Micro-services architecture applications
+    ✅ Svelte microfrontend entity remotes through JHipster gateways
     ✅ Spring WebFlux based reactive applications
     ✅ Session, JWT, OIDC (Keycloak, Okta, Auth0 out of box integration) authentication types
     ✅ Dark Mode support
@@ -147,6 +148,8 @@ npm update -g generator-jhipster-svelte
         prodDatabaseType postgresql
         serviceDiscoveryType eureka
         testFrameworks [cypress]
+        microfrontend true
+        microfrontends [blog]
         reactive true
       }
       entities Blog, Post, Tag
@@ -161,6 +164,8 @@ npm update -g generator-jhipster-svelte
         prodDatabaseType mysql
         serverPort 8081
         serviceDiscoveryType eureka
+        skipClient false
+        microfrontend true
       }
       entities Blog, Post, Tag
     }

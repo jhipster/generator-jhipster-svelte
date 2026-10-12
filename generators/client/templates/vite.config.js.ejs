@@ -1,15 +1,24 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 <%_ if (this.jest) { _%>
-import { defineConfig } from 'vite'
+import { defineConfig<% if (microfrontend) { %>, mergeConfig<% } %> } from 'vite'
 <%_ } else { _%>
-import { defineConfig } from 'vitest/config'
+import { defineConfig<% if (microfrontend) { %>, mergeConfig<% } %> } from 'vitest/config'
 <%_ } _%>
 <%_
 if(this.swaggerUi) { _%>
 import copy from 'rollup-plugin-copy'
 <%_ } _%>
+<%_ if (microfrontend) { _%>
+import { federation } from '@module-federation/vite'
+<%_ } _%>
 
+<%_ if (microfrontend) { _%>
+export default defineConfig(configEnv => {
+const isSsrBuild = configEnv.isSsrBuild ?? configEnv.ssrBuild
+let config = {
+<%_ } else { _%>
 export default defineConfig({
+<%_ } _%>
 	server: {
 		proxy: {
 			'/api': {
@@ -20,6 +29,12 @@ export default defineConfig({
 				target: 'http://localhost:8080',
 				changeOrigin: true,
 			},
+        <%_ if (applicationType === 'gateway' || applicationType === 'microservice') { _%>
+			'/services': {
+				target: 'http://localhost:<%= applicationType === 'microservice' ? gatewayServerPort : serverPort %>',
+				changeOrigin: true,
+			},
+        <%_ } _%>
         <%_ if (authenticationType === 'oauth2') { _%>
             '/oauth2': {
                 target: 'http://localhost:8080',
@@ -72,4 +87,47 @@ export default defineConfig({
  	},
 	<%_ } _%>
 
-});
+}<%_ if (!microfrontend) { _%>);
+<%_ } _%>
+
+<%_ if (microfrontend) { _%>
+if (!isSsrBuild) {
+	config = mergeConfig(config, {
+		build: {
+			modulePreload: false,
+			minify: false,
+			target: ['chrome89', 'edge89', 'firefox89', 'safari15'],
+		},
+		plugins: [
+			federation({
+				dts: false,
+				name: '<%= lowercaseBaseName %>',
+				filename: 'remoteEntry.js',
+	<%_ if (applicationTypeGateway) { _%>
+				remotes: {
+		<%_ for (const remote of microfrontends) { _%>
+					'<%= remote.lowercaseBaseName %>': {
+						type: 'module',
+						name: '<%= remote.lowercaseBaseName %>',
+						entry: '/<%= remote.endpointPrefix %>/remoteEntry.js',
+						entryGlobalName: '<%= remote.lowercaseBaseName %>',
+						shareScope: 'default',
+					},
+		<%_ } _%>
+				},
+	<%_ } _%>
+	<%_ if (applicationTypeMicroservice) { _%>
+				exposes: {
+					'./entities-menu': './<%= clientSrcDir %>app/lib/microfrontends/entities-menu.svelte',
+					'./entities-routes': './<%= clientSrcDir %>app/lib/microfrontends/entities-routes.js',
+				},
+	<%_ } _%>
+				shared: ['svelte'],
+			}),
+		],
+	})
+}
+
+return config
+})
+<%_ } _%>

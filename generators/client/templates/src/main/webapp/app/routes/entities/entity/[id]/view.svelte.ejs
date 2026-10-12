@@ -1,4 +1,5 @@
 <%_
+const entityRouteBase = `/${applicationTypeMicroservice && microfrontend ? entityPage : 'entities/' + entityFolderName}`;
 const relationshipFields = relationships.filter(relationship => (
 	relationship.otherEntity.primaryKey
 		&& (relationship.relationshipManyToOne
@@ -26,7 +27,12 @@ _%>
 	import { BinaryRecord } from 'jhipster-svelte-library/page'
 <%_ } _%>
 
-	$: id = $page && $page.params && $page.params.id
+	$: id =
+		$page && $page.params && $page.params.id
+			? $page.params.id
+			: $page && $page.params && $page.params.path
+				? $page.params.path.split('/').at(-2)
+				: undefined
 	onMount(() => fetch<%= entityAngularName %>Details())
 
 	let error
@@ -97,7 +103,7 @@ _%>
 		</div>
 	{/if}
 	<div class="flex mt-4 flex-row justify-center items-center leading-none">
-		<Button name="backBtn" on:click="{() => goto(`/entities/<%= entityFolderName %>`)}">
+		<Button name="backBtn" on:click="{() => goto('<%= entityRouteBase %>')}">
 			<Icon classes="mr-2" icon="{faArrowLeft}" />
 			Back
 		</Button>

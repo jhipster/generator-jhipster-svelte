@@ -64,6 +64,18 @@
 
  The `<%= clientPackageManager %> run` command will list all the scripts available to run for this project.
 
+<%_ if (microfrontend) { _%>
+ ### Developing Svelte Microfrontends
+
+ Start the gateway first, then build or watch each microfrontend. Svelte microservices expose their entity menu and entity routes through Vite module federation, and the gateway loads them from `/services/<microfrontend-name>`.
+
+ ```sh
+ cd <microfrontend>
+ <%= clientPackageManager %> run build-watch
+ ```
+
+<%_ } _%>
+
  ### Managing dependencies
 
  When using Svelte components installed from npm, such as [@sveltejs/svelte-virtual-list](https://github.com/sveltejs/svelte-virtual-list), Svelte needs the original component source (rather than any precompiled JavaScript that ships with the component). This allows the component to be rendered server-side, and also keeps your client-side app smaller.

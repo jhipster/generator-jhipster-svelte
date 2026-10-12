@@ -5,11 +5,22 @@ import ClientGenerator from 'generator-jhipster/generators/client';
 import { TEMPLATES_WEBAPP_SOURCES_DIR } from 'generator-jhipster';
 import { getEnumInfo } from 'generator-jhipster/generators/base-application/support';
 import { createNeedleCallback } from 'generator-jhipster/generators/base/support';
-import { getPackageJson } from '../util.js';
+import { configureSvelteClient, getPackageJson, prepareSvelteMicrofrontends } from '../util.js';
 import svelteFiles from './files.js';
 import entitySvelteFiles from './entity-files.js';
 
 export { default as command } from './command.js';
+
+const isRemoteMicrofrontendEntity = (application, entity) =>
+	application.applicationTypeGateway &&
+	application.microfrontend &&
+	entity.microserviceName &&
+	application.microfrontends?.some(
+		({ baseName }) => baseName.toLowerCase() === entity.microserviceName.toLowerCase(),
+	);
+
+const shouldWriteEntityClient = (application, entity) =>
+	!entity.skipClient && !entity.builtIn && !isRemoteMicrofrontendEntity(application, entity);
 
 export default class extends ClientGenerator {
 	constructor(args, opts, features) {
@@ -38,17 +49,20 @@ export default class extends ClientGenerator {
 	get [BaseApplicationGenerator.PROMPTING]() {
 		return this.asPromptingTaskGroup({
 			clientConfigurations() {
-				this.clientFramework = this.jhipsterConfig.clientFramework = 'svelte';
-				this.jhipsterConfig.clientTheme = this.clientTheme = 'none';
-				this.jhipsterConfig.clientThemeVariant = this.clientThemeVariant = '';
-				this.jhipsterConfig.withAdminUi = this.askForAdminUi = false;
-				this.jhipsterConfig.clientPackageManager = 'npm';
+				configureSvelteClient(this.jhipsterConfig);
+				this.clientFramework = this.jhipsterConfig.clientFramework;
+				this.clientTheme = this.jhipsterConfig.clientTheme;
+				this.clientThemeVariant = this.jhipsterConfig.clientThemeVariant;
+				this.askForAdminUi = this.jhipsterConfig.withAdminUi;
 			},
 		});
 	}
 
 	get [BaseApplicationGenerator.CONFIGURING]() {
 		return this.asConfiguringTaskGroup({
+			configureSvelteClient() {
+				configureSvelteClient(this.jhipsterConfig);
+			},
 			...super.configuring,
 			setDefaultBlueprintConfig() {
 				if (this.blueprintConfig) {
@@ -87,22 +101,74 @@ export default class extends ClientGenerator {
 	get [BaseApplicationGenerator.PREPARING]() {
 		return this.asPreparingTaskGroup({
 			async preparingTemplateTask({ application, source }) {
+				prepareSvelteMicrofrontends(application, this.jhipsterConfigWithDefaults);
 				if (!application.prettierExtensions.includes(',svelte')) {
 					application.prettierExtensions = `${application.prettierExtensions},svelte`;
 				}
+				const entityMenuItem = ({ entityClass, entityRoute, entityName, closeAction }) => `\t\t<MenuItem
+\t\t\ttestId="svl${entityClass}MgmtLink"
+\t\t\tlink="/${entityRoute}"
+\t\t\ton:click="{${closeAction}}"
+\t\t>
+\t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
+\t\t\t${entityName}
+\t\t</MenuItem>
+`;
 				source.addEntityToMenu = ({ entityClass, entityRoute, entityName }) => {
 					this.editFile(
 						`${application.clientSrcDir}/app/lib/entities/entity-menu.svelte`,
 						createNeedleCallback({
 							needle: 'add-entity-to-menu',
-							contentToAdd: `\t\t<MenuItem
-\t\t\ttestId="svl${entityClass}MgmtLink"
-\t\t\tlink="/entities/${entityRoute}"
-\t\t\ton:click="{() => (isOpen = false)}"
-\t\t>
-\t\t\t<Icon classes="sm:mr-1" icon="{faAsterisk}" />
-\t\t\t${entityName}
-\t\t</MenuItem>
+							contentToAdd: entityMenuItem({
+								entityClass,
+								entityRoute,
+								entityName,
+								closeAction: '() => (isOpen = false)',
+							}),
+						}),
+					);
+
+					if (application.applicationTypeMicroservice && application.microfrontend) {
+						this.editFile(
+							`${application.clientSrcDir}/app/lib/microfrontends/entities-menu.svelte`,
+							createNeedleCallback({
+								needle: 'add-entity-to-microfrontend-menu',
+								contentToAdd: entityMenuItem({
+									entityClass,
+									entityRoute,
+									entityName,
+									closeAction: 'closeMenu',
+								}),
+							}),
+						);
+					}
+				};
+				source.addEntityToMicrofrontendRoutes = ({ entityRoute }) => {
+					if (!application.applicationTypeMicroservice || !application.microfrontend) {
+						return;
+					}
+
+					this.editFile(
+						`${application.clientSrcDir}/app/lib/microfrontends/entities-routes.js`,
+						createNeedleCallback({
+							needle: 'add-microfrontend-entity-route',
+							contentToCheck: `path: '${entityRoute}'`,
+							contentToAdd: `\t{
+\t\tpath: '${entityRoute}',
+\t\tload: () => import('../../routes/${entityRoute}/+page.svelte'),
+\t},
+\t{
+\t\tpath: '${entityRoute}/new',
+\t\tload: () => import('../../routes/${entityRoute}/new/+page.svelte'),
+\t},
+\t{
+\t\tpath: '${entityRoute}/:id/view',
+\t\tload: () => import('../../routes/${entityRoute}/[id]/view/+page.svelte'),
+\t},
+\t{
+\t\tpath: '${entityRoute}/:id/edit',
+\t\tload: () => import('../../routes/${entityRoute}/[id]/edit/+page.svelte'),
+\t},
 `,
 						}),
 					);
@@ -250,7 +316,7 @@ export default class extends ClientGenerator {
 				}
 			},
 			async writeEntityFiles({ application, entities }) {
-				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+				for (const entity of entities.filter(entity => shouldWriteEntityClient(application, entity))) {
 					await this.writeFiles({
 						sections: entitySvelteFiles,
 						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest },
@@ -258,7 +324,11 @@ export default class extends ClientGenerator {
 				}
 			},
 			async writeUserService({ application, entities }) {
-				if (entities.some(entity => entity.relationships.some(rel => rel.otherEntity.builtInUser))) {
+				if (
+					entities
+						.filter(entity => shouldWriteEntityClient(application, entity))
+						.some(entity => entity.relationships.some(rel => rel.otherEntity.builtInUser))
+				) {
 					this.writeFile(
 						`${TEMPLATES_WEBAPP_SOURCES_DIR}app/lib/entities/user/user-service.js.ejs`,
 						`${application.clientSrcDir}app/lib/entities/user/user-service.js`,
@@ -267,7 +337,7 @@ export default class extends ClientGenerator {
 				}
 			},
 			writeEnumerations({ application, entities }) {
-				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+				for (const entity of entities.filter(entity => shouldWriteEntityClient(application, entity))) {
 					for (const field of entity.fields) {
 						if (field.fieldIsEnum === true) {
 							const enumInfo = {
@@ -317,18 +387,33 @@ export default class extends ClientGenerator {
 						'prettier-plugin-java': application.nodeDependencies['prettier-plugin-java'],
 					},
 				});
+
+				if (application.microfrontend) {
+					this.packageJson.merge({
+						devDependencies: {
+							'@module-federation/vite': '1.15.4',
+						},
+					});
+				}
 			},
 		});
 	}
 
 	get [BaseApplicationGenerator.POST_WRITING_ENTITIES]() {
 		return this.asPostWritingEntitiesTaskGroup({
-			async postWritingEntitiesTemplateTask({ entities, source }) {
-				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
+			async postWritingEntitiesTemplateTask({ application, entities, source }) {
+				for (const entity of entities.filter(entity => shouldWriteEntityClient(application, entity))) {
+					const entityRoute =
+						application.applicationTypeMicroservice && application.microfrontend
+							? entity.entityPage
+							: `entities/${entity.entityFolderName}`;
 					source.addEntityToMenu({
 						entityClass: entity.entityAngularName,
-						entityRoute: entity.entityFolderName,
+						entityRoute,
 						entityName: entity.entityClassHumanized,
+					});
+					source.addEntityToMicrofrontendRoutes({
+						entityRoute,
 					});
 				}
 			},

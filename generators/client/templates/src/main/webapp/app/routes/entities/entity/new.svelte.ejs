@@ -1,4 +1,5 @@
 <%_
+const entityRouteBase = `/${applicationTypeMicroservice && microfrontend ? entityPage : 'entities/' + entityFolderName}`;
 const relationshipFields = relationships.filter(relationship => (
 	relationship.otherEntity.primaryKey
 		&& (relationship.relationshipManyToOne
@@ -84,13 +85,13 @@ _%>
 	_%>
 
 	function cancelSave() {
-		goto(`/entities/<%= entityFolderName %>`)
+		goto('<%= entityRouteBase %>')
 	}
 
 	function save<%= entityAngularName %>(event) {
 		<%= entityInstance %>Service
 			.create(event.detail)
-			.then(() => goto(`/entities/<%= entityFolderName %>`))
+			.then(() => goto('<%= entityRouteBase %>'))
 			.catch(err => (error = err))
 	}
 </script>

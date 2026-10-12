@@ -1,0 +1,25 @@
+<script>
+	import { onMount } from 'svelte'
+
+	export let remoteName
+	export let load
+	export let closeMenu = () => {}
+
+	let error
+	let Menu
+
+	onMount(async () => {
+		try {
+			const module = await load()
+			Menu = module.default
+		} catch (err) {
+			error = err
+		}
+	})
+</script>
+
+{#if Menu}
+	<svelte:component this="{Menu}" closeMenu="{closeMenu}" />
+{:else if error}
+	<span class="block px-4 py-2 text-sm text-red-600">Unable to load {remoteName} entities</span>
+{/if}
