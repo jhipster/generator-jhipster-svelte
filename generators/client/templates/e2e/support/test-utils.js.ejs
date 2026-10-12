@@ -1,0 +1,27 @@
+/**
+ * Get a locator by data-testid attribute.
+ */
+export function getByTestId(page, testId) {
+	return page.locator(`[data-testid=${testId}]`)
+}
+
+/**
+ * Get a locator by name attribute.
+ */
+export function getByName(page, name) {
+	return page.locator(`[name=${name}]`)
+}
+
+/**
+ * Unregister service workers in the page.
+ */
+export async function unregisterServiceWorkers(page) {
+	await page.evaluate(async () => {
+		if ('serviceWorker' in navigator) {
+			const registrations = await navigator.serviceWorker.getRegistrations()
+			for (const reg of registrations) {
+				await reg.unregister()
+			}
+		}
+	})
+}

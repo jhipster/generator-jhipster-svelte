@@ -1,0 +1,82 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from '../support/test-utils.js'
+import { loginByApi, ADMIN_USERNAME, ADMIN_PASSWORD<%_ if (authenticationType === 'oauth2') { _%>, logoutByApi<%_ } _%> } from '../support/auth-utils.js'
+
+test.describe('Loggers page', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+		await page.goto('/admin/logger')
+	})
+
+<%_ if (authenticationType === 'oauth2') { _%>
+	test.afterEach(async ({ page }) => {
+		await logoutByApi(page)
+	})
+
+<%_ } _%>
+	test('should greets with loggers page title and filter control', async ({ page }) => {
+		const loggersTitle = getByTestId(page, 'loggersTitle')
+		await expect(loggersTitle).toBeVisible()
+		await expect(loggersTitle).toContainText('Loggers')
+
+		const loggerInput = getByTestId(page, 'loggerSearchForm').locator('[name=logger]')
+		await expect(loggerInput).toHaveValue('')
+	})
+
+	test('should display loggers table', async ({ page }) => {
+		const loggersTable = getByTestId(page, 'loggersTable')
+		await expect(loggersTable).toBeVisible()
+
+		const firstRow = loggersTable.locator('tr').first()
+		const headers = firstRow.locator('th')
+		await expect(headers.first()).toContainText('Name')
+	})
+
+	test('should display logger name and the default enabled logger level in the table', async ({ page }) => {
+<%_ if (databaseTypeSql) { _%>
+		await getByTestId(page, 'loggerSearchForm').locator('[name=logger]')
+			.fill('org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator')
+<%_ } else { _%>
+		await getByTestId(page, 'loggerSearchForm').locator('[name=logger]')
+			.fill('org.mongodb.driver')
+<%_ } _%>
+
+		const loggersTable = getByTestId(page, 'loggersTable')
+<%_ if (databaseTypeSql) { _%>
+		const row = loggersTable.locator('td', { hasText: 'org.hibernate.validator.internal.engine.groups.ValidationOrderGenerator' }).locator('..')
+<%_ } else { _%>
+		const row = loggersTable.locator('td', { hasText: 'org.mongodb.driver' }).locator('..')
+<%_ } _%>
+
+		await expect(row.locator('button')).toHaveCount(6)
+		await expect(getByTestId(row, 'warnLogLevelBtn')).toBeVisible()
+		await expect(getByTestId(row, 'warnLogLevelBtn')).toBeDisabled()
+	})
+
+	test('should filter loggers by name', async ({ page }) => {
+		const loggersTable = getByTestId(page, 'loggersTable')
+		const rowsBefore = await loggersTable.locator('tbody > tr').count()
+
+		await getByTestId(page, 'loggerSearchForm').locator('[name=logger]').fill('ROOT')
+
+		const rowsAfter = await loggersTable.locator('tbody > tr').count()
+		expect(rowsAfter).not.toBe(rowsBefore)
+
+		await getByTestId(page, 'loggerSearchForm').locator('[name=logger]').fill('')
+
+		const rowsReset = await loggersTable.locator('tbody > tr').count()
+		expect(rowsReset).toBe(rowsBefore)
+	})
+
+	test('should validate the pagination controls', async ({ page }) => {
+		const pageCtrl = getByTestId(page, 'pageCtrl').first()
+		await expect(pageCtrl).toContainText(/1-\d+ of \d+/)
+
+		const prevPageCtrl = getByTestId(page, 'prevPageCtrl').first()
+		await expect(prevPageCtrl).toBeDisabled()
+
+		const nextPageCtrl = getByTestId(page, 'nextPageCtrl').first()
+		await expect(nextPageCtrl).toBeEnabled()
+	})
+})

@@ -1,0 +1,80 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from '../support/test-utils.js'
+import { loginByApi, ADMIN_USERNAME, ADMIN_PASSWORD } from '../support/auth-utils.js'
+
+test.describe('User Settings', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+		await page.goto('/account/settings')
+	})
+
+	test('should greets with User Settings title', async ({ page }) => {
+		const settingsTitle = getByTestId(page, 'settingsTitle')
+		await expect(settingsTitle).toHaveText(`User settings for [${ADMIN_USERNAME}]`)
+	})
+
+	test('should display current settings', async ({ page }) => {
+		const settingsForm = getByTestId(page, 'settingsForm')
+		const firstName = settingsForm.locator('[name=firstName]')
+		await expect(firstName).toHaveValue(<%_ if (databaseTypeSql) { _%>/Admin/<%_ } else { _%>/admin/<%_ } _%>)
+
+		const lastName = settingsForm.locator('[name=lastName]')
+		await expect(lastName).toHaveValue(/Admin/)
+
+		const email = settingsForm.locator('[name=email]')
+		await expect(email).toHaveValue(/admin@localhost/)
+	})
+
+	test('should display form control validation messages', async ({ page }) => {
+		const settingsForm = getByTestId(page, 'settingsForm')
+
+		await settingsForm.locator('[name=firstName]').fill(
+			'AveryLongFirstNameThatExceedsTheMaximumLengthLimitToCheckValidation'
+		)
+		await settingsForm.locator('[name=firstName]').blur()
+		const firstNameError = getByTestId(page, 'firstName-error')
+		await expect(firstNameError).toBeVisible()
+		await expect(firstNameError).toContainText('First name cannot be longer than 50 characters')
+
+		await settingsForm.locator('[name=lastName]').fill(
+			'AveryLongLastNameThatExceedsTheMaximumLengthLimitToCheckValidation'
+		)
+		await settingsForm.locator('[name=lastName]').blur()
+		const lastNameError = getByTestId(page, 'lastName-error')
+		await expect(lastNameError).toBeVisible()
+		await expect(lastNameError).toContainText('Last name cannot be longer than 50 characters')
+
+		await settingsForm.locator('[name=email]').fill('')
+		await settingsForm.locator('[name=email]').blur()
+		const emailError = getByTestId(page, 'email-error')
+		await expect(emailError).toBeVisible()
+		await expect(emailError).toContainText('Email is mandatory')
+
+		await settingsForm.locator('[name=email]').fill('admin@localhost')
+		await settingsForm.locator('[name=email]').blur()
+		await expect(emailError).toBeVisible()
+		await expect(emailError).toContainText('Email address is not valid')
+
+		const updateBtn = settingsForm.locator('text=Update Settings')
+		await expect(updateBtn).toBeDisabled()
+	})
+
+	test('should update user settings', async ({ page }) => {
+		const settingsForm = getByTestId(page, 'settingsForm')
+
+		await settingsForm.locator('[name=firstName]').fill(<%_ if (databaseTypeSql) { _%>'Admin'<%_ } else { _%>'admin'<%_ } _%>)
+		await settingsForm.locator('[name=firstName]').blur()
+		await settingsForm.locator('[name=lastName]').fill('Admin')
+		await settingsForm.locator('[name=lastName]').blur()
+		await settingsForm.locator('[name=email]').fill('admin@localhost.org')
+		await settingsForm.locator('[name=email]').blur()
+
+		const updateBtn = settingsForm.locator('text=Update Settings')
+		await expect(updateBtn).not.toBeDisabled()
+		await updateBtn.click()
+
+		const successMsg = getByTestId(page, 'successMsg')
+		await expect(successMsg).toContainText('Settings changed!')
+	})
+})

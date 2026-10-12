@@ -1,0 +1,86 @@
+<%_
+	const entityFakeData = generateFakeData('cypress');
+	const containsBinaryField = fields.find(field => (field.fieldTypeBinary && !field.blobContentTypeText));
+	const relationshipFields = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& entityInstance !== relationship.otherEntity.entityInstance
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const relationshipFieldsWithSelfReferential = relationships.filter(relationship => (
+		relationship.otherEntity.primaryKey
+			&& (relationship.relationshipManyToOne
+				|| (relationship.relationshipOneToOne && relationship.ownerSide)
+				|| (relationship.relationshipManyToMany && relationship.ownerSide))))
+	const containsRelationshipField = relationshipFields && relationshipFields.length;
+	const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
+_%>
+import { test, expect } from '@playwright/test'
+import { getByTestId, unregisterServiceWorkers } from '<%= clientRootFolder !== '' ? '../../' : '../' %>../support/test-utils.js'
+import { loginByApi, apiDelete, ADMIN_USERNAME, ADMIN_PASSWORD<%_ if (authenticationType === 'oauth2') { _%>, logoutByApi<%_ } _%> } from '<%= clientRootFolder !== '' ? '../../' : '../' %>../support/auth-utils.js'
+import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %> } from '<%= clientRootFolder !== '' ? '../../' : '../' %>../support/entities/<%= entityFileName %>-util.js'
+
+test.describe('<%= entityAngularName %> view details page', () => {
+	let dynamicId
+	let context = {}
+
+	test.beforeAll(async ({ browser }) => {
+		const page = await browser.newPage()
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+<%_ if (containsRelationshipField || containsBinaryField) { _%>
+		context = await prepare<%= entityAngularName %>PrerequisiteData(page, context)
+<%_ } _%>
+		const res = await add<%= entityAngularName %>(page, context)
+		dynamicId = res.id
+		await page.close()
+	})
+
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+		await page.goto(`/entities/<%= entityFolderName %>/${dynamicId}/view`)
+	})
+
+	test.afterAll(async ({ browser }) => {
+		const page = await browser.newPage()
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+		await apiDelete(page, `<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`)
+<%_ if (authenticationType === 'oauth2') { _%>
+		await logoutByApi(page)
+<%_ } _%>
+<%_
+		for (const relationship of relationshipFields) {
+			if (!relationship.otherEntityUser) {
+_%>
+		await apiDelete(page, `<%= servicesApiPrefix %>api/<%= relationship.otherEntity.entityApiUrl %>/${context.<%= relationship.relationshipName %>Id}`, true)
+<%_
+			}
+		}
+_%>
+		await page.close()
+	})
+
+<%_ if (authenticationType === 'oauth2') { _%>
+	test.afterEach(async ({ page }) => {
+		await logoutByApi(page)
+	})
+
+<%_ } _%>
+	test('should display <%= entityAngularName %> details', async ({ page }) => {
+		const title = getByTestId(page, '<%= entityInstance %>Title')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('<%= entityClassHumanized %> Details')
+
+		const tableContainer = page.locator('div.table')
+		const cells = tableContainer.locator('.table-cell')
+		await expect(cells).toHaveCount(<%= (fields.length - 1) * 2 + (relationshipFieldsWithSelfReferential.length * 2) %>)
+	})
+
+	test('should navigate back to the <%= entityAngularName %> list page', async ({ page }) => {
+		await page.locator('[name=backBtn]').click()
+
+		const title = getByTestId(page, '<%= entityInstance %>Title')
+		await expect(title).toBeVisible()
+		await expect(title).toContainText('<%= entityClassPluralHumanized %>')
+	})
+})

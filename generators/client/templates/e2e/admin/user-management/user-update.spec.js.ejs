@@ -1,0 +1,117 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from '../../support/test-utils.js'
+import { loginByApi, apiSave, apiDelete, ADMIN_USERNAME, ADMIN_PASSWORD } from '../../support/auth-utils.js'
+
+test.describe('Update user page', () => {
+	let randomUser
+
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		randomUser = 'test' + Date.now()
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+
+		const user = await apiSave(page, 'api/admin/users', {
+			login: randomUser,
+			firstName: 'John',
+			lastName: 'Doe',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		})
+
+		await page.goto(`/admin/user-management/${user.login}/edit`)
+	})
+
+	test.afterEach(async ({ page }) => {
+		await apiDelete(page, `api/admin/users/${randomUser}`)
+	})
+
+	test('should greets with update user title', async ({ page }) => {
+		const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+		await expect(userMgmtTitle).toBeVisible()
+		await expect(userMgmtTitle).toContainText('Update user account')
+	})
+
+	test('should be populated and have valid state', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		await expect(addUserForm.locator('[name=username]')).toHaveValue(randomUser)
+		await expect(addUserForm.locator('[name=firstName]')).toHaveValue('John')
+		await expect(addUserForm.locator('[name=lastName]')).toHaveValue('Doe')
+		await expect(addUserForm.locator('[name=email]')).toHaveValue(`${randomUser}@localhost.org`)
+		await expect(addUserForm.locator('[name=activated]')).toBeChecked()
+		await expect(addUserForm.locator('[name=roles]')).toHaveValue('ROLE_USER')
+
+		const updateBtn = addUserForm.locator('text=Update user account')
+		await expect(updateBtn).not.toBeDisabled()
+	})
+
+	test('should require username', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		await addUserForm.locator('[name=username]').fill('')
+		await addUserForm.locator('[name=username]').blur()
+
+		const error = getByTestId(page, 'username-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Username is mandatory')
+	})
+
+	test('should require email', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		await addUserForm.locator('[name=email]').fill('')
+		await addUserForm.locator('[name=email]').blur()
+
+		const error = getByTestId(page, 'email-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Email is mandatory')
+	})
+
+	test('should require roles', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		await addUserForm.locator('[name=roles]').click()
+
+		const rolesOptions = getByTestId(page, 'roles-options')
+		const checkboxes = rolesOptions.locator("input[type='checkbox']")
+		await checkboxes.nth(0).uncheck()
+		await checkboxes.nth(1).uncheck()
+
+		await getByTestId(page, 'roles-bg').click()
+
+		const error = getByTestId(page, 'roles-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Select at least one role')
+	})
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.locator('[name=cancelBtn]').click()
+
+		await expect(page).toHaveURL(/\/admin\/user-management/)
+		const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+		await expect(userMgmtTitle).toBeVisible()
+		await expect(userMgmtTitle).toContainText('Users')
+	})
+
+	test('should update user account details', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		await addUserForm.locator('[name=firstName]').fill('Johnupdate')
+		await addUserForm.locator('[name=lastName]').fill('Doeupdate')
+		await addUserForm.locator('[name=email]').fill(`${randomUser}-update@localhost.org`)
+
+		await addUserForm.locator('[name=roles]').click()
+		const rolesOptions = getByTestId(page, 'roles-options')
+		await rolesOptions.locator("input[type='checkbox']").nth(0).check()
+		await rolesOptions.locator("input[type='checkbox']").nth(1).check()
+		await getByTestId(page, 'roles-bg').click()
+
+		const updateBtn = addUserForm.locator('text=Update user account')
+		await expect(updateBtn).not.toBeDisabled()
+		await updateBtn.click()
+
+		const toastSuccess = getByTestId(page, 'toast-success')
+		await expect(toastSuccess).toContainText('A user is updated with identifier')
+
+		await expect(page).toHaveURL(/\/admin\/user-management/)
+		const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+		await expect(userMgmtTitle).toBeVisible()
+		await expect(userMgmtTitle).toContainText('Users')
+	})
+})

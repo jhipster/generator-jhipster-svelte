@@ -1,0 +1,112 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from '../../support/test-utils.js'
+import { loginByApi, apiSave, apiDelete, ADMIN_USERNAME, ADMIN_PASSWORD } from '../../support/auth-utils.js'
+
+test.describe('Create user page', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+		await page.goto('/admin/user-management/new')
+	})
+
+	test('should greets with Create user title', async ({ page }) => {
+		const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+		await expect(userMgmtTitle).toBeVisible()
+		await expect(userMgmtTitle).toContainText('Create user account')
+	})
+
+	test('should require mandatory fields', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		const createBtn = addUserForm.locator('text=Create user account')
+		await expect(createBtn).toBeDisabled()
+	})
+
+	test('should require username', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		const username = addUserForm.locator('[name=username]')
+		await username.fill('admin')
+		await username.fill('')
+		await username.blur()
+
+		const error = getByTestId(page, 'username-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Username is mandatory')
+	})
+
+	test('should require email', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		const email = addUserForm.locator('[name=email]')
+		await email.fill('admin@localhost.org')
+		await email.fill('')
+		await email.blur()
+
+		const error = getByTestId(page, 'email-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Email is mandatory')
+	})
+
+	test('should require roles', async ({ page }) => {
+		const addUserForm = getByTestId(page, 'addUserForm')
+		await addUserForm.locator('[name=roles]').click()
+
+		const rolesOptions = getByTestId(page, 'roles-options')
+		const checkboxes = rolesOptions.locator("input[type='checkbox']")
+		await checkboxes.first().check()
+		await checkboxes.first().uncheck()
+
+		await getByTestId(page, 'roles-bg').click()
+
+		const error = getByTestId(page, 'roles-error')
+		await expect(error).toBeVisible()
+		await expect(error).toContainText('Select at least one role')
+	})
+
+	test('should navigate back to the user list page', async ({ page }) => {
+		await page.locator('[name=cancelBtn]').click()
+
+		await expect(page).toHaveURL(/\/admin\/user-management/)
+		const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+		await expect(userMgmtTitle).toBeVisible()
+		await expect(userMgmtTitle).toContainText('Users')
+	})
+
+	test.describe('create account', () => {
+		let randomUser
+
+		test.beforeEach(async ({ page }) => {
+			await unregisterServiceWorkers(page)
+			randomUser = 'test' + Date.now()
+			await page.goto('/admin/user-management/new')
+		})
+
+		test.afterEach(async ({ page }) => {
+			await apiDelete(page, `api/admin/users/${randomUser}`)
+		})
+
+		test('should create a new user account', async ({ page }) => {
+			const addUserForm = getByTestId(page, 'addUserForm')
+			await addUserForm.locator('[name=username]').fill(randomUser)
+			await addUserForm.locator('[name=firstName]').fill('john')
+			await addUserForm.locator('[name=lastName]').fill('doe')
+			await addUserForm.locator('[name=email]').fill(`${randomUser}@localhost.org`)
+			await addUserForm.locator('[name=roles]').click()
+
+			const rolesOptions = getByTestId(page, 'roles-options')
+			await rolesOptions.locator("input[type='checkbox']").first().check()
+
+			await getByTestId(page, 'roles-bg').click()
+
+			const createBtn = addUserForm.locator('text=Create user account')
+			await expect(createBtn).not.toBeDisabled()
+			await createBtn.click()
+
+			const toastSuccess = getByTestId(page, 'toast-success')
+			await expect(toastSuccess).toContainText('A user is created with identifier')
+
+			await expect(page).toHaveURL(/\/admin\/user-management/)
+			const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+			await expect(userMgmtTitle).toBeVisible()
+			await expect(userMgmtTitle).toContainText('Users')
+		})
+	})
+})

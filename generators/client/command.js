@@ -11,6 +11,11 @@ const command = {
 			type: Boolean,
 			scope: 'blueprint',
 		},
+		playwright: {
+			description: 'Use Playwright as e2e test framework instead of Cypress',
+			type: Boolean,
+			scope: 'blueprint',
+		},
 	},
 };
 

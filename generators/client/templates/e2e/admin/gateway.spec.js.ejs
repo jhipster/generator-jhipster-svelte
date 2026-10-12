@@ -1,0 +1,27 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, unregisterServiceWorkers } from '../support/test-utils.js'
+import { loginByApi, ADMIN_USERNAME, ADMIN_PASSWORD } from '../support/auth-utils.js'
+
+test.describe('Gateway page', () => {
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+		await page.goto('/admin/gateway')
+	})
+
+	test('should greets with Gateway page title', async ({ page }) => {
+		const gatewayTitle = getByTestId(page, 'gatewayTitle')
+		await expect(gatewayTitle).toBeVisible()
+		await expect(gatewayTitle).toContainText('Gateway routes')
+	})
+
+	test('should display Gateway routes table', async ({ page }) => {
+		const gatewayTable = getByTestId(page, 'gatewayTable')
+		await expect(gatewayTable).toBeVisible()
+
+		const headers = gatewayTable.locator('th')
+		await expect(headers.nth(0)).toContainText('Service')
+		await expect(headers.nth(1)).toContainText('Route')
+		await expect(headers.nth(2)).toContainText('Service Instances')
+	})
+})

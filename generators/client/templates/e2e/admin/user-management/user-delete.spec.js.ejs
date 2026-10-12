@@ -1,0 +1,68 @@
+import { test, expect } from '@playwright/test'
+import { getByTestId, getByName, unregisterServiceWorkers } from '../../support/test-utils.js'
+import { loginByApi, apiSave, apiDelete, ADMIN_USERNAME, ADMIN_PASSWORD } from '../../support/auth-utils.js'
+
+test.describe('User delete dialog page', () => {
+	let randomUser
+
+	test.beforeEach(async ({ page }) => {
+		await unregisterServiceWorkers(page)
+		randomUser = 'test' + Date.now()
+		await loginByApi(page, ADMIN_USERNAME, ADMIN_PASSWORD)
+
+		await apiSave(page, 'api/admin/users', {
+			login: randomUser,
+			firstName: '',
+			lastName: '',
+			email: `${randomUser}@localhost.org`,
+			activated: true,
+			authorities: ['ROLE_USER'],
+		})
+
+		await page.goto('/admin/user-management')
+
+		const userMgmtTable = getByTestId(page, 'userMgmtTable')
+		const userRow = userMgmtTable.locator('td', { hasText: randomUser }).locator('..')
+		await userRow.hover()
+		await userRow.locator('[name=deleteBtn]').click()
+	})
+
+	test.afterEach(async ({ page }) => {
+		await apiDelete(page, `api/admin/users/${randomUser}`)
+	})
+
+	test('should display delete user dialog', async ({ page }) => {
+		const modal = getByTestId(page, 'svlModal')
+		const heading = modal.locator('h1')
+		await expect(heading).toBeVisible()
+		await expect(heading).toContainText('Confirm delete operation')
+
+		const message = modal.locator('p')
+		await expect(message).toBeVisible()
+		await expect(message).toContainText('Are you sure you want to delete the user?')
+
+		await expect(modal.locator('[name=confirmDeleteBtn]')).not.toBeDisabled()
+		await expect(modal.locator('[name=cancelBtn]')).not.toBeDisabled()
+	})
+
+	test('should close the dialog without deleting user', async ({ page }) => {
+		const modal = getByTestId(page, 'svlModal')
+		await modal.locator('[name=cancelBtn]').click()
+
+		const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+		await expect(userMgmtTitle).toBeVisible()
+		await expect(userMgmtTitle).toContainText('Users')
+	})
+
+	test('should delete the user', async ({ page }) => {
+		const modal = getByTestId(page, 'svlModal')
+		await modal.locator('[name=confirmDeleteBtn]').click()
+
+		const toastSuccess = getByTestId(page, 'toast-success')
+		await expect(toastSuccess).toContainText('A user is deleted with identifier')
+
+		const userMgmtTitle = getByTestId(page, 'userMgmtTitle')
+		await expect(userMgmtTitle).toBeVisible()
+		await expect(userMgmtTitle).toContainText('Users')
+	})
+})

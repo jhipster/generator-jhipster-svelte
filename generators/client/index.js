@@ -58,11 +58,15 @@ export default class extends ClientGenerator {
 					if (this.blueprintConfig.jest === undefined) {
 						this.blueprintConfig.jest = false;
 					}
+					if (this.blueprintConfig.playwright === undefined) {
+						this.blueprintConfig.playwright = false;
+					}
 				}
 			},
 			setLocalCommandOptions() {
 				this.jest = this.blueprintConfig.jest;
 				this.swaggerUi = this.blueprintConfig.swaggerUi;
+				this.playwright = this.blueprintConfig.playwright;
 			},
 		});
 	}
@@ -212,7 +216,7 @@ export default class extends ClientGenerator {
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
 					sections: svelteFiles,
-					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest },
+					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest, playwright: this.playwright },
 				});
 			},
 		});
@@ -253,7 +257,7 @@ export default class extends ClientGenerator {
 				for (const entity of entities.filter(entity => !entity.skipClient && !entity.builtIn)) {
 					await this.writeFiles({
 						sections: entitySvelteFiles,
-						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest },
+						context: { ...application, ...entity, swaggerUi: this.swaggerUi, jest: this.jest, playwright: this.playwright },
 					});
 				}
 			},
@@ -311,6 +315,17 @@ export default class extends ClientGenerator {
 
 				const javaPrettierPackageJson = JSON.parse(this.readTemplate(`java-prettier/package.json`));
 				this.packageJson.merge(javaPrettierPackageJson);
+
+				if (this.playwright) {
+					const playwrightPackageJson = JSON.parse(this.readTemplate(`playwright/package.json`));
+					this.packageJson.merge(playwrightPackageJson);
+					// Remove Cypress dependencies when Playwright is selected
+					const currentPkg = this.packageJson.getAll();
+					if (currentPkg.devDependencies) {
+						delete currentPkg.devDependencies.cypress;
+						delete currentPkg.devDependencies['eslint-plugin-cypress'];
+					}
+				}
 
 				this.packageJson.merge({
 					devDependencies: {

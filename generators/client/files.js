@@ -12,7 +12,6 @@ const svelteFiles = {
 				'.npmrc',
 				'.gitignore.jhi.svelte',
 				'.prettierignore.jhi.svelte',
-				'cypress.config.cjs',
 				'eslint.config.js',
 				'README.md.jhi.svelte',
 				{
@@ -27,8 +26,21 @@ const svelteFiles = {
 			],
 		},
 	],
+	baseCypress: [
+		{
+			condition: generator => !generator.playwright,
+			templates: ['cypress.config.cjs'],
+		},
+	],
+	basePlaywright: [
+		{
+			condition: generator => generator.playwright,
+			templates: ['playwright.config.cjs'],
+		},
+	],
 	e2e: [
 		{
+			condition: generator => !generator.playwright,
 			templates: [
 				{
 					file: generator => `${FRONTEND_SRC_DIR}static/content/img/${generator.hipster}_head-192.png`,
@@ -46,21 +58,52 @@ const svelteFiles = {
 			],
 		},
 	],
+	e2ePlaywright: [
+		{
+			condition: generator => generator.playwright,
+			templates: [
+				{
+					file: generator => `${FRONTEND_SRC_DIR}static/content/img/${generator.hipster}_head-192.png`,
+					renameTo: () => `e2e/fixtures/integration-test.png`,
+					method: 'copy',
+				},
+				'e2e/footer.spec.js',
+				'e2e/home.spec.js',
+				'e2e/navbar.spec.js',
+				'e2e/routes.spec.js',
+				'e2e/admin/logger.spec.js',
+				'e2e/support/auth-utils.js',
+				'e2e/support/test-utils.js',
+			],
+		},
+	],
 	e2eGateway: [
 		{
-			condition: generator => generator.applicationType === 'gateway',
+			condition: generator => generator.applicationType === 'gateway' && !generator.playwright,
 			templates: ['cypress/integration/admin/gateway.spec.js'],
+		},
+	],
+	e2eGatewayPlaywright: [
+		{
+			condition: generator => generator.applicationType === 'gateway' && generator.playwright,
+			templates: ['e2e/admin/gateway.spec.js'],
 		},
 	],
 	e2eLogin: [
 		{
-			condition: generator => generator.authenticationType !== 'oauth2',
+			condition: generator => generator.authenticationType !== 'oauth2' && !generator.playwright,
 			templates: ['cypress/integration/login.spec.js'],
+		},
+	],
+	e2eLoginPlaywright: [
+		{
+			condition: generator => generator.authenticationType !== 'oauth2' && generator.playwright,
+			templates: ['e2e/login.spec.js'],
 		},
 	],
 	e2eUserManagement: [
 		{
-			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2',
+			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2' && !generator.playwright,
 			templates: [
 				'cypress/integration/account/change-password.spec.js',
 				'cypress/integration/account/register.spec.js',
@@ -71,6 +114,22 @@ const svelteFiles = {
 				'cypress/integration/admin/user-management/user-list.spec.js',
 				'cypress/integration/admin/user-management/user-update.spec.js',
 				'cypress/integration/admin/user-management/user-view.spec.js',
+			],
+		},
+	],
+	e2eUserManagementPlaywright: [
+		{
+			condition: generator => !generator.skipUserManagement && generator.authenticationType !== 'oauth2' && generator.playwright,
+			templates: [
+				'e2e/account/change-password.spec.js',
+				'e2e/account/register.spec.js',
+				'e2e/account/settings.spec.js',
+				'e2e/account/reset/init-password.spec.js',
+				'e2e/admin/user-management/user-create.spec.js',
+				'e2e/admin/user-management/user-delete.spec.js',
+				'e2e/admin/user-management/user-list.spec.js',
+				'e2e/admin/user-management/user-update.spec.js',
+				'e2e/admin/user-management/user-view.spec.js',
 			],
 		},
 	],
