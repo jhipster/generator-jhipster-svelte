@@ -1,0 +1,12 @@
+import { render } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+
+import DocsPage from './+page.svelte'
+
+test('should render the Swagger UI in a titled iframe', () => {
+	render(DocsPage)
+
+	const frame = screen.getByTitle('Swagger UI')
+	expect(frame).toHaveAttribute('src', '/swagger-ui/index.html')
+	expect(frame).toHaveAttribute('data-cy', 'swagger-frame')
+})

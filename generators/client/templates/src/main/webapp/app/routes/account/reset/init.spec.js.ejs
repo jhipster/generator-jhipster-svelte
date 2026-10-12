@@ -1,0 +1,66 @@
+<%_ if (this.jest) { _%>
+import { beforeAll, jest } from '@jest/globals'
+import { render, waitFor } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import userEvent from '@testing-library/user-event'
+
+const accountService = {
+	initiateResetAccountPassword: jest.fn(),
+}
+
+jest.unstable_mockModule('$lib/account/account-service', () => ({
+	default: accountService,
+}))
+
+let ResetInitPage
+
+beforeAll(async () => {
+	ResetInitPage = (await import('./+page.svelte')).default
+})
+<%_ } else { _%>
+import { render, waitFor } from '@testing-library/svelte'
+import { screen } from '@testing-library/dom'
+import userEvent from '@testing-library/user-event'
+import { vi } from 'vitest'
+
+import accountService from '$lib/account/account-service'
+import ResetInitPage from './+page.svelte'
+
+vi.mock('$lib/account/account-service', () => ({
+	default: {
+		initiateResetAccountPassword: vi.fn(),
+	},
+}))
+<%_ } _%>
+
+async function submitResetRequest(user) {
+	await user.type(document.querySelector('input[name="email"]'), 'user@example.com')
+	await user.click(screen.getByRole('button', { name: /send password reset email/i }))
+}
+
+beforeEach(() => {
+	accountService.initiateResetAccountPassword.mockReset()
+})
+
+test('should send the password reset request and show a confirmation', async () => {
+	accountService.initiateResetAccountPassword.mockResolvedValue()
+	const user = userEvent.setup()
+	render(ResetInitPage)
+
+	await submitResetRequest(user)
+
+	expect(accountService.initiateResetAccountPassword).toHaveBeenCalledWith('user@example.com')
+	await waitFor(() => expect(screen.getByTestId('successMsg')).toBeVisible())
+	expect(screen.queryByRole('button', { name: /send password reset email/i })).not.toBeInTheDocument()
+})
+
+test('should show an error and keep the form when the request fails', async () => {
+	accountService.initiateResetAccountPassword.mockRejectedValue(new Error('request failed'))
+	const user = userEvent.setup()
+	render(ResetInitPage)
+
+	await submitResetRequest(user)
+
+	await waitFor(() => expect(screen.getByTestId('warningMsg')).toBeVisible())
+	expect(screen.getByRole('button', { name: /send password reset email/i })).toBeInTheDocument()
+})
