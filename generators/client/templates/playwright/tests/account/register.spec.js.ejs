@@ -1,0 +1,74 @@
+import { expect, test } from '@playwright/test'
+
+test.beforeEach(async ({ page }) => {
+	await page.addInitScript(async () => {
+		if ('serviceWorker' in navigator) {
+			const registrations = await navigator.serviceWorker.getRegistrations()
+			await Promise.all(registrations.map(registration => registration.unregister()))
+		}
+	})
+	await page.goto('/account/register')
+})
+
+test.describe('Register user', () => {
+	test('greets with Create user title', async ({ page }) => {
+		await expect(page.getByTestId('registerTitle')).toBeVisible()
+		await expect(page.getByTestId('registerTitle')).toContainText('Create user account')
+	})
+
+	test('requires mandatory fields', async ({ page }) => {
+		await expect(page.getByTestId('registerForm').getByRole('button', { name: 'Create account' })).toBeDisabled()
+	})
+
+	test('requires username', async ({ page }) => {
+		await page.locator('[name="username"]').fill('admin')
+		await page.locator('[name="username"]').clear()
+		await page.locator('[name="username"]').blur()
+
+		await expect(page.getByTestId('username-error')).toBeVisible()
+		await expect(page.getByTestId('username-error')).toContainText('Username is mandatory')
+	})
+
+	test('requires a valid email', async ({ page }) => {
+		await page.locator('[name="email"]').fill('admin@localhost')
+		await page.locator('[name="email"]').blur()
+
+		await expect(page.getByTestId('email-error')).toBeVisible()
+		await expect(page.getByTestId('email-error')).toContainText('Email address is not valid')
+	})
+
+	test('requires password and confirm password to match', async ({ page }) => {
+		await page.locator('[name="password"]').fill('abcd')
+		await page.locator('[name="password"]').blur()
+		await page.locator('[name="passwordConfirm"]').fill('defg')
+		await page.locator('[name="passwordConfirm"]').blur()
+
+		await expect(page.getByTestId('passwordConfirm-error')).toBeVisible()
+		await expect(page.getByTestId('passwordConfirm-error')).toContainText('Password and its confirmation do not match')
+	})
+
+	test('does not allow duplicate usernames', async ({ page }) => {
+		await page.locator('[name="username"]').fill('admin')
+		await page.locator('[name="email"]').fill('joe@localhost.org')
+		await page.locator('[name="password"]').fill('jondoe')
+		await page.locator('[name="passwordConfirm"]').fill('jondoe')
+		await page.getByTestId('registerForm').getByRole('button', { name: 'Create account' }).click()
+
+		await expect(page.getByTestId('errorMsg')).toContainText('Login name already in use. Please choose another one.')
+	})
+
+	test('creates a new user account', async ({ page }, testInfo) => {
+		const uniqueSuffix = `${testInfo.workerIndex}-${testInfo.retry}-${Date.now()}`
+
+		await page.locator('[name="username"]').fill(`jon${uniqueSuffix}`)
+		await page.locator('[name="email"]').fill(`joe${uniqueSuffix}@localhost.org`)
+		await page.locator('[name="password"]').fill('jondoe')
+		await page.locator('[name="passwordConfirm"]').fill('jondoe')
+		await page.getByTestId('registerForm').getByRole('button', { name: 'Create account' }).click()
+
+		await expect(page.getByTestId('successMsg')).toContainText(
+			'User account successfully created. Please check your email for confirmation.',
+		)
+		await expect(page.getByTestId('registerForm')).toBeHidden()
+	})
+})

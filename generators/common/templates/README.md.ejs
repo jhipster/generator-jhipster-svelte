@@ -24,6 +24,8 @@ let clientPackageMngrAddGlobal = 'install -g';
 let clientPackageMngrAdd = 'install --save --save-exact';
 let clientPackageMngrAddDev = 'install --save-dev --save-exact';
 let DOCUMENTATION_ARCHIVE_URL = `${DOCUMENTATION_URL + DOCUMENTATION_ARCHIVE_PATH}v${jhipsterVersion}`;
+let sveltePlaywrightTests = this.blueprintConfig?.playwright || testFrameworks.includes('playwright');
+let svelteCypressTests = testFrameworks.includes('cypress') || !sveltePlaywrightTests;
 _%>
 This application was generated using `JHipster Svelte` v`<%= this.blueprintjs.version %>` and `JHipster` v`<%= jhipsterVersion %>`, you can find documentation and help at [<%= DOCUMENTATION_ARCHIVE_URL %>](<%= DOCUMENTATION_ARCHIVE_URL %>).
 <%_ if (applicationType === 'gateway' || applicationType === 'microservice') { _%>
@@ -245,7 +247,12 @@ Unit tests are run by <% if (this.blueprintConfig.jest) { %>[Jest][]<% } %>. The
 ```
 <%= clientPackageManager %> test
 ```
+<%_ if (svelteCypressTests) { _%>
 UI end-to-end tests are powered by [Cypress][]. They're located under cypress directory and can be run by starting Spring Boot in one terminal (`<% if (buildToolMaven) { %>./mvnw spring-boot:run<% } else { %>./gradlew bootRun<% } %>`) and running the tests (`<%= clientPackageManager %> run e2e`) in a second one.
+<%_ } _%>
+<%_ if (sveltePlaywrightTests) { _%>
+UI end-to-end tests are powered by [Playwright][]. They're located under playwright directory and can be run by starting Spring Boot in one terminal (`<% if (buildToolMaven) { %>./mvnw spring-boot:run<% } else { %>./gradlew bootRun<% } %>`) and running the tests (`<%= clientPackageManager %> run e2e`) in a second one. Override the target server with `PLAYWRIGHT_BASE_URL` when needed.
+<%_ } _%>
 
 <%_ if (gatlingTests) { _%>
 ### Other tests
@@ -327,7 +334,12 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 <%_ if (this.blueprintConfig.jest) { _%>
 [Jest]: https://facebook.github.io/jest/
 <%_ } _%>
+<%_ if (svelteCypressTests) { _%>
 [Cypress]: https://www.cypress.io/
+<%_ } _%>
+<%_ if (sveltePlaywrightTests) { _%>
+[Playwright]: https://playwright.dev/
+<%_ } _%>
 <%_ if (enableSwaggerCodegen) { _%>
 [OpenAPI-Generator]: https://openapi-generator.tech
 [Swagger-Editor]: https://editor.swagger.io
