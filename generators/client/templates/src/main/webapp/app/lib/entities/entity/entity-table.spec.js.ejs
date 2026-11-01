@@ -218,6 +218,7 @@ _%>
 
 	expect(screen.getByRole('button', { name: /view/i })).toBeEnabled()
 	expect(screen.getByRole('button', { name: /view/i })).toHaveClass('hidden')
+<%_ if (!readOnly) { _%>
 	expect(screen.getByRole('button', { name: /edit/i })).toBeEnabled()
 	expect(screen.getByRole('button', { name: /edit/i })).toHaveClass('hidden')
 
@@ -227,4 +228,12 @@ _%>
 
 	fireEvent.mouseEnter(screen.getByRole('row', { name: /<%= testId %>/i }))
 	await waitFor(() => expect(button).not.toHaveClass('hidden'))
+<%_ } else { _%>
+	expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument()
+	expect(screen.queryByRole('button', { name: /delete/i })).not.toBeInTheDocument()
+
+	const button = screen.getByRole('button', { name: /view/i })
+	fireEvent.mouseEnter(screen.getByRole('row', { name: /<%= testId %>/i }))
+	await waitFor(() => expect(button).not.toHaveClass('hidden'))
+<%_ } _%>
 })
