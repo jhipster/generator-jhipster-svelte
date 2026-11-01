@@ -58,11 +58,15 @@ export default class extends ClientGenerator {
 					if (this.blueprintConfig.jest === undefined) {
 						this.blueprintConfig.jest = false;
 					}
+					if (this.blueprintConfig.h2Console === undefined) {
+						this.blueprintConfig.h2Console = false;
+					}
 				}
 			},
 			setLocalCommandOptions() {
 				this.jest = this.blueprintConfig.jest;
 				this.swaggerUi = this.blueprintConfig.swaggerUi;
+				this.h2Console = this.blueprintConfig.h2Console;
 			},
 		});
 	}
@@ -212,7 +216,7 @@ export default class extends ClientGenerator {
 			async writingTemplateTask({ application }) {
 				await this.writeFiles({
 					sections: svelteFiles,
-					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest },
+					context: { ...application, swaggerUi: this.swaggerUi, jest: this.jest, h2Console: this.h2Console },
 				});
 			},
 		});

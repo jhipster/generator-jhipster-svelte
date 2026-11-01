@@ -20,6 +20,12 @@ export default defineConfig({
 				target: 'http://localhost:8080',
 				changeOrigin: true,
 			},
+		<%_ if (this.h2Console && devDatabaseTypeH2Any && !reactive) { _%>
+			'/h2-console': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+			},
+		<%_ } _%>
         <%_ if (authenticationType === 'oauth2') { _%>
             '/oauth2': {
                 target: 'http://localhost:8080',

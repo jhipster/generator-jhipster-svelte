@@ -151,6 +151,13 @@ const svelteFiles = {
 			templates: [{ file: () => `admin/docs.svelte`, renameTo: () => `admin/docs/+page.svelte` }],
 		},
 	],
+	h2ConsoleRoute: [
+		{
+			condition: generator => generator.h2Console && generator.devDatabaseTypeH2Any,
+			path: FRONTEND_ROUTES_DIR,
+			templates: [{ file: () => `admin/h2-console.svelte`, renameTo: () => `admin/h2-console/+page.svelte` }],
+		},
+	],
 	gatewayRoute: [
 		{
 			condition: generator => generator.applicationType === 'gateway',

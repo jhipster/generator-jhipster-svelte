@@ -1,5 +1,5 @@
 <script>
-	import { faUsersCog<% if (!skipUserManagement) { %>, faUsers<% } %>, faTasks, faCaretDown<% if (this.swaggerUi) { %>, faBook<% } %><% if (applicationType === 'gateway') { %>, faRoad<% } %> } from '@fortawesome/free-solid-svg-icons'
+	import { faUsersCog<% if (!skipUserManagement) { %>, faUsers<% } %>, faTasks, faCaretDown<% if (this.swaggerUi) { %>, faBook<% } %><% if (this.h2Console && devDatabaseTypeH2Any) { %>, faDatabase<% } %><% if (applicationType === 'gateway') { %>, faRoad<% } %> } from '@fortawesome/free-solid-svg-icons'
 	import { Icon } from 'jhipster-svelte-library'
 	import { MenuItem } from 'jhipster-svelte-library/layout'
 
@@ -75,6 +75,17 @@
 		>
 			<Icon classes="sm:mr-1" icon="{faBook}" />
 			API
+		</MenuItem>
+        <%_ } _%>
+        <%_
+        if (this.h2Console && devDatabaseTypeH2Any) { _%>
+        <MenuItem
+			testId="svlH2ConsoleLink"
+			link="/admin/h2-console"
+			on:click="{() => (isOpen = false)}"
+		>
+			<Icon classes="sm:mr-1" icon="{faDatabase}" />
+			Database
 		</MenuItem>
         <%_ } _%>
 	</div>
