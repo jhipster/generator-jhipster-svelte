@@ -101,8 +101,12 @@ _%>
 							id="{ <%= entityInstance %>.id }"
 							visible="{ showActions }"
 							on:view
+						<%_ if (!readOnly) { _%>
 							on:update
 							on:delete
+						<%_ } else { _%>
+							renderStateChangeActions="{false}"
+						<%_ } _%>
 						/>
 					</div>
 					<%_ }_%>
@@ -133,8 +137,12 @@ _%>
 							id="{ <%= entityInstance %>.id }"
 							visible="{ showActions }"
 							on:view
+						<%_ if (!readOnly) { _%>
 							on:update
 							on:delete
+						<%_ } else { _%>
+							renderStateChangeActions="{false}"
+						<%_ } _%>
 						/>
 					</div>
 					<%_ }_%>

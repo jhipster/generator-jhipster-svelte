@@ -14,12 +14,18 @@ export default {
 					renameTo: generator => `${generator.entityFolderName}/+page.svelte`,
 				},
 				{
-					file: 'entity/new.svelte',
-					renameTo: generator => `${generator.entityFolderName}/new/+page.svelte`,
-				},
-				{
 					file: 'entity/[id]/view.svelte',
 					renameTo: generator => `${generator.entityFolderName}/[id]/view/+page.svelte`,
+				},
+			],
+		},
+		{
+			condition: generator => !generator.readOnly,
+			path: FRONTEND_ROUTES_DIR,
+			templates: [
+				{
+					file: 'entity/new.svelte',
+					renameTo: generator => `${generator.entityFolderName}/new/+page.svelte`,
 				},
 				{
 					file: 'entity/[id]/edit.svelte',
@@ -41,12 +47,18 @@ export default {
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-table.spec.js`,
 				},
 				{
-					file: 'entity/entity-form.svelte',
-					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-form.svelte`,
-				},
-				{
 					file: 'entity/entity-service.js',
 					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-service.js`,
+				},
+			],
+		},
+		{
+			condition: generator => !generator.readOnly,
+			path: FRONTEND_COMPONENTS_DIR,
+			templates: [
+				{
+					file: 'entity/entity-form.svelte',
+					renameTo: generator => `${generator.entityFolderName}/${generator.entityFileName}-form.svelte`,
 				},
 			],
 		},
@@ -55,14 +67,19 @@ export default {
 		{
 			templates: [
 				{
-					file: 'cypress/integration/entities/entity/entity-delete.spec.js',
-					renameTo: generator =>
-						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-delete.spec.js`,
-				},
-				{
 					file: 'cypress/integration/entities/entity/entity-list.spec.js',
 					renameTo: generator =>
 						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-list.spec.js`,
+				},
+			],
+		},
+		{
+			condition: generator => !generator.readOnly,
+			templates: [
+				{
+					file: 'cypress/integration/entities/entity/entity-delete.spec.js',
+					renameTo: generator =>
+						`cypress/integration/entities/${generator.entityFolderName}/${generator.entityFileName}-delete.spec.js`,
 				},
 				{
 					file: 'cypress/integration/entities/entity/entity-view.spec.js',

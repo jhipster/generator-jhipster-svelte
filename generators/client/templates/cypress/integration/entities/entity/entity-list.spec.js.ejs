@@ -11,9 +11,12 @@
 	const oneToOneRelationship = relationshipFields.filter(relationship => relationship.relationshipOneToOne);
     const servicesApiPrefix = clientRootFolder !== '' ? 'services/' + clientRootFolder + '/' : '';
 _%>
+<%_ if (!readOnly) { _%>
 import { prepare<%= entityAngularName %>PrerequisiteData, add<%= entityAngularName %><% if (!paginationNo || searchEngineAny) { %>, add<%= entityAngularName %>2<% } %> } from "../../../<%= clientRootFolder !== '' ? '../' : '' %>support/entities/<%= entityFileName %>-util.js";
+<%_ } _%>
 
 describe('<%= entityAngularName %> list page', () => {
+<%_ if (!readOnly) { _%>
 	let dynamicId
 <%_ if (!paginationNo || searchEngineAny) { _%>
 	let dynamicId2
@@ -76,6 +79,7 @@ _%>)
 			dynamicId = res.id
 		})
 	})
+<%_ } _%>
 
 	beforeEach(() => {
 		cy.unregisterServiceWorkers()
@@ -90,6 +94,7 @@ _%>)
         cy.wait(100)
 	})
 
+<%_ if (!readOnly) { _%>
 	after(function() {
 		cy.delete(`<%= servicesApiPrefix %>api/<%= entityApiUrl %>/${dynamicId}`)
 <%_
@@ -119,6 +124,11 @@ _%>
 			}
 	_%>
 	})
+<%_ } else if (authenticationType === 'oauth2') { _%>
+	after(function() {
+		cy.logoutByApi()
+	})
+<%_ } _%>
 
     <%_ if (authenticationType === 'oauth2') { _%>
     afterEach(() => {
@@ -148,6 +158,7 @@ _%>
 			.should('contain', '<%= field.fieldNameHumanized %>')
 <%_ } _%>
 	})
+<%_ if (!readOnly) { _%>
 
 	it('should display <%= entityAngularName %> record in the table', () => {
 		cy.getByTestId('<%= entityInstance %>Table')
@@ -294,5 +305,6 @@ _%>
 					})
 			})
 	})
+<%_ } _%>
 <%_ } _%>
 })

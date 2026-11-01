@@ -234,18 +234,22 @@ export default class extends ClientGenerator {
 							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/index.svelte`,
 							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/+page.svelte`,
 						);
-						this.moveFile(
-							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/new.svelte`,
-							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/new/+page.svelte`,
-						);
+						if (!entity.readOnly) {
+							this.moveFile(
+								`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/new.svelte`,
+								`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/new/+page.svelte`,
+							);
+						}
 						this.moveFile(
 							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/view.svelte`,
 							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/view/+page.svelte`,
 						);
-						this.moveFile(
-							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/edit.svelte`,
-							`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/edit/+page.svelte`,
-						);
+						if (!entity.readOnly) {
+							this.moveFile(
+								`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/edit.svelte`,
+								`${application.clientSrcDir}app/routes/entities/${entity.entityFolderName}/[id]/edit/+page.svelte`,
+							);
+						}
 					}
 				}
 			},

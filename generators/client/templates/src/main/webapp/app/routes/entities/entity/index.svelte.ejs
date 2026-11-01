@@ -1,11 +1,15 @@
 <script>
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
+<%_ if (!readOnly) { _%>
 	import { faPlus } from '@fortawesome/free-solid-svg-icons'
+<%_ } _%>
 
 	import <%= entityInstance %>Service from '$lib/entities/<%= entityFolderName %>/<%= entityFileName %>-service'
+<%_ if (!readOnly) { _%>
 	import { Button, Icon } from 'jhipster-svelte-library'
-	import { Page, DeleteModal<% if (searchEngineAny) { %>, SearchForm<% } %> } from 'jhipster-svelte-library/page'
+<%_ } _%>
+	import { Page<% if (!readOnly) { %>, DeleteModal<% } %><% if (searchEngineAny) { %>, SearchForm<% } %> } from 'jhipster-svelte-library/page'
 <%_ if (!paginationNo) { _%>
 	import { Pagination } from 'jhipster-svelte-library/table'
 <%_ } _%>
@@ -22,8 +26,10 @@
 	let totalCount = 0
 <%_ } _%>
 	let loading = true
+<%_ if (!readOnly) { _%>
 	let showDeleteModal = false
 	let <%= entityInstance %>Id = null
+<%_ } _%>
 <%_ if (searchEngineAny) { _%>
 	let searchCriteria
 <%_ } _%>
@@ -95,6 +101,7 @@
 	function view<%= entityAngularName %>(event) {
 		goto(`/entities/<%= entityFolderName %>/${event.detail.id}/view`)
 	}
+<%_ if (!readOnly) { _%>
 
 	function update<%= entityAngularName %>(event) {
 		goto(`/entities/<%= entityFolderName %>/${event.detail.id}/edit`)
@@ -117,6 +124,7 @@
 			.catch(err => (error = err))
 			.finally(() => (showDeleteModal = false), (<%= entityInstance %>Id = null))
 	}
+<%_ } _%>
 <%_ if (!paginationNo) { _%>
 
 	function sortByPredicate(event) {
@@ -150,6 +158,7 @@
 		slot="header"
 	>
 		<span><%= entityClassPluralHumanized %></span>
+<%_ if (!readOnly) { _%>
 		<div class="flex flex-row justify-end text-base">
 			<Button
 				classes="sm:my-0"
@@ -159,7 +168,9 @@
 				Create <%= entityClassHumanized %>
 			</Button>
 		</div>
+<%_ } _%>
 	</div>
+<%_ if (!readOnly) { _%>
 	{#if showDeleteModal}
 		<DeleteModal
 			id="{<%= entityInstance %>Id}"
@@ -171,6 +182,7 @@
 			</svelte:fragment>
 		</DeleteModal>
 	{/if}
+<%_ } _%>
 	<div
 		class="flex flex-row justify-between items-center text-base mt-4"
 	><%_ if (searchEngineAny) { _%>
@@ -193,9 +205,13 @@
 			sortPredicate="{sortPredicate}"
 			on:sortbypredicate="{sortByPredicate}"
 		<%_ } _%>
+		<%_ if (!readOnly) { _%>
 			on:update="{update<%= entityAngularName %>}"
+		<%_ } _%>
 			on:view="{view<%= entityAngularName %>}"
+		<%_ if (!readOnly) { _%>
 			on:delete="{showDelete<%= entityAngularName %>Modal}"
+		<%_ } _%>
 		/>
 	{/if}
 <%_ if (!paginationNo) { _%>
